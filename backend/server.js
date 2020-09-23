@@ -1,5 +1,4 @@
-let app = require('express')();
-let http = require('http').createServer(app);
+const app = require("./app");
 
 //Set up mongoose connection
 let mongoose = require('mongoose');
@@ -12,14 +11,6 @@ db.once('open', function() {
     console.log("Connected to db successfully.");
 });
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
+app.listen(process.env.PORT || 3000, () => {
+    console.log("listening on port ", process.env.PORT || 3000);
 });
-
-http.listen(process.env.PORT || 3000, () => {
-    console.log('listening on port ', process.env.PORT || 3000);
-})
-
-module.exports = app;
-
-

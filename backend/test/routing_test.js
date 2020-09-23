@@ -1,9 +1,9 @@
 const supertest = require('supertest');
-const server = require('../server.js');
+const app = require('../app.js');
 
 describe("GET /", function() {
     it("it should has status code 200", function(done) {
-        supertest(server)
+        supertest(app)
             .get("/")
             .expect(200)
             .end(function(err, res){
