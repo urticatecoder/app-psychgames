@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import {Typography} from '@material-ui/core';
-import Timer from './Timer';
+import StartTimer from './StartTimer';
 import StartButton from './StartButton';
 
 function Lobby(props) {
@@ -11,7 +11,7 @@ function Lobby(props) {
     return(
         <div>
             <Typography align='center' variant="h1">Lobby</Typography>
-            <Timer setStartStatus={setStartStatus}/>
+            <StartTimer setStartStatus={setStartStatus}/>
             <Typography align='center' variant="h1">{startStatus}</Typography> 
             <StartButton startStatus = {startStatus}/>
         </div>
