@@ -1,21 +1,19 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {Typography} from '@material-ui/core';
-import {Link} from 'react-router-dom';
-import {Button} from '@material-ui/core';
+import Timer from './Timer';
+import StartButton from './StartButton';
 
 function Lobby(props) {
+    const DEFAULT_START_STATUS = false;
+    const [startStatus, setStartStatus] = useState(DEFAULT_START_STATUS);
+
     return(
         <div>
             <Typography align='center' variant="h1">Lobby</Typography>
-            <Link to={"/game-one"}>
-                <Button
-                variant='primary'
-                >
-                Play Game One
-                </Button>
-        </Link>
-
+            <Timer setStartStatus={setStartStatus}/>
+            <Typography align='center' variant="h1">{startStatus}</Typography> 
+            <StartButton startStatus = {startStatus}/>
         </div>
     )
 }
