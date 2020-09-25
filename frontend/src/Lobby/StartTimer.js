@@ -1,9 +1,9 @@
 // CLASS THAT CREATES A TIMER FOR THE LOBBY
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Timer from 'react-compound-timer'
 import { Typography } from '@material-ui/core';
-
+import { withStyles } from '@material-ui/core/styles';
 
 const INITIAL_TEST_TIME = 1 * 5000;
 const INITIAL_START_TIME = 6 * 50000;
@@ -18,10 +18,17 @@ const START_GAME = true;
 
 const STOP_TIMER = 0;
 
+const styles = ({
+  StartTimer: {
+      marginTop: '10%',
+  },
+});
+
 function StartTimer(props) {
+  const {classes} = props;
 
   return (
-    <div className="Timer">
+    <div className={classes.StartTimer}>
       <Timer
         initialTime={INITIAL_TEST_TIME}
         lastUnit={LAST_TIME_UNIT}
@@ -51,4 +58,4 @@ function StartTimer(props) {
   );
 }
 
-export default StartTimer;
+export default withStyles(styles)(StartTimer);
