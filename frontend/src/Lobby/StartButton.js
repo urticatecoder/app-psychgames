@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 
 
-const HEADER_MESSAGE = 'Play Game One';
+const BUTTON_MESSAGE = 'Begin Experiment';
 
 const styles = ({
     startButton: {
@@ -27,9 +27,9 @@ function StartButton(props) {
                 variant="contained" 
                 disabled = {!props.startStatus}
                 color= {props.startStatus ? "primary" : "secondary"}
-                onClick={() => props.history.push("/game-one")}
+                onClick={() => props.history.push("/one-welcome")}
                 >
-                {HEADER_MESSAGE}
+                {BUTTON_MESSAGE}
             </Button>
         </div>
     )

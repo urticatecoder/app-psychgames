@@ -20,7 +20,7 @@ const STOP_TIMER = 0;
 
 const styles = ({
   StartTimer: {
-      marginTop: '10%',
+      marginTop: '20%',
   },
 });
 
