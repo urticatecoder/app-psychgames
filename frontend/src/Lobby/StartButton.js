@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 
 const BUTTON_MESSAGE = 'Begin Experiment';
-
+const BUTTON_ID = 'timerButton';
 const styles = ({
     startButton: {
         marginTop: '5%',
@@ -23,6 +23,7 @@ function StartButton(props) {
         
         <div>
             <Button
+                id = {BUTTON_ID}
                 className = {classes.startButton}
                 variant="contained" 
                 disabled = {!props.startStatus}
