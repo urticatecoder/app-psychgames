@@ -1,4 +1,6 @@
 const app = require("./app");
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 
 //Set up mongoose connection
 let mongoose = require('mongoose');
@@ -11,6 +13,23 @@ db.once('open', function() {
     console.log("Connected to db successfully.");
 });
 
-app.listen(process.env.PORT || 3000, () => {
-    console.log("listening on port ", process.env.PORT || 3000);
+io.on('connection', socket => {
+    console.log('New client connected');
+
+    socket.on('enter lobby', (data) => {
+        // matchmaking
+        socket.join('room 1');
+    });
+
+    socket.on('hello', (data) => {
+        console.log(data);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+})
+
+server.listen(process.env.PORT || 3001, () => {
+    console.log("listening on port ", process.env.PORT || 3001);
 });
