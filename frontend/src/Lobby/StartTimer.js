@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Timer from 'react-compound-timer'
-import { Typography } from '@material-ui/core';
+import { Typography, Box } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
 const INITIAL_TEST_TIME = 1 * 5000;
@@ -10,8 +10,10 @@ const INITIAL_START_TIME = 6 * 50000;
 const LAST_TIME_UNIT = 'h';
 const DIRECTION = 'backward';
 
-const TEXT_SIZE = 'h3';
-const WELCOME_MESSAGE = 'The game will begin in:'
+const WELCOME_MESSAGE = 'The game will begin in:';
+const INSTRUCTIONS_MESSAGE = 'Please wait while other players join in.';
+const WELCOME_VARIANT = 'h3';
+const INSTRUCTIONS_VARIANT = 'h4';
 const MINUTES = 'Minutes';
 const SECONDS = 'Seconds';
 const START_GAME = true;
@@ -19,16 +21,28 @@ const START_GAME = true;
 const STOP_TIMER = 0;
 
 const styles = ({
-  StartTimer: {
-      marginTop: '20%',
+  welcomeInstruction: {
+      marginTop: '15%',
   },
+  timerInstruction: {
+    marginTop: '5%',
+  },
+  
 });
 
 function StartTimer(props) {
   const {classes} = props;
 
   return (
-    <div className={classes.StartTimer}>
+    <div className={classes.startTimer}>
+      
+ 
+      <Typography className={classes.welcomeInstruction} variant={INSTRUCTIONS_VARIANT}>
+        <Box fontStyle="italic" >{INSTRUCTIONS_MESSAGE}</Box>
+      </Typography>
+      <Typography className={classes.timerInstruction} variant={WELCOME_VARIANT}>{WELCOME_MESSAGE}</Typography>
+      
+
       <Timer
         initialTime={INITIAL_TEST_TIME}
         lastUnit={LAST_TIME_UNIT}
@@ -43,13 +57,13 @@ function StartTimer(props) {
       >
       {() => (
         <React.Fragment>
-          <Typography variant={TEXT_SIZE}>
-            {WELCOME_MESSAGE}
+          
+          <Typography variant={WELCOME_VARIANT}>            
             <br/>
+            <Timer.Minutes/> {MINUTES}
             <br/>
-            <Timer.Minutes /> {MINUTES}
+            <Timer.Seconds/> {SECONDS}
             <br/>
-            <Timer.Seconds /> {SECONDS}
           </Typography>
         </React.Fragment>
       )}
