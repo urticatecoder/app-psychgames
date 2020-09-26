@@ -18,15 +18,23 @@ io.on('connection', socket => {
 
     socket.on('enter lobby', (data) => {
         // matchmaking
+        // if room_i is already full: i++; join(room_i)
+        io.sockets.adapter.rooms['room 1'].length;
         socket.join('room 1');
+        socket.room_name = 'room 1';
+        socket.to('room 1').emit('join', 'Someone has joined the game.');
     });
 
-    socket.on('hello', (data) => {
-        console.log(data);
+    socket.on('confirm choice', (choice) => {
+        console.log(choice);
+        // if all 6 have confirmed choices: emit(each player's movement);
+        // else emit('someone has confirmed his/her choice') to 5 other ;
     });
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
+        socket.broadcast.emit('left', 'someone left');
+        socket.leave(socket.room_name);
     });
 })
 
