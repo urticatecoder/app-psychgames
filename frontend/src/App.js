@@ -9,13 +9,15 @@ import EndRules from './GameOne/Instructions/EndRules';
 import Moving from './GameOne/Instructions/Moving'
 import Bonuses from './GameOne/Instructions/Bonuses'
 import PlayRules from './GameOne/Instructions/PlayRules'
+import Login from './Lobby/Login';
 
 function App() {
 
   return (
     <div className="App">
       <Router>
-        <Route path="/" exact component={Lobby}/>
+        <Route path="/" exact component={Login}/>
+        <Route path='/lobby' component = {Lobby}/>
         <Route path="/one-welcome" component={Welcome}/>
         <Route path="/one-introduction" component={Introduction}/>
         <Route path="/one-logic" component={Logic}/>

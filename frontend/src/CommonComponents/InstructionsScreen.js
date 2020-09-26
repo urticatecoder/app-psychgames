@@ -16,7 +16,7 @@ const styles = ({
 
 function InstructionsScreen(props) {
     const FULL_DIV = 'fullDiv';
-    const DEFAULT_INSTRUCTIONS = 'Loading Instructions...';
+    const DEFAULT_INSTRUCTIONS = '';
     const TITLE_VARIANT = 'h3';
     const [instructions, setIntructions] = useState(DEFAULT_INSTRUCTIONS);
 

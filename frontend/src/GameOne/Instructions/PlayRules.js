@@ -11,7 +11,7 @@ function PlayRules(props) {
             <InstructionsScreen 
                 file='Instructions/PlayRules.txt' 
                 title='How do I play?'/>
-            <ContinueButton route='one-moving'/>
+            <ContinueButton route='one-play-rules'/>
         </div>
     )
 }
