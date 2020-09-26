@@ -14,6 +14,9 @@ const FULL_DIV = 'fullDiv';
 const HEADER_VARIANT = 'h3';
 const INSTRUCTIONS_VARIANT = 'h4';
 
+const TEXT_ID = 'loginText';
+const TEXTFIELD_ID = 'loginTextField';
+
 const styles = {
     welcomeText: {
         marginTop: '20%',
@@ -42,17 +45,18 @@ function Login(props) {
     
     return(
         <div className={FULL_DIV}>
-            <Typography className={classes.welcomeText} variant={HEADER_VARIANT}>{WELCOME_MESSAGE}</Typography>
+            <Typography className={classes.welcomeText} id={TEXT_ID} variant={HEADER_VARIANT}>{WELCOME_MESSAGE}</Typography>
             <Typography className={classes.welcomeInstruction} variant={INSTRUCTIONS_VARIANT}>
                 <Box fontStyle="italic" >{INSTRUCTIONS_MESSAGE}</Box>
             </Typography>
             <TextField
+                className = {classes.loginField}
+                id = {TEXTFIELD_ID}
                 InputProps={{
                     classes: {
                       input: classes.loginInput,
                     },
                   }}
-                className = {classes.loginField}
                 value={loginCode}
                 label={LOGIN_LABEL}
                 onChange={(e) => setLoginCode(e.target.value)}

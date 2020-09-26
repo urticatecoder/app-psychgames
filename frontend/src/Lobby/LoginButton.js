@@ -7,6 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 const BUTTON_MESSAGE = 'Enter Code';
 const UNACCEPTABLE_CODE = '';
+const BUTTON_ID = 'loginButton';
 
 const styles = ({
     loginButton: {
@@ -22,10 +23,10 @@ function LoginButton(props) {
     var disableButton = (props.code == UNACCEPTABLE_CODE);
 
     return(
-        
         <div>
             <Button
                 className = {classes.loginButton}
+                id={BUTTON_ID}
                 variant="contained" 
                 disabled = {disableButton}
                 color= "primary"

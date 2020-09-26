@@ -20,6 +20,10 @@ const START_GAME = true;
 
 const STOP_TIMER = 0;
 
+const TIMER_ID = 'timer';
+const TEXT_ID = 'timerText';
+const DIV_ID = 'timerDiv';
+
 const styles = ({
   welcomeInstruction: {
       marginTop: '15%',
@@ -34,16 +38,17 @@ function StartTimer(props) {
   const {classes} = props;
 
   return (
-    <div className={classes.startTimer}>
+    <div className={classes.startTimer} id={DIV_ID}>
       
  
-      <Typography className={classes.welcomeInstruction} variant={INSTRUCTIONS_VARIANT}>
+      <Typography className={classes.welcomeInstruction} id={TEXT_ID} variant={INSTRUCTIONS_VARIANT}>
         <Box fontStyle="italic" >{INSTRUCTIONS_MESSAGE}</Box>
       </Typography>
       <Typography className={classes.timerInstruction} variant={WELCOME_VARIANT}>{WELCOME_MESSAGE}</Typography>
       
 
       <Timer
+        id = {TIMER_ID}
         initialTime={INITIAL_TEST_TIME}
         lastUnit={LAST_TIME_UNIT}
         direction={DIRECTION}
