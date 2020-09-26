@@ -1,0 +1,6 @@
+The largest upward bonus will be given to triplets who all chose each other.
+If you and two other players choose each other, a purple line connecting each player will be shown at the conclusion of the turn (and before the next turn begins).
+There will be a smaller bonus of upward travel distance given to pair of players who choose each other.
+Note that for any bonus, you will onlyget to see links involving yourself (and not those of other players). 
+Finally, after you see the types of links above, you will be shown individual movements of each player.
+A green line will be displayed if that player had chosenYOU on the previous trial.
