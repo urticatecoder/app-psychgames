@@ -1,23 +1,20 @@
 
-import React from 'react';
-import {Typography} from '@material-ui/core';
-import {Link} from 'react-router-dom';
-import {Button} from '@material-ui/core';
+import React, { useState } from 'react';
+import StartTimer from './StartTimer';
+import StartButton from './StartButton';
+import '../CommonStylings/FullScreenDiv.css'
 
 function Lobby(props) {
-    return(
-        <div>
-            <Typography align='center' variant="h1">Lobby</Typography>
-            <Link to={"/game-one"}>
-                <Button
-                variant='primary'
-                >
-                Play Game One
-                </Button>
-        </Link>
+    const DEFAULT_START_STATUS = false;
+    const [startStatus, setStartStatus] = useState(DEFAULT_START_STATUS);
+    const FULL_DIV = 'fullDiv';
 
+    return(
+        <div className = {FULL_DIV}>
+            <StartTimer className='startTimer' setStartStatus={setStartStatus}/>
+            <StartButton className='startButton' startStatus = {startStatus}/>
         </div>
     )
 }
 
-export default Lobby;
+export default (Lobby);
