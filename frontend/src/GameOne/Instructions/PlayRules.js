@@ -3,17 +3,18 @@ import '../../CommonStylings/FullScreenDiv.css'
 import ContinueButton from '../../CommonComponents/ContinueButton';
 import InstructionsScreen from '../../CommonComponents/InstructionsScreen';
 
-function Welcome(props) {
+function PlayRules(props) {
     const FULL_DIV = 'fullDiv';
 
     return(
         <div className = {FULL_DIV}>
             <InstructionsScreen 
-                file='Instructions/Welcome.txt' 
-                title='Game One'/>
-            <ContinueButton route='one-introduction'/>
+                file='Instructions/PlayRules.txt' 
+                title='How do I play?'/>
+            <ContinueButton route='one-moving'/>
         </div>
     )
 }
 
-export default (Welcome);
+export default (PlayRules);
+

@@ -9,11 +9,10 @@ function Introduction(props) {
 
     return(
         <div className = {FULL_DIV}>
-            <Typography>{"Game One"}</Typography>
             <InstructionsScreen 
                 file='Instructions/Introduction.txt' 
-                title='Game One'/>
-            <ContinueButton route='one-introduction'/>
+                title='General Introduction'/>
+            <ContinueButton route='one-logic'/>
         </div>
     )
 }
