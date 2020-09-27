@@ -20,6 +20,7 @@
     "react-scripts": "3.4.3",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "semver": "^7.3.2",
+    "socket.io-client": "^2.3.0",
     "status": "0.0.13"
   },
   "scripts": {
@@ -46,5 +47,6 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3"
-  }
+  },
+  "proxy": "http://localhost:3001"
 }
