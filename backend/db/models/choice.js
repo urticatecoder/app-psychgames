@@ -2,10 +2,10 @@ let mongoose = require('mongoose');
 
 let ChoiceSchema = new mongoose.Schema(
     {
-        prolific_id: {type: String, required: true}, // id of the player who made this choice
-        selected_player_id: {type: String, required: true}, // id of the player who was selected
-        turn_num: {type: Number, required: true}, // at which turn was this choice made
-        made_by_bot: {type: Boolean, default: false} // is this choice made by a bot
+        prolificID: {type: String, required: true}, // id of the player who made this choice
+        selectedPlayerID: {type: String, required: true}, // id of the player who was selected
+        turnNum: {type: Number, required: true}, // at which turn was this choice made
+        madeByBot: {type: Boolean, default: false} // is this choice made by a bot
     }
 );
 
