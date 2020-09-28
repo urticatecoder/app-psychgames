@@ -16,14 +16,7 @@ db.once('open', function() {
 io.on('connection', socket => {
     console.log('New client connected');
 
-    socket.on('enter lobby', (data) => {
-        // matchmaking
-        // if room_i is already full: i++; join(room_i)
-        io.sockets.adapter.rooms['room 1'].length;
-        socket.join('room 1');
-        socket.room_name = 'room 1';
-        socket.to('room 1').emit('join', 'Someone has joined the game.');
-    });
+    require('./lobby.js').LobbySocketListener(io, socket);
 
     socket.on('confirm choice', (choice) => {
         console.log(choice);
@@ -34,7 +27,7 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         console.log('user disconnected');
         socket.broadcast.emit('left', 'someone left');
-        socket.leave(socket.room_name);
+        socket.leave(socket.roomName);
     });
 })
 
