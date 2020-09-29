@@ -18,6 +18,7 @@
   },
   "scripts": {
     "start": "node backend/server.js",
-    "test": "mocha backend/test/*.js"
+    "test": "mocha backend/test/*.js",
+    "heroku-postbuild": "cd frontend && npm install && npm run build"
   }
 }
