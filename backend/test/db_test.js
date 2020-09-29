@@ -15,10 +15,10 @@ describe('Test database query API', () => {
         });
     });
     it('finds the player with the correct prolific ID', (done) => {
-        const test_id = 'test_id';
-        DB_API.saveNewPlayerToDB(test_id);
-        DB_API.findPlayerByID(test_id).then(function(result) {
-            assert(result.prolific_id===test_id);
+        const testID = 'test_id';
+        DB_API.saveNewPlayerToDB(testID);
+        DB_API.findPlayerByID(testID).then(function(result) {
+            assert(result.prolificID===testID);
         }).catch(function(err){
             console.log(err);
         });

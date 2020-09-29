@@ -10,7 +10,7 @@ describe('Test lobby class functionality', () => {
         assert(lobby.rooms.length === 1);
         done();
     });
-    it('lobby class can allocate new rooms correctly if the current one in use is filled up', (done) => {
+    it('lobby class can allocate new rooms correctly', (done) => {
         const lobby = new Lobby();
         assert(lobby.availableRoomNameToJoin === 'room 0');
         lobby.allocateNewRoom();
