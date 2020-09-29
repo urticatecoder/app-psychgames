@@ -26,10 +26,10 @@ const DIV_ID = 'timerDiv';
 
 const styles = ({
   welcomeInstruction: {
-      marginTop: '15%',
+      marginTop: '150px',
   },
   timerInstruction: {
-    marginTop: '5%',
+    marginTop: '50px',
   },
   
 });

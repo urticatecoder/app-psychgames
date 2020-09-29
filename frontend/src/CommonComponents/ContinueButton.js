@@ -9,7 +9,7 @@ const BUTTON_MESSAGE = 'Continue';
 
 const styles = ({
     continueButton: {
-        marginTop: '40%',
+        marginTop: '520px',
         width: '200px',
         height: '50px',
     },

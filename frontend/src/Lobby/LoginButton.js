@@ -11,7 +11,7 @@ const BUTTON_ID = 'loginButton';
 
 const styles = ({
     loginButton: {
-        marginTop: '5%',
+        marginTop: '60px',
         width: '200px',
         height: '50px',
     },

@@ -5,10 +5,10 @@ import ContinueButton from './ContinueButton';
 
 const styles = ({
     title: {
-        marginTop: '15%',
+        marginTop: '150px',
     },
     instructions: {
-        marginTop: '7%',
+        marginTop: '45px',
         marginLeft: '10%',
         marginRight: '10%',
     },
