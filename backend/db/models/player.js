@@ -3,7 +3,8 @@ let mongoose = require('mongoose');
 let PlayerSchema = new mongoose.Schema(
     {
         prolificID: {type: String, required: true},
-        choices: {type: [String], default: [null]}, // TODO: still need to figure out what's the best way to store a player's choice at each turn
+        game: {type: [String], default: [null]},
+        choice: {type: [String], default: [null]}, // TODO: still need to figure out what's the best way to store a player's choice at each turn
         payment: {type: Number, default: 0}, // this player's final payment in cents
     }
 );

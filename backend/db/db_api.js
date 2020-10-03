@@ -34,5 +34,6 @@ function savePlayerChoiceToDB(prolificID, selectedPlayerID, turnNum, madeByBot) 
 module.exports = {
     saveNewPlayerToDB: saveNewPlayerToDB,
     findPlayerByID: findPlayerByID,
+    savePlayerChoiceToDB: savePlayerChoiceToDB,
 }
 
