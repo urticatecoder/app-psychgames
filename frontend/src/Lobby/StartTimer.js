@@ -25,13 +25,13 @@ const TEXT_ID = 'timerText';
 const DIV_ID = 'timerDiv';
 
 const styles = ({
-    welcomeInstruction: {
-        marginTop: '15%',
-    },
-    timerInstruction: {
-        marginTop: '5%',
-    },
-
+  welcomeInstruction: {
+      marginTop: '150px',
+  },
+  timerInstruction: {
+    marginTop: '50px',
+  },
+  
 });
 
 function StartTimer(props) {

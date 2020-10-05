@@ -19,10 +19,10 @@ const TEXTFIELD_ID = 'loginTextField';
 
 const styles = {
     welcomeText: {
-        marginTop: '20%',
+        marginTop: '150px',
     },
     welcomeInstruction: {
-        marginTop: '1%',
+        marginTop: '10px',
     },
     loginInput: {
         fontSize: 50,
@@ -32,7 +32,7 @@ const styles = {
         marginTop: '1%',
     },
     submitButton: {
-        marginTop: '5%',
+        marginTop: '210px',
         width: '200px',
         height: '50px',
     },
