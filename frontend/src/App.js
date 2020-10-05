@@ -4,6 +4,8 @@ import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Lobby from './Lobby/Lobby';
 import Login from './Lobby/Login';
 import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
+import PlayerProfile from './GameOne/Summary/PlayerProfile';
+import Player from './GameOne/Summary/PlayerProfile';
 
 const CLASS_NAME = 'App';
 const HOME_PATH = '/';
@@ -23,7 +25,7 @@ function App() {
       <Router>
         <Route path="/" exact component={Login}/>
         <Route path='/lobby' component = {Lobby}/>
-
+        <Route path='/test' render={() => (<PlayerProfile player='1'/>)}/>
         <Route 
           path="/one-welcome" 
           render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' route='one-introduction'/>)}
