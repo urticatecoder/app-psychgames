@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PlayerGroup from './PlayerGroup';
-import { Typography, Grid, withStyles } from '@material-ui/core';
+import { Typography, Grid, Button, withStyles } from '@material-ui/core';
 import '../../CommonStylings/FullScreenDiv.css';
-
+import Confetti from 'react-dom-confetti';
+ 
 const TEMP_PLAYERS = [1, 2, 3];
 const FULL_DIV = 'fullDiv';
 const WINNING_HEADER = 'Winning Players:'
@@ -21,17 +22,41 @@ const styles = ({
     },
     playerGroup: {
         marginTop: '30px',
+    },
+    confetti: {
+        top: '0%',
+        left: '50%',
     }
 });
 
+const config = {
+    angle: 0,
+    spread: 360,
+    startVelocity: 20,
+    elementCount: 150,
+    dragFriction: 0.05,
+    duration: 5000,
+    stagger: 10,
+    width: "10px",
+    height: "10px",
+    perspective: "500px",
+    colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+  };
+
+
 function GroupScreen(props) {
     const {classes} = props;
-
-
+    const [confetti, setConfetti] = useState(false);
     return(
         <div className={FULL_DIV}>
+            <Confetti className={classes.confetti} active={ confetti } config={ config }/>
             {getGroup(classes.winners, classes.playerGroup, WINNING_HEADER, [1,2,3])}
-            {getGroup(classes.losers, classes.playerGroup, LOSING_HEADER, [1, 2, 3])}            
+            {getGroup(classes.losers, classes.playerGroup, LOSING_HEADER, [1, 2, 3])}
+
+            {/* For Testing Only */}
+            <br/>
+            <br/>
+            <Button onClick={() => setConfetti(!confetti)}>Press Twice for Confetti</Button>
         </div>
     )
 }
