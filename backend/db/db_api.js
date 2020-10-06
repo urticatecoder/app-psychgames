@@ -20,6 +20,7 @@ async function findPlayerByID(prolificID) {
     }
 }
 
+
 function savePlayerChoiceToDB(prolificID, selectedPlayerID, turnNum, madeByBot) {
     let choice = new ChoiceModel({prolificID: prolificID, selectedPlayerID: selectedPlayerID,
         turnNum: turnNum, madeByBot: madeByBot});
