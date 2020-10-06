@@ -15,6 +15,10 @@ app.get("/test_api", (req, res) => {
     res.status(200).send("Hello World!");
 });
 
+app.get("/login-code", ((req, res) => {
+    res.status(200).send({'isValid': req.query.loginCode === 'CS408'});
+}));
+
 app.get("/", (req, res) => {
     res.status(200).send("Hello World!");
 });

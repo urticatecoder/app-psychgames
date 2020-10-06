@@ -8,6 +8,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "acorn": "^8.0.1",
+    "axios": "^0.20.0",
     "babel": "^6.23.0",
     "chromedriver": "^85.0.1",
     "git": "^0.1.5",
