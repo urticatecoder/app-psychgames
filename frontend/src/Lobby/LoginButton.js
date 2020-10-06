@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {Button} from '@material-ui/core';
 import { withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
+import axios from 'axios';
 
 
 const BUTTON_MESSAGE = 'Enter Code';
@@ -27,7 +28,7 @@ function LoginButton(props) {
             <Button
                 className = {classes.loginButton}
                 id={BUTTON_ID}
-                variant="contained" 
+                variant="contained"
                 disabled = {disableButton}
                 color= "primary"
                 onClick={() => handleLogin(props)}
@@ -39,6 +40,14 @@ function LoginButton(props) {
 }
 
 function handleLogin(props) {
+    axios.get('/login-code', {
+        params: {
+            loginCode: 'CS408'
+        }
+    }).then(function (res) {
+        let isValid = res.data.isValid;
+        console.log(isValid);
+    });
     props.history.push("/lobby");
 }
 
