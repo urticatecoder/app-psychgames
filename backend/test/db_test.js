@@ -30,7 +30,20 @@ describe('Test database query API', () => {
         const num = 1;
         const bot = false;
         DB_API.savePlayerChoiceToDB(testID, choices, num, bot);
-        DB_API.findChoicesByID(testID).then(function(result) {
+        DB_API.findChoicesByID(testID, num).then(function(result) {
+            assert(JSON.stringify(result.selectedPlayerID)===JSON.stringify(choices));
+        }).catch(function(err){
+            console.log(err);
+        });
+        done();
+    });
+    it('saves the player choice into database for new round', (done) => {
+        const testID = 'test_id';
+        var choices = ['player4', 'player5', 'player9'];
+        const num = 3;
+        const bot = false;
+        DB_API.savePlayerChoiceToDB(testID, choices, num, bot);
+        DB_API.findChoicesByID(testID, num).then(function(result) {
             assert(JSON.stringify(result.selectedPlayerID)===JSON.stringify(choices));
         }).catch(function(err){
             console.log(err);
