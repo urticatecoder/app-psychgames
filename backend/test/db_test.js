@@ -1,5 +1,6 @@
 const assert = require('assert');
 const DB_API = require('../db/db_api.js');
+const BOT = require('../db/bot.js');
 const mongoose = require('mongoose')
 describe('Test database query API', () => {
     before(function (done) {
@@ -30,8 +31,34 @@ describe('Test database query API', () => {
         const num = 1;
         const bot = false;
         DB_API.savePlayerChoiceToDB(testID, choices, num, bot);
-        DB_API.findChoicesByID(testID).then(function(result) {
+        DB_API.findChoicesByID(testID, num).then(function(result) {
             assert(JSON.stringify(result.selectedPlayerID)===JSON.stringify(choices));
+        }).catch(function(err){
+            console.log(err);
+        });
+        done();
+    });
+    it('saves the player choice into database for new round', (done) => {
+        const testID = 'test_id';
+        var choices = ['player4', 'player5', 'player9'];
+        const num = 3;
+        const bot = false;
+        DB_API.savePlayerChoiceToDB(testID, choices, num, bot);
+        DB_API.findChoicesByID(testID, num).then(function(result) {
+            assert(JSON.stringify(result.selectedPlayerID)===JSON.stringify(choices));
+        }).catch(function(err){
+            console.log(err);
+        });
+        done();
+    });
+    it('saves the player choice by Bot', (done) => {
+        const testID = 'test_id';
+        const num = 8;
+        const bot = true;
+        BOT.saveBotChoiceToDB(testID, num, bot);
+        DB_API.findChoicesByID(testID, num).then(function(result) {
+            console.log(result);
+            assert(result.selectedPlayerID.length <= 3);
         }).catch(function(err){
             console.log(err);
         });
@@ -41,5 +68,6 @@ describe('Test database query API', () => {
         mongoose.connection.db.dropDatabase(function(){
             mongoose.connection.close(done);
         });
+        // done();
     });
 })

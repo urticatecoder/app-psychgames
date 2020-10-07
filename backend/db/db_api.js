@@ -20,13 +20,14 @@ async function findPlayerByID(prolificID) {
     }
 }
 
-async function findChoicesByID(prolificID) {
+async function findChoicesByID(prolificID, turnNum) {
     try {
-        return await ChoiceModel.findOne({'prolificID': prolificID});
+        return await ChoiceModel.findOne({'prolificID': prolificID, 'turnNum': turnNum});
     } catch (e) {
         console.log(e);
     }
 }
+
 
 function savePlayerChoiceToDB(prolificID, selectedPlayerID, turnNum, madeByBot) {
     let choice = new ChoiceModel({prolificID: prolificID, selectedPlayerID: selectedPlayerID,
