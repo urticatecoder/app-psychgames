@@ -30,10 +30,14 @@ io.on('connection', socket => {
         });
      })
 
-    socket.on('bot chooses rest', (prolific) => {
+    socket.on('bot chooses rest of player choice', (prolific) => {
         console.log(prolific);
         //place method to savePlayerChoicesByBot for specific prolific ID
+    })
 
+    socket.on('all choices in database', () => {
+        console.log('send message indicating all choices are in database');
+        socket.to('room 1').emit('choices sent','all choices are in database');
     })
 
     socket.on('disconnect', () => {
