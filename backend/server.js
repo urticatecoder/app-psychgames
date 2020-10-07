@@ -20,28 +20,15 @@ io.on('connection', socket => {
 
     require('./lobby.js').LobbySocketListener(io, socket);
     
-    socket.on('prolific id', (prolific)=> {
-        console.log(prolific);
-        socket.on('choice', (choices, turnNum, isBot)=> {
-            console.log(choices);
-            choices.array.forEach(singleChoices => {
-                singleChoices.array.forEach(selectedPlayer => {
-                    savePlayerChoiceToDB(prolific, selectedPlayer, turnNum, isBot);
-                })
-            });
-            
-        })
-
-    })
-
-    socket.on('confirm choice', (choice) => {
-        console.log(choice);
-        // if all 6 have confirmed choices: emit(each player's movement);
-
-        // else emit('someone has confirmed his/her choice') to 5 other ;
-    });
-
-    socket.on()
+    socket.on('confirm choice', (prolific, choices, turnNum, isBot)=> {
+        // prolific = prolific id; choices = [player1chosen, player2chosen, player3chosen] *minimum chosen players = 1*, turnNum, isBot boolean
+        console.log(choices);
+        choices.array.forEach(singleChoices => {
+            singleChoices.array.forEach(selectedPlayer => {
+                savePlayerChoiceToDB(prolific, selectedPlayer, turnNum, isBot);
+            })
+        });
+     })
 
     socket.on('disconnect', () => {
         console.log('user disconnected');

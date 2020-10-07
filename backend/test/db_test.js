@@ -25,8 +25,9 @@ describe('Test database query API', () => {
         done();
     });
     after(function(done){
-        mongoose.connection.db.dropDatabase(function(){
-            mongoose.connection.close(done);
-        });
+        // mongoose.connection.db.dropDatabase(function(){
+        //     mongoose.connection.close(done);
+        // });
+        done();
     });
 })
