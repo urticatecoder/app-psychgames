@@ -24,10 +24,22 @@ describe('Test database query API', () => {
         });
         done();
     });
-    after(function(done){
-        // mongoose.connection.db.dropDatabase(function(){
-        //     mongoose.connection.close(done);
-        // });
+    it('saves the player choice into database', (done) => {
+        const testID = 'test_id';
+        var choices = ['player1', 'player2', 'player3'];
+        const num = 1;
+        const bot = false;
+        DB_API.savePlayerChoiceToDB(testID, choices, num, bot);
+        DB_API.findChoicesByID(testID).then(function(result) {
+            assert(JSON.stringify(result.selectedPlayerID)===JSON.stringify(choices));
+        }).catch(function(err){
+            console.log(err);
+        });
         done();
+    });
+    after(function(done){
+        mongoose.connection.db.dropDatabase(function(){
+            mongoose.connection.close(done);
+        });
     });
 })
