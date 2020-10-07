@@ -30,6 +30,12 @@ io.on('connection', socket => {
         });
      })
 
+    socket.on('bot chooses rest', (prolific) => {
+        console.log(prolific);
+        //place method to savePlayerChoicesByBot for specific prolific ID
+
+    })
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
         socket.broadcast.emit('left', 'someone left');
