@@ -21,15 +21,15 @@ class Lobby {
         this.roomToPlayer.set(this.currRoom.name, []);
     }
 
-    getRoomPlayerIsIn(prolificID){
+    getRoomPlayerIsIn(prolificID) {
         return this.playerToRoom.get(prolificID);
     }
 
-    getAllPlayersInRoomWithName(roomName){
+    getAllPlayersInRoomWithName(roomName) {
         return this.roomToPlayer.get(roomName);
     }
 
-    findRoomForPlayerToJoin(prolificID){
+    findRoomForPlayerToJoin(prolificID) {
         if (this.playerToRoom.has(prolificID)) {
             throw 'Duplicated prolificID found'
         }
@@ -40,30 +40,31 @@ class Lobby {
 }
 
 class Room {
-    constructor(room_name) {
-        if (room_name === undefined) {
+    turnNum = 1;
+    players = [];
+
+    constructor(roomName) {
+        if (roomName === undefined) {
             throw 'Room name not defined';
         }
-        this.room_name = room_name;
-        this.turnNum = 1;
-        this.players = [];
+        this.roomName = roomName;
     }
 
     get name() {
-        return this.room_name;
+        return this.roomName;
     }
 
-    addPlayer(player){
-        if (! player instanceof Player){
+    addPlayer(player) {
+        if (!player instanceof Player) {
             throw 'Parameter is not an instance of the Player class.';
         }
         this.players.push(player);
     }
 
-    canFindPlayerWithID(prolificID){
+    canFindPlayerWithID(prolificID) {
         let found = false;
         this.players.forEach((player) => {
-            if (player.prolificID === prolificID){
+            if (player.prolificID === prolificID) {
                 found = true;
             }
         });
@@ -80,8 +81,8 @@ class Player {
         this.isBot = false;
     }
 
-    setIsBot(isBot){
-        if (typeof(isBot) !== 'boolean'){
+    setIsBot(isBot) {
+        if (typeof (isBot) !== 'boolean') {
             throw 'Parameter is not a Boolean type.';
         }
         this.isBot = isBot;
