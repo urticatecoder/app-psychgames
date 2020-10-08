@@ -4,7 +4,7 @@ const DB_API = require('../db/db_api.js');
 
 function saveBotChoiceToDB(prolificId, turnNum, isBot){
     let choices = determineBotChoice();
-    DB_API.savePlayerChoiceToDB(prolificId, choices, turnNum, isBot);
+    return DB_API.savePlayerChoiceToDB(prolificId, choices, turnNum, isBot);
 }
 
 function determineBotChoice(){
