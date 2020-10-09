@@ -42,9 +42,9 @@ class Lobby {
 }
 
 class Room {
-    turnNum = 1;
-    players = [];
-    playersWithChoiceConfirmed = new Set();
+    turnNum = 1; // the current turn number in this room starting at 1
+    players = []; // holds player objects
+    playersWithChoiceConfirmed = new Set(); // holds prolificID of players who have confirmed their choices
 
     constructor(roomName) {
         if (roomName === undefined) {
@@ -58,7 +58,7 @@ class Room {
     }
 
     addPlayer(player) {
-        if (!player.isPrototypeOf(Player)) {
+        if (!(player instanceof Player)) {
             throw 'Parameter is not an instance of the Player class.';
         }
         this.players.push(player);
@@ -82,17 +82,19 @@ class Room {
     }
 
     canFindPlayerWithID(prolificID) {
-        let found = false;
-        this.players.forEach((player) => {
-            if (player.prolificID === prolificID) {
-                found = true;
-            }
-        });
-        return found;
+        return this.players.some(player => player.prolificID === prolificID);
+    }
+
+    getEveryoneChoiceAtCurrentTurn() {
+        return new Map(
+            this.players.map(player => [player.prolificID, player.getChoiceAtTurn(this.turnNum)])
+        );
     }
 }
 
 class Player {
+    choices = []; // stores an array of array
+
     constructor(prolificID) {
         if (prolificID === undefined) {
             throw 'prolificID not defined';
@@ -106,6 +108,21 @@ class Player {
             throw 'Parameter is not a Boolean type.';
         }
         this.isBot = isBot;
+    }
+
+    recordChoices(choice) {
+        if (!(choice instanceof Array)) {
+            throw 'Parameter is not an Array.';
+        }
+        this.choices.push(choice);
+    }
+
+    getChoiceAtTurn(turnNum) {
+        turnNum = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
+        if (turnNum >= this.choices.length) {
+            throw 'Array index out of bound.';
+        }
+        return this.choices[turnNum];
     }
 }
 
