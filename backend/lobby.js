@@ -43,7 +43,7 @@ class Lobby {
 
 class Room {
     turnNum = 1; // the current turn number in this room starting at 1
-    players = []; // holds player objects
+    players = []; // holds player objects who are in this room
     playersWithChoiceConfirmed = new Set(); // holds prolificID of players who have confirmed their choices
 
     constructor(roomName) {
@@ -83,6 +83,10 @@ class Room {
 
     canFindPlayerWithID(prolificID) {
         return this.players.some(player => player.prolificID === prolificID);
+    }
+
+    getPlayerWithID(prolificID) {
+        return this.players.find(player => player.prolificID === prolificID);
     }
 
     getEveryoneChoiceAtCurrentTurn() {

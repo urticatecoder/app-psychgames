@@ -185,5 +185,16 @@ describe('Test Room class functionality', () => {
         expect(room.getEveryoneChoiceAtCurrentTurn()).to.deep.equal(expectedResult);
         done();
     });
+    it('getPlayerWithID works correctly', (done) => {
+        const room = new Room('room 0');
+        let player1 = new Player('123');
+        let player2 = new Player('456');
+        let player3 = new Player('789');
+        room.addPlayer(player1);
+        room.addPlayer(player2);
+        room.addPlayer(player3);
+        expect(room.getPlayerWithID('123')).to.equal(player1);
+        done();
+    });
 });
 
