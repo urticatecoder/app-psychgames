@@ -77,6 +77,11 @@ describe('Test Room class functionality', () => {
         expect(() => new Room()).to.throw(/^Room name not defined$/);
         done();
     });
+    it('Should throw an error when a non-player type is passed into addPlayer', (done) => {
+        const room = new Room('room 0');
+        expect(() => room.addPlayer('not a player obj')).to.throw(/^Parameter is not an instance of the Player class.$/);
+        done();
+    });
     it('canFindPlayerWithID works', (done) => {
         const room = new Room('room 0');
         room.addPlayer(new Player('123'));
@@ -86,6 +91,41 @@ describe('Test Room class functionality', () => {
         expect(room.canFindPlayerWithID('456')).to.equal(true);
         expect(room.canFindPlayerWithID('789')).to.equal(true);
         expect(room.canFindPlayerWithID('111')).to.equal(false);
+        done();
+    });
+    it('addPlayerIDToConfirmedSet works', (done) => {
+        const room = new Room('room 0');
+        room.addPlayerIDToConfirmedSet('123');
+        room.addPlayerIDToConfirmedSet('456');
+        room.addPlayerIDToConfirmedSet('789');
+        expect(room.playersWithChoiceConfirmed).to.deep.equal(new Set(['123', '456', '789']));
+        room.addPlayerIDToConfirmedSet('123');
+        expect(room.playersWithChoiceConfirmed).to.deep.equal(new Set(['123', '456', '789']));
+        done();
+    });
+    it('advanceToNextRound works', (done) => {
+        const room = new Room('room 0');
+        room.addPlayerIDToConfirmedSet('123');
+        room.addPlayerIDToConfirmedSet('456');
+        room.addPlayerIDToConfirmedSet('789');
+        expect(room.playersWithChoiceConfirmed.size).to.equal(3);
+        expect(room.turnNum).to.equal(1);
+        room.advanceToNextRound();
+        expect(room.turnNum).to.equal(2);
+        expect(room.playersWithChoiceConfirmed.size).to.equal(0);
+        done();
+    });
+    it('hasEveryoneConfirmedChoiceInThisRoom works', (done) => {
+        const room = new Room('room 0');
+        let IDs = ['123', '456', '789', 'abc', 'efg'];
+        IDs.forEach((id) => {
+           room.addPlayerIDToConfirmedSet(id);
+        });
+        expect(room.hasEveryoneConfirmedChoiceInThisRoom()).to.equal(false);
+        room.addPlayerIDToConfirmedSet('xyz');
+        expect(room.hasEveryoneConfirmedChoiceInThisRoom()).to.equal(true);
+        room.addPlayerIDToConfirmedSet('def');
+        expect(room.hasEveryoneConfirmedChoiceInThisRoom()).to.equal(false);
         done();
     });
 });
