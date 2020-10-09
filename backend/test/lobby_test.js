@@ -66,6 +66,44 @@ describe('Test Lobby class functionality', () => {
     });
 });
 
+describe('Test Player class functionality', () => {
+    it('Player class has the correct initial values', (done) => {
+        let testID = 'test_id';
+        const player = new Player(testID);
+        expect(player.prolificID).to.equal(testID);
+        expect(player.isBot).to.equal(false);
+        done();
+    });
+    it('Should throw an error when no prolificID is passed into the constructor', (done) => {
+        expect(() => new Player()).to.throw(/^prolificID not defined$/);
+        done();
+    });
+    it('Should throw an error when a non-boolean value is passed into setIsBot', (done) => {
+        const player = new Player('test_id');
+        expect(() => player.setIsBot('not a boolean')).to.throw(/^Parameter is not a Boolean type.$/);
+        done();
+    });
+    it('recordChoice works correctly', (done) => {
+        let testID = 'test_id';
+        const player = new Player(testID);
+        player.recordChoices(['123', '456']);
+        expect(player.choices).to.deep.equal([['123', '456']]);
+        player.recordChoices(['123']);
+        expect(player.choices).to.deep.equal([['123', '456'], ['123']]);
+        done();
+    });
+    it('getChoiceAtTurn works correctly', (done) => {
+        let testID = 'test_id';
+        const player = new Player(testID);
+        player.recordChoices(['123', '456']);
+        player.recordChoices(['123']);
+        expect(player.getChoiceAtTurn(1)).to.deep.equal(['123', '456']);
+        expect(player.getChoiceAtTurn(2)).to.deep.equal(['123']);
+        expect(() => player.getChoiceAtTurn(3)).to.throw(/^Array index out of bound.$/);
+        done();
+    });
+});
+
 describe('Test Room class functionality', () => {
     it('Room class has the correct initial values', (done) => {
         const room = new Room('room 0');
@@ -128,23 +166,23 @@ describe('Test Room class functionality', () => {
         expect(room.hasEveryoneConfirmedChoiceInThisRoom()).to.equal(false);
         done();
     });
-});
-
-describe('Test Player class functionality', () => {
-    it('Player class has the correct initial values', (done) => {
-        let testID = 'test_id';
-        const player = new Player(testID);
-        expect(player.prolificID).to.equal(testID);
-        expect(player.isBot).to.equal(false);
-        done();
-    });
-    it('Should throw an error when no prolificID is passed into the constructor', (done) => {
-        expect(() => new Player()).to.throw(/^prolificID not defined$/);
-        done();
-    });
-    it('Should throw an error when a non-boolean value is passed into setIsBot', (done) => {
-        const player = new Player('test_id');
-        expect(() => player.setIsBot('not a boolean')).to.throw(/^Parameter is not a Boolean type.$/);
+    it('getEveryoneChoice works', (done) => {
+        const room = new Room('room 0');
+        let player1 = new Player('123');
+        player1.recordChoices(['456', '789']);
+        let player2 = new Player('456');
+        player2.recordChoices(['123', '789']);
+        let player3 = new Player('789');
+        player3.recordChoices(['123', '456']);
+        room.addPlayer(player1);
+        room.addPlayer(player2);
+        room.addPlayer(player3);
+        let expectedResult = new Map([
+            ['123', ['456', '789']],
+            ['456', ['123', '789']],
+            ['789', ['123', '456']]
+        ]);
+        expect(room.getEveryoneChoiceAtCurrentTurn()).to.deep.equal(expectedResult);
         done();
     });
 });
