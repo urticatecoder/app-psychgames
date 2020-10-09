@@ -31,7 +31,6 @@ io.on('connection', socket => {
     socket.on('bot chooses rest of player choice', (prolific, turnNum, isBot) => {
         console.log(prolific);
         BOT.saveBotChoiceToDB(prolific, turnNum, isBot);
-        //place method to savePlayerChoicesByBot for specific prolific ID
     })
 
     socket.on('all choices in database', () => {
@@ -41,10 +40,8 @@ io.on('connection', socket => {
     })
 
     socket.on('results', (prolific, turnNum)=>{
-        //write method calculating results
         let result = getResultsByProlificId(prolific, turnNum);
         socket.emit('location', result);
-
     })
 
     socket.on('disconnect', () => {
