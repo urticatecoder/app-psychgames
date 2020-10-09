@@ -31,10 +31,12 @@ class Lobby {
 
     findRoomForPlayerToJoin(prolificID) {
         if (this.playerToRoom.has(prolificID)) {
-            throw 'Duplicated prolificID found'
+            throw 'Duplicated prolificID found';
         }
+        let player = new Player(prolificID);
+        this.currRoom.addPlayer(player);
         this.playerToRoom.set(prolificID, this.currRoom);
-        this.roomToPlayer.get(this.currRoom.name).push(new Player(prolificID));
+        this.roomToPlayer.get(this.currRoom.name).push(player);
         return this.currRoom.name;
     }
 }
@@ -42,6 +44,7 @@ class Lobby {
 class Room {
     turnNum = 1;
     players = [];
+    playersWithChoiceConfirmed = new Set();
 
     constructor(roomName) {
         if (roomName === undefined) {
@@ -55,10 +58,27 @@ class Room {
     }
 
     addPlayer(player) {
-        if (!player instanceof Player) {
+        if (!player.isPrototypeOf(Player)) {
             throw 'Parameter is not an instance of the Player class.';
         }
         this.players.push(player);
+    }
+
+    advanceToNextRound() {
+        this.turnNum++;
+        this.playersWithChoiceConfirmed.clear();
+    }
+
+    addPlayerIDToConfirmedSet(prolificID) {
+        this.playersWithChoiceConfirmed.add(prolificID);
+    }
+
+    hasEveryoneConfirmedChoiceInThisRoom() {
+        return this.playersWithChoiceConfirmed.size === Lobby.MAX_CAPACITY_PER_ROOM;
+    }
+
+    hasPlayerWithIDConfirmedChoice(prolificID) {
+        return this.playersWithChoiceConfirmed.has(prolificID);
     }
 
     canFindPlayerWithID(prolificID) {
@@ -95,6 +115,7 @@ module.exports = {
     Lobby,
     Room,
     Player,
+    LobbyInstance: lobby,
     LobbySocketListener: function (io, socket) {
         socket.on("enter lobby", (prolificID) => {
             let roomName = lobby.findRoomForPlayerToJoin(prolificID);
