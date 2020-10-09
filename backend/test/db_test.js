@@ -94,11 +94,9 @@ describe('Test database query API', () => {
         const bot = false;
         // why are there errors
         DB_API.savePlayerChoiceToDB(testID, choices, num, bot).then(() => {
-            getResultsByProlificId(testID, num).then(function (result) {
-                console.log(result);
-                // assert(JSON.stringify(result.selectedPlayerID) === JSON.stringify(choices));
-                done();
-            });
+            const count = getResultsByProlificId(testID, num)
+            console.log(count);
+            done();
         }).catch((err) => {
             done(err);
         });
