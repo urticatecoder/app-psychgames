@@ -11,19 +11,10 @@ describe("API route test", function () {
                 done();
             });
     });
-    it("GET /login-code gives the correct response when login code is invalid", function (done) {
-        supertest(app)
-            .get("/login-code?loginCode=123")
-            .expect({isValid: false})
-            .end(function (err, res) {
-                if (err) throw err;
-                done();
-            });
-    });
     it("GET /login-code gives the correct response when login code is valid", function (done) {
         supertest(app)
             .get("/login-code?loginCode=CS408")
-            .expect({isValid: true})
+            .expect({isValid: true, error: ''})
             .end(function (err, res) {
                 if (err) throw err;
                 done();
