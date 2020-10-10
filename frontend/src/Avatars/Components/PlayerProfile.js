@@ -10,7 +10,7 @@ function PlayerProfile(props) {
     return(
         <div>
         {PlayerShapes[props.player]}
-        <Typography fontFamily='Monospace'>{PLAYER_TITLE + props.player}</Typography>
+        <Typography >{PLAYER_TITLE + props.player}</Typography>
         </div>
     )
 }
