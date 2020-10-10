@@ -17,6 +17,8 @@ const INSTRUCTIONS_VARIANT = 'h4';
 const TEXT_ID = 'loginText';
 const TEXTFIELD_ID = 'loginTextField';
 
+const NO_CODE = false;
+
 const styles = {
     welcomeText: {
         marginTop: '150px',
@@ -42,7 +44,8 @@ function Login(props) {
 
     const {classes} = props;
     const [loginCode, setLoginCode] = useState(DEFAULT_LOGIN);
-    
+    const [invalidCode, setInvalidCode] = useState(NO_CODE);
+
     return(
         <div className={FULL_DIV}>
             <Typography className={classes.welcomeText} id={TEXT_ID} variant={HEADER_VARIANT}>{WELCOME_MESSAGE}</Typography>
@@ -59,10 +62,11 @@ function Login(props) {
                   }}
                 value={loginCode}
                 label={LOGIN_LABEL}
+                error={invalidCode}
                 onChange={(e) => setLoginCode(e.target.value)}
                 >
             </TextField>
-            <LoginButton code={loginCode}/>
+            <LoginButton code={loginCode} invalidCode={invalidCode} setInvalidCode={setInvalidCode}/>
         </div>
     )
 }

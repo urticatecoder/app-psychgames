@@ -8,6 +8,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "acorn": "^8.0.1",
+    "axios": "^0.20.0",
     "babel": "^6.23.0",
     "chromedriver": "^85.0.1",
     "git": "^0.1.5",
@@ -23,7 +24,8 @@
     "selenium-webdriver": "^4.0.0-alpha.7",
     "semver": "^7.3.2",
     "socket.io-client": "^2.3.0",
-    "status": "0.0.13"
+    "status": "0.0.13",
+    "yarn": "^1.22.10"
   },
   "scripts": {
     "start": "react-scripts start",

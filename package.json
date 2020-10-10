@@ -12,14 +12,16 @@
     "express": "^4.17.1",
     "mocha": "^5.2.0",
     "mongoose": "^5.10.2",
+    "nyc": "^15.1.0",
     "pusher": "^2.2.0",
-    "react-konva": "^16.13.0-6",
     "socket.io": "^2.3.0",
-    "supertest": "^3.4.2"
+    "supertest": "^3.4.2",
+    "yarn": "^1.22.10"
   },
   "scripts": {
     "start": "node backend/server.js",
     "test": "mocha backend/test/*.js",
+    "test-coverage": "nyc mocha backend/test/*.js",
     "heroku-postbuild": "cd frontend && npm install && npm run build"
   }
 }
