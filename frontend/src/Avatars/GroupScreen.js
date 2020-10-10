@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import PlayerGroup from './PlayerGroup';
 import { Typography, Grid, Button, withStyles } from '@material-ui/core';
-import '../../CommonStylings/FullScreenDiv.css';
+import '../CommonStylings/FullScreenDiv.css';
 import Confetti from 'react-dom-confetti';
  
 const TEMP_PLAYERS = [1, 2, 3];
@@ -11,12 +11,12 @@ const LOSING_HEADER = 'Losing Players:'
 const HEADER_VARIANT='h4';
 const styles = ({
     winners: {
-        marginTop: '100px',
+        marginTop: '15vh',
         marginLeft: '10%',
         marginRight: '10%',
     },
     losers: {
-        marginTop: '50px',
+        marginTop: '15vh',
         marginLeft: '10%',
         marginRight: '10%',
     },
@@ -29,13 +29,13 @@ const styles = ({
     }
 });
 
-const config = {
+const CONFIG = {
     angle: 0,
     spread: 360,
     startVelocity: 20,
-    elementCount: 150,
+    elementCount: 800,
     dragFriction: 0.05,
-    duration: 5000,
+    duration: 10000,
     stagger: 10,
     width: "10px",
     height: "10px",
@@ -47,16 +47,18 @@ const config = {
 function GroupScreen(props) {
     const {classes} = props;
     const [confetti, setConfetti] = useState(false);
-    return(
-        <div className={FULL_DIV}>
-            <Confetti className={classes.confetti} active={ confetti } config={ config }/>
-            {getGroup(classes.winners, classes.playerGroup, WINNING_HEADER, [1,2,3])}
-            {getGroup(classes.losers, classes.playerGroup, LOSING_HEADER, [1, 2, 3])}
 
-            {/* For Testing Only */}
-            <br/>
-            <br/>
-            <Button onClick={() => setConfetti(!confetti)}>Press Twice for Confetti</Button>
+
+    setTimeout(() => {
+        setConfetti(true)
+      }, 1500);
+
+    return(
+ 
+        <div className={FULL_DIV}>
+            <Confetti className={classes.confetti} active={ confetti } config={ CONFIG }/>
+            {getGroup(classes.winners, classes.playerGroup, WINNING_HEADER, [1, 2, 3])}
+            {getGroup(classes.losers, classes.playerGroup, LOSING_HEADER, [4, 5, 6])}
         </div>
     )
 }

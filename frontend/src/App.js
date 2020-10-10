@@ -4,9 +4,7 @@ import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Lobby from './Lobby/Lobby';
 import Login from './Lobby/Login';
 import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
-import PlayerProfile from './GameOne/Summary/PlayerProfile';
-import Group from './GameOne/Summary/PlayerGroup';
-import GroupScreen from './GameOne/Summary/GroupScreen';
+import GroupScreen from './Avatars/GroupScreen';
 
 const CLASS_NAME = 'App';
 const HOME_PATH = '/';
