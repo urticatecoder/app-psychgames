@@ -3,6 +3,7 @@ package Lobby;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.WebDriver;
@@ -20,6 +21,11 @@ public class TimerTest {
     private static final String BUTTON_ID = "timerButton";
     private static final String THREAD_SLEEP_MESSAGE = "Error with Thread Sleep";
     private static final int TIMER_LENGTH = 6000;
+
+    private static final String TEXTFIELD_ID = "loginTextField";
+    private static final String LOGIN_BUTTON_ID = "loginButton";
+
+    private static final String LOCAL_LOGIN_URL = "http://localhost:3000/";
 
     @Before
     public void init() {
@@ -52,4 +58,6 @@ public class TimerTest {
     public void testEarlyClick() {
         Assertions.assertThrows(ElementClickInterceptedException.class, () -> driver.findElement(By.id(BUTTON_ID)).click());
     }
+
+
 }

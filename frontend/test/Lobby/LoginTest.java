@@ -62,6 +62,20 @@ public class LoginTest {
         Assert.assertEquals(LOCAL_LOGIN_URL, driver.getCurrentUrl());
     }
 
+    @Test
+    public void testDuplicatedCode() {
+        enterValidCode(LOCAL_HOST_LOBBY);
+        enterValidCode(LOCAL_LOGIN_URL);
+    }
+
+    private void enterValidCode(String URL) {
+        WebDriver tempDriver = new ChromeDriver();
+        tempDriver.get(LOCAL_LOGIN_URL);
+        tempDriver.findElement(By.id(TEXTFIELD_ID)).sendKeys(VALID_LOGIN_CODE);
+        tempDriver.findElement(By.id(BUTTON_ID)).click();
+        Assert.assertEquals(URL, tempDriver.getCurrentUrl());
+
+    }
     private void testCode(String URL, String loginCode) {
         driver.findElement(By.id(TEXTFIELD_ID)).sendKeys(loginCode);
         driver.findElement(By.id(BUTTON_ID)).click();
