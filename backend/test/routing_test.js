@@ -30,7 +30,7 @@ describe("API route test", function () {
 
         supertest(app)
             .get("/login-code?")
-            .expect({isValid: false, error: 'ProlificID is empty.'})
+            .expect({isValid: false, error: 'ProlificID is empty'})
             .end(function (err, res) {
                 if (err) throw err;
                 done();
