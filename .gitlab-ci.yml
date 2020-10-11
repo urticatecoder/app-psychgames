@@ -26,4 +26,4 @@ Deploy:
   script:
     - echo 'hello world'
   only:
-    - master
+    - xipu
