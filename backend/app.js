@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const path = require('path');
+const lobby = require('./lobby.js').LobbyInstance;
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
@@ -16,7 +17,18 @@ app.get("/test_api", (req, res) => {
 });
 
 app.get("/login-code", ((req, res) => {
-    res.status(200).send({'isValid': req.query.loginCode === 'CS408'});
+    let prolificID = req.query.loginCode;
+    let error = '';
+    let isValid = true;
+    if (prolificID === undefined || prolificID === '') {
+        isValid = false;
+        error = 'ProlificID is empty.';
+    }
+    else if (lobby.playerToRoom.has(prolificID)) {
+        isValid = false;
+        error = 'Duplicated prolificID found.';
+    }
+    res.status(200).send({'isValid': isValid, 'error': error});
 }));
 
 app.get("/", (req, res) => {
