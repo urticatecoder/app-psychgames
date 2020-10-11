@@ -34,7 +34,7 @@ const styles = ({
   timerInstruction: {
     marginTop: '50px',
   },
-  
+
 });
 
 function StartTimer(props) {
@@ -51,12 +51,16 @@ function StartTimer(props) {
         });
         socket.on('room fill', (msg) => {
             console.log(msg);
-        })
+        });
+        socket.on('num of people in the room', (numOfPlayers) => {
+            console.log(numOfPlayers);
+        });
 
         return () => {
             console.log("remove listeners");
             socket.off("join");
             socket.off('room fill');
+            socket.off('num of people in the room');
         }
     }, []);
 
@@ -93,7 +97,7 @@ function StartTimer(props) {
                         </Typography>
                     </React.Fragment>
 
-                    
+
                 )}
             </Timer>
         </div>
