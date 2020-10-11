@@ -5,9 +5,13 @@ import '../../CommonStylings/FullScreenDiv.css';
 import DelayedConfetti from './DelayedConfetti';
  
 const FULL_DIV = 'fullDiv';
-const WINNING_HEADER = 'Winning Players:'
-const LOSING_HEADER = 'Losing Players:'
+const WINNING_HEADER = 'Winning Players'
+const LOSING_HEADER = 'Losing Players'
 const HEADER_VARIANT='h4';
+const WINNER_ID = 'winnerText'
+const LOSER_ID = 'loserText'
+const WINNERS = [1, 2, 3]
+const LOSERS = [4, 5, 6]
 
 const styles = ({
     winners: {
@@ -26,6 +30,7 @@ const styles = ({
 });
 
 
+
 function GroupScreen(props) {
     const {classes} = props;
     const [confetti, setConfetti] = useState(false);
@@ -37,16 +42,16 @@ function GroupScreen(props) {
  
         <div className={FULL_DIV}>
             <DelayedConfetti/>
-            {getGroup(classes.winners, classes.playerGroup, WINNING_HEADER, [1, 2, 3])}
-            {getGroup(classes.losers, classes.playerGroup, LOSING_HEADER, [4, 5, 6])}
+            {getGroup(classes.winners, classes.playerGroup, WINNING_HEADER, WINNERS, WINNER_ID)}
+            {getGroup(classes.losers, classes.playerGroup, LOSING_HEADER, LOSERS, LOSER_ID)}
         </div>
     )
 }
 
-function getGroup(divClassName, groupClassName, headerText, playersShown) {
+function getGroup(divClassName, groupClassName, headerText, playersShown, textID) {
     return(
         <div className={divClassName}>
-            <Typography variant={HEADER_VARIANT}>{headerText}</Typography>
+            <Typography id={textID} variant={HEADER_VARIANT}>{headerText}</Typography>
             <div className={groupClassName}>
                 <PlayerGroup players={playersShown}/>
             </div>

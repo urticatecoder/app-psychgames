@@ -1,16 +1,15 @@
 import React from 'react';
-import PlayerShapes from './PlayerShapes';
+import PlayerImages from './PlayerImages';
 import { Typography } from '@material-ui/core';
 
-const PLAYER_TITLE = 'Player ';
-
+const NAME = 'name'
+const LABEL = 'label'
 function PlayerProfile(props) {
-    const {classes} = props;
 
     return(
         <div>
-        {PlayerShapes[props.player]}
-        <Typography >{PLAYER_TITLE + props.player}</Typography>
+        {PlayerImages[props.player]}
+        <Typography id={LABEL + PlayerImages[LABEL + props.player]}>{PlayerImages[LABEL + props.player]}</Typography>
         </div>
     )
 }

@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import './App.css';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Lobby from './Lobby/Lobby';
-import Login from './Lobby/Login';
+import Login from './Login/Login';
 import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
 import GroupScreen from './GameOne/Summary/GroupScreen';
 
@@ -24,7 +24,7 @@ function App() {
       <Router>
         <Route path="/" exact component={Login}/>
         <Route path='/lobby' component = {Lobby}/>
-        <Route path='/test' render={() => (<GroupScreen/>)}/>
+        <Route path='/summary' render={() => (<GroupScreen/>)}/>
         <Route 
           path="/one-welcome" 
           render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' route='one-introduction'/>)}

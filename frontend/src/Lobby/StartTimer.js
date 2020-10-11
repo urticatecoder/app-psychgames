@@ -22,7 +22,7 @@ const SECONDS = 'Seconds';
 const START_GAME = true;
 
 const STOP_TIMER = 0;
-
+const TIMER_UPDATE = 10;
 const TIMER_ID = 'timer';
 const TEXT_ID = 'timerText';
 const DIV_ID = 'timerDiv';
@@ -63,7 +63,6 @@ function StartTimer(props) {
     return (
         <div className={classes.startTimer} id={DIV_ID}>
 
-
             <Typography className={classes.welcomeInstruction} id={TEXT_ID} variant={INSTRUCTIONS_VARIANT}>
                 <Box fontStyle="italic">{INSTRUCTIONS_MESSAGE(waitingOnPlayerCounter)}</Box>
             </Typography>
@@ -75,7 +74,7 @@ function StartTimer(props) {
                 initialTime={INITIAL_TEST_TIME}
                 lastUnit={LAST_TIME_UNIT}
                 direction={DIRECTION}
-                timeToUpdate={10}
+                timeToUpdate={TIMER_UPDATE}
                 checkpoints={[
                     {
                         time: STOP_TIMER,
@@ -83,7 +82,7 @@ function StartTimer(props) {
                     },
                 ]}
             >
-                {(reset) => (
+                {() => (
                     <React.Fragment>
 
                         <Typography variant={WELCOME_VARIANT}>
@@ -94,6 +93,8 @@ function StartTimer(props) {
                             <br/>
                         </Typography>
                     </React.Fragment>
+
+                    
                 )}
             </Timer>
         </div>
