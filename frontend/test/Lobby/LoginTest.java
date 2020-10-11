@@ -1,3 +1,5 @@
+package Lobby;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,11 +20,21 @@ public class LoginTest {
     private static final String TEXTFIELD_ID = "loginTextField";
     private static final String BUTTON_ID = "loginButton";
 
+    private static final String VALID_LOGIN_CODE = "CS408";
+    private static final String INVALID_LOGIN_CODE = "CS307";
+    private static final String EMPTY_LOGIN_CODE = " ";
+
     @Before
     public void init() {
         System.setProperty(CHROME_DRIVER, CHROME_DRIVER_PATH);
         driver = new ChromeDriver();
         driver.get(LOCAL_LOGIN_URL);
+    }
+
+    // HAPPY PATH -- valid login code entered
+    @Test
+    public void testLoginValid() {
+        testCode(LOCAL_HOST_LOBBY, VALID_LOGIN_CODE);
     }
 
     // SAD PATH -- user randomly clicks on textfield
@@ -32,28 +44,27 @@ public class LoginTest {
         Assert.assertEquals(LOCAL_LOGIN_URL, driver.getCurrentUrl());
     }
 
-    // HAPPY PATH -- login code entered
-    @Test
-    public void testLoginValid() {
-        driver.findElement(By.id(TEXTFIELD_ID)).sendKeys("123");
-        driver.findElement(By.id(BUTTON_ID)).click();
-        Assert.assertEquals(LOCAL_HOST_LOBBY, driver.getCurrentUrl());
-    }
-
-//     FOLLOWING TESTS NEED TO RESOLVE THE ELEMENT CLICK INTERCEPTED PROBLEM
-//     SAD PATH -- '' code entered
+    // SAD PATH -- invalid login code entered
     @Test
     public void testLoginInvalid() {
-        driver.findElement(By.id(TEXTFIELD_ID)).sendKeys("");
-        driver.findElement(By.id(BUTTON_ID)).click();
-        Assert.assertEquals(LOCAL_LOGIN_URL, driver.getCurrentUrl());
+        testCode(LOCAL_LOGIN_URL, INVALID_LOGIN_CODE);
+    }
 
+    // SAD PATH -- invalid login code entered
+    @Test
+    public void testEmptyLogin() {
+        testCode(LOCAL_LOGIN_URL, EMPTY_LOGIN_CODE);
     }
 
     // SAD PATH -- no code entered
     @Test
-    public void testLoginNoCode() {
-        driver.findElement(By.id(BUTTON_ID)).click();
+    public void testInitialURL() {
         Assert.assertEquals(LOCAL_LOGIN_URL, driver.getCurrentUrl());
+    }
+
+    private void testCode(String URL, String loginCode) {
+        driver.findElement(By.id(TEXTFIELD_ID)).sendKeys(loginCode);
+        driver.findElement(By.id(BUTTON_ID)).click();
+        Assert.assertEquals(URL, driver.getCurrentUrl());
     }
 }
