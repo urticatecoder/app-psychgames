@@ -6,12 +6,22 @@ cache:
     - node_modules/
 
 stages:
+  - build
   - test
+  - deploy
 
-# Job 1:
+Build:
+  stage: build
+  script:
+    - npm install
+
 Test:
   stage: test
   script:
-    - npm install
     - npm run test
     - npm run test-coverage
+
+Deploy:
+  stage: deploy
+  script:
+    - echo 'hello world'
