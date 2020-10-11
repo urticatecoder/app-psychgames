@@ -3,7 +3,7 @@ const DB_API = require('../db/db_api.js');
 const BOT = require('../db/bot.js');
 const mongoose = require('mongoose');
 const { saveNewPlayerToDB } = require('../db/db_api.js');
-const { getResultsByProlificId } = require('../db/results.js');
+const { getResultsByProlificId, isTripleBonus } = require('../db/results.js');
 require('../db/results');
 describe('Test database query API', () => {
     before(function (done) {
@@ -101,6 +101,28 @@ describe('Test database query API', () => {
             done(err);
         });
     });
+    it('ensuring the triple algorithm method works for true', (done) => {
+        const testID = 'test_id1';
+        saveNewPlayerToDB(testID);
+        var choices = ['test_id', 'test_id1'];
+        const num = 3;
+        const bot = false;
+        // why are there errors
+        let check = isTripleBonus('test1', 'test2', ['test1', 'test2', 'test3'], ['test1', 'test2', 'test3']);
+        assert(check === true);
+        done();
+    });
+    // it('ensuring the triple algorithm method says false', (done) => {
+    //     const testID = 'test_id1';
+    //     saveNewPlayerToDB(testID);
+    //     var choices = ['test_id', 'test_id1'];
+    //     const num = 3;
+    //     const bot = false;
+    //     // why are there errors
+    //     let check = isTripleBonus('test1', 'test2', ['test1', 'test4', 'test3'], ['test1', 'test2', 'test3']);
+    //     assert(check === false);
+    //     done();
+    // });
     after(function (done) {
         mongoose.connection.db.dropDatabase(function () {
             mongoose.connection.close(done);
