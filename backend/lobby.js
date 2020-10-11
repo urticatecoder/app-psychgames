@@ -142,11 +142,12 @@ module.exports = {
             let roomName = lobby.findRoomForPlayerToJoin(prolificID);
             socket.join(roomName);
             socket.roomName = roomName;
-            socket.to(roomName).emit('join', socket.id + ' has joined ' + roomName);
-            console.log(Lobby.getNumOfPeopleInRoom(io, roomName));
+            socket.to(roomName).emit('join', socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
+            socket.emit('num of people in the room', Lobby.getNumOfPeopleInRoom(io, roomName)); // only to self
+            // console.log(Lobby.getNumOfPeopleInRoom(io, roomName));
             if (Lobby.getNumOfPeopleInRoom(io, roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
-                io.in(roomName).emit('room fill', roomName + ' is filled up.');
+                io.in(roomName).emit('room fill', roomName + ' is filled up.'); // to everyone in the room, including self
                 lobby.allocateNewRoom();
             }
         });
