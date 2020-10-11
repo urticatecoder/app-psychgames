@@ -6,8 +6,8 @@ import {Typography, Box} from '@material-ui/core';
 import {withStyles} from '@material-ui/core/styles';
 import socket from "../socketClient";
 
-const INITIAL_TEST_TIME = 1 * 50000;
-const RESET_TEST_TIME = 1 * 5000;
+const INITIAL_TEST_TIME = 1 * 5000;
+const RESET_TEST_TIME = 1 * 1000;
 const INITIAL_START_TIME = 6 * 50000;
 const RESET_START_TIME = 1 * 5000;
 
@@ -67,7 +67,6 @@ function StartTimer(props) {
                 <Box fontStyle="italic">{INSTRUCTIONS_MESSAGE(waitingOnPlayerCounter)}</Box>
             </Typography>
             <Typography className={classes.timerInstruction} variant={WELCOME_VARIANT}>{WELCOME_MESSAGE}</Typography>
-
 
             <Timer
                 id={TIMER_ID}
