@@ -44,7 +44,7 @@ function StartTimer(props) {
     const INSTRUCTIONS_MESSAGE = (counter) => `Please wait while ${counter} other players join in.`;
 
     useEffect(() => {
-        socket.emit("enter lobby", 'test123');
+        socket.emit("enter lobby", props.code);
         socket.on("join", (msg) => {
             setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
             console.log(msg);
