@@ -5,16 +5,17 @@ import ContinueButton from './ContinueButton';
 
 const styles = ({
     title: {
-        marginTop: '15%',
+        marginLeft: '20%',
+        marginRight: '20%',
     },
     instructions: {
-        marginTop: '7%',
+        marginTop: '50px',
         marginLeft: '10%',
         marginRight: '10%',
     },
 });
 
-function InstructionsScreen(props) {
+function InstructionsText(props) {
     const FULL_DIV = 'fullDiv';
     const DEFAULT_INSTRUCTIONS = '';
     const TITLE_VARIANT = 'h3';
@@ -22,6 +23,7 @@ function InstructionsScreen(props) {
     const [instructions, setIntructions] = useState(DEFAULT_INSTRUCTIONS);
 
     const {classes} = props;
+    
     fetch(props.file)
     .then((r) => r.text())
     .then(text  => {
@@ -29,13 +31,11 @@ function InstructionsScreen(props) {
     })
 
     return(
-        <div className = {FULL_DIV}>
-            <div>
+        <div>
             <Typography className={classes.title} variant={TITLE_VARIANT}>{props.title}</Typography>
             <Typography className={classes.instructions} variant={INSTRUCTION_VARIANT}>{instructions}</Typography>         
-            </div>   
         </div>
     )
 }
 
-export default withStyles(styles)(InstructionsScreen);
+export default withStyles(styles)(InstructionsText);

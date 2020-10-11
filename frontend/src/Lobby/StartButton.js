@@ -9,7 +9,7 @@ const BUTTON_MESSAGE = 'Begin Experiment';
 const BUTTON_ID = 'timerButton';
 const styles = ({
     startButton: {
-        marginTop: '5%',
+        marginTop: '60px',
         width: '200px',
         height: '50px',
     },

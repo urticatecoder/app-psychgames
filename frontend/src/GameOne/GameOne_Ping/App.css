@@ -1,0 +1,53 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+svg {
+  width: 1000px;
+  height: 1000px;
+}
+
+button {
+  background: #f8cd4c;
+  border: none;
+  margin: 5px 10px;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  font-family: cursive;
+  box-shadow: 0px 17px 10px -10px rgba(0, 0, 0, 0.4);
+  font-size: 16px;
+}
+
+.two-button {
+  background: #f8cd4c;
+  color: #da2427;
+}
+
+.one-button {
+  background: #da2427;
+  color: #f8cd4c;
+}
+
+.three-button {
+  background: #87c33a;
+}
+
+.four-button {
+  background: #2947F0;
+}
+
+.five-button {
+  background: #DE29F0;
+}
+
+.six-button {
+  background: #FA9B36;
+}
+
+
+button:active {
+  box-shadow: none;
+  outline: none !important;
+}
