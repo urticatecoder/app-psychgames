@@ -20,7 +20,7 @@ app.get("/login-code", ((req, res) => {
     let prolificID = req.query.loginCode;
     let error = '';
     let isValid = true;
-    if (prolificID === undefined || prolificID === '') {
+    if (prolificID === undefined || prolificID.trim() === '') {
         isValid = false;
         error = 'ProlificID is empty.';
     }
