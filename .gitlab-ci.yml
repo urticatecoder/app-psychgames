@@ -25,3 +25,5 @@ Deploy:
   stage: deploy
   script:
     - echo 'hello world'
+  only:
+    - master
