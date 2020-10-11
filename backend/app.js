@@ -24,6 +24,10 @@ app.get("/login-code", ((req, res) => {
         isValid = false;
         error = 'ProlificID is empty.';
     }
+    else if (prolificID === 'CS307') { // for testing purpose
+        isValid = false;
+        error = 'Not a code registered by Prolific.'
+    }
     else if (lobby.playerToRoom.has(prolificID)) {
         isValid = false;
         error = 'Duplicated prolificID found.';
