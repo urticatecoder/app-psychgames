@@ -137,7 +137,6 @@ module.exports = {
     Room,
     Player,
     LobbyInstance: lobby,
-    RoomInstance: room,
     LobbySocketListener: function (io, socket) {
         socket.on("enter lobby", (prolificID) => {
             let roomName = lobby.findRoomForPlayerToJoin(prolificID);

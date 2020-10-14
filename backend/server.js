@@ -25,7 +25,8 @@ io.on('connection', socket => {
         // prolific = prolific id; choices = [player1chosen, player2chosen, player3chosen] *minimum chosen players = 1*, turnNum, isBot boolean
         console.log(choices);
         savePlayerChoiceToDB(prolific, selectedPlayer, turnNum, isBot);
-       
+        let room = lobby.getRoomPlayerIsIn(prolificID);
+        room.getPlayerWithID(prolificID).recordChoices(choice);
      })
 
     socket.on('bot chooses rest of player choice', (prolific, turnNum, isBot) => {

@@ -1,26 +1,36 @@
 const DB_API = require('../db/db_api.js');
 const choice = require('./models/choice.js');
+const lobby = require('../lobby.js').LobbyInstance;
 
-function getResultsByProlificId(prolificId, turnNum) {
-    let allChoices = DB_API.findChoicesByID(prolificId, turnNum);
+function getResultsByProlificId(prolificId, turnNum, room) {
+    let allChoices = room.getEveryoneChoiceAtCurrentTurn();
+    // let allChoices = DB_API.findChoicesByID(prolificId, turnNum);
+    let choices_of_id = allChoices.get(prolificId);
     let count = 0;
-    for(var i = 0; i < choices.length; i++){
-        if(choices[i] === (this.prolificId)){ 
+    for(var i = 0; i < choices_of_id.length; i++){
+        if(choices_of_id[i] === (prolificId)){ 
             count += 1;
         }
         else{
-            let tempPlayer = choices[i];
-            let tempChoices = DB_API.findChoicesByID(prolificId, turnNum);
+            let tempPlayer = choices_of_id[i];
+            let tempChoices = allChoices.get(tempPlayer);
             for(var j = 0; j < tempChoices.length; j++){
                 if(tempChoices[j] === (prolificId)){
                     count +=4;
                     //check if triple bonus
-                    if(isTripleBonus(prolificId, tempPlayer, choices, tempChoices)){
-                        count += 8;
-                    }
+                    // if(count == 5){
+                    //     if(isTripleBonus(prolificId, tempPlayer, choices_of_id, tempChoices)){
+                    //         return 80;
+                    //     }
+                    // }
                 }
             }
         }  
+    }
+    // IF COUNT > 9, THERE IS AN ERROR
+    if(count == 9){
+        console.log('TRIPLE BONUS');
+        return (count - 1)*10;
     }
     return count * 10;
 }
