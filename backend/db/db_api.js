@@ -1,6 +1,7 @@
 const PlayerModel = require('./models/player.js').PlayerModel;
 const ChoiceModel = require('./models/choice.js').ChoiceModel;
 const experimentModel = require('./models/experiment.js');
+const lobby = require('../lobby.js').LobbyInstance;
 
 function saveNewPlayerToDB(prolificID) {
     let player = new PlayerModel({prolificID: prolificID});

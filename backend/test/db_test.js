@@ -1,7 +1,13 @@
 const assert = require('assert');
 const DB_API = require('../db/db_api.js');
 const BOT = require('../db/bot.js');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const { saveNewPlayerToDB } = require('../db/db_api.js');
+const Room = require('../lobby.js').Room;
+const Player = require('../lobby.js').Player;
+const { getResultsByProlificId, isTripleBonus } = require('../db/results.js');
+require('../db/results');
+
 describe('Test database query API', () => {
     before(function (done) {
         mongoose.connect('mongodb+srv://xipu:k5q1J0qhOrVb1F65@cluster0.jcnnf.azure.mongodb.net/psych_game_test?retryWrites=true&w=majority&socketTimeoutMS=360000&connectTimeoutMS=360000', {
@@ -34,6 +40,7 @@ describe('Test database query API', () => {
         var choices = ['player1', 'player2', 'player3'];
         const num = 1;
         const bot = false;
+
         DB_API.savePlayerChoiceToDB(testID, choices, num, bot).then(() => {
             DB_API.findChoicesByID(testID, num).then(function (result) {
                 assert(JSON.stringify(result.selectedPlayerID) === JSON.stringify(choices));
@@ -83,6 +90,17 @@ describe('Test database query API', () => {
             console.log(err);
         });
     });
+    // it('ensuring the triple algorithm method says false', (done) => {
+    //     const testID = 'test_id1';
+    //     saveNewPlayerToDB(testID);
+    //     var choices = ['test_id', 'test_id1'];
+    //     const num = 3;
+    //     const bot = false;
+    //     // why are there errors
+    //     let check = isTripleBonus('test1', 'test2', ['test1', 'test4', 'test3'], ['test1', 'test2', 'test3']);
+    //     assert(check === false);
+    //     done();
+    // });
     after(function (done) {
         mongoose.connection.db.dropDatabase(function () {
             mongoose.connection.close(done);
