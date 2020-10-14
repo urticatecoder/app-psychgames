@@ -21,7 +21,6 @@
     "react-dom-confetti": "^0.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
-    "react-shapes": "^0.1.0",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "semver": "^7.3.2",
     "socket.io-client": "^2.3.0",

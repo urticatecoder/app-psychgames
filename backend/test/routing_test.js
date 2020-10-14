@@ -11,19 +11,26 @@ describe("API route test", function () {
                 done();
             });
     });
-    it("GET /login-code gives the correct response when login code is invalid", function (done) {
+    it("GET /login-code gives the correct response when login code is valid", function (done) {
         supertest(app)
-            .get("/login-code?loginCode=123")
-            .expect({isValid: false})
+            .get("/login-code?loginCode=CS408")
+            .expect({isValid: true, error: ''})
             .end(function (err, res) {
                 if (err) throw err;
                 done();
             });
     });
-    it("GET /login-code gives the correct response when login code is valid", function (done) {
+    it("GET /login-code gives the correct response when login code is empty", function (done) {
         supertest(app)
-            .get("/login-code?loginCode=CS408")
-            .expect({isValid: true})
+            .get("/login-code?loginCode=")
+            .expect({isValid: false, error: 'ProlificID is empty.'})
+            .end(function (err, res) {
+                if (err) throw err;
+            });
+
+        supertest(app)
+            .get("/login-code?")
+            .expect({isValid: false, error: 'ProlificID is empty.'})
             .end(function (err, res) {
                 if (err) throw err;
                 done();

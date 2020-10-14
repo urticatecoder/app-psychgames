@@ -1,12 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Lobby from './Lobby/Lobby';
-import Login from './Lobby/Login';
+import Login from './Login/Login';
 import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
-import PlayerProfile from './GameOne/Summary/PlayerProfile';
-import Group from './GameOne/Summary/PlayerGroup';
 import GroupScreen from './GameOne/Summary/GroupScreen';
+
 
 const CLASS_NAME = 'App';
 const HOME_PATH = '/';
@@ -18,15 +17,20 @@ const END_RULES_PATH = '/one-end-rules';
 const MOVING_PATH = '/one-moving';
 const BONUSES_PATH = '/one-bonuses';
 const PLAY_RULES_PATH = '/one-play-rules';
+const NO_CODE = false;
 
 function App() {
+
+  const [loginCode, setLoginCode] = useState(NO_CODE)
 
   return (
     <div className="App">
       <Router>
-        <Route path="/" exact component={Login}/>
-        <Route path='/lobby' component = {Lobby}/>
-        <Route path='/test' render={() => (<GroupScreen/>)}/>
+        <Route path="/" exact render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}/>
+
+        <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode}/>}/>
+
+        <Route path='/summary' render={() => (<GroupScreen/>)}/>
         <Route 
           path="/one-welcome" 
           render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' route='one-introduction'/>)}
@@ -61,6 +65,7 @@ function App() {
         />
       
       </Router>
+
     </div>
   );
 }
