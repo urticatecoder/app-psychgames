@@ -7,10 +7,19 @@ cache:
 
 stages:
   - test
+  - deploy
 
-# Job 1:
 Test:
   stage: test
   script:
     - npm install
-    - npm run test
+    - npm run test-coverage
+
+Deploy:
+  stage: deploy
+  script:
+    - echo 'Prepare for deploying to Heroku...'
+    - gem install dpl
+    - dpl --provider=heroku --app=rise-to-the-top --api-key=$HEROKU_API_KEY
+  only:
+    - production
