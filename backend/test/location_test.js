@@ -8,7 +8,7 @@ const { getResultsByProlificId, isTripleBonus } = require('../db/results.js');
 const DB_API = require('../db/db_api.js');
 
 
-describe('Test database query API', () => {
+describe('Test location calculation', () => {
     before(function (done) {
         mongoose.connect('mongodb+srv://xipu:k5q1J0qhOrVb1F65@cluster0.jcnnf.azure.mongodb.net/psych_game_test?retryWrites=true&w=majority&socketTimeoutMS=360000&connectTimeoutMS=360000', {
             useNewUrlParser: true,
@@ -20,7 +20,7 @@ describe('Test database query API', () => {
             console.log("Connected to test db successfully.");
             done();
         });
-        db.on('disconnected', () => {
+        db.once('disconnected', () => {
             console.log('DB connection closed');
         });
     });
@@ -39,10 +39,10 @@ describe('Test database query API', () => {
         room.getPlayerWithID('test_id').recordChoices(choices_other);
         room.getPlayerWithID(testID).recordChoices(choices);
 
-        console.log(room);
+        // console.log(room);
         DB_API.savePlayerChoiceToDB(testID, choices, num, bot).then(() => {
             const count = getResultsByProlificId(testID, num, room);
-            console.log(count);
+            // console.log(count);
             assert(count === 50);
             done();
         }).catch((err) => {
@@ -79,7 +79,7 @@ describe('Test database query API', () => {
 
         DB_API.savePlayerChoiceToDB(testID, choices, num, bot).then(() => {
             const count = getResultsByProlificId(testID, num, room);
-            console.log(count);
+            // console.log(count);
             assert(count === 80 );
             done();
         }).catch((err) => {

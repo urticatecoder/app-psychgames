@@ -20,7 +20,7 @@ describe('Test database query API', () => {
             console.log("Connected to test db successfully.");
             done();
         });
-        db.on('disconnected', () => {
+        db.once('disconnected', () => {
             console.log('DB connection closed');
         });
     });
