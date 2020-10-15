@@ -19,6 +19,8 @@ Deploy:
   stage: deploy
   script:
     - echo 'Prepare for deploying to Heroku...'
+    - apt-get update
+    - apt-get install ruby-dev
     - gem install dpl
     - dpl --provider=heroku --app=rise-to-the-top --api-key=$HEROKU_API_KEY
   only:
