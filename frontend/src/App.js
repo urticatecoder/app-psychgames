@@ -5,7 +5,7 @@ import Lobby from './Lobby/Lobby';
 import Login from './Login/Login';
 import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
 import GroupScreen from './GameOne/Summary/GroupScreen';
-
+import ColumnController from './GameOne/Gameplay/ColumnController';
 
 const CLASS_NAME = 'App';
 const HOME_PATH = '/';
@@ -31,6 +31,12 @@ function App() {
         <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode}/>}/>
 
         <Route path='/summary' render={() => (<GroupScreen/>)}/>
+
+        <Route 
+          path="/test" 
+          render={() => (<ColumnController/>)}
+        />
+
         <Route 
           path="/one-welcome" 
           render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' route='one-introduction'/>)}
