@@ -36,10 +36,12 @@ describe('Socket connection', function () {
 
     it('enter lobby, room fill, join emitted correctly for one room', function (done) {
         let clients = createClients(6);
+        let IDs = ['123', '456', '789', 'abc', 'def', '000'];
         let timesCalled = 0;
-        registerCallback(clients, 'room fill', (msg) => {
+        registerCallback(clients, 'room fill', (res) => {
             timesCalled++;
-            expect(msg).to.equal('room 1 is filled up.');
+            // console.log(res);
+            expect(res).to.have.members(IDs);
         });
         registerCallback(clients, 'join', (msg) => {
             // console.log(msg);
@@ -49,7 +51,7 @@ describe('Socket connection', function () {
             // console.log(num);
             expect(num).to.lessThan(7);
         });
-        emitEnterLobbyEvents(clients, ['123', '456', '789', 'abc', 'def', '000']);
+        emitEnterLobbyEvents(clients, IDs);
         setTimeout(() => {
             expect(lobby.playerToRoom.has('123')).to.equal(true);
             expect(lobby.playerToRoom.has('000')).to.equal(true);
