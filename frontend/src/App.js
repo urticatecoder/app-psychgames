@@ -5,7 +5,7 @@ import Lobby from './Lobby/Lobby';
 import Login from './Login/Login';
 import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
 import GroupScreen from './GameOne/Summary/GroupScreen';
-import ColumnController from './GameOne/Gameplay/ColumnController';
+import GameOne from './GameOne/Gameplay/GameOne';
 
 const CLASS_NAME = 'App';
 const HOME_PATH = '/';
@@ -34,7 +34,7 @@ function App() {
 
         <Route 
           path="/test" 
-          render={() => (<ColumnController/>)}
+          render={() => (<GameOne/>)}
         />
 
         <Route 

@@ -7,8 +7,8 @@ import Robot from '../Images/robot.png'
 import Astronaut from '../Images/astronaut.png'
 import Scientist from '../Images/scientist.png'
 
-const IMAGE_HEIGHT = 100
-const IMAGE_WIDTH = 100
+const IMAGE_HEIGHT = '100'
+const IMAGE_WIDTH = '100'
 
 const WIZARD_ID = 'wizard';
 const KNIGHT_ID = 'knight';
