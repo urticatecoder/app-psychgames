@@ -1,12 +1,8 @@
 const assert = require('assert');
+const expect = require('chai').expect;
 const DB_API = require('../db/db_api.js');
 const BOT = require('../db/bot.js');
 const mongoose = require('mongoose');
-const { saveNewPlayerToDB } = require('../db/db_api.js');
-const Room = require('../lobby.js').Room;
-const Player = require('../lobby.js').Player;
-const { getResultsByProlificId, isTripleBonus } = require('../db/results.js');
-require('../db/results');
 
 describe('Test database query API', () => {
     before(function (done) {
@@ -90,17 +86,12 @@ describe('Test database query API', () => {
             console.log(err);
         });
     });
-    // it('ensuring the triple algorithm method says false', (done) => {
-    //     const testID = 'test_id1';
-    //     saveNewPlayerToDB(testID);
-    //     var choices = ['test_id', 'test_id1'];
-    //     const num = 3;
-    //     const bot = false;
-    //     // why are there errors
-    //     let check = isTripleBonus('test1', 'test2', ['test1', 'test4', 'test3'], ['test1', 'test2', 'test3']);
-    //     assert(check === false);
-    //     done();
-    // });
+    it('get all choices in the db', (done) => {
+        DB_API.getAllChoices().then(function (result) {
+            expect(result.length).to.equal(3);
+            done();
+        }).catch(err => done(err));
+    });
     after(function (done) {
         mongoose.connection.db.dropDatabase(function () {
             mongoose.connection.close(done);
