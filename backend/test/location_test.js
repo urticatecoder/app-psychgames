@@ -32,7 +32,7 @@ describe('Test database query API', () => {
         var choices_other = ['test_id1'];
         const num = 3;
         const bot = false;
-        // why are there errors
+        // setup
         const room = new Room('room 0');
         room.addPlayer(new Player('test_id'));
         room.addPlayer(new Player('test_id1'));
