@@ -36,6 +36,16 @@ io.on('connection', socket => {
         let player = room.getPlayerWithID(prolificID);
         DB_API.savePlayerChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
         player.recordChoices(choices);
+        room.addPlayerIDToConfirmedSet(prolificID);
+        if (room.hasEveryoneConfirmedChoiceInThisRoom()){ // all 6 have confirmed choices
+            room.advanceToNextRound();
+            // calculate each player's new location and send it to everyone in the room
+            let result = getResultsByProlificId(prolificID, room.turnNum);
+            io.in(room.name).emit('location for game 1', result);
+        }
+        else{
+            // emit('someone has confirmed his/her choice') to 5 other
+        }
     });
 
     socket.on('bot chooses rest of player choice', (prolific, turnNum, isBot) => {
@@ -60,7 +70,8 @@ io.on('connection', socket => {
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
         player.setIsBot(true);
-        socket.broadcast.emit('left', 'someone left');
+
+        socket.to(room.name).emit('left', "someone left");
         socket.leave(room.name);
     });
 })
