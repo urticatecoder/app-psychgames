@@ -2,11 +2,13 @@ const app = require("./app");
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
-const { findPlayerByID, savePlayerChoiceToDB } = require("./db/db_api");
 const BOT = require("./db/bot");
+const {getResultsByProlificId} = require("./db/results");
+const lobby = require("./lobby.js").LobbyInstance;
 
 // Set up mongoose connection
 let mongoose = require('mongoose');
+
 /* use the test database if no environment variables named MONGODB_URI are passed in */
 let mongoDB_URI = process.env.MONGODB_URI || 'mongodb+srv://xipu:k5q1J0qhOrVb1F65@cluster0.jcnnf.azure.mongodb.net/psych_game?retryWrites=true&w=majority'
 mongoose.connect(mongoDB_URI, { useNewUrlParser: true , useUnifiedTopology: true});
@@ -27,13 +29,14 @@ io.on('connection', socket => {
 
     require('./lobby.js').LobbySocketListener(io, socket);
 
-    socket.on('confirm choice', (prolific, choices, turnNum, isBot)=> {
+    socket.on('confirm choice for game 1', (prolificID, choices)=> {
         // prolific = prolific id; choices = [player1chosen, player2chosen, player3chosen] *minimum chosen players = 1*, turnNum, isBot boolean
         console.log(choices);
-        savePlayerChoiceToDB(prolific, selectedPlayer, turnNum, isBot);
         let room = lobby.getRoomPlayerIsIn(prolificID);
-        room.getPlayerWithID(prolificID).recordChoices(choice);
-     })
+        let player = room.getPlayerWithID(prolificID);
+        DB_API.savePlayerChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
+        player.recordChoices(choices);
+     });
 
     socket.on('bot chooses rest of player choice', (prolific, turnNum, isBot) => {
         console.log(prolific);
