@@ -146,6 +146,7 @@ module.exports = {
             let roomName = lobby.findRoomForPlayerToJoin(prolificID);
             socket.join(roomName);
             socket.roomName = roomName;
+            socket.prolificID = prolificID;
             socket.to(roomName).emit('join', socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
             socket.emit('num of people in the room', Lobby.getNumOfPeopleInRoom(io, roomName)); // only to self
             // console.log(Lobby.getNumOfPeopleInRoom(io, roomName));
