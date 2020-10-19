@@ -8,7 +8,7 @@ function GameOne(props) {
 
     return (
         <div className={FULL_DIV}>
-            <ColumnController/>
+            <ColumnController loginCode = {props.loginCode} allLoginCodes={props.allLoginCodes}/>
         </div>
     )
 }

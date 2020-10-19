@@ -17,24 +17,29 @@ const END_RULES_PATH = '/one-end-rules';
 const MOVING_PATH = '/one-moving';
 const BONUSES_PATH = '/one-bonuses';
 const PLAY_RULES_PATH = '/one-play-rules';
-const NO_CODE = false;
 
+const NO_CODE = '';
+const NO_CODES = ['', '', '', '', '', '']
+
+const TEST_CODE = 123
+const TEST_CODES = [123, 456, 789, 12, 34, 56]
 function App() {
 
-  const [loginCode, setLoginCode] = useState(NO_CODE)
+  const [loginCode, setLoginCode] = useState(TEST_CODE)
+  const [allLoginCodes, setAllLoginCodes] = useState(TEST_CODES)
 
   return (
     <div className="App">
       <Router>
         <Route path="/" exact render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}/>
 
-        <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode}/>}/>
+        <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode} setAllLoginCodes={setAllLoginCodes}/>}/>
 
         <Route path='/summary' render={() => (<GroupScreen/>)}/>
 
         <Route 
           path="/test" 
-          render={() => (<GameOne/>)}
+          render={() => (<GameOne loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
         />
 
         <Route 

@@ -50,6 +50,7 @@ function StartTimer(props) {
             console.log(msg);
         });
         socket.on('room fill', (msg) => {
+            props.setAllLoginCodes(msg)
             console.log(msg);
         })
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import PlayerProfile from '../../Avatars/Components/PlayerProfile.js';
 import { useSpring, animated } from 'react-spring';
+import PlayerButton from '../../Avatars/Components/PlayerButton.js';
 
 function PlayerColumn(props) {
     const spring = useSpring({
@@ -16,7 +17,7 @@ function PlayerColumn(props) {
       });
     return (
         <animated.div style={{ ...spring, display: 'inline-block' }}>
-            <PlayerProfile player={props.player}/>
+            <PlayerButton player={props.player} onSelect={props.onSelect} selected={props.selected} />
         </animated.div>
     )
 }
