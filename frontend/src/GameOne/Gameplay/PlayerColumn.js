@@ -1,5 +1,4 @@
 import React from 'react';
-import PlayerProfile from '../../Avatars/Components/PlayerProfile.js';
 import { useSpring, animated } from 'react-spring';
 import PlayerButton from '../../Avatars/Components/PlayerButton.js';
 

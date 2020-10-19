@@ -4,7 +4,8 @@ import PlayerColumn from '../Gameplay/PlayerColumn';
 import {Grid} from '@material-ui/core'
 import socket from "../../socketClient";
 import Alert from '@material-ui/lab/Alert';
-import {Snackbar} from '@material-ui/core'
+import {Snackbar, Button} from '@material-ui/core'
+import ConfirmButton from './ConfirmButton';
 
 // EACH PLAYER IS 15% OF THE VERTICAL SIZE OF THE SCREEN
 const BOTTOM_OF_SCREEN = 100;
@@ -73,8 +74,14 @@ function ColumnController(props) {
                     return getColumn(player, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, props.allLoginCodes, props.loginCode)
                 })}
             </Grid>
+
+            <ConfirmButton selected={selected} clearSelected={() => clearSelected(setSelected)} loginCode={props.loginCode} allLoginCodes={props.allLoginCodes}/>
         </div>
     )
+}
+
+function clearSelected(setSelected) {
+    setSelected(createPlayerArray(NOT_SELECTED));
 }
 
 function getAlerts(selectedSelf, setSelectedSelf, tooManySelections, setTooManySelections) {
@@ -153,13 +160,5 @@ function getSelectedPlayers(selected) {
     }
     return selectedPlayers
 }
-
-// function sendDecisions(selected) {
-//     let selectedIDs = []
-//     getSelectedPlayers(selected).forEach((player => {
-//         selectedIDs.push(playerIDs[player])
-//     }))
-//     socket.emit('confirm choice for game 1', myID, selectedIDs)
-// }
 
 export default (ColumnController);
