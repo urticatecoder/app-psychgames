@@ -5,6 +5,7 @@ import React from 'react';
 const FULL_DIV = 'fullDiv';
 
 function GameOne(props) {
+
     return (
         <div className={FULL_DIV}>
             <ColumnController/>
