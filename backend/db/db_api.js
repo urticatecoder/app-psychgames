@@ -1,6 +1,7 @@
 const PlayerModel = require('./models/player.js').PlayerModel;
 const ChoiceModel = require('./models/choice.js').ChoiceModel;
 const experimentModel = require('./models/experiment.js');
+const lobby = require('../lobby.js').LobbyInstance;
 
 function saveNewPlayerToDB(prolificID) {
     let player = new PlayerModel({prolificID: prolificID});
@@ -38,10 +39,19 @@ function savePlayerChoiceToDB(prolificID, selectedPlayerID, turnNum, madeByBot) 
     return choice.save();
 }
 
+async function getAllChoices(){
+    try {
+        return await ChoiceModel.find().select('-_id -__v');
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 module.exports = {
     saveNewPlayerToDB: saveNewPlayerToDB,
     findPlayerByID: findPlayerByID,
     findChoicesByID: findChoicesByID,
     savePlayerChoiceToDB: savePlayerChoiceToDB,
+    getAllChoices: getAllChoices,
 }
 
