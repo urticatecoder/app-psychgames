@@ -10,7 +10,7 @@ function Lobby(props) {
 
     return (
         <div className={FULL_DIV}>
-            <StartTimer code={props.code} className='startTimer' setStartStatus={setStartStatus}/>
+            <StartTimer code={props.code} className='startTimer' setStartStatus={setStartStatus} setAllLoginCodes={props.setAllLoginCodes}/>
             <StartButton className='startButton' startStatus={startStatus}/>
         </div>
     )
