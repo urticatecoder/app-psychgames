@@ -3,6 +3,8 @@ import '../../CommonStylings/FullScreenDiv.css'
 import PlayerColumn from '../Gameplay/PlayerColumn';
 import {Grid} from '@material-ui/core'
 import socket from "../../socketClient";
+import Alert from '@material-ui/lab/Alert';
+import {Snackbar} from '@material-ui/core'
 
 // EACH PLAYER IS 15% OF THE VERTICAL SIZE OF THE SCREEN
 const BOTTOM_OF_SCREEN = 100;
@@ -20,16 +22,30 @@ const SELECTED = true
 const NOT_SELECTED_INT = 0
 const SELECTED_INT = 1
 
+const SELECTED_SELF = true
+const DID_NOT_SELECT_SELF = false
+
+const TOO_MANY_SELECTIONS = true
+const NOT_TOO_MANY_SELECTIONS = false
+
+const SELF_SELECTION_MESSAGE = "You cannot choose yourself!"
+const TOO_MANY_SELETIONS_MESSAGE = "You cannot choose more than 2 players!"
+const ALERT_LEVEL = "error"
+
+const OPEN_MESSAGE = true
+const CLOSED_MESSAGE = false
+const ERROR_MESSAGE_LENGTH = 2000
+const ERROR_VERTICALITY = "top"
+const ERROR_HORIZONTAL = "center"
+
 function ColumnController(props) {
 
     const [fromHeights, setFromHeights] = useState(createPlayerArray(BOTTOM_OF_SCREEN))
     const [toHeights, setToHeights] = useState(createPlayerArray(scaleHeight(INITIAL_HEIGHT)))
     const [selected, setSelected] = useState(createPlayerArray(NOT_SELECTED))
-
-
-    let playerIDs = props.playerIDs
-    let myID = props.myID
-
+    const [selectedSelf, setSelectedSelf] = useState(DID_NOT_SELECT_SELF)
+    const [tooManySelections, setTooManySelections] = useState(NOT_TOO_MANY_SELECTIONS)
+    
     useEffect(() => {
         socket.on("location for game 1", (locations) => {
             setFromHeights(toHeights)
@@ -44,6 +60,8 @@ function ColumnController(props) {
 
     return (
         <div /* style={{backgroundColor: '#f00000'}} */>
+            {getAlerts(selectedSelf, setSelectedSelf, tooManySelections, setTooManySelections)}
+
             <Grid
                 container
                 direction="row"
@@ -52,18 +70,36 @@ function ColumnController(props) {
                 style={{height: '80vh'}}
                 >
                 {PLAYERS.map((player) => {
-                    return getColumn(player, selected, setSelected, fromHeights, toHeights, props.allLoginCodes, props.loginCode)
+                    return getColumn(player, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, props.allLoginCodes, props.loginCode)
                 })}
-                
             </Grid>
         </div>
     )
 }
 
-function getColumn(playerNumber, selected, setSelected, fromHeights, toHeights, playerIDs, myID) {
+function getAlerts(selectedSelf, setSelectedSelf, tooManySelections, setTooManySelections) {
+    if (selectedSelf) {
+        return getAlertComponent(SELF_SELECTION_MESSAGE, setSelectedSelf)
+    }
+    else if (tooManySelections) {
+        return getAlertComponent(TOO_MANY_SELETIONS_MESSAGE, setTooManySelections)
+    }
+}
+
+function getAlertComponent(text, setClosed) {
+    return (
+        <Snackbar open={OPEN_MESSAGE} autoHideDuration={ERROR_MESSAGE_LENGTH} onClose={() => setClosed(CLOSED_MESSAGE)} anchorOrigin={{vertical: ERROR_VERTICALITY, horizontal: ERROR_HORIZONTAL}}>
+            <Alert severity={ALERT_LEVEL}>
+                {text}
+            </Alert>
+        </Snackbar>
+    )
+}
+
+function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID) {
     return(
         <Grid item>
-            <PlayerColumn onSelect = {() => selectPlayer(playerNumber, selected, setSelected, playerIDs, myID)} selected={selected[playerNumber]} from={fromHeights[playerNumber]} to={toHeights[playerNumber]} player={playerNumber}/>
+            <PlayerColumn onSelect = {() => selectPlayer(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, playerIDs, myID)} selected={selected[playerNumber]} from={fromHeights[playerNumber]} to={toHeights[playerNumber]} player={playerNumber} />
         </Grid>
     )
 }
@@ -88,13 +124,12 @@ function createPlayerArray(height) {
     return heights;
 }
 
-function selectPlayer(player, selected, setSelected, playerIDs, myID) {
-    console.log(playerIDs)
-    console.log(myID)
-    console.log(player)
-    console.log(selected)
+function selectPlayer(player, selected, setSelected, setSelectedSelf, setTooManySelections, playerIDs, myID) {
+    if (playerIDs[player] == myID) {
+        setSelectedSelf(SELECTED_SELF)
+        return;
+    }
 
-    if (playerIDs[player] == myID) return;
     let playerIsSelected = NOT_SELECTED_INT;
     if (selected[player]) playerIsSelected = SELECTED_INT
 
@@ -102,11 +137,12 @@ function selectPlayer(player, selected, setSelected, playerIDs, myID) {
         let updatedSelection = selected.slice(0)
         updatedSelection[player] = !updatedSelection[player]
         setSelected(updatedSelection)
+    } else {
+        setTooManySelections(TOO_MANY_SELECTIONS)
     }
 }
 
 function countSelectedPlayers(selected) {
-    console.log(getSelectedPlayers(selected).length)
     return getSelectedPlayers(selected).length
 }
 
