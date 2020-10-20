@@ -8,7 +8,7 @@ const { getResultsByProlificId, isTripleBonus } = require('../db/results.js');
 const DB_API = require('../db/db_api.js');
 
 
-describe('Test database query API', () => {
+describe('Location sending and calculation', () => {z
     before(function (done) {
         mongoose.connect('mongodb+srv://xipu:k5q1J0qhOrVb1F65@cluster0.jcnnf.azure.mongodb.net/psych_game_test?retryWrites=true&w=majority&socketTimeoutMS=360000&connectTimeoutMS=360000', {
             useNewUrlParser: true,
@@ -32,7 +32,7 @@ describe('Test database query API', () => {
         var choices_other = ['test_id1'];
         const num = 3;
         const bot = false;
-        // setup
+        // why are there errors
         const room = new Room('room 0');
         room.addPlayer(new Player('test_id'));
         room.addPlayer(new Player('test_id1'));
