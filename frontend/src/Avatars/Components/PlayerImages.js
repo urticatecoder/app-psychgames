@@ -7,8 +7,8 @@ import Robot from '../Images/robot.png'
 import Astronaut from '../Images/astronaut.png'
 import Scientist from '../Images/scientist.png'
 
-const IMAGE_HEIGHT = 100
-const IMAGE_WIDTH = 100
+const IMAGE_HEIGHT = '100'
+const IMAGE_WIDTH = '100'
 
 const WIZARD_ID = 'wizard';
 const KNIGHT_ID = 'knight';
@@ -40,9 +40,12 @@ const PLAYER_TWO = getPlayer(Alien, ALIEN_ID)
 const PLAYER_THREE = getPlayer(Knight, KNIGHT_ID)
 const PLAYER_FOUR = getPlayer(Robot, ROBOT_ID)
 const PLAYER_FIVE = getPlayer(Astronaut, ASTRONAUT_ID)
-const PLAYER_SIX = getPlayer(Scientist, SCIENTIST_ID)
+const PLAYER_ZERO = getPlayer(Scientist, SCIENTIST_ID)
 
 const PlayerInfo = {
+    0: PLAYER_ZERO,
+    name0: SCIENTIST_ID,
+    label0: SCIENTIST_LABEL,
     1: PLAYER_ONE,
     name1: WIZARD_ID,
     label1: WIZARD_LABEL,
@@ -58,9 +61,6 @@ const PlayerInfo = {
     5: PLAYER_FIVE,
     name5: ASTRONAUT_ID,
     label5: ASTRONAUT_LABEL,
-    6: PLAYER_SIX,
-    name6: SCIENTIST_ID,
-    label6: SCIENTIST_LABEL,
 }
 
 export default PlayerInfo;

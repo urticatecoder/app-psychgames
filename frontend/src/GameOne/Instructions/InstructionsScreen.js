@@ -4,6 +4,8 @@ import ContinueButton from '../../CommonComponents/ContinueButton';
 import InstructionsText from '../../CommonComponents/InstructionsText';
 import {withStyles} from '@material-ui/core';
 
+const FULL_DIV = 'fullDiv';
+
 const styles = ({
     instructions: {
         marginTop: '100px',
@@ -18,7 +20,6 @@ const styles = ({
 });
 
 function Welcome(props) {
-    const FULL_DIV = 'fullDiv';
     const {classes} = props;
 
     return(

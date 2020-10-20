@@ -49,10 +49,10 @@ function StartTimer(props) {
             setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
             console.log(msg);
         });
-        socket.on('room fill', (IDs) => {
-            // IDs: a list of players' prolificIDs in this room
-            console.log(IDs);
-        });
+        socket.on('room fill', (msg) => {
+            props.setAllLoginCodes(msg)
+            console.log(msg);
+        })
         socket.on('num of people in the room', (numOfPlayers) => {
             console.log(numOfPlayers);
         });

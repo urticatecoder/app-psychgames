@@ -5,6 +5,7 @@ import Lobby from './Lobby/Lobby';
 import Login from './Login/Login';
 import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
 import GroupScreen from './GameOne/Summary/GroupScreen';
+import GameOne from './GameOne/Gameplay/GameOne';
 import Admin from './AdminPage/Admin';
 
 
@@ -18,24 +19,35 @@ const END_RULES_PATH = '/one-end-rules';
 const MOVING_PATH = '/one-moving';
 const BONUSES_PATH = '/one-bonuses';
 const PLAY_RULES_PATH = '/one-play-rules';
-const NO_CODE = false;
 
+const NO_CODE = '';
+const NO_CODES = ['', '', '', '', '', '']
+
+const TEST_CODE = 123
+const TEST_CODES = [123, 456, 789, 12, 34, 56]
 function App() {
 
-  const [loginCode, setLoginCode] = useState(NO_CODE)
+  const [loginCode, setLoginCode] = useState(TEST_CODE)
+  const [allLoginCodes, setAllLoginCodes] = useState(TEST_CODES)
 
   return (
     <div className="App">
       <Router>
         <Route path="/" exact render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}/>
 
-        <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode}/>}/>
+        <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode} setAllLoginCodes={setAllLoginCodes}/>}/>
 
         <Route path='/admin' render={() => <Admin/>}/>
 
         <Route path='/summary' render={() => (<GroupScreen/>)}/>
-        <Route
-          path="/one-welcome"
+
+        <Route 
+          path="/test" 
+          render={() => (<GameOne loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
+        />
+
+        <Route 
+          path="/one-welcome" 
           render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' route='one-introduction'/>)}
         />
         <Route
