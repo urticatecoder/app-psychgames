@@ -1,11 +1,23 @@
 import React from 'react';
-import {Button} from '@material-ui/core'
+import {Button, withStyles} from '@material-ui/core'
 import socket from "../../socketClient";
 
 const CONFIRM_CHOICES_TEXT = "Confirm Decision!"
 const NUM_PLAYERS = 6
 
+const styles = ({
+    confirmButton: {
+      marginTop: '5vh',
+      height: 75,
+      width: '60vw',
+      fontSize: '17px'
+    },
+  });
+
 function ConfirmButton(props) {
+
+    const {classes} = props
+
     if (props.submit) {
         sendDecisions(props.selected, props.clearSelected, props.loginCode, props.allLoginCodes)
         props.clearSubmission()
@@ -13,6 +25,7 @@ function ConfirmButton(props) {
     
     return(
         <Button
+            className={classes.confirmButton}
             variant='contained'
             color='primary'
             onClick={() => sendDecisions(props.selected, props.clearSelected, props.loginCode, props.allLoginCodes)}
@@ -36,4 +49,4 @@ function getSelectedIDs(selected, allIDs) {
     return selectedIDs;
 }
 
-export default (ConfirmButton);
+export default withStyles(styles)(ConfirmButton);
