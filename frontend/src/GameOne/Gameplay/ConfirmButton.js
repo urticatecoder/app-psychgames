@@ -6,6 +6,11 @@ const CONFIRM_CHOICES_TEXT = "Confirm Decision!"
 const NUM_PLAYERS = 6
 
 function ConfirmButton(props) {
+    if (props.submit) {
+        sendDecisions(props.selected, props.clearSelected, props.loginCode, props.allLoginCodes)
+        props.clearSubmission()
+    }
+    
     return(
         <Button
             variant='contained'

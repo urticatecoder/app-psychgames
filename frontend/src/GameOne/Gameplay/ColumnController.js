@@ -1,19 +1,33 @@
 import React, {useEffect, useState} from 'react';
 import '../../CommonStylings/FullScreenDiv.css'
 import PlayerColumn from '../Gameplay/PlayerColumn';
-import {Grid} from '@material-ui/core'
+import {Grid, withStyles} from '@material-ui/core'
 import socket from "../../socketClient";
 import Alert from '@material-ui/lab/Alert';
 import {Snackbar, Button} from '@material-ui/core'
 import ConfirmButton from './ConfirmButton';
+import Timer from 'react-compound-timer'
+import {Typography} from '@material-ui/core';
+
+const TURN_TIME = 30 * 1000;
+
+const LAST_TIME_UNIT = 'h';
+const DIRECTION = 'backward';
+
+const SECONDS = 'Seconds';
+
+const STOP_TIMER = 0;
+const TIMER_UPDATE = 10;
+
+const MAX_HEIGHT = 100;
 
 // EACH PLAYER IS 15% OF THE VERTICAL SIZE OF THE SCREEN
 const BOTTOM_OF_SCREEN = 100;
-const INITIAL_HEIGHT = 50;
+const INITIAL_HEIGHT = 100;
 
 const NUM_PLAYERS = 6
-const VERTICAL_CONSTANT = 10;
-const VERTICAL_SCALAR = .60;
+const VERTICAL_CONSTANT = 5;
+const VERTICAL_SCALAR = .50;
 const MAX_PLAYERS_SELECTED = 2;
 const PLAYERS = [0, 1, 2, 3, 4, 5]
 
@@ -22,6 +36,9 @@ const SELECTED = true
 
 const NOT_SELECTED_INT = 0
 const SELECTED_INT = 1
+
+const SUBMIT_DECISIONS = true
+const DO_NOT_SUBMIT_DECISIONS = false
 
 const SELECTED_SELF = true
 const DID_NOT_SELECT_SELF = false
@@ -39,6 +56,18 @@ const ERROR_MESSAGE_LENGTH = 2000
 const ERROR_VERTICALITY = "top"
 const ERROR_HORIZONTAL = "center"
 
+const RESET_TIMER = true
+const DO_NOT_RESET_TIMER = false
+const WELCOME_VARIANT = 'h3';
+
+const TIMER_MESSAGE = "Please make a selection within"
+const styles = ({
+    timerInstruction: {
+      marginTop: '50px',
+    },
+  
+  });
+
 function ColumnController(props) {
 
     const [fromHeights, setFromHeights] = useState(createPlayerArray(BOTTOM_OF_SCREEN))
@@ -46,11 +75,14 @@ function ColumnController(props) {
     const [selected, setSelected] = useState(createPlayerArray(NOT_SELECTED))
     const [selectedSelf, setSelectedSelf] = useState(DID_NOT_SELECT_SELF)
     const [tooManySelections, setTooManySelections] = useState(NOT_TOO_MANY_SELECTIONS)
-    
+    const [resetTimer, setResetTimer] = useState(DO_NOT_RESET_TIMER)
+    const [submitDecisions, setSubmitDecisions] = useState(DO_NOT_SUBMIT_DECISIONS)
+
     useEffect(() => {
         socket.on("location for game 1", (locations) => {
             setFromHeights(toHeights)
             setToHeights(scaleHeights(locations))
+            setResetTimer(RESET_TIMER)
         });
 
         return () => {
@@ -59,9 +91,34 @@ function ColumnController(props) {
         }
     }, []);
 
+    const {classes} = props
+
     return (
-        <div /* style={{backgroundColor: '#f00000'}} */>
+        <div>
             {getAlerts(selectedSelf, setSelectedSelf, tooManySelections, setTooManySelections)}
+
+            <Timer
+                initialTime={TURN_TIME}
+                lastUnit={LAST_TIME_UNIT}
+                direction={DIRECTION}
+                timeToUpdate={TIMER_UPDATE}
+                checkpoints={[
+                    {
+                        time: STOP_TIMER,
+                        callback: () => setSubmitDecisions(SUBMIT_DECISIONS),
+                    },
+                ]}
+            >
+                {({reset, start}) => (
+                    <div className={classes.timerInstruction}>
+                        <React.Fragment>
+                            {checkForReset(reset, start, resetTimer, setResetTimer)}
+                            <Typography variant={WELCOME_VARIANT}> {TIMER_MESSAGE} <Timer.Seconds/> {SECONDS} </Typography>
+                        </React.Fragment>
+                    </div>
+                )}
+
+            </Timer>
 
             <Grid
                 container
@@ -75,9 +132,17 @@ function ColumnController(props) {
                 })}
             </Grid>
 
-            <ConfirmButton selected={selected} clearSelected={() => clearSelected(setSelected)} loginCode={props.loginCode} allLoginCodes={props.allLoginCodes}/>
+            <ConfirmButton submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} selected={selected} clearSelected={() => clearSelected(setSelected)} loginCode={props.loginCode} allLoginCodes={props.allLoginCodes}/>
         </div>
     )
+}
+
+function checkForReset(reset, start, resetTimer, setResetTimer) {
+    if (resetTimer) {
+        reset()
+        setResetTimer(DO_NOT_RESET_TIMER)
+        start()
+    }
 }
 
 function clearSelected(setSelected) {
@@ -111,14 +176,9 @@ function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooM
     )
 }
 
-// function updateHeight(player, height) {
-//     fromHeights[player] = toHeights[player];
-//     let scaledHeight = scaleHeight(height);
-//     toHeights[player] = scaledHeight;
-// }
-
 function scaleHeight(height) {
-    return height * VERTICAL_SCALAR + VERTICAL_CONSTANT;
+    let invertedHeight = invertHeight(height);
+    return invertedHeight * VERTICAL_SCALAR + VERTICAL_CONSTANT;
 }
 
 function scaleHeights(heightArray) {
@@ -161,4 +221,8 @@ function getSelectedPlayers(selected) {
     return selectedPlayers
 }
 
-export default (ColumnController);
+function invertHeight(height) {
+    return MAX_HEIGHT - height;
+}
+
+export default withStyles(styles)(ColumnController);
