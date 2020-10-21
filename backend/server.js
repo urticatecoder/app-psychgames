@@ -37,6 +37,19 @@ io.on('connection', socket => {
         DB_API.savePlayerChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
         player.recordChoices(choices);
         room.addPlayerIDToConfirmedSet(prolificID);
+
+        // let all bots select their choices
+        let allIDs = lobby.getAllPlayersIDsInRoomWithName(room.roomName)
+        room.players.forEach((playerInThisRoom) => {
+           if(playerInThisRoom.isBot){
+               let bot = playerInThisRoom;
+               let botChoices = BOT.determineBotChoice(bot.prolificID, allIDs);
+               DB_API.savePlayerChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
+               bot.recordChoices(botChoices);
+               room.addPlayerIDToConfirmedSet(bot.prolificID);
+           }
+        });
+
         if (room.hasEveryoneConfirmedChoiceInThisRoom()){ // all 6 have confirmed choices
             room.advanceToNextRound();
             // calculate each player's new location and send it to everyone in the room

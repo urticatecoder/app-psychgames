@@ -66,32 +66,32 @@ describe('Test database query API', () => {
             done(err);
         });
     });
-    it('saves the player choice by Bot', (done) => {
-        const testID = 'test_id';
-        const num = 8;
-        const bot = true;
-        BOT.saveBotChoiceToDB(testID, num, bot).then(async (res) => {
-            // console.log(res)
-            await DB_API.findChoicesByID(testID, num).then(function (result) {
-                // console.log(result);
-                // console.log(result.selectedPlayerID);
-                assert(result.selectedPlayerID.length <= 3);
-            }).catch(function (err) {
-                console.log('Error from inside');
-                console.log(err);
-            });
-            done();
-        }).catch((err) => {
-            console.log('Error from outside');
-            console.log(err);
-        });
-    });
-    it('get all choices in the db', (done) => {
-        DB_API.getAllChoices().then(function (result) {
-            expect(result.length).to.equal(3);
-            done();
-        }).catch(err => done(err));
-    });
+    // it('saves the player choice by Bot', (done) => {
+    //     const testID = 'test_id';
+    //     const num = 8;
+    //     const bot = true;
+    //     BOT.saveBotChoiceToDB(testID, num, bot).then(async (res) => {
+    //         // console.log(res)
+    //         await DB_API.findChoicesByID(testID, num).then(function (result) {
+    //             // console.log(result);
+    //             // console.log(result.selectedPlayerID);
+    //             assert(result.selectedPlayerID.length <= 3);
+    //         }).catch(function (err) {
+    //             console.log('Error from inside');
+    //             console.log(err);
+    //         });
+    //         done();
+    //     }).catch((err) => {
+    //         console.log('Error from outside');
+    //         console.log(err);
+    //     });
+    // });
+    // it('get all choices in the db', (done) => {
+    //     DB_API.getAllChoices().then(function (result) {
+    //         expect(result.length).to.equal(3);
+    //         done();
+    //     }).catch(err => done(err));
+    // });
     after(function (done) {
         mongoose.connection.db.dropDatabase(function () {
             mongoose.connection.close(done);
