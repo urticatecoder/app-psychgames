@@ -42,7 +42,7 @@ function App() {
         <Route path='/summary' render={() => (<GroupScreen/>)}/>
 
         <Route 
-          path="/test" 
+          path="/game-one" 
           render={() => (<GameOne loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
         />
 
@@ -76,7 +76,7 @@ function App() {
 
         <Route
           path="/one-play-rules"
-          render={() => (<InstructionsScreen file='Instructions/PlayRules.txt' title='How do I play?' route=''/>)}
+          render={() => (<InstructionsScreen file='Instructions/PlayRules.txt' title='How do I play?' route='game-one'/>)}
         />
 
       </Router>

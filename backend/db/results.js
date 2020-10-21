@@ -51,7 +51,7 @@ function calculateResultOfID(playerProlific, allChoices){
         let choicesChosenPlayer = allChoices.get(playerChosen);
         for (var j = 0; j < choicesChosenPlayer.length; j++) {
             if (choicesChosenPlayer[j] === (playerProlific)) {
-                count += 4;
+                count += 20;
             }
         }
     }

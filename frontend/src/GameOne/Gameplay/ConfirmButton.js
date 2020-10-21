@@ -36,6 +36,8 @@ function ConfirmButton(props) {
 }
 
 function sendDecisions(selected, clearSelected, loginCode, allLoginCodes) {
+    console.log(loginCode)
+    console.log(getSelectedIDs(selected, allLoginCodes))
     socket.emit('confirm choice for game 1', loginCode, getSelectedIDs(selected, allLoginCodes))
     clearSelected()
 }
