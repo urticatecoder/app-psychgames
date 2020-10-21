@@ -4,14 +4,16 @@ const lobby = require('../lobby.js').LobbyInstance;
 
 function getResultsByProlificId(prolificIDArray, room) {
     let allChoices = room.getEveryoneChoiceAtCurrentTurn();
-
+    let allLocations = room.playerLocation;
     // let allChoices = DB_API.findChoicesByID(prolificId, turnNum);
     allResults = [];
     for(var i = 0; i < prolificIDArray.length; i++){
         let playerProlific = prolificIDArray[i];
         let playerRoundResult = calculateResultOfID( playerProlific, allChoices);
-        
-        allResults.push(playerRoundResult);
+        let playerInitialLocation = allLocations.get(playerProlific);
+        let newPlayerLocation = playerInitialLocation + playerRoundResult;
+        room.setPlayerLocation(playerProlific, newPlayerLocation);
+        allResults.push(newPlayerLocation);
     }
     return allResults;
 }

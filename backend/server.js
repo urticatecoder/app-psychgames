@@ -64,7 +64,6 @@ io.on('connection', socket => {
     socket.on('results', (prolificIDArray) => {
         let prolific = prolificIDArray[0];
         let room = lobby.getRoomPlayerIsIn(prolific);
-        
         let resultForAllPlayers = getResultsByProlificId(prolificIDArray, room);
         socket.emit('location', resultForAllPlayers);
     })

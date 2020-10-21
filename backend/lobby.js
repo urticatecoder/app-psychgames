@@ -67,7 +67,7 @@ class Room {
     }
 
     setPlayerLocation(prolificID, newLocation) {
-        this.allPlayerLocations.put(prolificID, newLocation);
+        this.allPlayerLocations.set(prolificID, newLocation);
     }
 
     addPlayer(player) {
@@ -75,7 +75,7 @@ class Room {
             throw 'Parameter is not an instance of the Player class.';
         }
         this.players.push(player);
-        this.allPlayerLocations.put(player.prolificID, 0);
+        this.allPlayerLocations.set(player.prolificID, 0);
     }
 
     advanceToNextRound() {
