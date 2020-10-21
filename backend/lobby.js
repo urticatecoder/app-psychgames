@@ -49,6 +49,7 @@ class Room {
     turnNum = 1; // the current turn number in this room starting at 1
     players = []; // holds player objects who are in this room
     playersWithChoiceConfirmed = new Set(); // holds prolificID of players who have confirmed their choices
+    allPlayerLocations = new Map();
 
     constructor(roomName) {
         if (roomName === undefined) {
@@ -61,11 +62,20 @@ class Room {
         return this.roomName;
     }
 
+    get playerLocation() {
+        return this.allPlayerLocations;
+    }
+
+    setPlayerLocation(prolificID, newLocation) {
+        this.allPlayerLocations.put(prolificID, newLocation);
+    }
+
     addPlayer(player) {
         if (!(player instanceof Player)) {
             throw 'Parameter is not an instance of the Player class.';
         }
         this.players.push(player);
+        this.allPlayerLocations.put(player.prolificID, 0);
     }
 
     advanceToNextRound() {
@@ -98,6 +108,8 @@ class Room {
             this.players.map(player => [player.prolificID, player.getChoiceAtTurn(this.turnNum)])
         );
     }
+
+
 }
 
 class Player {

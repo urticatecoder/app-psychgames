@@ -59,7 +59,7 @@ describe('Location sending and calculation', () => {
         var choicesThree = ['test_id2'];
         const num = 3;
         const bot = false;
-        const room = new Room('room 0');
+        var room = new Room('room 0');
         room.addPlayer(new Player('test_id1'));
         room.addPlayer(new Player('test_id2'));
         room.addPlayer(new Player('test_id3'));

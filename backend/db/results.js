@@ -2,15 +2,16 @@ const DB_API = require('../db/db_api.js');
 const choice = require('./models/choice.js');
 const lobby = require('../lobby.js').LobbyInstance;
 
-function getResultsByProlificId(prolificIDArray,room) {
-
+function getResultsByProlificId(prolificIDArray, room) {
     let allChoices = room.getEveryoneChoiceAtCurrentTurn();
+
     // let allChoices = DB_API.findChoicesByID(prolificId, turnNum);
     allResults = [];
     for(var i = 0; i < prolificIDArray.length; i++){
         let playerProlific = prolificIDArray[i];
-        let playerResult = calculateResultOfID( playerProlific, allChoices);
-        allResults.push(playerResult);
+        let playerRoundResult = calculateResultOfID( playerProlific, allChoices);
+        
+        allResults.push(playerRoundResult);
     }
     return allResults;
 }
