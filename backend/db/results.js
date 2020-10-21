@@ -1,3 +1,4 @@
+const e = require('express');
 const DB_API = require('../db/db_api.js');
 const choice = require('./models/choice.js');
 const lobby = require('../lobby.js').LobbyInstance;
@@ -59,9 +60,25 @@ function calculateResultOfID(playerProlific, allChoices){
         return (count - 1);
     }
     return count;
+}
 
+function isGameOneDone(room){
+    let allLocations = room.playerLocation;
+    var playerMax = 0;
+    for(let location of allLocations.values()){
+        if(location >= 100){
+            playerMax += 1;
+        }
+    }
+    if(playerMax >= 3){
+        return true;
+    }
+    else{
+        return false;
+    }
 }
 
 module.exports = {
     getResultsByProlificId : getResultsByProlificId,
+    isGameOneDone : isGameOneDone,
 }

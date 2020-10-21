@@ -3,7 +3,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
 const BOT = require("./db/bot");
-const {getResultsByProlificId} = require("./db/results");
+const {getResultsByProlificId, isGameOneDone} = require("./db/results");
 const lobby = require("./lobby.js").LobbyInstance;
 
 // Set up mongoose connection
@@ -45,6 +45,7 @@ io.on('connection', socket => {
         }
         else{
             // emit('someone has confirmed his/her choice') to 5 other
+            // needs to have bot emit I think
         }
     });
 
@@ -61,13 +62,15 @@ io.on('connection', socket => {
         socket.to('room 1').emit('choices sent', 'all choices are in database');
     })
 
-    socket.on('results', (prolificIDArray) => {
+    socket.on('results for game 1', (prolificIDArray) => {
         let prolific = prolificIDArray[0];
         let room = lobby.getRoomPlayerIsIn(prolific);
         let resultForAllPlayers = getResultsByProlificId(prolificIDArray, room);
         socket.emit('location', resultForAllPlayers);
+        if(isGameOneDone){
+            socket.emit('end game one');
+        }
     })
-
     socket.on('disconnect', () => {
         let prolificID = socket.prolificID;
         console.log(`Player with id ${prolificID} disconnected`);
