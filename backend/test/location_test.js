@@ -13,9 +13,6 @@ describe('Location sending and calculation', () => {
         var testID = ['test_id1', 'test_id'];
         var choices = ['test_id'];
         var choices_other = ['test_id1'];
-        const num = 3;
-        const bot = false;
-        // why are there errors
         const room = new Room('room 0');
         room.addPlayer(new Player('test_id'));
         room.addPlayer(new Player('test_id1'));
@@ -34,8 +31,6 @@ describe('Location sending and calculation', () => {
         var choicesOne = ['test_id2', 'test_id3'];
         var choicesTwo = ['test_id1', 'test_id3'];
         var choicesThree = ['test_id1', 'test_id2'];
-        const num = 3;
-        const bot = false;
         const room = new Room('room 0');
         room.addPlayer(new Player('test_id1'));
         room.addPlayer(new Player('test_id2'));
@@ -52,15 +47,12 @@ describe('Location sending and calculation', () => {
         done();
     });
 
-    it('calculates triple bonus correctly', (done) => {
+    it('calculates random values correct for multiple rounds', (done) => {
         const testID = ['test_id1', 'test_id2', 'test_id3'];
         var choicesOne = ['test_id2'];
         var choicesTwo = ['test_id1'];
         var choicesThree = ['test_id2'];
-        const num = 3;
-        const bot = false;
         const room = new Room('room 0');
-        
         room.addPlayer(new Player('test_id1'));
         room.addPlayer(new Player('test_id2'));
         room.addPlayer(new Player('test_id3'));
@@ -72,6 +64,11 @@ describe('Location sending and calculation', () => {
         console.log(count);
         assert(count[0] == 4 && count[1] == 4);
         assert(count[2] == 0);
+
+        const newRoundCount = getResultsByProlificId(testID, room);
+        console.log(newRoundCount);
+        assert(newRoundCount[0] == 8 && newRoundCount[1] == 8);
+        assert(newRoundCount[2] == 0);
         done();
     });
 })
