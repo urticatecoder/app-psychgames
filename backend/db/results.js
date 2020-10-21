@@ -12,6 +12,7 @@ function getResultsByProlificId(prolificIDArray,room) {
         let playerResult = calculateResultOfID(allChoices.get(playerProlific));
         allResults.push(playerResult);
     }
+    return allResults;
 }
 
 function isTripleBonus(prolificId, tempPlayer, choices, tempChoices) {
