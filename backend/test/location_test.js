@@ -9,25 +9,8 @@ const DB_API = require('../db/db_api.js');
 
 
 describe('Location sending and calculation', () => {
-    before(function (done) {
-        mongoose.connect('mongodb+srv://xipu:k5q1J0qhOrVb1F65@cluster0.jcnnf.azure.mongodb.net/psych_game_test?retryWrites=true&w=majority&socketTimeoutMS=360000&connectTimeoutMS=360000', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
-        let db = mongoose.connection;
-        db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-        db.once('open', function () {
-            console.log("Connected to test db successfully.");
-            done();
-        });
-        db.on('disconnected', () => {
-            console.log('DB connection closed');
-        });
-    });
-
     it('calculates results and location correctly', (done) => {
         var testID = ['test_id1', 'test_id'];
-        saveNewPlayerToDB(testID);
         var choices = ['test_id'];
         var choices_other = ['test_id1'];
         const num = 3;
@@ -36,8 +19,8 @@ describe('Location sending and calculation', () => {
         const room = new Room('room 0');
         room.addPlayer(new Player('test_id'));
         room.addPlayer(new Player('test_id1'));
-        room.getPlayerWithID(testID[1]).recordChoices(choices_other);
-        room.getPlayerWithID(testID[0]).recordChoices(choices);
+        room.getPlayerWithID('test_id').recordChoices(choices_other);
+        room.getPlayerWithID('test_id1').recordChoices(choices);
         console.log(room);
         let results = getResultsByProlificId(testID, room)
         console.log(results);
@@ -91,12 +74,4 @@ describe('Location sending and calculation', () => {
     //         done(err);
     //     });
     // });
-
-    after(function (done) {
-        mongoose.connection.db.dropDatabase(function () {
-            mongoose.connection.close(done);
-        });
-    });
-
-
 })
