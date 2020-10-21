@@ -15,63 +15,50 @@ function getResultsByProlificId(prolificIDArray,room) {
     return allResults;
 }
 
-function isTripleBonus(prolificId, tempPlayer, choices, tempChoices) {
-    if(tempChoices.length != choices.length){
-        return false;
-    }
-    var i = 0;
-    var j = 0;
-    while(i < choices.length && j < choices.length){
-        if(choices[i] === (prolificId) || choices[i] === (tempPlayer)){
-            i++;
-        }
-        if(tempChoices[j] === (prolificId) || tempChoices[j] === (tempPlayer)){
-            j++;
-        }
-        if( choices[i] !== (prolificId) && choices[i] !== (tempPlayer)
-        && tempChoices[j] !== (prolificId) && tempChoices[j] !== (tempPlayer)){
-            if(choices[i] === (tempChoices[j])){
-                return true;
-            }
-        }
+// function isTripleBonus(prolificId, tempPlayer, choices, tempChoices) {
+//     if(tempChoices.length != choices.length){
+//         return false;
+//     }
+//     var i = 0;
+//     var j = 0;
+//     while(i < choices.length && j < choices.length){
+//         if(choices[i] === (prolificId) || choices[i] === (tempPlayer)){
+//             i++;
+//         }
+//         if(tempChoices[j] === (prolificId) || tempChoices[j] === (tempPlayer)){
+//             j++;
+//         }
+//         if( choices[i] !== (prolificId) && choices[i] !== (tempPlayer)
+//         && tempChoices[j] !== (prolificId) && tempChoices[j] !== (tempPlayer)){
+//             if(choices[i] === (tempChoices[j])){
+//                 return true;
+//             }
+//         }
 
-    }
-    return false;
-}
+//     }
+//     return false;
+// }
 
 function calculateResultOfID(prolificId){
-    let choices_of_id = allChoices.get(prolificId);
+    let choicesProlific = allChoices.get(prolificId);
     let count = 0;
-    for(var i = 0; i < choices_of_id.length; i++){
-        if(choices_of_id[i] === (prolificId)){ 
-            count += 1;
-        }
-        else{
-            let tempPlayer = choices_of_id[i];
-            let tempChoices = allChoices.get(tempPlayer);
-            for(var j = 0; j < tempChoices.length; j++){
-                if(tempChoices[j] === (prolificId)){
-                    count +=4;
-                    //check if triple bonus
-                    // if(count == 5){
-                    //     if(isTripleBonus(prolificId, tempPlayer, choices_of_id, tempChoices)){
-                    //         return 80;
-                    //     }
-                    // }
-                }
+    for(var i = 0; i < choicesProlific.length; i++){
+        let playerChosen = choicesProlific[i];
+        let choicesChosenPlayer = allChoices.get(playerChosen);
+        for (var j = 0; j < choicesChosenPlayer.length; j++) {
+            if (choicesChosenPlayer[j] === (prolificId)) {
+                count += 4;
             }
-        }  
+        }
     }
-    // IF COUNT > 9, THERE IS AN ERROR
-    if(count == 9){
+    if(count == 8){
         console.log('TRIPLE BONUS');
-        return (count - 1)*10;
+        return (count - 1);
     }
-    return count * 10;
+    return count;
 
 }
 
 module.exports = {
     getResultsByProlificId : getResultsByProlificId,
-    isTripleBonus : isTripleBonus,
 }
