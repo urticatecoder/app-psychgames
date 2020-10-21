@@ -8,8 +8,10 @@ import {Snackbar, Button} from '@material-ui/core'
 import ConfirmButton from './ConfirmButton';
 import Timer from 'react-compound-timer'
 import {Typography} from '@material-ui/core';
+import { withRouter } from "react-router-dom";
 
 const TURN_TIME = 30 * 1000;
+const SUMMARY_ROUTE = '/summary'
 
 const LAST_TIME_UNIT = 'h';
 const DIRECTION = 'backward';
@@ -23,7 +25,7 @@ const MAX_HEIGHT = 100;
 
 // EACH PLAYER IS 15% OF THE VERTICAL SIZE OF THE SCREEN
 const BOTTOM_OF_SCREEN = 100;
-const INITIAL_HEIGHT = 100;
+const INITIAL_HEIGHT = 0;
 
 const NUM_PLAYERS = 6
 const VERTICAL_CONSTANT = 5;
@@ -54,18 +56,18 @@ const OPEN_MESSAGE = true
 const CLOSED_MESSAGE = false
 const ERROR_MESSAGE_LENGTH = 2000
 const ERROR_VERTICALITY = "top"
-const ERROR_HORIZONTAL = "center"
+const ERROR_HORIZONTAL = "left"
 
 const RESET_TIMER = true
 const DO_NOT_RESET_TIMER = false
 const WELCOME_VARIANT = 'h3';
 
-const TIMER_MESSAGE = "Please make a selection within"
+const TIMER_MESSAGE = "Time left to select:"
+
 const styles = ({
     timerInstruction: {
       marginTop: '50px',
     },
-  
   });
 
 function ColumnController(props) {
@@ -83,6 +85,10 @@ function ColumnController(props) {
             setFromHeights(toHeights)
             setToHeights(scaleHeights(locations))
             setResetTimer(RESET_TIMER)
+        });
+
+        socket.on("end  game 1", () => {
+            moveToSummary(props)
         });
 
         return () => {
@@ -131,7 +137,6 @@ function ColumnController(props) {
                     return getColumn(player, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, props.allLoginCodes, props.loginCode)
                 })}
             </Grid>
-
             <ConfirmButton submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} selected={selected} clearSelected={() => clearSelected(setSelected)} loginCode={props.loginCode} allLoginCodes={props.allLoginCodes}/>
         </div>
     )
@@ -225,4 +230,8 @@ function invertHeight(height) {
     return MAX_HEIGHT - height;
 }
 
-export default withStyles(styles)(ColumnController);
+function moveToSummary(props) {
+    props.push(SUMMARY_ROUTE)
+}
+
+export default withStyles(styles)(withRouter(ColumnController));
