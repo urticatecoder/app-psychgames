@@ -3,7 +3,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
 const BOT = require("./db/bot");
-const {getResultsByProlificId, isGameOneDone} = require("./db/results");
+const {getResultsByProlificId, isGameOneDone, getWinnersAndLosers} = require("./db/results");
 const lobby = require("./lobby.js").LobbyInstance;
 
 // Set up mongoose connection
@@ -56,7 +56,7 @@ io.on('connection', socket => {
             let room = lobby.getRoomPlayerIsIn(prolific);
             let resultForAllPlayers = getResultsByProlificId(prolificIDArray, room);
             if(isGameOneDone){
-                socket.emit('end game 1');
+                socket.emit('end game 1', getWinnersAndLosers(room));
             }
             io.in(room.name).emit('location for game 1', resultForAllPlayers);
         }

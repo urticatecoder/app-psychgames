@@ -19,30 +19,6 @@ function getResultsByProlificId(prolificIDArray, room) {
     return allResults;
 }
 
-// function isTripleBonus(prolificId, tempPlayer, choices, tempChoices) {
-//     if(tempChoices.length != choices.length){
-//         return false;
-//     }
-//     var i = 0;
-//     var j = 0;
-//     while(i < choices.length && j < choices.length){
-//         if(choices[i] === (prolificId) || choices[i] === (tempPlayer)){
-//             i++;
-//         }
-//         if(tempChoices[j] === (prolificId) || tempChoices[j] === (tempPlayer)){
-//             j++;
-//         }
-//         if( choices[i] !== (prolificId) && choices[i] !== (tempPlayer)
-//         && tempChoices[j] !== (prolificId) && tempChoices[j] !== (tempPlayer)){
-//             if(choices[i] === (tempChoices[j])){
-//                 return true;
-//             }
-//         }
-
-//     }
-//     return false;
-// }
-
 function calculateResultOfID(playerProlific, allChoices){
     let choicesProlific = allChoices.get(playerProlific);
     let count = 0;
@@ -78,7 +54,23 @@ function isGameOneDone(room){
     }
 }
 
+function getWinnersAndLosers(room) {
+    let allLocations = room.playerLocation;
+    var losers = [];
+    var winners = [];
+    for(let tempPlayer of allLocations.keys()){
+        if(allLocations.get(tempPlayer) >= 100){
+            winners.push(tempPlayer);
+        }
+        else{
+            losers.push(tempPlayer);
+        }
+    }
+    return winners, losers;
+}
+
 module.exports = {
     getResultsByProlificId : getResultsByProlificId,
     isGameOneDone : isGameOneDone,
+    getWinnersAndLosers : getWinnersAndLosers,
 }
