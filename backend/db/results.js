@@ -9,7 +9,7 @@ function getResultsByProlificId(prolificIDArray,room) {
     allResults = [];
     for(var i = 0; i < prolificIDArray.length; i++){
         let playerProlific = prolificIDArray[i];
-        let playerResult = calculateResultOfID(allChoices.get(playerProlific));
+        let playerResult = calculateResultOfID( playerProlific, allChoices);
         allResults.push(playerResult);
     }
     return allResults;
@@ -39,14 +39,14 @@ function getResultsByProlificId(prolificIDArray,room) {
 //     return false;
 // }
 
-function calculateResultOfID(prolificId){
-    let choicesProlific = allChoices.get(prolificId);
+function calculateResultOfID(playerProlific, allChoices){
+    let choicesProlific = allChoices.get(playerProlific);
     let count = 0;
     for(var i = 0; i < choicesProlific.length; i++){
         let playerChosen = choicesProlific[i];
         let choicesChosenPlayer = allChoices.get(playerChosen);
         for (var j = 0; j < choicesChosenPlayer.length; j++) {
-            if (choicesChosenPlayer[j] === (prolificId)) {
+            if (choicesChosenPlayer[j] === (playerProlific)) {
                 count += 4;
             }
         }
