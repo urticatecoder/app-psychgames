@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const { saveNewPlayerToDB } = require('../db/db_api.js');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
-const { getResultsByProlificId, isTripleBonus } = require('../db/results.js');
+const { getResultsByProlificId, isGameOneDone } = require('../db/results.js');
 const DB_API = require('../db/db_api.js');
 
 
@@ -71,4 +71,28 @@ describe('Location sending and calculation', () => {
         assert(newRoundCount[2] == 0);
         done();
     });
+    it('calculates triple bonus correctly', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id2', 'test_id3'];
+        var choicesTwo = ['test_id1', 'test_id3'];
+        var choicesThree = ['test_id1', 'test_id2'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        for(var i = 0; i< 14; i++){
+            getResultsByProlificId(testID, room);
+            assert(isGameOneDone(room) == false);
+        }
+        getResultsByProlificId(testID, room);
+        assert(isGameOneDone(room) == true); 
+        done();
+    });
+
+
+
 })
