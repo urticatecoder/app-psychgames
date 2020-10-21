@@ -30,7 +30,7 @@ io.on('connection', socket => {
     require('./lobby.js').LobbySocketListener(io, socket);
 
     socket.on('confirm choice for game 1', (prolificID, choices) => {
-        // prolific = prolific id; choices = [player1chosen, player2chosen, player3chosen] *minimum chosen players = 1*, turnNum, isBot boolean
+        // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
         console.log(choices);
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
@@ -48,9 +48,11 @@ io.on('connection', socket => {
         }
     });
 
-    socket.on('bot chooses rest of player choice', (prolific, turnNum, isBot) => {
+    socket.on('bot chooses rest of player choice', (prolific) => {
         console.log(prolific);
-        BOT.saveBotChoiceToDB(prolific, turnNum, isBot);
+        let room = lobby.getRoomPlayerIsIn(prolificID);
+        let player = room.getPlayerWithID(prolificID);
+        BOT.saveBotChoiceToDB(prolific, room.turnNum, player.isBot);
     })
 
     socket.on('all choices in database', () => {
@@ -59,8 +61,10 @@ io.on('connection', socket => {
         socket.to('room 1').emit('choices sent', 'all choices are in database');
     })
 
-    socket.on('results', (prolific, turnNum) => {
-        let result = getResultsByProlificId(prolific, turnNum);
+    socket.on('results', (prolificIDArray) => {
+        let prolific = prolificIDArray[0];
+        let room = lobby.getRoomPlayerIsIn(prolific);
+        let result = getResultsByProlificId(prolificIDArray, room);
         socket.emit('location', result);
     })
 
