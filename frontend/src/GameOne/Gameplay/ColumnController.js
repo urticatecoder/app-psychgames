@@ -89,6 +89,9 @@ function ColumnController(props) {
         });
 
         socket.on("end game 1", (winners, losers) => {
+            console.log("CALLED")
+            console.log(winners)
+            console.log(losers)
             props.setWinners(winners)
             props.setLosers(losers)
             moveToSummary(props)
@@ -97,6 +100,7 @@ function ColumnController(props) {
         return () => {
             console.log("remove listeners");
             socket.off("location for game 1");
+            socket.off("end game 1");
         }
     }, []);
 

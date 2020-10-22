@@ -18,8 +18,6 @@ const styles = {
 }
 function GroupBox(props) {
     const {classes} = props
-    console.log(props.groupNumber)
-    console.log(props.groupNumber == GROUP_ONE)
     let groupColor = (props.groupNumber == GROUP_ONE) ? GROUP_ONE_COLOR : GROUP_TWO_COLOR
     
     return (
