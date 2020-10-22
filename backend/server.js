@@ -53,12 +53,17 @@ io.on('connection', socket => {
         if (room.hasEveryoneConfirmedChoiceInThisRoom()){ // all 6 have confirmed choices
             room.advanceToNextRound();
             // calculate each player's new location and send it to everyone in the room
+<<<<<<< HEAD
+            let result = getResultsByProlificId(prolificID, room);
+            io.in(room.name).emit('location for game 1', result);
+=======
             let room = lobby.getRoomPlayerIsIn(prolific);
             let resultForAllPlayers = getResultsByProlificId(prolificIDArray, room);
             if(isGameOneDone){
                 socket.emit('end game 1');
             }
             io.in(room.name).emit('location for game 1', resultForAllPlayers);
+>>>>>>> master
         }
         else{
             // emit('someone has confirmed his/her choice') to 5 other
