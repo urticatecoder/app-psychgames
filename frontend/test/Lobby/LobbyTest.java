@@ -32,7 +32,7 @@ public class LobbyTest {
 
     private static final String PLAYER_ID = "timerText";
 
-    private static final String LOCAL_LOGIN_URL = "http://localhost:3000/";
+    private static final String LOCAL_LOGIN_URL = "https://rise-to-the-top.herokuapp.com/";
 
     private static final String VALID_LOGIN_CODE_ONE = "CS101";
     private static final String VALID_LOGIN_CODE_TWO = "CS201";
@@ -63,6 +63,7 @@ public class LobbyTest {
         Assert.assertEquals(fivePlayersText , getText(PLAYER_ID));
     }
 
+//    REASON FOR COMMENTING OUT: USER TESTING IS NOT BEING PLAYED IN REAL TIME, SO THIS WILL FAIL.
 //    @Test
 //    public void testMultiplePlayers() {
 //        driver.get(LOCAL_LOGIN_URL);

@@ -10,8 +10,8 @@ const LOSING_HEADER = 'Losing Players'
 const HEADER_VARIANT='h4';
 const WINNER_ID = 'winnerText'
 const LOSER_ID = 'loserText'
-const WINNERS = [1, 2, 3]
-const LOSERS = [4, 5, 6]
+const WINNERS = [0, 1, 2]
+const LOSERS = [3, 4, 5]
 const NUM_PLAYERS = 6
 
 const styles = ({
@@ -38,8 +38,11 @@ function GroupScreen(props) {
     console.log(props)
     let winnerIndices = getAvatarIndices(props.winners, props.allLoginCodes)
     let loserIndices = getAvatarIndices(props.losers, props.allLoginCodes)
-    console.log(winnerIndices)
-    console.log(loserIndices)
+
+    // FOR TESTING
+    if (winnerIndices.length == 0) winnerIndices = WINNERS
+    if (loserIndices.length == 0) loserIndices = LOSERS
+
     return(
         <div className={FULL_DIV}>
             <DelayedConfetti/>
@@ -62,6 +65,7 @@ function getGroup(divClassName, groupClassName, headerText, playersShown, textID
 
 function getAvatarIndices(loginCodes, allLoginCodes) {
     let indices = []
+    
     for (let i = 0; i < loginCodes.length; i++) {
         for (let j = 0; j < allLoginCodes.length; j++) {
             if (allLoginCodes[j] == loginCodes[i]) {
