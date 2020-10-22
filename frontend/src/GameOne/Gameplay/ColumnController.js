@@ -21,8 +21,8 @@ const BOTTOM_OF_SCREEN = 100;
 const INITIAL_HEIGHT = 0;
 
 const NUM_PLAYERS = 6
-const VERTICAL_CONSTANT = 5;
-const VERTICAL_SCALAR = .40;
+const VERTICAL_CONSTANT = 1;
+const VERTICAL_SCALAR = .59;
 const MAX_PLAYERS_SELECTED = 2;
 const PLAYERS = [0, 1, 2, 3, 4, 5]
 
@@ -52,6 +52,19 @@ const ERROR_HORIZONTAL = "left"
 
 const RESET_TIMER = true
 const DO_NOT_RESET_TIMER = false
+
+const styles = ({
+    gameplay: {
+      position: 'absolute',
+      top: '8vh',
+      left: '19vw',
+      height: '90vh',
+      width: '85vw',
+      borderRadius: '20px',
+      alignItems: 'center',
+      verticalAlign: 'middle',
+    },
+  });
 
 function ColumnController(props) {
 
@@ -91,20 +104,23 @@ function ColumnController(props) {
             {getAlerts(selectedSelf, setSelectedSelf, tooManySelections, setTooManySelections)}
 
             <GameTimer setSubmitDecisions={setSubmitDecisions} resetTimer={resetTimer} setResetTimer={setResetTimer}/>
-            <GroupBox groupNumber='One'/>
-            <Grid
-                container
-                direction="row"
-                justify='center'
-                spacing = {10}
-                style={{height: '80vh'}}
-                >
-                {PLAYERS.map((player) => {
-                    return getColumn(player, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, props.allLoginCodes, props.loginCode)
-                })}
-            </Grid>
-            <GroupBox groupNumber='Two'/>
             <ConfirmButton submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} selected={selected} clearSelected={() => clearSelected(setSelected)} loginCode={props.loginCode} allLoginCodes={props.allLoginCodes}/>
+
+            <div className={classes.gameplay}>
+                <GroupBox groupNumber='One'/>
+                <Grid
+                    container
+                    direction="row"
+                    justify='center'
+                    spacing = {10}
+                    style={{height: '80vh'}}
+                    >
+                    {PLAYERS.map((player) => {
+                        return getColumn(player, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, props.allLoginCodes, props.loginCode)
+                    })}
+                </Grid>
+                <GroupBox groupNumber='Two'/>
+            </div>
 
         </div>
     )
@@ -194,4 +210,4 @@ function moveToSummary(props) {
     props.history.push(SUMMARY_ROUTE)
 }
 
-export default (withRouter(ColumnController));
+export default (withRouter(withStyles(styles)(ColumnController)));

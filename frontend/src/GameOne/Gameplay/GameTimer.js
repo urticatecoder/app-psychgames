@@ -6,25 +6,24 @@ const styles = ({
     timerInstruction: {
       marginTop: '50px',
       position: 'absolute',
-      top: '25vh',
+      top: '22vh',
       left: '5vw',
       backgroundColor: '#349eeb',
       height: '35vh',
       width: '15vw',
-      opacity: '.5',
-      borderRadius: '100px',
+      opacity: '.8',
+      borderRadius: '20px',
       alignItems: 'center',
       verticalAlign: 'middle',
     },
     timerMargin: {
-        marginTop: '10vh'
+        marginTop: '11vh'
     }
   });
 
 const TURN_TIME = 30 * 1000;
 const LAST_TIME_UNIT = 'h';
 const DIRECTION = 'backward';
-const SECONDS = 'seconds';
 const STOP_TIMER = 0;
 const TIMER_UPDATE = 10;
 
@@ -59,7 +58,6 @@ function GameTimer(props) {
                             <Typography variant={SECONDS_VARIANT}> 
                                 <Timer.Seconds/> 
                             </Typography>
-                            {SECONDS}
                         </React.Fragment>
                     </div>
                 )}
