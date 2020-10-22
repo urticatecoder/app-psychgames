@@ -89,6 +89,8 @@ function ColumnController(props) {
         });
 
         socket.on("end game 1", (winners, losers) => {
+            console.log('Winners: ', winners);
+            console.log('Losers: ', losers);
             props.setWinners(winners)
             props.setLosers(losers)
             moveToSummary(props)
@@ -105,7 +107,7 @@ function ColumnController(props) {
     return (
         <div>
             {getAlerts(selectedSelf, setSelectedSelf, tooManySelections, setTooManySelections)}
-            
+
             <Timer
                 initialTime={TURN_TIME}
                 lastUnit={LAST_TIME_UNIT}
@@ -128,7 +130,7 @@ function ColumnController(props) {
                 )}
 
             </Timer>
-  
+
 
             <GroupBox groupNumber='One'/>
             <Grid
