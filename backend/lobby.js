@@ -172,6 +172,8 @@ module.exports = {
     LobbyInstance: lobby,
     LobbySocketListener: function (io, socket) {
         socket.on("enter lobby", (prolificID) => {
+            prolificID = prolificID.toString();
+            console.log("Received enter lobby from frontend with prolificID: ", prolificID);
             let roomName = lobby.findRoomForPlayerToJoin(prolificID);
             socket.join(roomName);
             socket.roomName = roomName;

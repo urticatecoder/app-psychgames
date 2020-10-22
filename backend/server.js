@@ -26,7 +26,6 @@ db.once('open', function () {
 
 io.on('connection', socket => {
     console.log('New client connected');
-
     require('./lobby.js').LobbySocketListener(io, socket);
 
     socket.on('confirm choice for game 1', (prolificID, choices) => {
