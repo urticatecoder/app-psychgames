@@ -12,7 +12,7 @@ const styles = {
         backgroundColor: '#FF9133',
         opacity: '.8',
         width: '60vw',
-        height: '3.5vw',
+        height: '55px',
         margin: 'auto',
     },
     innerDiv: {

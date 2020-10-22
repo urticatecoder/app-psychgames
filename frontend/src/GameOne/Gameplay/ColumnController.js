@@ -22,7 +22,7 @@ const INITIAL_HEIGHT = 0;
 
 const NUM_PLAYERS = 6
 const VERTICAL_CONSTANT = 1;
-const VERTICAL_SCALAR = .59;
+const VERTICAL_SCALAR = .58;
 const MAX_PLAYERS_SELECTED = 2;
 const PLAYERS = [0, 1, 2, 3, 4, 5]
 
