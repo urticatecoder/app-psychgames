@@ -71,7 +71,7 @@ describe('Location sending and calculation', () => {
         assert(newRoundCount[2] == 0);
         done();
     });
-    it('calculates triple bonus correctly', (done) => {
+    it('isGameOneDone works correctly', (done) => {
         const testID = ['test_id1', 'test_id2', 'test_id3'];
         var choicesOne = ['test_id2', 'test_id3'];
         var choicesTwo = ['test_id1', 'test_id3'];
@@ -89,7 +89,7 @@ describe('Location sending and calculation', () => {
             assert(isGameOneDone(room) == false);
         }
         getResultsByProlificId(testID, room);
-        assert(isGameOneDone(room) == true); 
+        assert(isGameOneDone(room) == true);
         done();
     });
 
