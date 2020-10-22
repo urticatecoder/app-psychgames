@@ -51,19 +51,14 @@ io.on('connection', socket => {
         });
 
         if (room.hasEveryoneConfirmedChoiceInThisRoom()){ // all 6 have confirmed choices
-            room.advanceToNextRound();
             // calculate each player's new location and send it to everyone in the room
-<<<<<<< HEAD
-            let result = getResultsByProlificId(prolificID, room);
-            io.in(room.name).emit('location for game 1', result);
-=======
-            let room = lobby.getRoomPlayerIsIn(prolific);
-            let resultForAllPlayers = getResultsByProlificId(prolificIDArray, room);
+            let allProlificIDs = lobby.getAllPlayersIDsInRoomWithName(room.roomName);
+            let resultForAllPlayers = getResultsByProlificId(allProlificIDs, room);
             if(isGameOneDone){
                 socket.emit('end game 1');
             }
             io.in(room.name).emit('location for game 1', resultForAllPlayers);
->>>>>>> master
+            room.advanceToNextRound();
         }
         else{
             // emit('someone has confirmed his/her choice') to 5 other
@@ -82,7 +77,7 @@ io.on('connection', socket => {
         // we need to check this before sending the message correct????
         socket.to('room 1').emit('choices sent', 'all choices are in database');
     })
-    /* 
+    /*
     IS NEVER CALLED
     socket.on('results for game 1', (prolificIDArray) => {
         let prolific = prolificIDArray[0];
