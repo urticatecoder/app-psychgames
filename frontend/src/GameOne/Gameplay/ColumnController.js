@@ -4,11 +4,12 @@ import PlayerColumn from '../Gameplay/PlayerColumn';
 import {Grid, withStyles} from '@material-ui/core'
 import socket from "../../socketClient";
 import Alert from '@material-ui/lab/Alert';
-import {Snackbar, Button} from '@material-ui/core'
+import {Snackbar} from '@material-ui/core'
 import ConfirmButton from './ConfirmButton';
 import Timer from 'react-compound-timer'
 import {Typography} from '@material-ui/core';
 import { withRouter } from "react-router-dom";
+import GroupBox from './GroupBox'
 
 const TURN_TIME = 30 * 1000;
 const SUMMARY_ROUTE = '/summary'
@@ -29,7 +30,7 @@ const INITIAL_HEIGHT = 0;
 
 const NUM_PLAYERS = 6
 const VERTICAL_CONSTANT = 5;
-const VERTICAL_SCALAR = .50;
+const VERTICAL_SCALAR = .40;
 const MAX_PLAYERS_SELECTED = 2;
 const PLAYERS = [0, 1, 2, 3, 4, 5]
 
@@ -87,7 +88,9 @@ function ColumnController(props) {
             setResetTimer(RESET_TIMER)
         });
 
-        socket.on("end  game 1", () => {
+        socket.on("end game 1", (winners, losers) => {
+            props.setWinners(winners)
+            props.setLosers(losers)
             moveToSummary(props)
         });
 
@@ -102,7 +105,7 @@ function ColumnController(props) {
     return (
         <div>
             {getAlerts(selectedSelf, setSelectedSelf, tooManySelections, setTooManySelections)}
-
+            
             <Timer
                 initialTime={TURN_TIME}
                 lastUnit={LAST_TIME_UNIT}
@@ -125,7 +128,9 @@ function ColumnController(props) {
                 )}
 
             </Timer>
+  
 
+            <GroupBox groupNumber='One'/>
             <Grid
                 container
                 direction="row"
@@ -137,7 +142,9 @@ function ColumnController(props) {
                     return getColumn(player, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, props.allLoginCodes, props.loginCode)
                 })}
             </Grid>
+            <GroupBox groupNumber='Two'/>
             <ConfirmButton submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} selected={selected} clearSelected={() => clearSelected(setSelected)} loginCode={props.loginCode} allLoginCodes={props.allLoginCodes}/>
+
         </div>
     )
 }
@@ -231,7 +238,7 @@ function invertHeight(height) {
 }
 
 function moveToSummary(props) {
-    props.push(SUMMARY_ROUTE)
+    props.history.push(SUMMARY_ROUTE)
 }
 
 export default withStyles(styles)(withRouter(ColumnController));

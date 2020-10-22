@@ -25,10 +25,16 @@ const NO_CODES = ['', '', '', '', '', '']
 
 const TEST_CODE = 123
 const TEST_CODES = [123, 456, 789, 12, 34, 56]
+
+const NO_WINNERS = []
+const NO_LOSERS = []
+
 function App() {
 
   const [loginCode, setLoginCode] = useState(TEST_CODE)
   const [allLoginCodes, setAllLoginCodes] = useState(TEST_CODES)
+  const [winners, setWinners] = useState(NO_WINNERS)
+  const [losers, setLosers] = useState(NO_LOSERS)
 
   return (
     <div className="App">
@@ -43,7 +49,7 @@ function App() {
 
         <Route 
           path="/game-one" 
-          render={() => (<GameOne loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
+          render={() => (<GameOne setWinners={setWinners} setLosers={setLosers} loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
         />
 
         <Route 
