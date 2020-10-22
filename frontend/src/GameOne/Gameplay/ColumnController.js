@@ -26,7 +26,7 @@ const MAX_HEIGHT = 100;
 
 // EACH PLAYER IS 15% OF THE VERTICAL SIZE OF THE SCREEN
 const BOTTOM_OF_SCREEN = 100;
-const INITIAL_HEIGHT = 0;
+const INITIAL_HEIGHT = 100;
 
 const NUM_PLAYERS = 6
 const VERTICAL_CONSTANT = 5;
@@ -83,15 +83,15 @@ function ColumnController(props) {
 
     useEffect(() => {
         socket.on("location for game 1", (locations) => {
+            console.log(locations)
             setFromHeights(toHeights)
             setToHeights(scaleHeights(locations))
             setResetTimer(RESET_TIMER)
         });
 
         socket.on("end game 1", (winners, losers) => {
-            console.log("CALLED")
-            console.log(winners)
-            console.log(losers)
+            console.log('Winners: ', winners);
+            console.log('Losers: ', losers);
             props.setWinners(winners)
             props.setLosers(losers)
             moveToSummary(props)
@@ -109,7 +109,7 @@ function ColumnController(props) {
     return (
         <div>
             {getAlerts(selectedSelf, setSelectedSelf, tooManySelections, setTooManySelections)}
-            
+
             <Timer
                 initialTime={TURN_TIME}
                 lastUnit={LAST_TIME_UNIT}
@@ -132,7 +132,7 @@ function ColumnController(props) {
                 )}
 
             </Timer>
-  
+
 
             <GroupBox groupNumber='One'/>
             <Grid

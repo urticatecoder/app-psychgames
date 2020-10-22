@@ -35,9 +35,11 @@ const styles = ({
 function GroupScreen(props) {
     const {classes} = props;
    
+    console.log(props)
     let winnerIndices = getAvatarIndices(props.winners, props.allLoginCodes)
     let loserIndices = getAvatarIndices(props.losers, props.allLoginCodes)
-
+    console.log(winnerIndices)
+    console.log(loserIndices)
     return(
         <div className={FULL_DIV}>
             <DelayedConfetti/>
@@ -60,8 +62,8 @@ function getGroup(divClassName, groupClassName, headerText, playersShown, textID
 
 function getAvatarIndices(loginCodes, allLoginCodes) {
     let indices = []
-    for (let j = 0; j < loginCodes.length; j++) {
-        for (let i = 0; i < allLoginCodes.length; i++) {
+    for (let i = 0; i < loginCodes.length; i++) {
+        for (let j = 0; j < allLoginCodes.length; j++) {
             if (allLoginCodes[j] == loginCodes[i]) {
                 indices.push(j);
                 break;
