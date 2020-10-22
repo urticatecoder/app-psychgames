@@ -3,7 +3,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
 const BOT = require("./db/bot");
-const {getResultsByProlificId, isGameOneDone} = require("./db/results");
+const {getResultsByProlificId, isGameOneDone, getWinnersAndLosers} = require("./db/results");
 const lobby = require("./lobby.js").LobbyInstance;
 
 // Set up mongoose connection
@@ -41,26 +41,27 @@ io.on('connection', socket => {
         // let all bots select their choices
         let allIDs = lobby.getAllPlayersIDsInRoomWithName(room.roomName)
         room.players.forEach((playerInThisRoom) => {
-           if(playerInThisRoom.isBot){
-               let bot = playerInThisRoom;
-               let botChoices = BOT.determineBotChoice(bot.prolificID, allIDs);
-               DB_API.savePlayerChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
-               bot.recordChoices(botChoices);
-               room.addPlayerIDToConfirmedSet(bot.prolificID);
-           }
+            if (playerInThisRoom.isBot) {
+                let bot = playerInThisRoom;
+                let botChoices = BOT.determineBotChoice(bot.prolificID, allIDs);
+                DB_API.savePlayerChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
+                bot.recordChoices(botChoices);
+                room.addPlayerIDToConfirmedSet(bot.prolificID);
+            }
         });
 
-        if (room.hasEveryoneConfirmedChoiceInThisRoom()){ // all 6 have confirmed choices
+        if (room.hasEveryoneConfirmedChoiceInThisRoom()) { // all 6 have confirmed choices
             // calculate each player's new location and send it to everyone in the room
-            let allProlificIDs = lobby.getAllPlayersIDsInRoomWithName(room.roomName);
-            let resultForAllPlayers = getResultsByProlificId(allProlificIDs, room);
-            if(isGameOneDone){
-                socket.emit('end game 1');
+            let resultForAllPlayers = getResultsByProlificId(allIDs, room);
+            if (isGameOneDone(room)) {
+                let group = getWinnersAndLosers(room);
+                console.log("Winners: ", group[0]);
+                console.log("Losers: ", group[1]);
+                io.in(room.name).emit('end game 1', group[0], group[1]);
             }
             io.in(room.name).emit('location for game 1', resultForAllPlayers);
             room.advanceToNextRound();
-        }
-        else{
+        } else {
             // emit('someone has confirmed his/her choice') to 5 other
         }
     });
