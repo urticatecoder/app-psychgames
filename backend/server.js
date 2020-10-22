@@ -93,12 +93,15 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         let prolificID = socket.prolificID;
         console.log(`Player with id ${prolificID} disconnected`);
-        let room = lobby.getRoomPlayerIsIn(prolificID);
-        let player = room.getPlayerWithID(prolificID);
-        player.setIsBot(true);
 
-        socket.to(room.name).emit('left', "someone left");
-        socket.leave(room.name);
+        if (prolificID !== undefined) {
+            let room = lobby.getRoomPlayerIsIn(prolificID);
+            let player = room.getPlayerWithID(prolificID); // TypeError: Cannot read property 'getPlayerWithID' of undefined
+            player.setIsBot(true);
+
+            socket.to(room.name).emit('left', "someone left");
+            socket.leave(room.name);
+        }
     });
 })
 
