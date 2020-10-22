@@ -6,27 +6,19 @@ import socket from "../../socketClient";
 import Alert from '@material-ui/lab/Alert';
 import {Snackbar} from '@material-ui/core'
 import ConfirmButton from './ConfirmButton';
-import Timer from 'react-compound-timer'
-import {Typography} from '@material-ui/core';
 import { withRouter } from "react-router-dom";
 import GroupBox from './GroupBox'
+import GameTimer from './GameTimer'
 
-const TURN_TIME = 30 * 1000;
 const SUMMARY_ROUTE = '/summary'
 
-const LAST_TIME_UNIT = 'h';
-const DIRECTION = 'backward';
 
-const SECONDS = 'Seconds';
-
-const STOP_TIMER = 0;
-const TIMER_UPDATE = 10;
 
 const MAX_HEIGHT = 100;
 
 // EACH PLAYER IS 15% OF THE VERTICAL SIZE OF THE SCREEN
 const BOTTOM_OF_SCREEN = 100;
-const INITIAL_HEIGHT = 100;
+const INITIAL_HEIGHT = 0;
 
 const NUM_PLAYERS = 6
 const VERTICAL_CONSTANT = 5;
@@ -40,7 +32,6 @@ const SELECTED = true
 const NOT_SELECTED_INT = 0
 const SELECTED_INT = 1
 
-const SUBMIT_DECISIONS = true
 const DO_NOT_SUBMIT_DECISIONS = false
 
 const SELECTED_SELF = true
@@ -61,15 +52,6 @@ const ERROR_HORIZONTAL = "left"
 
 const RESET_TIMER = true
 const DO_NOT_RESET_TIMER = false
-const WELCOME_VARIANT = 'h3';
-
-const TIMER_MESSAGE = "Time left to select:"
-
-const styles = ({
-    timerInstruction: {
-      marginTop: '50px',
-    },
-  });
 
 function ColumnController(props) {
 
@@ -90,8 +72,6 @@ function ColumnController(props) {
         });
 
         socket.on("end game 1", (winners, losers) => {
-            console.log('Winners: ', winners);
-            console.log('Losers: ', losers);
             props.setWinners(winners)
             props.setLosers(losers)
             moveToSummary(props)
@@ -110,30 +90,7 @@ function ColumnController(props) {
         <div>
             {getAlerts(selectedSelf, setSelectedSelf, tooManySelections, setTooManySelections)}
 
-            <Timer
-                initialTime={TURN_TIME}
-                lastUnit={LAST_TIME_UNIT}
-                direction={DIRECTION}
-                timeToUpdate={TIMER_UPDATE}
-                checkpoints={[
-                    {
-                        time: STOP_TIMER,
-                        callback: () => setSubmitDecisions(SUBMIT_DECISIONS),
-                    },
-                ]}
-            >
-                {({reset, start}) => (
-                    <div className={classes.timerInstruction}>
-                        <React.Fragment>
-                            {checkForReset(reset, start, resetTimer, setResetTimer)}
-                            <Typography variant={WELCOME_VARIANT}> {TIMER_MESSAGE} <Timer.Seconds/> {SECONDS} </Typography>
-                        </React.Fragment>
-                    </div>
-                )}
-
-            </Timer>
-
-
+            <GameTimer setSubmitDecisions={setSubmitDecisions} resetTimer={resetTimer} setResetTimer={setResetTimer}/>
             <GroupBox groupNumber='One'/>
             <Grid
                 container
@@ -151,14 +108,6 @@ function ColumnController(props) {
 
         </div>
     )
-}
-
-function checkForReset(reset, start, resetTimer, setResetTimer) {
-    if (resetTimer) {
-        reset()
-        setResetTimer(DO_NOT_RESET_TIMER)
-        start()
-    }
 }
 
 function clearSelected(setSelected) {
@@ -245,4 +194,4 @@ function moveToSummary(props) {
     props.history.push(SUMMARY_ROUTE)
 }
 
-export default withStyles(styles)(withRouter(ColumnController));
+export default (withRouter(ColumnController));
