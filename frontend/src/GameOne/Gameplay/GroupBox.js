@@ -8,23 +8,27 @@ const GROUP_TWO_COLOR = "#9933FF"
 
 const styles = {
     groupBox: {
-        borderRadius: '20px',
+        borderRadius: '50px',
         backgroundColor: '#FF9133',
-        opacity: '80%',
+        opacity: '.8',
         width: '60vw',
-        height: '3vw',
-        margin: 'auto'
+        height: '3.5vw',
+        margin: 'auto',
+    },
+    innerDiv: {
+        position: 'relative',
+        top: '15%'
     }
 }
 function GroupBox(props) {
     const {classes} = props
-    console.log(props.groupNumber)
-    console.log(props.groupNumber == GROUP_ONE)
     let groupColor = (props.groupNumber == GROUP_ONE) ? GROUP_ONE_COLOR : GROUP_TWO_COLOR
     
     return (
         <div style={{backgroundColor: groupColor}} className={classes.groupBox}>
-            <Typography variant='h4'> {GROUP} {props.groupNumber} </Typography>
+            <div className={classes.innerDiv}>
+            <Typography className={classes.innerDiv} variant='h4'> {GROUP} {props.groupNumber} </Typography>
+            </div>
         </div>
     )
 }

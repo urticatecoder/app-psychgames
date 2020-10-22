@@ -12,6 +12,7 @@ const WINNER_ID = 'winnerText'
 const LOSER_ID = 'loserText'
 const WINNERS = [1, 2, 3]
 const LOSERS = [4, 5, 6]
+const NUM_PLAYERS = 6
 
 const styles = ({
     winners: {
@@ -33,17 +34,17 @@ const styles = ({
 
 function GroupScreen(props) {
     const {classes} = props;
-    const [confetti, setConfetti] = useState(false);
-
-
    
-
+    console.log(props)
+    let winnerIndices = getAvatarIndices(props.winners, props.allLoginCodes)
+    let loserIndices = getAvatarIndices(props.losers, props.allLoginCodes)
+    console.log(winnerIndices)
+    console.log(loserIndices)
     return(
- 
         <div className={FULL_DIV}>
             <DelayedConfetti/>
-            {getGroup(classes.winners, classes.playerGroup, WINNING_HEADER, WINNERS, WINNER_ID)}
-            {getGroup(classes.losers, classes.playerGroup, LOSING_HEADER, LOSERS, LOSER_ID)}
+            {getGroup(classes.winners, classes.playerGroup, WINNING_HEADER, winnerIndices, WINNER_ID)}
+            {getGroup(classes.losers, classes.playerGroup, LOSING_HEADER, loserIndices, LOSER_ID)}
         </div>
     )
 }
@@ -57,6 +58,19 @@ function getGroup(divClassName, groupClassName, headerText, playersShown, textID
             </div>
         </div>
     )
+}
+
+function getAvatarIndices(loginCodes, allLoginCodes) {
+    let indices = []
+    for (let i = 0; i < loginCodes.length; i++) {
+        for (let j = 0; j < allLoginCodes.length; j++) {
+            if (allLoginCodes[j] == loginCodes[i]) {
+                indices.push(j);
+                break;
+            }
+        }
+    }
+    return indices;
 }
 
 export default withStyles(styles)(GroupScreen);

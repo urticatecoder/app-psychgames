@@ -6,21 +6,13 @@ import socket from "../../socketClient";
 import Alert from '@material-ui/lab/Alert';
 import {Snackbar} from '@material-ui/core'
 import ConfirmButton from './ConfirmButton';
-import Timer from 'react-compound-timer'
-import {Typography} from '@material-ui/core';
 import { withRouter } from "react-router-dom";
 import GroupBox from './GroupBox'
+import GameTimer from './GameTimer'
 
-const TURN_TIME = 30 * 1000;
 const SUMMARY_ROUTE = '/summary'
 
-const LAST_TIME_UNIT = 'h';
-const DIRECTION = 'backward';
 
-const SECONDS = 'Seconds';
-
-const STOP_TIMER = 0;
-const TIMER_UPDATE = 10;
 
 const MAX_HEIGHT = 100;
 
@@ -29,8 +21,8 @@ const BOTTOM_OF_SCREEN = 100;
 const INITIAL_HEIGHT = 0;
 
 const NUM_PLAYERS = 6
-const VERTICAL_CONSTANT = 5;
-const VERTICAL_SCALAR = .40;
+const VERTICAL_CONSTANT = 1;
+const VERTICAL_SCALAR = .59;
 const MAX_PLAYERS_SELECTED = 2;
 const PLAYERS = [0, 1, 2, 3, 4, 5]
 
@@ -40,7 +32,6 @@ const SELECTED = true
 const NOT_SELECTED_INT = 0
 const SELECTED_INT = 1
 
-const SUBMIT_DECISIONS = true
 const DO_NOT_SUBMIT_DECISIONS = false
 
 const SELECTED_SELF = true
@@ -61,13 +52,17 @@ const ERROR_HORIZONTAL = "left"
 
 const RESET_TIMER = true
 const DO_NOT_RESET_TIMER = false
-const WELCOME_VARIANT = 'h3';
-
-const TIMER_MESSAGE = "Time left to select:"
 
 const styles = ({
-    timerInstruction: {
-      marginTop: '50px',
+    gameplay: {
+      position: 'absolute',
+      top: '8vh',
+      left: '19vw',
+      height: '90vh',
+      width: '85vw',
+      borderRadius: '20px',
+      alignItems: 'center',
+      verticalAlign: 'middle',
     },
   });
 
@@ -83,14 +78,13 @@ function ColumnController(props) {
 
     useEffect(() => {
         socket.on("location for game 1", (locations) => {
+            console.log(locations)
             setFromHeights(toHeights)
             setToHeights(scaleHeights(locations))
             setResetTimer(RESET_TIMER)
         });
 
         socket.on("end game 1", (winners, losers) => {
-            console.log('Winners: ', winners);
-            console.log('Losers: ', losers);
             props.setWinners(winners)
             props.setLosers(losers)
             moveToSummary(props)
@@ -99,6 +93,7 @@ function ColumnController(props) {
         return () => {
             console.log("remove listeners");
             socket.off("location for game 1");
+            socket.off("end game 1");
         }
     }, []);
 
@@ -108,55 +103,27 @@ function ColumnController(props) {
         <div>
             {getAlerts(selectedSelf, setSelectedSelf, tooManySelections, setTooManySelections)}
 
-            <Timer
-                initialTime={TURN_TIME}
-                lastUnit={LAST_TIME_UNIT}
-                direction={DIRECTION}
-                timeToUpdate={TIMER_UPDATE}
-                checkpoints={[
-                    {
-                        time: STOP_TIMER,
-                        callback: () => setSubmitDecisions(SUBMIT_DECISIONS),
-                    },
-                ]}
-            >
-                {({reset, start}) => (
-                    <div className={classes.timerInstruction}>
-                        <React.Fragment>
-                            {checkForReset(reset, start, resetTimer, setResetTimer)}
-                            <Typography variant={WELCOME_VARIANT}> {TIMER_MESSAGE} <Timer.Seconds/> {SECONDS} </Typography>
-                        </React.Fragment>
-                    </div>
-                )}
-
-            </Timer>
-
-
-            <GroupBox groupNumber='One'/>
-            <Grid
-                container
-                direction="row"
-                justify='center'
-                spacing = {10}
-                style={{height: '80vh'}}
-                >
-                {PLAYERS.map((player) => {
-                    return getColumn(player, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, props.allLoginCodes, props.loginCode)
-                })}
-            </Grid>
-            <GroupBox groupNumber='Two'/>
+            <GameTimer setSubmitDecisions={setSubmitDecisions} resetTimer={resetTimer} setResetTimer={setResetTimer}/>
             <ConfirmButton submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} selected={selected} clearSelected={() => clearSelected(setSelected)} loginCode={props.loginCode} allLoginCodes={props.allLoginCodes}/>
+
+            <div className={classes.gameplay}>
+                <GroupBox groupNumber='One'/>
+                <Grid
+                    container
+                    direction="row"
+                    justify='center'
+                    spacing = {10}
+                    style={{height: '80vh'}}
+                    >
+                    {PLAYERS.map((player) => {
+                        return getColumn(player, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, props.allLoginCodes, props.loginCode)
+                    })}
+                </Grid>
+                <GroupBox groupNumber='Two'/>
+            </div>
 
         </div>
     )
-}
-
-function checkForReset(reset, start, resetTimer, setResetTimer) {
-    if (resetTimer) {
-        reset()
-        setResetTimer(DO_NOT_RESET_TIMER)
-        start()
-    }
 }
 
 function clearSelected(setSelected) {
@@ -243,4 +210,4 @@ function moveToSummary(props) {
     props.history.push(SUMMARY_ROUTE)
 }
 
-export default withStyles(styles)(withRouter(ColumnController));
+export default (withRouter(withStyles(styles)(ColumnController)));

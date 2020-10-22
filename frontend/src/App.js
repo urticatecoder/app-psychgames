@@ -4,7 +4,7 @@ import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Lobby from './Lobby/Lobby';
 import Login from './Login/Login';
 import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
-import GroupScreen from './GameOne/Summary/GroupScreen';
+import Summary from './GameOne/Summary/Summary';
 import GameOne from './GameOne/Gameplay/GameOne';
 import Admin from './AdminPage/Admin';
 
@@ -45,7 +45,7 @@ function App() {
 
         <Route path='/admin' render={() => <Admin/>}/>
 
-        <Route path='/summary' render={() => (<GroupScreen/>)}/>
+        <Route path='/summary' render={() => (<Summary winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
 
         <Route 
           path="/game-one" 

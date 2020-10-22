@@ -7,9 +7,14 @@ const NUM_PLAYERS = 6
 
 const styles = ({
     confirmButton: {
-      marginTop: '5vh',
-      height: 75,
-      width: '60vw',
+      position: 'absolute',
+      top: '68vh',
+      left: '5vw',
+      height: '5vh',
+      width: '15vw',
+      opacity: '.9',
+      borderRadius: '8px',
+      alignItems: 'center',
       fontSize: '17px'
     },
   });
