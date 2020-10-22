@@ -1,5 +1,5 @@
 # Node docker image on which this would be run
-image: node:12.x-buster
+image: node:12.19-buster
 
 cache:
   paths:
