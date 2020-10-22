@@ -5,6 +5,7 @@ class Lobby {
     playerToRoom = new Map(); // stores a mapping of a player's id to the room instance he is in
     roomToPlayer = new Map();
     static MAX_CAPACITY_PER_ROOM = 6;
+    botID = 0;
 
     constructor() {
         this.allocateNewRoom();
@@ -29,6 +30,10 @@ class Lobby {
         return this.roomToPlayer.get(roomName);
     }
 
+    getAllPlayersIDsInRoomWithName(roomName) {
+        return this.getAllPlayersInRoomWithName(roomName).map(player => player.prolificID);
+    }
+
     findRoomForPlayerToJoin(prolificID) {
         if (this.playerToRoom.has(prolificID)) {
             throw 'Duplicated prolificID found';
@@ -39,12 +44,29 @@ class Lobby {
         this.roomToPlayer.get(this.currRoom.name).push(player);
         return this.currRoom.name;
     }
+
+    addBotPlayers() {
+        let botProlificID = 'bot' + this.botID;
+        let bot = new Player(botProlificID);
+        this.botID++;
+        bot.setIsBot(true);
+        this.currRoom.addPlayer(bot);
+        this.playerToRoom.set(botProlificID, this.currRoom);
+        this.roomToPlayer.get(this.currRoom.name).push(bot);
+        return this.currRoom.name;
+    }
+
+    // need to refactor this method later
+    getNumOfPlayersInRoom(roomName) {
+        return this.roomToPlayer.get(roomName).length;
+    }
 }
 
 class Room {
     turnNum = 1; // the current turn number in this room starting at 1
     players = []; // holds player objects who are in this room
     playersWithChoiceConfirmed = new Set(); // holds prolificID of players who have confirmed their choices
+    allPlayerLocations = new Map();
 
     constructor(roomName) {
         if (roomName === undefined) {
@@ -57,11 +79,20 @@ class Room {
         return this.roomName;
     }
 
+    get playerLocation() {
+        return this.allPlayerLocations;
+    }
+
+    setPlayerLocation(prolificID, newLocation) {
+        this.allPlayerLocations.set(prolificID, newLocation);
+    }
+
     addPlayer(player) {
         if (!(player instanceof Player)) {
             throw 'Parameter is not an instance of the Player class.';
         }
         this.players.push(player);
+        this.allPlayerLocations.set(player.prolificID, 0);
     }
 
     advanceToNextRound() {
@@ -94,6 +125,8 @@ class Room {
             this.players.map(player => [player.prolificID, player.getChoiceAtTurn(this.turnNum)])
         );
     }
+
+
 }
 
 class Player {
@@ -142,14 +175,27 @@ module.exports = {
             let roomName = lobby.findRoomForPlayerToJoin(prolificID);
             socket.join(roomName);
             socket.roomName = roomName;
+            socket.prolificID = prolificID;
             socket.to(roomName).emit('join', socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
             socket.emit('num of people in the room', Lobby.getNumOfPeopleInRoom(io, roomName)); // only to self
             // console.log(Lobby.getNumOfPeopleInRoom(io, roomName));
-            if (Lobby.getNumOfPeopleInRoom(io, roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
+
+            // add 5 bot players once a player joins the lobby
+            for (let i = 1; i <= 5; i++) {
+                lobby.addBotPlayers();
+            }
+
+            if (lobby.getNumOfPlayersInRoom(roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
-                io.in(roomName).emit('room fill', roomName + ' is filled up.'); // to everyone in the room, including self
+                io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
                 lobby.allocateNewRoom();
             }
+
+            // if (Lobby.getNumOfPeopleInRoom(io, roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
+            //     // the current room is full, we have to use a new room
+            //     io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
+            //     lobby.allocateNewRoom();
+            // }
         });
     }
 };

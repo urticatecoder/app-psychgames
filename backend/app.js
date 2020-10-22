@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const path = require('path');
 const lobby = require('./lobby.js').LobbyInstance;
+const DB_API = require('./db/db_api');
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
@@ -34,6 +35,11 @@ app.get("/login-code", ((req, res) => {
     }
     res.status(200).send({'isValid': isValid, 'error': error});
 }));
+
+app.get("/download", async (req, res) => {
+    let choices = await DB_API.getAllChoices();
+    res.status(200).json(choices);
+});
 
 app.get("/", (req, res) => {
     res.status(200).send("Hello World!");

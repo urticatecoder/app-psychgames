@@ -39,10 +39,19 @@ function savePlayerChoiceToDB(prolificID, selectedPlayerID, turnNum, madeByBot) 
     return choice.save();
 }
 
+async function getAllChoices(){
+    try {
+        return await ChoiceModel.find().select('-_id -__v');
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 module.exports = {
     saveNewPlayerToDB: saveNewPlayerToDB,
     findPlayerByID: findPlayerByID,
     findChoicesByID: findChoicesByID,
     savePlayerChoiceToDB: savePlayerChoiceToDB,
+    getAllChoices: getAllChoices,
 }
 
