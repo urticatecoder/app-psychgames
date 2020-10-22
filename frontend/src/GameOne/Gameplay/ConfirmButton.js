@@ -15,7 +15,7 @@ const styles = ({
       opacity: '.9',
       borderRadius: '8px',
       alignItems: 'center',
-      fontSize: '17px'
+      fontSize: '15px'
     },
   });
 
