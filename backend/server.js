@@ -65,37 +65,13 @@ io.on('connection', socket => {
         }
     });
 
-    socket.on('bot chooses rest of player choice', (prolific) => {
-        console.log(prolific);
-        let room = lobby.getRoomPlayerIsIn(prolificID);
-        let player = room.getPlayerWithID(prolificID);
-        BOT.saveBotChoiceToDB(prolific, room.turnNum, player.isBot);
-    })
-
-    socket.on('all choices in database', () => {
-        console.log('send message indicating all choices are in database');
-        // we need to check this before sending the message correct????
-        socket.to('room 1').emit('choices sent', 'all choices are in database');
-    })
-    /*
-    IS NEVER CALLED
-    socket.on('results for game 1', (prolificIDArray) => {
-        let prolific = prolificIDArray[0];
-        let room = lobby.getRoomPlayerIsIn(prolific);
-        let resultForAllPlayers = getResultsByProlificId(prolificIDArray, room);
-        socket.emit('location', resultForAllPlayers);
-        if(isGameOneDone){
-            socket.emit('end game one');
-        }
-    })
-    */
     socket.on('disconnect', () => {
         let prolificID = socket.prolificID;
         console.log(`Player with id ${prolificID} disconnected`);
 
         if (prolificID !== undefined) {
             let room = lobby.getRoomPlayerIsIn(prolificID);
-            let player = room.getPlayerWithID(prolificID); // TypeError: Cannot read property 'getPlayerWithID' of undefined
+            let player = room.getPlayerWithID(prolificID);
             player.setIsBot(true);
 
             socket.to(room.name).emit('left', "someone left");
