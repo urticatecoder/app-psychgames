@@ -26,7 +26,13 @@ db.once('open', function () {
 
 io.on('connection', socket => {
     console.log('New client connected');
-    require('./lobby.js').LobbySocketListener(io, socket);
+
+    if (process.env.START_MODE === 'bots_auto_join'){
+        require('./lobby.js').LobbyBotSocketListener(io, socket);
+    }
+    else{
+        require('./lobby.js').LobbyDefaultSocketListener(io, socket);
+    }
 
     socket.on('confirm choice for game 1', (prolificID, choices) => {
         // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
