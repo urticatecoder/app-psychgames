@@ -4,7 +4,7 @@ import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Lobby from './Lobby/Lobby';
 import Login from './Login/Login';
 import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
-import GroupScreen from './GameOne/Summary/GroupScreen';
+import Summary from './GameOne/Summary/Summary';
 import GameOne from './GameOne/Gameplay/GameOne';
 import Admin from './AdminPage/Admin';
 
@@ -25,10 +25,16 @@ const NO_CODES = ['', '', '', '', '', '']
 
 const TEST_CODE = 123
 const TEST_CODES = [123, 456, 789, 12, 34, 56]
+
+const NO_WINNERS = []
+const NO_LOSERS = []
+
 function App() {
 
   const [loginCode, setLoginCode] = useState(TEST_CODE)
   const [allLoginCodes, setAllLoginCodes] = useState(TEST_CODES)
+  const [winners, setWinners] = useState(NO_WINNERS)
+  const [losers, setLosers] = useState(NO_LOSERS)
 
   return (
     <div className="App">
@@ -39,11 +45,11 @@ function App() {
 
         <Route path='/admin' render={() => <Admin/>}/>
 
-        <Route path='/summary' render={() => (<GroupScreen/>)}/>
+        <Route path='/summary' render={() => (<Summary winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
 
         <Route 
-          path="/test" 
-          render={() => (<GameOne loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
+          path="/game-one" 
+          render={() => (<GameOne setWinners={setWinners} setLosers={setLosers} loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
         />
 
         <Route 
@@ -76,7 +82,7 @@ function App() {
 
         <Route
           path="/one-play-rules"
-          render={() => (<InstructionsScreen file='Instructions/PlayRules.txt' title='How do I play?' route=''/>)}
+          render={() => (<InstructionsScreen file='Instructions/PlayRules.txt' title='How do I play?' route='game-one'/>)}
         />
 
       </Router>

@@ -26,7 +26,6 @@ db.once('open', function () {
 
 io.on('connection', socket => {
     console.log('New client connected');
-
     require('./lobby.js').LobbySocketListener(io, socket);
 
     socket.on('confirm choice for game 1', (prolificID, choices) => {
@@ -41,63 +40,43 @@ io.on('connection', socket => {
         // let all bots select their choices
         let allIDs = lobby.getAllPlayersIDsInRoomWithName(room.roomName)
         room.players.forEach((playerInThisRoom) => {
-           if(playerInThisRoom.isBot){
-               let bot = playerInThisRoom;
-               let botChoices = BOT.determineBotChoice(bot.prolificID, allIDs);
-               DB_API.savePlayerChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
-               bot.recordChoices(botChoices);
-               room.addPlayerIDToConfirmedSet(bot.prolificID);
-           }
+            if (playerInThisRoom.isBot) {
+                let bot = playerInThisRoom;
+                let botChoices = BOT.determineBotChoice(bot.prolificID, allIDs);
+                DB_API.savePlayerChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
+                bot.recordChoices(botChoices);
+                room.addPlayerIDToConfirmedSet(bot.prolificID);
+            }
         });
 
-        if (room.hasEveryoneConfirmedChoiceInThisRoom()){ // all 6 have confirmed choices
-            room.advanceToNextRound();
+        if (room.hasEveryoneConfirmedChoiceInThisRoom()) { // all 6 have confirmed choices
             // calculate each player's new location and send it to everyone in the room
-            let room = lobby.getRoomPlayerIsIn(prolific);
-            let resultForAllPlayers = getResultsByProlificId(prolificIDArray, room);
-            if(isGameOneDone){
-                socket.emit('end game 1', getWinnersAndLosers(room));
+            let resultForAllPlayers = getResultsByProlificId(allIDs, room);
+            if (isGameOneDone(room)) {
+                let group = getWinnersAndLosers(room);
+                console.log("Winners: ", group[0]);
+                console.log("Losers: ", group[1]);
+                io.in(room.name).emit('end game 1', group[0], group[1]);
             }
             io.in(room.name).emit('location for game 1', resultForAllPlayers);
-        }
-        else{
+            room.advanceToNextRound();
+        } else {
             // emit('someone has confirmed his/her choice') to 5 other
         }
     });
 
-    socket.on('bot chooses rest of player choice', (prolific) => {
-        console.log(prolific);
-        let room = lobby.getRoomPlayerIsIn(prolificID);
-        let player = room.getPlayerWithID(prolificID);
-        BOT.saveBotChoiceToDB(prolific, room.turnNum, player.isBot);
-    })
-
-    socket.on('all choices in database', () => {
-        console.log('send message indicating all choices are in database');
-        // we need to check this before sending the message correct????
-        socket.to('room 1').emit('choices sent', 'all choices are in database');
-    })
-    /* 
-    IS NEVER CALLED
-    socket.on('results for game 1', (prolificIDArray) => {
-        let prolific = prolificIDArray[0];
-        let room = lobby.getRoomPlayerIsIn(prolific);
-        let resultForAllPlayers = getResultsByProlificId(prolificIDArray, room);
-        socket.emit('location', resultForAllPlayers);
-        if(isGameOneDone){
-            socket.emit('end game one');
-        }
-    })
-    */
     socket.on('disconnect', () => {
         let prolificID = socket.prolificID;
         console.log(`Player with id ${prolificID} disconnected`);
-        let room = lobby.getRoomPlayerIsIn(prolificID);
-        let player = room.getPlayerWithID(prolificID);
-        player.setIsBot(true);
 
-        socket.to(room.name).emit('left', "someone left");
-        socket.leave(room.name);
+        if (prolificID !== undefined) {
+            let room = lobby.getRoomPlayerIsIn(prolificID);
+            let player = room.getPlayerWithID(prolificID);
+            player.setIsBot(true);
+
+            socket.to(room.name).emit('left', "someone left");
+            socket.leave(room.name);
+        }
     });
 })
 
