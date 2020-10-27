@@ -27,10 +27,9 @@ db.once('open', function () {
 io.on('connection', socket => {
     console.log('New client connected');
 
-    if (process.env.START_MODE === 'bots_auto_join'){
+    if (process.env.START_MODE === 'bots_auto_join') {
         require('./lobby.js').LobbyBotSocketListener(io, socket);
-    }
-    else{
+    } else {
         require('./lobby.js').LobbyDefaultSocketListener(io, socket);
     }
 
@@ -62,6 +61,7 @@ io.on('connection', socket => {
                 let group = getWinnersAndLosers(room);
                 console.log("Winners: ", group[0]);
                 console.log("Losers: ", group[1]);
+                room.setGameOneResults(group);
                 io.in(room.name).emit('end game 1', group[0], group[1]);
             }
             io.in(room.name).emit('location for game 1', resultForAllPlayers);
