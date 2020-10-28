@@ -22,7 +22,7 @@ describe('Location sending and calculation', () => {
         let results = getResultsByProlificId(testID, room)
         console.log(results);
         for(var i = 0; i < results.length; i++ ){
-            assert(results[i] === 15);
+            assert(results[i] === 8);
         }
         done();
     });
@@ -62,12 +62,12 @@ describe('Location sending and calculation', () => {
 
         const count = getResultsByProlificId(testID, room);
         console.log(count);
-        assert(count[0] == 15 && count[1] == 15);
+        assert(count[0] == 8 && count[1] == 8);
         assert(count[2] == 0);
 
         const newRoundCount = getResultsByProlificId(testID, room);
         console.log(newRoundCount);
-        assert(newRoundCount[0] == 30 && newRoundCount[1] == 30);
+        assert(newRoundCount[0] == 16 && newRoundCount[1] == 16);
         assert(newRoundCount[2] == 0);
         done();
     });
