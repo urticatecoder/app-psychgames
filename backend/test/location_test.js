@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const { saveNewPlayerToDB } = require('../db/db_api.js');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
-const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses } = require('../db/results.js');
+const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
+calculateResults } = require('../db/results.js');
 const DB_API = require('../db/db_api.js');
 
 
@@ -157,6 +158,26 @@ describe('Location sending and calculation', () => {
 
         let doubleBonuses = calculateAllDoubleBonuses(testID, room);
         assert (doubleBonuses.length == 2);
+        done();
+    });
+
+    it('calculates single bonus', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id3'];
+        var choicesTwo = ['test_id3'];
+        var choicesThree = ['test_id2', 'test_id1'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        let singleMap = calculateResults(testID, room);
+        assert(singleMap.get('test_id1') == 0);
+        assert(singleMap.get('test_id2') == 0);
+        assert(singleMap.get('test_id3') == 0);
         done();
     });
 
