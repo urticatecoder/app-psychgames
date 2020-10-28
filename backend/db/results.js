@@ -44,7 +44,38 @@ function calculateAllDoubleBonuses(prolificIDArray, room) {
     let allDoubleBonuses = [];
 
     for (let i = 0; i < prolificIDArray.length; i++) {
-
+        let playerProlific = prolificIDArray[i];
+        let choicesProlific = allChoices.get(playerProlific);
+        let tempDoubleBonus = [];
+        let double = false;
+        let triple = false;
+        if(choicesProlific == 2){
+            let firstPlayerChosen;
+            let secondPlayerChosen;
+            ({ firstPlayerChosen, secondPlayerChosen, triple } = isTripleBonus(choicesProlific, allChoices, triple, playerProlific));
+        }
+        if(!triple){
+            for (var j = 0; j < choicesProlific.length; j++) {
+                let playerChosen = choicesProlific[j];
+                let choicesChosenPlayer = allChoices.get(playerChosen);
+                for (var k = 0; k < choicesChosenPlayer.length; k++) {
+                    if (choicesChosenPlayer[k] === (playerProlific)) {
+                        tempDoubleBonus.push(playerProlific);
+                        tempDoubleBonus.push(playerChosen);
+                    }
+                }
+            }
+        }
+        //place into double bonus list if not already in it
+        for(var idx = 0; idx < allDoubleBonuses.length; idx++){
+            if(allDoubleBonuses[idx][0] == playerProlific && allDoubleBonuses[idx][1] == playerChosen
+                || allDoubleBonuses[idx][0] == playerChosen && allDoubleBonuses[idx][1] == playerProlific){
+                    double = true;
+                }
+        }
+        if(double){
+            allDoubleBonuses.push(tempDoubleBonus);
+        }
     }
 }
 
@@ -135,4 +166,5 @@ module.exports = {
     isGameOneDone: isGameOneDone,
     getWinnersAndLosers: getWinnersAndLosers,
     calculateAllTripleBonuses: calculateAllTripleBonuses,
+    calculateAllDoubleBonuses: calculateAllDoubleBonuses,
 }

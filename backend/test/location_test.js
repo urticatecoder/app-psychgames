@@ -142,6 +142,25 @@ describe('Location sending and calculation', () => {
         assert(tripleBonuses[1][2] == 'test_id6');
         done();
     });
+    it('calculates double bonus', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id3'];
+        var choicesTwo = ['test_id3'];
+        var choicesThree = ['test_id2', 'test_id1'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        let tripleBonuses = calculateAllTripleBonuses(testID, room);
+        assert(tripleBonuses[0][0] == 'test_id1');
+        assert(tripleBonuses[0][1] == 'test_id2');
+        assert(tripleBonuses[0][2] == 'test_id3');
+        done();
+    });
 
 
 
