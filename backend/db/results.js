@@ -4,13 +4,12 @@ const choice = require('./models/choice.js');
 const lobby = require('../lobby.js').LobbyInstance;
 
 function getResultsByProlificId(prolificIDArray, room) {
-    let allChoices = room.getEveryoneChoiceAtCurrentTurn();
     let allLocations = room.playerLocation;
     let allResults = [];
 
     for (let i = 0; i < prolificIDArray.length; i++) {
         let playerProlific = prolificIDArray[i];
-        let playerRoundResult = calculateDoubleAndTripleBonusesOfID(playerProlific, allChoices);
+        let playerRoundResult = getResults(playerProlific, prolificIDArray, room);
 
         let playerInitialLocation = allLocations.get(playerProlific);
         let newPlayerLocation = playerInitialLocation + playerRoundResult;

@@ -72,7 +72,7 @@ io.on('connection', socket => {
             if(allDoubleBonus.length > 0){
                 io.in(room.name).emit('double bonus game 1', allDoubleBonus, 8);
             }
-            //players will be emitted to the "net zero" position after showing who selected who
+            //players will be emitted to the "net zero" position after showing who selected who (to be implemented)
             let resultForAllPlayers = getResultsByProlificId(allIDs, room);
             io.in(room.name).emit('location for game 1', resultForAllPlayers);
             room.advanceToNextRound();
