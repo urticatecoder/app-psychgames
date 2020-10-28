@@ -19,7 +19,7 @@
     "yarn": "^1.22.10"
   },
   "scripts": {
-    "start": "node backend/server.js",
+    "start": "START_MODE=bots_auto_join node backend/server.js",
     "start-with-bots": "START_MODE=bots_auto_join node backend/server.js",
     "test": "mocha backend/test/*.js",
     "test-coverage": "nyc --reporter=text-summary mocha backend/test/*.js",
