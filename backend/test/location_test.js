@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const { saveNewPlayerToDB } = require('../db/db_api.js');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
-const { getResultsByProlificId, isGameOneDone } = require('../db/results.js');
+const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
+calculateResults, getResults } = require('../db/results.js');
 const DB_API = require('../db/db_api.js');
 
 
@@ -22,7 +23,7 @@ describe('Location sending and calculation', () => {
         let results = getResultsByProlificId(testID, room)
         console.log(results);
         for(var i = 0; i < results.length; i++ ){
-            assert(results[i] === 30);
+            assert(results[i] === 8);
         }
         done();
     });
@@ -62,12 +63,12 @@ describe('Location sending and calculation', () => {
 
         const count = getResultsByProlificId(testID, room);
         console.log(count);
-        assert(count[0] == 30 && count[1] == 30);
+        assert(count[0] == 8 && count[1] == 12);
         assert(count[2] == 0);
 
         const newRoundCount = getResultsByProlificId(testID, room);
         console.log(newRoundCount);
-        assert(newRoundCount[0] == 60 && newRoundCount[1] == 60);
+        assert(newRoundCount[0] == 16 && newRoundCount[1] == 24);
         assert(newRoundCount[2] == 0);
         done();
     });
@@ -92,6 +93,156 @@ describe('Location sending and calculation', () => {
     //     assert(isGameOneDone(room) == true);
     //     done();
     // });
+    it('calculates triple bonus', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id2', 'test_id3'];
+        var choicesTwo = ['test_id1', 'test_id3'];
+        var choicesThree = ['test_id2', 'test_id1'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        let tripleBonuses = calculateAllTripleBonuses(testID, room);
+        assert(tripleBonuses[0][0] == 'test_id1');
+        assert(tripleBonuses[0][1] == 'test_id2');
+        assert(tripleBonuses[0][2] == 'test_id3');
+        done();
+    });
+    it('calculates triple bonus with 2 triple bonuses', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3', 'test_id4', 'test_id5', 'test_id6'];
+        var choicesOne = ['test_id2', 'test_id3'];
+        var choicesTwo = ['test_id1', 'test_id3'];
+        var choicesThree = ['test_id2', 'test_id1'];
+        var choicesFour = ['test_id5', 'test_id6'];
+        var choicesFive = ['test_id6', 'test_id4'];
+        var choicesSix = ['test_id5', 'test_id4'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.addPlayer(new Player('test_id4'));
+        room.addPlayer(new Player('test_id5'));
+        room.addPlayer(new Player('test_id6'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+        room.getPlayerWithID('test_id4').recordChoices(choicesFour);
+        room.getPlayerWithID('test_id5').recordChoices(choicesFive);
+        room.getPlayerWithID('test_id6').recordChoices(choicesSix);
+
+        let tripleBonuses = calculateAllTripleBonuses(testID, room);
+        assert(tripleBonuses[0][0] == 'test_id1');
+        assert(tripleBonuses[0][1] == 'test_id2');
+        assert(tripleBonuses[0][2] == 'test_id3');
+        assert(tripleBonuses[1][0] == 'test_id4');
+        assert(tripleBonuses[1][1] == 'test_id5');
+        assert(tripleBonuses[1][2] == 'test_id6');
+        done();
+    });
+    it('calculates double bonus', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id3'];
+        var choicesTwo = ['test_id3'];
+        var choicesThree = ['test_id2', 'test_id1'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        let doubleBonuses = calculateAllDoubleBonuses(testID, room);
+        assert (doubleBonuses.length == 2);
+        done();
+    });
+
+    it('calculates single bonus', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id3'];
+        var choicesTwo = ['test_id3'];
+        var choicesThree = ['test_id2', 'test_id1'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        let singleMap = calculateResults(testID, room);
+        assert(singleMap.get('test_id1') == 0);
+        assert(singleMap.get('test_id2') == 0);
+        assert(singleMap.get('test_id3') == 0);
+        done();
+    });
+    it('calculates location correctly for no single bonuses', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id3'];
+        var choicesTwo = ['test_id3'];
+        var choicesThree = ['test_id2', 'test_id1'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        let resultsOne = getResults('test_id1',testID, room);
+        let resultsTwo = getResults('test_id2',testID, room);
+        let resultsThree = getResults('test_id3',testID, room);
+        assert(resultsOne == 8);
+        assert(resultsTwo == 8);
+        assert(resultsThree == 16);
+        done();
+    });
+    it('calculates location correctly for single bonuses', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id2'];
+        var choicesTwo = ['test_id3'];
+        var choicesThree = ['test_id1'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        let resultsOne = getResults('test_id1',testID, room);
+        let resultsTwo = getResults('test_id2',testID, room);
+        let resultsThree = getResults('test_id3',testID, room);
+        assert(resultsOne == 4);
+        assert(resultsTwo == 4);
+        assert(resultsThree == 4);
+        done();
+    });
+    it('calculates location correctly for single and double bonuses', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id2', 'test_id3'];
+        var choicesTwo = ['test_id1'];
+        var choicesThree = ['test_id1', 'test_id2'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        let resultsOne = getResults('test_id1',testID, room);
+        let resultsTwo = getResults('test_id2',testID, room);
+        let resultsThree = getResults('test_id3',testID, room);
+        assert(resultsOne == 16);
+        assert(resultsTwo == 12);
+        assert(resultsThree == 8);
+        done();
+    });
 
 
 

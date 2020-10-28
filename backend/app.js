@@ -41,6 +41,30 @@ app.get("/download", async (req, res) => {
     res.status(200).json(choices);
 });
 
+app.get("/player-ids", (req, res) => {
+    let prolificID = req.query.loginCode;
+    let room = lobby.getRoomPlayerIsIn(prolificID);
+    if (room === undefined){
+        res.status(200).send({"error": `ProlificID ${prolificID} not found.`});
+    }
+    else{
+        let ids = lobby.getAllPlayersIDsInRoomWithName(room.name);
+        res.status(200).send({"ids": ids});
+    }
+});
+
+app.get("/game1-results", (req, res) => {
+    let prolificID = req.query.loginCode;
+    let room = lobby.getRoomPlayerIsIn(prolificID);
+    if (room === undefined){
+        res.status(200).send({"error": `ProlificID ${prolificID} not found.`});
+    }
+    else {
+        let results = room.gameOneResults;
+        res.status(200).send({"winners": results[0], "losers": results[1]});
+    }
+});
+
 app.get("/", (req, res) => {
     res.status(200).send("Hello World!");
 });

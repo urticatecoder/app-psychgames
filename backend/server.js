@@ -3,7 +3,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
 const BOT = require("./db/bot");
-const {getResultsByProlificId, isGameOneDone, getWinnersAndLosers} = require("./db/results");
+const {getResultsByProlificId, isGameOneDone, getWinnersAndLosers, calculateAllTripleBonuses, calculateAllDoubleBonuses} = require("./db/results");
 const lobby = require("./lobby.js").LobbyInstance;
 
 // Set up mongoose connection
@@ -27,7 +27,11 @@ db.once('open', function () {
 io.on('connection', socket => {
     console.log('New client connected');
 
-    require('./lobby.js').LobbySocketListener(io, socket);
+    if (process.env.START_MODE === 'bots_auto_join') {
+        require('./lobby.js').LobbyBotSocketListener(io, socket);
+    } else {
+        require('./lobby.js').LobbyDefaultSocketListener(io, socket);
+    }
 
     socket.on('confirm choice for game 1', (prolificID, choices) => {
         // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
@@ -51,14 +55,25 @@ io.on('connection', socket => {
         });
 
         if (room.hasEveryoneConfirmedChoiceInThisRoom()) { // all 6 have confirmed choices
-            // calculate each player's new location and send it to everyone in the room
-            let resultForAllPlayers = getResultsByProlificId(allIDs, room);
             if (isGameOneDone(room)) {
                 let group = getWinnersAndLosers(room);
                 console.log("Winners: ", group[0]);
                 console.log("Losers: ", group[1]);
+                room.setGameOneResults(group);
                 io.in(room.name).emit('end game 1', group[0], group[1]);
             }
+            //emit list of lists of prolificIDs and int of how much to move up of triple bonuses 
+            let allTripleBonus = calculateAllTripleBonuses(prolificID, room);
+            if(allTripleBonus.length > 0){
+                io.in(room.name).emit('triple bonus game 1', allTripleBonus, 15);
+            }
+            //emit list of lists of prolificIDs and int of how much to move up of double bonuses
+            let allDoubleBonus = calculateAllDoubleBonuses(prolificID, room);
+            if(allDoubleBonus.length > 0){
+                io.in(room.name).emit('double bonus game 1', allDoubleBonus, 8);
+            }
+            //players will be emitted to the "net zero" position after showing who selected who (to be implemented)
+            let resultForAllPlayers = getResultsByProlificId(allIDs, room);
             io.in(room.name).emit('location for game 1', resultForAllPlayers);
             room.advanceToNextRound();
         } else {
@@ -66,39 +81,18 @@ io.on('connection', socket => {
         }
     });
 
-    socket.on('bot chooses rest of player choice', (prolific) => {
-        console.log(prolific);
-        let room = lobby.getRoomPlayerIsIn(prolificID);
-        let player = room.getPlayerWithID(prolificID);
-        BOT.saveBotChoiceToDB(prolific, room.turnNum, player.isBot);
-    })
-
-    socket.on('all choices in database', () => {
-        console.log('send message indicating all choices are in database');
-        // we need to check this before sending the message correct????
-        socket.to('room 1').emit('choices sent', 'all choices are in database');
-    })
-    /*
-    IS NEVER CALLED
-    socket.on('results for game 1', (prolificIDArray) => {
-        let prolific = prolificIDArray[0];
-        let room = lobby.getRoomPlayerIsIn(prolific);
-        let resultForAllPlayers = getResultsByProlificId(prolificIDArray, room);
-        socket.emit('location', resultForAllPlayers);
-        if(isGameOneDone){
-            socket.emit('end game one');
-        }
-    })
-    */
     socket.on('disconnect', () => {
         let prolificID = socket.prolificID;
         console.log(`Player with id ${prolificID} disconnected`);
-        let room = lobby.getRoomPlayerIsIn(prolificID);
-        let player = room.getPlayerWithID(prolificID);
-        player.setIsBot(true);
 
-        socket.to(room.name).emit('left', "someone left");
-        socket.leave(room.name);
+        if (prolificID !== undefined) {
+            let room = lobby.getRoomPlayerIsIn(prolificID);
+            let player = room.getPlayerWithID(prolificID);
+            player.setIsBot(true);
+
+            socket.to(room.name).emit('left', "someone left");
+            socket.leave(room.name);
+        }
     });
 })
 
