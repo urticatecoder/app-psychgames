@@ -39,53 +39,68 @@ function calculateDoubleAndTripleBonusesOfID(playerProlific, allChoices) {
     return count;
 }
 
-function calculateSingleBonusesOfID(playerProlific, allChoices, prolificIDArray) {
+function calculateAllDoubleBonuses(prolificIDArray, room) {
+    let allChoices = room.getEveryoneChoiceAtCurrentTurn();
+    let allDoubleBonuses = [];
 
+    for (let i = 0; i < prolificIDArray.length; i++) {
+
+    }
 }
 
 function calculateAllTripleBonuses(prolificIDArray, room) {
     let allChoices = room.getEveryoneChoiceAtCurrentTurn();
     let allTripleBonuses = [];
-
     for (let i = 0; i < prolificIDArray.length; i++) {
         let playerProlific = prolificIDArray[i];
         let choicesProlific = allChoices.get(playerProlific);
         let tempTripleBonus = [];
+        let triple = false;
         if (choicesProlific.length == 2) {
-            let firstPlayerChosen = choicesProlific[0];
-            let secondPlayerChosen = choicesProlific[1];
-            let firstPlayerChoices = allChoices.get(firstPlayerChosen);
-            let secondPlayerChoices = allChoices.get(secondPlayerChosen);
-            if (firstPlayerChoices.length == 2 && secondPlayerChoices.length == 2) {
-                let triple = true;
-                for (var k = 0; k < 2; k++) {
-                    if (firstPlayerChoices[k] != playerProlific && firstPlayerChoices[k] != secondPlayerChosen) {
-                        triple = false;
-                    }
-                    if (secondPlayerChoices[k] != playerProlific && secondPlayerChoices[k] != firstPlayerChosen) {
-                        triple = false;
-                    }
-                }
-                if (triple) {
-                    let duplicate = false;
-                    for (var j = 0; j < allTripleBonuses.length; j++) {
-                        if (allTripleBonuses[j].includes(playerProlific) || allTripleBonuses[j].includes(firstPlayerChosen
-                            || allTripleBonuses[j].includes(secondPlayerChosen))) {
-                            duplicate = true;
-                        }
-                    }
-                    if (!duplicate) {
-                        tempTripleBonus.push(playerProlific);
-                        tempTripleBonus.push(firstPlayerChosen);
-                        tempTripleBonus.push(secondPlayerChosen);
-                        allTripleBonuses.push(tempTripleBonus);
-                    }
-                }
-            }
-
+            let firstPlayerChosen;
+            let secondPlayerChosen;
+            ({ firstPlayerChosen, secondPlayerChosen, triple } = isTripleBonus(choicesProlific, allChoices, triple, playerProlific));
+            placeIntoTripleBonus(triple, allTripleBonuses, playerProlific, firstPlayerChosen, secondPlayerChosen, tempTripleBonus);
         }
     }
     return allTripleBonuses;
+}
+
+function isTripleBonus(choicesProlific, allChoices, triple, playerProlific) {
+    let firstPlayerChosen = choicesProlific[0];
+    let secondPlayerChosen = choicesProlific[1];
+    let firstPlayerChoices = allChoices.get(firstPlayerChosen);
+    let secondPlayerChoices = allChoices.get(secondPlayerChosen);
+    if (firstPlayerChoices.length == 2 && secondPlayerChoices.length == 2) {
+        triple = true;
+        for (var k = 0; k < 2; k++) {
+            if (firstPlayerChoices[k] != playerProlific && firstPlayerChoices[k] != secondPlayerChosen) {
+                triple = false;
+            }
+            if (secondPlayerChoices[k] != playerProlific && secondPlayerChoices[k] != firstPlayerChosen) {
+                triple = false;
+            }
+        }
+    }
+    return { firstPlayerChosen, secondPlayerChosen, triple };
+}
+
+function placeIntoTripleBonus(triple, allTripleBonuses, playerProlific, firstPlayerChosen, secondPlayerChosen, tempTripleBonus) {
+    if (triple) {
+        let duplicate = false;
+        for (var j = 0; j < allTripleBonuses.length; j++) {
+            if (allTripleBonuses[j].includes(playerProlific) || allTripleBonuses[j].includes(firstPlayerChosen
+                || allTripleBonuses[j].includes(secondPlayerChosen))) {
+                duplicate = true;
+            }
+        }
+        if (!duplicate) {
+            tempTripleBonus.push(playerProlific);
+            tempTripleBonus.push(firstPlayerChosen);
+            tempTripleBonus.push(secondPlayerChosen);
+            allTripleBonuses.push(tempTripleBonus);
+        }
+    }
 }
 
 function isGameOneDone(room) {
