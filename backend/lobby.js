@@ -36,7 +36,7 @@ class Lobby {
 
     findRoomForPlayerToJoin(prolificID) {
         if (this.playerToRoom.has(prolificID)) {
-            throw 'Duplicated prolificID found';
+            throw `Duplicated prolificID ${prolificID} found`;
         }
         let player = new Player(prolificID);
         this.currRoom.addPlayer(player);
@@ -60,6 +60,16 @@ class Lobby {
     getNumOfPlayersInRoom(roomName) {
         return this.roomToPlayer.get(roomName).length;
     }
+
+    reset(){
+        this.currRoomID = 0;
+        this.rooms = [];
+        this.currRoom = undefined;
+        this.playerToRoom.clear();
+        this.roomToPlayer.clear();
+        this.botID = 0;
+        this.allocateNewRoom();
+    }
 }
 
 class Room {
@@ -67,6 +77,7 @@ class Room {
     players = []; // holds player objects who are in this room
     playersWithChoiceConfirmed = new Set(); // holds prolificID of players who have confirmed their choices
     allPlayerLocations = new Map();
+    gameOneResults = [];
 
     constructor(roomName) {
         if (roomName === undefined) {
@@ -126,6 +137,13 @@ class Room {
         );
     }
 
+    get gameOneResults() {
+        return this.gameOneResults;
+    }
+
+    setGameOneResults(results) {
+        this.gameOneResults = results;
+    }
 
 }
 
@@ -170,10 +188,10 @@ module.exports = {
     Room,
     Player,
     LobbyInstance: lobby,
-    LobbySocketListener: function (io, socket) {
+    LobbyBotSocketListener: function (io, socket) {
         socket.on("enter lobby", (prolificID) => {
             prolificID = prolificID.toString();
-            console.log("Received enter lobby from frontend with prolificID: ", prolificID);
+            // console.log("Received enter lobby from frontend with prolificID: ", prolificID);
             let roomName = lobby.findRoomForPlayerToJoin(prolificID);
             socket.join(roomName);
             socket.roomName = roomName;
@@ -192,12 +210,29 @@ module.exports = {
                 io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
                 lobby.allocateNewRoom();
             }
-
             // if (Lobby.getNumOfPeopleInRoom(io, roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
             //     // the current room is full, we have to use a new room
             //     io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
             //     lobby.allocateNewRoom();
             // }
+        });
+    },
+    LobbyDefaultSocketListener: function (io, socket) {
+        socket.on("enter lobby", (prolificID) => {
+            prolificID = prolificID.toString();
+            let roomName = lobby.findRoomForPlayerToJoin(prolificID);
+            socket.join(roomName);
+            socket.roomName = roomName;
+            socket.prolificID = prolificID;
+            socket.to(roomName).emit('join', socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
+            socket.emit('num of people in the room', Lobby.getNumOfPeopleInRoom(io, roomName)); // only to self
+            // console.log(Lobby.getNumOfPeopleInRoom(io, roomName));
+
+            if (lobby.getNumOfPlayersInRoom(roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
+                // the current room is full, we have to use a new room
+                io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
+                lobby.allocateNewRoom();
+            }
         });
     }
 };
