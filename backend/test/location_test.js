@@ -5,7 +5,7 @@ const { saveNewPlayerToDB } = require('../db/db_api.js');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
-calculateResults } = require('../db/results.js');
+calculateResults, getResults } = require('../db/results.js');
 const DB_API = require('../db/db_api.js');
 
 
@@ -178,6 +178,69 @@ describe('Location sending and calculation', () => {
         assert(singleMap.get('test_id1') == 0);
         assert(singleMap.get('test_id2') == 0);
         assert(singleMap.get('test_id3') == 0);
+        done();
+    });
+    it('calculates location correctly for no single bonuses', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id3'];
+        var choicesTwo = ['test_id3'];
+        var choicesThree = ['test_id2', 'test_id1'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        let resultsOne = getResults('test_id1',testID, room);
+        let resultsTwo = getResults('test_id2',testID, room);
+        let resultsThree = getResults('test_id3',testID, room);
+        assert(resultsOne == 8);
+        assert(resultsTwo == 8);
+        assert(resultsThree == 16);
+        done();
+    });
+    it('calculates location correctly for single bonuses', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id2'];
+        var choicesTwo = ['test_id3'];
+        var choicesThree = ['test_id1'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        let resultsOne = getResults('test_id1',testID, room);
+        let resultsTwo = getResults('test_id2',testID, room);
+        let resultsThree = getResults('test_id3',testID, room);
+        assert(resultsOne == 4);
+        assert(resultsTwo == 4);
+        assert(resultsThree == 4);
+        done();
+    });
+    it('calculates location correctly for single and double bonuses', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id2', 'test_id3'];
+        var choicesTwo = ['test_id1'];
+        var choicesThree = ['test_id1', 'test_id2'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        let resultsOne = getResults('test_id1',testID, room);
+        let resultsTwo = getResults('test_id2',testID, room);
+        let resultsThree = getResults('test_id3',testID, room);
+        assert(resultsOne == 16);
+        assert(resultsTwo == 12);
+        assert(resultsThree == 8);
         done();
     });
 
