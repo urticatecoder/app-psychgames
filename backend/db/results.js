@@ -6,11 +6,12 @@ const lobby = require('../lobby.js').LobbyInstance;
 function getResultsByProlificId(prolificIDArray, room) {
     let allChoices = room.getEveryoneChoiceAtCurrentTurn();
     let allLocations = room.playerLocation;
-    // let allChoices = DB_API.findChoicesByID(prolificId, turnNum);
     let allResults = [];
+
     for(let i = 0; i < prolificIDArray.length; i++){
         let playerProlific = prolificIDArray[i];
-        let playerRoundResult = calculateResultOfID( playerProlific, allChoices);
+        let playerRoundResult = calculateDoubleAndTripleBonusesOfID( playerProlific, allChoices);
+        
         let playerInitialLocation = allLocations.get(playerProlific);
         let newPlayerLocation = playerInitialLocation + playerRoundResult;
         room.setPlayerLocation(playerProlific, newPlayerLocation);
@@ -19,7 +20,7 @@ function getResultsByProlificId(prolificIDArray, room) {
     return allResults;
 }
 
-function calculateResultOfID(playerProlific, allChoices){
+function calculateDoubleAndTripleBonusesOfID(playerProlific, allChoices){
     let choicesProlific = allChoices.get(playerProlific);
     let count = 0;
     for(var i = 0; i < choicesProlific.length; i++){
@@ -27,15 +28,65 @@ function calculateResultOfID(playerProlific, allChoices){
         let choicesChosenPlayer = allChoices.get(playerChosen);
         for (var j = 0; j < choicesChosenPlayer.length; j++) {
             if (choicesChosenPlayer[j] === (playerProlific)) {
-                count += 30;
+                count += 15;
             }
         }
     }
-    if(count === 8){
+    if(count === 30){
         console.log('TRIPLE BONUS');
-        return (count - 1);
+        return (count);
     }
     return count;
+}
+
+function calculateSingleBonusesOfID(playerProlific, allChoices, prolificIDArray){
+
+}
+
+function calculateAllTripleBonuses(prolificIDArray, room){
+    let allChoices = room.getEveryoneChoiceAtCurrentTurn();
+    let allTripleBonuses = [];
+
+    for(let i = 0; i < prolificIDArray.length; i++){
+        let playerProlific = prolificIDArray[i];
+        let choicesProlific = allChoices.get(playerProlific);
+        let tempTripleBonus = [];
+        if(choicesProlific.length == 2){
+            let firstPlayerChosen = choicesProlific[0];
+            let secondPlayerChosen = choicesProlific[1];
+            if(playerProlific == firstPlayerChosen || playerProlific == secondPlayerChosen){
+                let firstPlayerChoices = allChoices.get(firstPlayerChosen);
+                let secondPlayerChoices = allChoices.get(secondPlayerChosen);
+                if(firstPlayerChoices == 2 && secondPlayerChoices == 2){
+                    let triple = true;
+                    for(var k = 0; k < 2; k++){
+                        if(firstPlayerChoices[k] != playerProlific && firstPlayerChoices[k] != secondPlayerChosen){
+                            triple = false;
+                        }
+                        if(secondPlayerChoices[k] != playerProlific && secondPlayerChoices[k] != firstPlayerChosen){
+                            triple = false;
+                        }
+                    }
+                    if(triple){
+                        let duplicate = false;
+                        for(var j = 0; j<allTripleBonuses.length; j++){
+                            if(allTripleBonuses[j].includes(playerProlific) || allTripleBonuses[j].includes(firstPlayerChosen 
+                                || allTripleBonuses[j].includes(secondPlayerChosen))){
+                                    duplicate = true;
+                                }
+                        }
+                        if(!duplicate){
+                            tempTripleBonus.push(playerProlific);
+                            tempTripleBonus.push(firstPlayerChosen);
+                            tempTripleBonus.push(secondPlayerChosen);
+                            allTripleBonuses.push(tempTripleBonus);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return allTripleBonuses;
 }
 
 function isGameOneDone(room){

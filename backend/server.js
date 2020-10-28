@@ -50,14 +50,18 @@ io.on('connection', socket => {
         });
 
         if (room.hasEveryoneConfirmedChoiceInThisRoom()) { // all 6 have confirmed choices
-            // calculate each player's new location and send it to everyone in the room
-            let resultForAllPlayers = getResultsByProlificId(allIDs, room);
             if (isGameOneDone(room)) {
                 let group = getWinnersAndLosers(room);
                 console.log("Winners: ", group[0]);
                 console.log("Losers: ", group[1]);
                 io.in(room.name).emit('end game 1', group[0], group[1]);
             }
+            //emit list of lists of prolificIDs and int of how much to move up of triple bonuses 
+
+            //emit list of lists of prolificIDs and int of how much to move up of double bonuses
+
+            //players will be emitted to the "net zero" position after showing who selected who
+            let resultForAllPlayers = getResultsByProlificId(allIDs, room);
             io.in(room.name).emit('location for game 1', resultForAllPlayers);
             room.advanceToNextRound();
         } else {
