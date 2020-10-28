@@ -46,8 +46,7 @@ function calculateAllDoubleBonuses(prolificIDArray, room) {
     for (let i = 0; i < prolificIDArray.length; i++) {
         let playerProlific = prolificIDArray[i];
         let choicesProlific = allChoices.get(playerProlific);
-        let tempDoubleBonus = [];
-        let double = false;
+        let double = true;
         let triple = false;
         if(choicesProlific == 2){
             let firstPlayerChosen;
@@ -58,25 +57,31 @@ function calculateAllDoubleBonuses(prolificIDArray, room) {
             for (var j = 0; j < choicesProlific.length; j++) {
                 let playerChosen = choicesProlific[j];
                 let choicesChosenPlayer = allChoices.get(playerChosen);
+                let tempDoubleBonus = [];
                 for (var k = 0; k < choicesChosenPlayer.length; k++) {
                     if (choicesChosenPlayer[k] === (playerProlific)) {
                         tempDoubleBonus.push(playerProlific);
                         tempDoubleBonus.push(playerChosen);
                     }
                 }
+                //place into double bonus list if not already in it
+                for (var idx = 0; idx < allDoubleBonuses.length; idx++) {
+                    console.log(allDoubleBonuses[idx][0]);
+                    console.log(allDoubleBonuses[idx][1]);
+
+                    if(allDoubleBonuses[idx][0] == playerProlific || allDoubleBonuses[idx][1] ==playerProlific){
+                        if(allDoubleBonuses[idx][1] == playerChosen || allDoubleBonuses[idx][0] ==playerChosen){
+                            double = false;
+                        }
+                    }
+                }
+                if(double){
+                    allDoubleBonuses.push(tempDoubleBonus);
+                }
             }
         }
-        //place into double bonus list if not already in it
-        for(var idx = 0; idx < allDoubleBonuses.length; idx++){
-            if(allDoubleBonuses[idx][0] == playerProlific && allDoubleBonuses[idx][1] == playerChosen
-                || allDoubleBonuses[idx][0] == playerChosen && allDoubleBonuses[idx][1] == playerProlific){
-                    double = true;
-                }
-        }
-        if(double){
-            allDoubleBonuses.push(tempDoubleBonus);
-        }
     }
+    return allDoubleBonuses;
 }
 
 function calculateAllTripleBonuses(prolificIDArray, room) {

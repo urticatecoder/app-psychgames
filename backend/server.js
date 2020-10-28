@@ -3,7 +3,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
 const BOT = require("./db/bot");
-const {getResultsByProlificId, isGameOneDone, getWinnersAndLosers} = require("./db/results");
+const {getResultsByProlificId, isGameOneDone, getWinnersAndLosers, calculateAllTripleBonuses, calculateAllDoubleBonuses} = require("./db/results");
 const lobby = require("./lobby.js").LobbyInstance;
 
 // Set up mongoose connection
@@ -57,9 +57,15 @@ io.on('connection', socket => {
                 io.in(room.name).emit('end game 1', group[0], group[1]);
             }
             //emit list of lists of prolificIDs and int of how much to move up of triple bonuses 
-
+            let allTripleBonus = calculateAllTripleBonuses(prolificID, room);
+            if(allTripleBonus.length > 0){
+                io.in(room.name).emit('triple bonus game 1', allTripleBonus, 15);
+            }
             //emit list of lists of prolificIDs and int of how much to move up of double bonuses
-
+            let allDoubleBonus = calculateAllDoubleBonuses(prolificID, room);
+            if(allDoubleBonus.length > 0){
+                io.in(room.name).emit('double bonus game 1', allDoubleBonus, 8);
+            }
             //players will be emitted to the "net zero" position after showing who selected who
             let resultForAllPlayers = getResultsByProlificId(allIDs, room);
             io.in(room.name).emit('location for game 1', resultForAllPlayers);

@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const { saveNewPlayerToDB } = require('../db/db_api.js');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
-const { getResultsByProlificId, isGameOneDone, getWinnersAndLosers, calculateAllTripleBonuses } = require('../db/results.js');
+const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses } = require('../db/results.js');
 const DB_API = require('../db/db_api.js');
 
 
@@ -155,10 +155,8 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
 
-        let tripleBonuses = calculateAllTripleBonuses(testID, room);
-        assert(tripleBonuses[0][0] == 'test_id1');
-        assert(tripleBonuses[0][1] == 'test_id2');
-        assert(tripleBonuses[0][2] == 'test_id3');
+        let doubleBonuses = calculateAllDoubleBonuses(testID, room);
+        assert (doubleBonuses.length == 2);
         done();
     });
 
