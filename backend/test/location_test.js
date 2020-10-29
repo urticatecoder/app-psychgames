@@ -243,6 +243,44 @@ describe('Location sending and calculation', () => {
         assert(resultsThree == 8);
         done();
     });
+    it('gets empty triple and double bonus', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id3'];
+        var choicesTwo = ['test_id1'];
+        var choicesThree = ['test_id2'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        let triple = calculateAllTripleBonuses(testID, room);
+        let double = calculateAllDoubleBonuses(testID, room);
+        assert(triple.length == 0);
+        assert(double.length == 0);
+        done();
+    });
+    it('gets all locations correctly', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id3'];
+        var choicesTwo = ['test_id1'];
+        var choicesThree = ['test_id2'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+
+        let results = getResultsByProlificId(testID, room);
+        assert(results[0] == 4);
+        assert(results[1] == 4);
+        assert(results[2] == 4);
+        done();
+    });
 
 
 
