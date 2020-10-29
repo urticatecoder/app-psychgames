@@ -162,7 +162,7 @@ function calculateAllDoubleBonuses(prolificIDArray, room) {
                         }
                     }
                 }
-                if(double){
+                if(double && tempDoubleBonus.length != 0){
                     allDoubleBonuses.push(tempDoubleBonus);
                 }
             }

@@ -63,9 +63,9 @@ io.on('connection', socket => {
                 io.in(room.name).emit('end game 1', group[0], group[1]);
             }
             //emit list of lists of prolificIDs and int of how much to move up of triple bonuses 
-            let allTripleBonus = calculateAllTripleBonuses(prolificID, room);
+            let allTripleBonus = calculateAllTripleBonuses(allIDs, room);
             //emit list of lists of prolificIDs and int of how much to move up of double bonuses
-            let allDoubleBonus = calculateAllDoubleBonuses(prolificID, room);
+            let allDoubleBonus = calculateAllDoubleBonuses(allIDs, room);
             //players will be emitted to the "net zero" position after showing who selected who (to be implemented)
             let resultForAllPlayers = getResultsByProlificId(allIDs, room);
             io.in(room.name).emit('location for game 1', resultForAllPlayers, allTripleBonus, 15,
