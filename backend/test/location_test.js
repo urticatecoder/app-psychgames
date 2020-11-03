@@ -5,7 +5,7 @@ const { saveNewPlayerToDB } = require('../db/db_api.js');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
-calculateResults, getResults } = require('../db/results.js');
+calculateResults, getResults, zeroSumResults } = require('../db/results.js');
 const DB_API = require('../db/db_api.js');
 
 
@@ -23,7 +23,7 @@ describe('Location sending and calculation', () => {
         let results = getResultsByProlificId(testID, room)
         console.log(results);
         for(var i = 0; i < results.length; i++ ){
-            assert(results[i] === 8);
+            assert(results[i] === 0);
         }
         done();
     });
@@ -63,13 +63,8 @@ describe('Location sending and calculation', () => {
 
         const count = getResultsByProlificId(testID, room);
         console.log(count);
-        assert(count[0] == 8 && count[1] == 12);
-        assert(count[2] == 0);
-
-        const newRoundCount = getResultsByProlificId(testID, room);
-        console.log(newRoundCount);
-        assert(newRoundCount[0] == 16 && newRoundCount[1] == 24);
-        assert(newRoundCount[2] == 0);
+        assert(count[0] == 1.333333333333333 && count[1] == 5.333333333333333);
+        assert(count[2] == -6.666666666666667);
         done();
     });
     // it('isGameOneDone works correctly', (done) => {
@@ -262,7 +257,8 @@ describe('Location sending and calculation', () => {
         assert(double.length == 0);
         done();
     });
-    it('gets all locations correctly', (done) => {
+
+    it('zero sum locations', (done) => {
         const testID = ['test_id1', 'test_id2', 'test_id3'];
         var choicesOne = ['test_id3'];
         var choicesTwo = ['test_id1'];
@@ -276,12 +272,9 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
 
         let results = getResultsByProlificId(testID, room);
-        assert(results[0] == 4);
-        assert(results[1] == 4);
-        assert(results[2] == 4);
+        assert(results[0] == 0);
+        assert(results[1] == 0);
+        assert(results[2] == 0);
         done();
     });
-
-
-
 })

@@ -17,8 +17,8 @@ function getResultsByProlificId(prolificIDArray, room) {
         room.setPlayerLocation(playerProlific, newPlayerLocation);
         allResults.push(newPlayerLocation);
     }
-    let newResults = zeroSumResults(allResults, prolificIDArray);
-    return allResults;
+    let newResults = zeroSumResults(allResults, prolificIDArray, room);
+    return newResults;
 }
 
 function getResults(playerProlific, prolificIDArray, room){
@@ -32,7 +32,7 @@ function getResults(playerProlific, prolificIDArray, room){
     return count;
 } 
 
-function zeroSumResults(allResults, prolificIDArray){
+function zeroSumResults(allResults, prolificIDArray, room){
     var average = 0;
     for(var i = 0; i < allResults.length; i++){
         average += allResults[i];
