@@ -13,8 +13,8 @@ public class LoginTest {
     private WebDriver driver;
     private static final String CHROME_DRIVER = "webdriver.chrome.driver";
     private static final String CHROME_DRIVER_PATH = "/Users/ericdoppelt/CS408/app_psychgames/frontend/node_modules/chromedriver/lib/chromedriver/chromedriver";
-    private static final String LOCAL_LOGIN_URL = "http://localhost:3000/";
-    private static final String LOCAL_HOST_LOBBY = "http://localhost:3000/lobby";
+    private static final String LOCAL_LOGIN_URL = "https://rise-to-the-top.herokuapp.com/";
+    private static final String LOCAL_HOST_LOBBY = "https://rise-to-the-top.herokuapp.com/lobby";
 
     private static final String TEXT_ID = "loginText";
     private static final String TEXTFIELD_ID = "loginTextField";
@@ -26,18 +26,25 @@ public class LoginTest {
     private static final String INVALID_LOGIN_CODE = "CS307";
     private static final String EMPTY_LOGIN_CODE = " ";
 
+    private static final int REROUTING_PAUSE = 1000;
+    private static final String THREAD_SLEEP_ERROR_MESSAGE = "Error on the Thread Sleep call";
+
+    private String duplicatedCode;
+    private static final String TEST_PREFIX = "test";
+
     @Before
     public void init() {
         System.setProperty(CHROME_DRIVER, CHROME_DRIVER_PATH);
         driver = new ChromeDriver();
         driver.get(LOCAL_LOGIN_URL);
+        duplicatedCode = TEST_PREFIX + Math.random();
     }
 
-//    // HAPPY PATH -- valid login code entered
-//    @Test
-//    public void testLoginValid() {
-//        testCode(LOCAL_HOST_LOBBY, THIRD_VALID_CODE);
-//    }
+    // HAPPY PATH -- valid login code entered
+    @Test
+    public void testLoginValid() {
+        testCode(LOCAL_HOST_LOBBY, THIRD_VALID_CODE);
+    }
 
     // SAD PATH -- user randomly clicks on textfield
     @Test
@@ -64,23 +71,26 @@ public class LoginTest {
         Assert.assertEquals(LOCAL_LOGIN_URL, driver.getCurrentUrl());
     }
 
-//    @Test
-//    public void testDuplicatedCode() {
-//        enterValidCode(LOCAL_HOST_LOBBY);
-//        enterValidCode(LOCAL_LOGIN_URL);
-//    }
-
-    private void enterValidCode(String URL) {
-        WebDriver tempDriver = new ChromeDriver();
-        tempDriver.get(LOCAL_LOGIN_URL);
-        tempDriver.findElement(By.id(TEXTFIELD_ID)).sendKeys(VALID_LOGIN_CODE);
-        tempDriver.findElement(By.id(BUTTON_ID)).click();
-        Assert.assertEquals(URL, tempDriver.getCurrentUrl());
-
+    @Test
+    public void testDuplicatedCode() {
+        testCode(LOCAL_HOST_LOBBY, duplicatedCode);
+        resetDriver();
+        testCode(LOCAL_LOGIN_URL, duplicatedCode);
     }
+
+    private void resetDriver() {
+        driver = new ChromeDriver();
+        driver.get(LOCAL_LOGIN_URL);
+    }
+
     private void testCode(String URL, String loginCode) {
         driver.findElement(By.id(TEXTFIELD_ID)).sendKeys(loginCode);
         driver.findElement(By.id(BUTTON_ID)).click();
+        try {
+            Thread.sleep(REROUTING_PAUSE);
+        } catch (InterruptedException e) {
+            System.out.println(THREAD_SLEEP_ERROR_MESSAGE);
+        }
         Assert.assertEquals(URL, driver.getCurrentUrl());
     }
 }
