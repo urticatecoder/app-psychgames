@@ -103,10 +103,12 @@ function ColumnController(props) {
             setResetTimer(RESET_TIMER)
         });
 
-        socket.on("end game 1", (winners, losers) => {
+        socket.on("end game 1", (winners, losers, doubleBonuses, tripleBonuses) => {
             props.setWinners(winners)
             props.setLosers(losers)
-            moveToSummary(props)
+            console.log(doubleBonuses)
+            console.log(tripleBonuses)
+            setTimeout(() => moveToSummary(props), (doubleBonuses + tripleBonuses) * PAUSE_BETWEEN_ANIMATIONS)
         });
 
         return () => {
