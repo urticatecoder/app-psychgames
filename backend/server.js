@@ -66,7 +66,7 @@ io.on('connection', socket => {
                 console.log("Winners: ", group[0]);
                 console.log("Losers: ", group[1]);
                 room.setGameOneResults(group);
-                io.in(room.name).emit('end game 1', group[0], group[1]);
+                io.in(room.name).emit('end game 1', group[0], group[1], allDoubleBonus.length, allTripleBonus.length);
             }
             io.in(room.name).emit('location for game 1', resultForAllPlayers, allTripleBonus, 15,
             allDoubleBonus, 8);
