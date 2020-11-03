@@ -54,7 +54,7 @@ function App() {
 
         <Route 
           path="/one-welcome" 
-          render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' route='one-introduction'/>)}
+          render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' /* route='one-introduction'/> */ route='game-one'/>)}
         />
         <Route
           path="/one-introduction"

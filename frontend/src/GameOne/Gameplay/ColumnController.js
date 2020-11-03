@@ -62,6 +62,7 @@ const SECOND_CODE = 1;
 const THIRD_CODE = 2;
 
 const PAUSE_BETWEEN_ANIMATIONS = 2000;
+const IN_BONUS = true;
 
 const styles = ({
     gameplay: {
@@ -80,8 +81,10 @@ function ColumnController(props) {
 
     const [fromHeights, setFromHeights] = useState(createPlayerArray(BOTTOM_OF_SCREEN))
     const [toHeights, setToHeights] = useState(createPlayerArray(scaleHeight(INITIAL_HEIGHT)))
-    const [currentHeights, setCurrentHeights] = useState([50, 50, 50, 50, 50, 50])
+    const [currentHeights, setCurrentHeights] = useState(createPlayerArray(scaleHeight(INITIAL_HEIGHT)))
     const [selected, setSelected] = useState(createPlayerArray(NOT_SELECTED))
+    const [doubles, setDoubles] = useState(createPlayerArray(NOT_SELECTED))
+    const [triples, setTriples] = useState(createPlayerArray(NOT_SELECTED))
     const [selectedSelf, setSelectedSelf] = useState(DID_NOT_SELECT_SELF)
     const [tooManySelections, setTooManySelections] = useState(NOT_TOO_MANY_SELECTIONS)
     const [resetTimer, setResetTimer] = useState(DO_NOT_RESET_TIMER)
@@ -90,11 +93,14 @@ function ColumnController(props) {
     useEffect(() => {
         socket.on("location for game 1", (locations, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
             console.log(currentHeights)
-            handleTripleBonuses(tripleBonuses, tripleIncrease, props.allLoginCodes, setFromHeights, setToHeights, currentHeights, setCurrentHeights);
-            handleDoubleBonuses(doubleBonuses, doubleIncrease, props.allLoginCodes, setFromHeights, setToHeights, currentHeights, setCurrentHeights, tripleBonuses.length);
+            handleTripleBonuses(tripleBonuses, tripleIncrease, props.allLoginCodes, setFromHeights, setToHeights, currentHeights, setCurrentHeights, setTriples);
+            clearBonusArray(setTriples, (tripleBonuses.length * PAUSE_BETWEEN_ANIMATIONS));
+
+            handleDoubleBonuses(doubleBonuses, doubleIncrease, props.allLoginCodes, setFromHeights, setToHeights, currentHeights, setCurrentHeights, setDoubles, tripleBonuses.length);
+            clearBonusArray(setDoubles, (tripleBonuses.length + doubleBonuses.length) * PAUSE_BETWEEN_ANIMATIONS);
+
             updateHeightsDelayed(currentHeights, scaleHeights(locations), setFromHeights, setToHeights, setCurrentHeights, (tripleBonuses.length + doubleBonuses.length) * PAUSE_BETWEEN_ANIMATIONS)
             setResetTimer(RESET_TIMER)
-          
         });
 
         socket.on("end game 1", (winners, losers) => {
@@ -129,7 +135,7 @@ function ColumnController(props) {
                     style={{height: '80vh'}}
                     >
                     {PLAYERS.map((player) => {
-                        return getColumn(player, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, props.allLoginCodes, props.loginCode)
+                        return getColumn(player, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, props.allLoginCodes, props.loginCode, doubles, triples)
                     })}
                 </Grid>
                 <GroupBox groupNumber='Two'/>
@@ -140,7 +146,7 @@ function ColumnController(props) {
 }
 
 // FIXME: REMOVE DUPLICATION
-function handleTripleBonuses(tripleArray, tripleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight) {
+function handleTripleBonuses(tripleArray, tripleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, setTriples) {
     let oldHeights = originalHeights.slice(0);
     console.log("TRIPLE")
     for (let i = 0; i < tripleArray.length; i++) {
@@ -158,11 +164,32 @@ function handleTripleBonuses(tripleArray, tripleIncrease, allLoginCodes, setOldH
         console.log("NEW HEIGHT")
         console.log(newHeights)
         updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, (i) * PAUSE_BETWEEN_ANIMATIONS)
+        markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, (i) * PAUSE_BETWEEN_ANIMATIONS);
         oldHeights = newHeights;
     }
 }
 
-function handleDoubleBonuses(doubleArray, doubleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, animationOffset) {
+function markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, delay) {
+    updateBonusArray([firstIndex, secondIndex, thirdIndex], setTriples, delay);
+}
+
+function markDoubleDelayed(firstIndex, secondIndex, setDoubles, delay) {
+    updateBonusArray([firstIndex, secondIndex], setDoubles, delay);
+}
+
+function clearBonusArray(setBonus, delay) {
+    setTimeout(() => setBonus(createPlayerArray(NOT_SELECTED)), delay)
+}
+
+function updateBonusArray(indexArray, setBonus, delay) {
+    let bonusArray = createPlayerArray(NOT_SELECTED);
+    indexArray.forEach((index) => {
+        bonusArray[index] = IN_BONUS;
+    })
+    setTimeout(() => setBonus(bonusArray), delay);
+}
+
+function handleDoubleBonuses(doubleArray, doubleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, setDoubles, animationOffset) {
     let oldHeights = originalHeights.slice(0);
     console.log("DOUBLE")
     for (let i = 0; i < doubleArray.length; i++) {
@@ -180,6 +207,7 @@ function handleDoubleBonuses(doubleArray, doubleIncrease, allLoginCodes, setOldH
         console.log("NEW HEIGHT")
         console.log(newHeights)
         updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS);
+        markDoubleDelayed(firstIndex, secondIndex, setDoubles, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS);
         oldHeights = newHeights;
     }
 }
@@ -225,10 +253,12 @@ function getAlertComponent(text, setClosed) {
     )
 }
 
-function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID) {
+function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID, doubles, triples) {
+    console.log(doubles)
+    console.log(triples)
     return(
         <Grid item>
-            <PlayerColumn onSelect = {() => selectPlayer(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, playerIDs, myID)} selected={selected[playerNumber]} from={fromHeights[playerNumber]} to={toHeights[playerNumber]} player={playerNumber} />
+            <PlayerColumn onSelect = {() => selectPlayer(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, playerIDs, myID)} selected={selected[playerNumber]} double={doubles[playerNumber]} triple={triples[playerNumber]} from={fromHeights[playerNumber]} to={toHeights[playerNumber]} player={playerNumber} />
         </Grid>
     )
 }
