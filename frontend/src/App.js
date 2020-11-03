@@ -6,6 +6,7 @@ import Login from './Login/Login';
 import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
 import Summary from './GameOne/Summary/Summary';
 import GameOne from './GameOne/Gameplay/GameOne';
+import GameTwo from './GameTwo/Gameplay/GameTwo';
 import Admin from './AdminPage/Admin';
 
 
@@ -42,6 +43,7 @@ function App() {
         <Route path="/" exact render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}/>
 
         <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode} setAllLoginCodes={setAllLoginCodes}/>}/>
+        <Route path='/game-two' render={() => (<GameTwo loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}/>
 
         <Route path='/admin' render={() => <Admin/>}/>
 
@@ -54,7 +56,7 @@ function App() {
 
         <Route 
           path="/one-welcome" 
-          render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' /* route='one-introduction'/> */ route='game-one'/>)}
+          render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' /* route='one-introduction'/> */ route='game-two'/>)}
         />
         <Route
           path="/one-introduction"
