@@ -1,25 +1,48 @@
+import { Typography } from '@material-ui/core';
 import React from 'react';
-import '../../CommonStylings/FullScreenDiv.css'
-import { Spring } from "react-spring/renderprops";
+import { useSpring, animated } from 'react-spring';
+import {withStyles} from '@material-ui/core';
+import getBackgroundColor from '../../Icons/Components/getResourceBackgroundColor';
+import getMarginLeft from '../../Icons/Components/getResourceMarginLeft';
 
-const GROUP_ONE = 1
-const GROUP_TWO = 2
+const styles = ({
+    outerDiv: {
+        position: 'absolute',
+        bottom: '35vh',
+
+    },
+    barFormatting: {
+        position: 'relative',
+        borderRadius: 20,
+        width: '80px',
+        display: 'inline-block',
+        marginLeft: '.7vw',
+    }
+  });
+
 function ResourceBar(props) {
-    
-    const FULL_DIV = 'fullDiv';
-    let resourcePercent = (props.amount / props.total)
+    const spring = useSpring({
+        from: {
+          height: props.from + 'vh',
+        },
+        to: {
+          height: props.to + 'vh',
+        },
+        config: {
+          mass: 10,
+        },
+      });
 
+    const {classes} = props;
+    let background = getBackgroundColor(props.resource);
+    let marginL = getMarginLeft(props.resource);
+    console.log(marginL)
     return (
-        <Spring from={{ percent: 0 }} to={{ percent: resourcePercent}}>
-          {({ percent }) => (
-            <div className="progress vertical">
-              <div style={{ height: `${percent}%` }} className="progress-bar">
-                <span className="sr-only">{`${resourcePercent}%`}</span>
-              </div>
-            </div>
-          )}
-        </Spring>
-      );
+        <div className={classes.outerDiv}>
+            <animated.div className={classes.barFormatting} style={{ ...spring, backgroundColor: background, left: marginL}}/>
+        </div>
+    )
 }
 
-export default (ResourceBar);
+export default withStyles(styles)(ResourceBar);
+

@@ -1,18 +1,8 @@
 import React from 'react';
 import ResourceImages from './ResourceImages';
 import { withStyles } from '@material-ui/core/styles';
-
-const KEEP = "keep"
-const INVEST = "invest"
-const COMPETE = "compete"
-
-const KEEP_COLOR = '#e3aac9'
-const INVEST_COLOR = '#36c960'
-const COMPETE_COLOR = '#ff645c'
-
-const KEEP_MARGIN_LEFT = '45vw';
-const INVEST_MARGIN_LEFT = '57vw';
-const COMPETE_MARGIN_LEFT = '69vw';
+import getBackgroundColor from './getResourceBackgroundColor';
+import getMarginLeft from './getResourceMarginLeft';
 
 const LABEL = 'Label'
 
@@ -49,22 +39,6 @@ function ResourceButton(props) {
             </div>
         </div>
     )
-}
-
-function getBackgroundColor(resource) {
-    switch(resource) {
-        case KEEP: return KEEP_COLOR;
-        case INVEST: return INVEST_COLOR;
-        case COMPETE: return COMPETE_COLOR;
-    }
-}
-
-function getMarginLeft(resource) {
-    switch(resource) {
-        case KEEP: return KEEP_MARGIN_LEFT;
-        case INVEST: return INVEST_MARGIN_LEFT;
-        case COMPETE: return COMPETE_MARGIN_LEFT;
-    }
 }
 
 export default withStyles(styles)(ResourceButton);

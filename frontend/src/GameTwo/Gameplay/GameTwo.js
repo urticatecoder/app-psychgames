@@ -3,6 +3,7 @@ import '../../CommonStylings/FullScreenDiv.css'
 import ResourceBar from './ResourceBar';
 import VerticalPlayerGroup from './VerticalPlayerGroup';
 import ResourceButton from '../../Icons/Components/ResourceButton';
+import StartTimer from '../../Lobby/StartTimer';
 
 const GROUP_ONE = 1
 const GROUP_TWO = 2
@@ -22,6 +23,9 @@ function GameTwo(props) {
             <ResourceButton resource={KEEP} onSelect={() => console.log("keep")}></ResourceButton>
             <ResourceButton resource={INVEST} onSelect={() => console.log("invest")}></ResourceButton>
             <ResourceButton resource={COMPETE} onSelect={() => console.log("compete")}></ResourceButton>
+            <ResourceBar resource={KEEP} from={5} to={1}/>
+            <ResourceBar resource={INVEST} from={5} to={1}/>
+            <ResourceBar resource={COMPETE} from={5} to={1}/>
 
         </div>
     )
