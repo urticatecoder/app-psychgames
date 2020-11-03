@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import '../../CommonStylings/FullScreenDiv.css'
-import PlayerColumn from '../Gameplay/PlayerColumn';
+import PlayerColumn from './PlayerColumn';
 import {Grid, withStyles} from '@material-ui/core'
 import socket from "../../socketClient";
 import Alert from '@material-ui/lab/Alert';

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Typography, withStyles} from '@material-ui/core';
-import PlayerProfile from '../../Avatars/Components/PlayerProfile';
+import PlayerProfile from '../../Icons/Components/PlayerProfile';
 
 const GROUP_ONE = 1
 const GROUP_TWO = 2
