@@ -1,4 +1,5 @@
 const e = require('express');
+const { all } = require('../app.js');
 const DB_API = require('../db/db_api.js');
 const choice = require('./models/choice.js');
 const lobby = require('../lobby.js').LobbyInstance;
@@ -16,6 +17,7 @@ function getResultsByProlificId(prolificIDArray, room) {
         room.setPlayerLocation(playerProlific, newPlayerLocation);
         allResults.push(newPlayerLocation);
     }
+    let newResults = zeroSumResults(allResults, prolificIDArray);
     return allResults;
 }
 
@@ -29,6 +31,23 @@ function getResults(playerProlific, prolificIDArray, room){
     count += triplePair.get(playerProlific)*15;
     return count;
 } 
+
+function zeroSumResults(allResults, prolificIDArray){
+    var average = 0;
+    for(var i = 0; i < allResults.length; i++){
+        average += allResults[i];
+    }
+    average = average/allResults.length;
+
+    var newResults = [];
+    for(var i = 0; i < allResults.length; i++){
+        let playerProlific = prolificIDArray[i];
+        let newLocation = allResults[i] - average;
+        newResults.push(newLocation);
+        room.setPlayerLocation(playerProlific, newLocation);
+    }
+    return newResults;
+}
 
 function getSinglePairMap(prolificIDArray, room){
     let doubleAndTripleCount;
@@ -260,5 +279,6 @@ module.exports = {
     calculateAllTripleBonuses: calculateAllTripleBonuses,
     calculateAllDoubleBonuses: calculateAllDoubleBonuses,
     calculateResults: getSinglePairMap,
-    getResults: getResults
+    getResults: getResults,
+    zeroSumResults: zeroSumResults,
 }
