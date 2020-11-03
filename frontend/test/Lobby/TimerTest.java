@@ -14,12 +14,12 @@ public class TimerTest {
     private WebDriver driver;
     private static final String CHROME_DRIVER = "webdriver.chrome.driver";
     private static final String CHROME_DRIVER_PATH = "/Users/ericdoppelt/CS408/app_psychgames/frontend/node_modules/chromedriver/lib/chromedriver/chromedriver";
-    private static final String LOCAL_HOST_LOBBY = "http://localhost:3000/lobby";
-    private static final String LOCAL_HOST_WELCOME = "http://localhost:3000/one-welcome";
+    private static final String LOCAL_HOST_LOBBY = "https://rise-to-the-top.herokuapp.com/lobby";
+    private static final String LOCAL_HOST_WELCOME = "https://rise-to-the-top.herokuapp.com/one-welcome";
     private static final String TEXT_ID = "timerText";
     private static final String BUTTON_ID = "timerButton";
     private static final String THREAD_SLEEP_MESSAGE = "Error with Thread Sleep";
-    private static final int TIMER_LENGTH = 6000;
+    private static final int TIMER_WAIT = 61000;
 
     private static final String TEXTFIELD_ID = "loginTextField";
     private static final String LOGIN_BUTTON_ID = "loginButton";
@@ -43,7 +43,7 @@ public class TimerTest {
     @Test
     public void testProperClick() {
         try {
-            Thread.sleep(TIMER_LENGTH);
+            Thread.sleep(TIMER_WAIT);
         } catch (InterruptedException e) {
             System.out.println(THREAD_SLEEP_MESSAGE);
         }

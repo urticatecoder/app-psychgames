@@ -16,7 +16,7 @@ function PlayerColumn(props) {
       });
     return (
         <animated.div style={{ ...spring, display: 'inline-block' }}>
-            <PlayerButton player={props.player} onSelect={props.onSelect} selected={props.selected} />
+            <PlayerButton player={props.player} onSelect={props.onSelect} double={props.double} triple={props.triple} selected={props.selected} />
         </animated.div>
     )
 }

@@ -14,7 +14,7 @@ function getResultsByProlificId(prolificIDArray, room) {
 
         let playerInitialLocation = allLocations.get(playerProlific);
         let newPlayerLocation = playerInitialLocation + playerRoundResult;
-        room.setPlayerLocation(playerProlific, newPlayerLocation);
+        // room.setPlayerLocation(playerProlific, newPlayerLocation);
         allResults.push(newPlayerLocation);
     }
     let newResults = zeroSumResults(allResults, prolificIDArray, room);
