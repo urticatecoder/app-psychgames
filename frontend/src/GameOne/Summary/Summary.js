@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import PlayerGroup from '../../Avatars/Components/PlayerGroup';
+import PlayerGroup from '../../Icons/Components/PlayerGroup';
 import { Typography, Grid, Button, withStyles } from '@material-ui/core';
 import '../../CommonStylings/FullScreenDiv.css';
 import DelayedConfetti from './DelayedConfetti';

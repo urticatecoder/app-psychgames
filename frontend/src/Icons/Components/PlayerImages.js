@@ -17,11 +17,11 @@ const HEADSET_ID = 'headset';
 const LEAVES_ID = 'leaves';
 const TRIANGLE_ID = 'triangle';
 
-const FLAME_LABEL = 'Wizard';
+const FLAME_LABEL = 'Flame';
 const ARROW_LABEL = 'Arrow';
 const CROSS_LABEL = 'Cross';
 const HEADSET_LABEL = 'Headset';
-const LEAVEL_LABEL = 'Label';
+const LEAVES_LABEL = 'Leaves';
 const TRIANGLE_LABEL = 'Triangle';
 
 function getPlayer(image, id) {
@@ -43,14 +43,14 @@ const PLAYER_FIVE = getPlayer(Leaves, LEAVES_ID)
 
 const PlayerInfo = {
     0: PLAYER_ZERO,
-    name0: CROSS_ID,
-    label0: CROSS_LABEL,
+    name0: FLAME_ID,
+    label0: FLAME_LABEL,
     1: PLAYER_ONE,
-    name1: FLAME_ID,
-    label1: FLAME_LABEL,
+    name1: TRIANGLE_ID,
+    label1: TRIANGLE_LABEL,
     2: PLAYER_TWO,
-    name2: TRIANGLE_ID,
-    label2: TRIANGLE_LABEL,
+    name2: CROSS_ID,
+    label2: CROSS_LABEL,
     3: PLAYER_THREE,
     name3: ARROW_ID,
     label3: ARROW_LABEL,
@@ -59,7 +59,7 @@ const PlayerInfo = {
     label4: HEADSET_LABEL,
     5: PLAYER_FIVE,
     name5: LEAVES_ID,
-    label5: LEAVEL_LABEL,
+    label5: LEAVES_LABEL,
 }
 
 export default PlayerInfo;
