@@ -4,6 +4,7 @@ const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
 const BOT = require("./db/bot");
 const {getResultsByProlificId, isGameOneDone, getWinnersAndLosers, calculateAllTripleBonuses, calculateAllDoubleBonuses} = require("./db/results");
+const Game2 = require('./game2');
 const lobby = require("./lobby.js").LobbyInstance;
 
 // Set up mongoose connection
@@ -36,6 +37,7 @@ io.on('connection', socket => {
     socket.on('confirm choice for game 1', (prolificID, choices) => {
         // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
         console.log(choices);
+        prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
         DB_API.savePlayerChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
@@ -55,7 +57,7 @@ io.on('connection', socket => {
         });
 
         if (room.hasEveryoneConfirmedChoiceInThisRoom()) { // all 6 have confirmed choices
-            //emit list of lists of prolificIDs and int of how much to move up of triple bonuses 
+            //emit list of lists of prolificIDs and int of how much to move up of triple bonuses
             let allTripleBonus = calculateAllTripleBonuses(allIDs, room);
             //emit list of lists of prolificIDs and int of how much to move up of double bonuses
             let allDoubleBonus = calculateAllDoubleBonuses(allIDs, room);
@@ -67,14 +69,50 @@ io.on('connection', socket => {
                 console.log("Losers: ", group[1]);
                 room.setGameOneResults(group);
                 io.in(room.name).emit('end game 1', group[0], group[1], allDoubleBonus.length, allTripleBonus.length);
+                room.advanceToGameTwo();
             }
             io.in(room.name).emit('location for game 1', resultForAllPlayers, allTripleBonus, 15,
-            allDoubleBonus, 8);
+                allDoubleBonus, 8);
             room.advanceToNextRound();
         } else {
             // emit('someone has confirmed his/her choice') to 5 other
         }
     });
+
+    socket.on('confirm choice for game 2', (prolificID, competeToken, keepToken, investToken) => {
+        prolificID = prolificID.toString();
+        console.log("Game 2 decision received: ", prolificID, competeToken, keepToken, investToken);
+        let room = lobby.getRoomPlayerIsIn(prolificID);
+        let player = room.getPlayerWithID(prolificID);
+        player.setIsBot(false);
+        // console.log(room);
+        // TODO: add allocation to db
+        player.recordAllocationForGameTwo(competeToken, keepToken, investToken);
+        room.addPlayerIDToConfirmedSet(prolificID);
+
+        // let all bots select their choices
+        room.players.forEach((playerInThisRoom) => {
+            if (playerInThisRoom.isBot && playerInThisRoom.prolificID !== prolificID) {
+                let bot = playerInThisRoom;
+                let botAllocation = Game2.generateBotAllocation();
+                bot.recordAllocationForGameTwo(botAllocation[0], botAllocation[1], botAllocation[2]);
+                room.addPlayerIDToConfirmedSet(bot.prolificID);
+            }
+        });
+
+        if (room.hasEveryoneConfirmedChoiceInThisRoom()) { // all 6 have confirmed choices
+            if (Game2.isGameTwoDone(room)) {
+                io.in(room.name).emit('end game 2');
+            }
+            else{
+                room.advanceToNextRound();
+                let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn();
+                let competePayoff = payoff[0], investPayoff = payoff[1];
+                io.in(room.name).emit('end current turn for game 2', competePayoff, investPayoff);
+            }
+        }
+    });
+
 
     socket.on('disconnect', () => {
         let prolificID = socket.prolificID;
