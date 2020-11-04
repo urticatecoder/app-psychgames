@@ -4,7 +4,7 @@ const COMPETE = "compete"
 
 const KEEP_COLOR = '#e3aac9'
 const INVEST_COLOR = '#36c960'
-const COMPETE_COLOR = '#ff645c'
+const COMPETE_COLOR = '#f5d971'
 
 function getResourceBackgroundColor(resource) {
     switch(resource) {

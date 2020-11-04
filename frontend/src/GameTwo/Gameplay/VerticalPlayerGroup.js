@@ -1,5 +1,5 @@
 import React from 'react';
-import {Typography, withStyles} from '@material-ui/core';
+import {withStyles} from '@material-ui/core';
 import PlayerProfile from '../../Icons/Components/PlayerProfile';
 
 const GROUP_ONE = 1
