@@ -63,6 +63,7 @@ function GameTwo(props) {
 
     useEffect(() => {
         socket.on("end current turn for game 2", (competePayoff, investPayoff) => {
+            console.log('called')
             setResetTimer(RESET_TIMER)
         });
 
@@ -72,8 +73,8 @@ function GameTwo(props) {
 
         return () => {
             console.log("remove listeners");
-            socket.off("location for game 1");
-            socket.off("end game 1");
+            socket.off("end current turn for game 2");
+            socket.off("end game 2");
         }
     }, []);
 
