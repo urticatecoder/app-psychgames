@@ -96,8 +96,12 @@ io.on('connection', socket => {
         });
 
         if (room.hasEveryoneConfirmedChoiceInThisRoom()) { // all 6 have confirmed choices
+            io.in(room.name).emit('team contribution');
             if (Game2.isGameTwoDone(room)) {
                 io.in(room.name).emit('end game 2');
+            }
+            else{
+                room.advanceToNextRound();
             }
         }
     });
