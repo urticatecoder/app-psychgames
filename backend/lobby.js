@@ -1,3 +1,6 @@
+const GameTwoAllocation = require('./game2.js').GameTwoAllocation;
+const GameTwo = require('./game2.js');
+
 class Lobby {
     currRoomID = 0;
     rooms = [];
@@ -61,7 +64,7 @@ class Lobby {
         return this.roomToPlayer.get(roomName).length;
     }
 
-    reset(){
+    reset() {
         this.currRoomID = 0;
         this.rooms = [];
         this.currRoom = undefined;
@@ -77,7 +80,8 @@ class Room {
     players = []; // holds player objects who are in this room
     playersWithChoiceConfirmed = new Set(); // holds prolificID of players who have confirmed their choices
     allPlayerLocations = new Map();
-    gameOneResults = [];
+    gameOneResults = []; // two groups for winners/losers
+    gameTwoPayoff = [];
 
     constructor(roomName) {
         if (roomName === undefined) {
@@ -109,6 +113,11 @@ class Room {
     advanceToNextRound() {
         this.turnNum++;
         this.playersWithChoiceConfirmed.clear();
+    }
+
+    advanceToGameTwo() {
+        this.turnNum = 0;
+        this.gameTwoPayoff = GameTwo.generateCompeteAndInvestPayoff();
     }
 
     addPlayerIDToConfirmedSet(prolificID) {
@@ -145,10 +154,70 @@ class Room {
         this.gameOneResults = results;
     }
 
+    getTeamAllocationAtCurrentTurn() {
+        // winners
+        let winnerIDs = this.gameOneResults[0];
+        let winnerAllocations = [];
+        winnerIDs.forEach((id) => {
+            winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
+        });
+        let winnerSum = GameTwoAllocation.sumAllocations(winnerAllocations);
+
+        // losers
+        let loserIDs = this.gameOneResults[1];
+        let loserAllocations = [];
+        loserIDs.forEach((id) => {
+            loserAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
+        });
+        let loserSum = GameTwoAllocation.sumAllocations(loserAllocations);
+
+        return [winnerSum.allocationAsArray, loserSum.allocationAsArray];
+    }
+
+    getCompeteAndInvestPayoffAtTurnNum(turnNum) {
+        let idx = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
+        return this.gameTwoPayoff[idx];
+    }
+
+    getPlayerAllocationAtTurnNum(prolificID, turnNum) {
+        let player = this.getPlayerWithID(prolificID);
+        return player.getAllocationAtTurn(turnNum);
+    }
+
+    // need to refactor this code
+    getOthersAllocationAtTurnNum(prolificID, turnNum) {
+        let teammatesAllocation = [];
+        let opponentsAllocation = [];
+        if (this.gameOneResults[0].includes(prolificID)) {
+            this.gameOneResults[0].forEach((id) => {
+                if (id !== prolificID) { // excluding self
+                    let teammate = this.getPlayerWithID(id);
+                    teammatesAllocation.push(teammate.getAllocationAtTurn(turnNum));
+                }
+            });
+            this.gameOneResults[1].forEach((id) => {
+                let opponent = this.getPlayerWithID(id);
+                opponentsAllocation.push(opponent.getAllocationAtTurn(turnNum));
+            });
+        } else {
+            this.gameOneResults[1].forEach((id) => {
+                if (id !== prolificID) { // excluding self
+                    let teammate = this.getPlayerWithID(id);
+                    teammatesAllocation.push(teammate.getAllocationAtTurn(turnNum));
+                }
+            });
+            this.gameOneResults[0].forEach((id) => {
+                let opponent = this.getPlayerWithID(id);
+                opponentsAllocation.push(opponent.getAllocationAtTurn(turnNum));
+            });
+        }
+        return [teammatesAllocation, opponentsAllocation];
+    }
 }
 
 class Player {
-    choices = []; // stores an array of array
+    choices = []; // stores an array of array to represent choices made by this player in game 1
+    allocations = []; // for game 2
 
     constructor(prolificID) {
         if (prolificID === undefined) {
@@ -178,6 +247,21 @@ class Player {
             throw 'Array index out of bound.';
         }
         return this.choices[turnNum];
+    }
+
+    recordAllocationForGameTwo(compete, keep, invest) {
+        this.allocations.push(new GameTwoAllocation(compete, keep, invest));
+    }
+
+    getAllocationAtTurn(turnNum) {
+        if (turnNum <= 0) {
+            throw 'Invalid turn num.';
+        }
+        turnNum = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
+        if (turnNum >= this.allocations.length) {
+            throw 'Array index out of bound.';
+        }
+        return this.allocations[turnNum];
     }
 }
 
