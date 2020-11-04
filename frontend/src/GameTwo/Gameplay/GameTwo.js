@@ -10,6 +10,7 @@ import GameTimer from '../../CommonComponents/GameTimer';
 import ConfirmButton2 from './ConfirmButton2'
 import socket from "../../socketClient";
 import { withRouter } from "react-router-dom";
+import TokenCounter from '../Tokens/TokenCounter';
 
 const GROUP_ONE = 1;
 const GROUP_TWO = 2;
@@ -80,6 +81,7 @@ function GameTwo(props) {
 
     return (
         <div className={FULL_DIV}>
+            <TokenCounter tokens={totalTokens - tokensSpent}/>
             <GameTimer setSubmitDecisions={setSubmitDecisions} resetTimer={resetTimer} setResetTimer={setResetTimer}/>
             <ConfirmButton2 submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} resources={toResources} clearSelected={() => clearResources(setFromResources, setToResources, toResources, setTokensSpent, totalTokens)} loginCode={props.loginCode}/>
 
