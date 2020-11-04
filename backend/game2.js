@@ -54,7 +54,8 @@ function generateCompeteAndInvestPayoff() {
         });
     });
 
-    return shuffleArray(allPairs);
+    shuffleArray(allPairs);
+    return allPairs;
 }
 
 /* adapted from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array */
@@ -68,4 +69,5 @@ function shuffleArray(array) {
 module.exports = {
     GameTwoAllocation,
     generateCompeteAndInvestPayoff: generateCompeteAndInvestPayoff,
+    calculatePaymentForAPlayerAtTurn: calculatePaymentForAPlayerAtTurn,
 }

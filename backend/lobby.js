@@ -1,5 +1,5 @@
-const GameTwoAllocation = require('game2.js').GameTwoAllocation;
-const GameTwo = require('game2.js');
+const GameTwoAllocation = require('./game2.js').GameTwoAllocation;
+const GameTwo = require('./game2.js');
 
 class Lobby {
     currRoomID = 0;
@@ -116,8 +116,7 @@ class Room {
     }
 
     advanceToGameTwo() {
-        this.turnNum = 1;
-        this.playersWithChoiceConfirmed.clear();
+        this.turnNum = 0;
         this.gameTwoPayoff = GameTwo.generateCompeteAndInvestPayoff();
     }
 
