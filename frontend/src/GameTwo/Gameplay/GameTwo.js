@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import '../../CommonStylings/FullScreenDiv.css'
 import ResourceBar from './ResourceBar';
 import VerticalPlayerGroup from './VerticalPlayerGroup';
@@ -8,6 +8,9 @@ import Alert from '@material-ui/lab/Alert';
 import {Snackbar} from '@material-ui/core'
 import GameTimer from '../../CommonComponents/GameTimer';
 import ConfirmButton2 from './ConfirmButton2'
+import socket from "../../socketClient";
+import { withRouter } from "react-router-dom";
+
 const GROUP_ONE = 1;
 const GROUP_TWO = 2;
 
@@ -57,6 +60,22 @@ function GameTwo(props) {
     const [tokensSpent, setTokensSpent] = useState(NO_TOKENS_SPENT)
     const [resetTimer, setResetTimer] = useState(DO_NOT_RESET_TIMER)
     const [submitDecisions, setSubmitDecisions] = useState(DO_NOT_SUBMIT_DECISIONS)
+
+    useEffect(() => {
+        socket.on("end current turn for game 2", (competePayoff, investPayoff) => {
+            setResetTimer(RESET_TIMER)
+        });
+
+        socket.on("end game 2",() => {
+           props.history.push('/')
+        });
+
+        return () => {
+            console.log("remove listeners");
+            socket.off("location for game 1");
+            socket.off("end game 1");
+        }
+    }, []);
 
     return (
         <div className={FULL_DIV}>
@@ -146,4 +165,4 @@ function getAlertComponent(text, setClosed) {
     )
 }
 
-export default (GameTwo);
+export default withRouter(GameTwo);

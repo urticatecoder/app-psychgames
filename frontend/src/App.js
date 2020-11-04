@@ -43,7 +43,7 @@ function App() {
         <Route path="/" exact render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}/>
 
         <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode} setAllLoginCodes={setAllLoginCodes}/>}/>
-        <Route path='/game-two' render={() => (<GameTwo loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}/>
+        <Route path='/game-two' render={() => (<GameTwo loginCode = {loginCode} />)}/>
 
         <Route path='/admin' render={() => <Admin/>}/>
 
