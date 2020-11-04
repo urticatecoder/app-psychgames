@@ -68,7 +68,23 @@ describe('Test game 2 backend logic', () => {
         let group = room.getOthersAllocationAtTurnNum('123', 1);
         expect(group[0].length).to.equal(2);
         expect(group[1].length).to.equal(3);
-        console.log(Game2.calculatePaymentForAPlayerAtTurn('123', room, 1));
+        done();
+    });
+    it('getTeamAllocation works', (done) => {
+        let room = new Room('room 1');
+        let ids = ['123', '456', '789', 'aaa', 'bbb', 'ccc'];
+        ids.forEach((id) => {
+            room.addPlayer(new Player(id));
+        });
+        room.advanceToGameTwo();
+        room.advanceToNextRound();
+        room.setGameOneResults([['123', '456', '789'], ['aaa', 'bbb', 'ccc']]);
+        ids.forEach((id) => {
+            room.getPlayerWithID(id).recordAllocationForGameTwo(3, 4, 3);
+        });
+        let result = room.getTeamAllocationAtCurrentTurn();
+        expect(result[0]).to.deep.equal([9, 12, 9]);
+        expect(result[1]).to.deep.equal([9, 12, 9]);
         done();
     });
 });

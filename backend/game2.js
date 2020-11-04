@@ -19,6 +19,27 @@ class GameTwoAllocation {
     get numOfInvestToken() {
         return this.invest;
     }
+
+    get allocationAsArray() {
+        return [this.compete, this.keep, this.invest];
+    }
+
+    static addAllocations(allocation1, allocation2) {
+        if (!(allocation1 instanceof GameTwoAllocation) || !(allocation2 instanceof GameTwoAllocation)) {
+            throw 'Not an instance of GameTwoAllocation.';
+        }
+        return new GameTwoAllocation(allocation1.numOfCompeteToken + allocation2.numOfCompeteToken,
+            allocation1.numOfKeepToken + allocation2.numOfKeepToken,
+            allocation1.numOfInvestToken + allocation2.numOfInvestToken);
+    }
+
+    static sumAllocations(allocations) {
+        let sum = new GameTwoAllocation(0, 0, 0);
+        allocations.forEach((allocation) => {
+            sum = GameTwoAllocation.addAllocations(sum, allocation);
+        });
+        return sum;
+    }
 }
 
 function calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum) {

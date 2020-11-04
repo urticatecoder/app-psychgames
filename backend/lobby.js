@@ -161,6 +161,7 @@ class Room {
         winnerIDs.forEach((id) => {
             winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
         });
+        let winnerSum = GameTwoAllocation.sumAllocations(winnerAllocations);
 
         // losers
         let loserIDs = this.gameOneResults[1];
@@ -168,8 +169,9 @@ class Room {
         loserIDs.forEach((id) => {
             loserAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
         });
+        let loserSum = GameTwoAllocation.sumAllocations(loserAllocations);
 
-        return [winnerAllocations, loserAllocations];
+        return [winnerSum.allocationAsArray, loserSum.allocationAsArray];
     }
 
     getCompeteAndInvestPayoffAtTurnNum(turnNum) {
@@ -252,6 +254,9 @@ class Player {
     }
 
     getAllocationAtTurn(turnNum) {
+        if (turnNum <= 0) {
+            throw 'Invalid turn num.';
+        }
         turnNum = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
         if (turnNum >= this.allocations.length) {
             throw 'Array index out of bound.';
