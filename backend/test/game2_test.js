@@ -23,6 +23,24 @@ describe('Test game 2 backend logic', () => {
         expect(room.getCompeteAndInvestPayoffAtTurnNum(1).length).to.equal(2);
         done();
     });
+    it('generateBotAllocation works', (done) => {
+        let allocation = Game2.generateBotAllocation();
+        let sum = 0;
+        allocation.forEach((n) => sum += n);
+        expect(sum).to.equal(10);
+        done();
+    });
+    it('isGameTwoDone works', (done) => {
+        let room = new Room('room 1');
+        room.advanceToGameTwo();
+        for(let i = 1; i <= 24; i++){
+            room.advanceToNextRound();
+        }
+        expect(Game2.isGameTwoDone(room)).to.equal(false);
+        room.advanceToNextRound();
+        expect(Game2.isGameTwoDone(room)).to.equal(true);
+        done();
+    });
     it('recordAllocation/getAllocation works', (done) => {
         let room = new Room('room 1');
         room.addPlayer(new Player('123'));

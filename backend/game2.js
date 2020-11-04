@@ -40,10 +40,28 @@ function calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum) {
 
     // opponents impact
     opponentsAllocations.forEach((allocation) => {
-       payment -= (competePayoff * allocation.numOfCompeteToken);
+        payment -= (competePayoff * allocation.numOfCompeteToken);
     });
 
     return payment;
+}
+
+function generateBotAllocation() {
+    let i = 3; // there are 3 types of tokens
+    let totalAvailableTokens = 10;
+    let allocation = [];
+    while (i-- > 1) {
+        let num = getRandomInt(totalAvailableTokens);
+        totalAvailableTokens -= num;
+        allocation.push(num);
+    }
+    allocation.push(totalAvailableTokens);
+    shuffleArray(allocation);
+    return allocation;
+}
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max + 1)); // plus 1 here to include max in the possible range
 }
 
 function generateCompeteAndInvestPayoff() {
@@ -66,8 +84,14 @@ function shuffleArray(array) {
     }
 }
 
+function isGameTwoDone(room) {
+    return room.turnNum >= 25;
+}
+
 module.exports = {
     GameTwoAllocation,
     generateCompeteAndInvestPayoff: generateCompeteAndInvestPayoff,
     calculatePaymentForAPlayerAtTurn: calculatePaymentForAPlayerAtTurn,
+    generateBotAllocation: generateBotAllocation,
+    isGameTwoDone: isGameTwoDone,
 }
