@@ -174,6 +174,10 @@ class Room {
         return [winnerSum.allocationAsArray, loserSum.allocationAsArray];
     }
 
+    getCompeteAndInvestPayoffAtCurrentTurn() {
+        return this.getCompeteAndInvestPayoffAtTurnNum(this.turnNum);
+    }
+
     getCompeteAndInvestPayoffAtTurnNum(turnNum) {
         let idx = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
         return this.gameTwoPayoff[idx];
