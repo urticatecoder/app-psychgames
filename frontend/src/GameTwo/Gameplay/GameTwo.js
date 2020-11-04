@@ -6,7 +6,8 @@ import ResourceButton from './ResourceButton';
 import StartTimer from '../../Lobby/StartTimer';
 import Alert from '@material-ui/lab/Alert';
 import {Snackbar} from '@material-ui/core'
-
+import GameTimer from '../../CommonComponents/GameTimer';
+import ConfirmButton2 from './ConfirmButton2'
 const GROUP_ONE = 1;
 const GROUP_TWO = 2;
 
@@ -40,20 +41,28 @@ const ERROR_VERTICALITY = "top"
 const ERROR_HORIZONTAL = "left"
 const ALERT_LEVEL = "error"
 
-const NUMBER_RESOURCES = 3
 const NO_TOKENS_SPENT = 0;
+const DO_NOT_SUBMIT_DECISIONS = false
+const RESET_TIMER = true
+const DO_NOT_RESET_TIMER = false
+
 function GameTwo(props) {
 
     const FULL_DIV = 'fullDiv';
     const [totalTokens, setTotalTokens] = useState(10)
-    const [fromResources, setFromResources] = useState(scaleHeights(INITIAL_RESOURCE_DISTRIBUTION, totalTokens))
+    const [fromResources, setFromResources] = useState(INITIAL_RESOURCE_DISTRIBUTION)
     const [toResources, setToResources] = useState(fromResources)
     const [notEnoughTokens, setNotEnoughTokens] = useState(ENOUGH_TOKENS)
     const [negativeTokens, setNegativeTokens] = useState(NOT_NEGATIVE_TOKENS)
     const [tokensSpent, setTokensSpent] = useState(NO_TOKENS_SPENT)
+    const [resetTimer, setResetTimer] = useState(DO_NOT_RESET_TIMER)
+    const [submitDecisions, setSubmitDecisions] = useState(DO_NOT_SUBMIT_DECISIONS)
 
     return (
         <div className={FULL_DIV}>
+            <GameTimer setSubmitDecisions={setSubmitDecisions} resetTimer={resetTimer} setResetTimer={setResetTimer}/>
+            <ConfirmButton2 submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} resources={toResources} clearSelected={() => clearResources(setFromResources, setToResources, toResources, setTokensSpent, totalTokens)} loginCode={props.loginCode}/>
+
             <VerticalPlayerGroup type={GROUP_ONE} allLoginCodes={[1, 2, 3, 4, 5, 6]} players={[1, 2, 3]}/>
             <VerticalPlayerGroup type={GROUP_TWO} allLoginCodes={[1, 2, 3, 4, 5, 6]} players={[4, 5, 6]}/>
             {getResourceButton(KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}
@@ -65,6 +74,12 @@ function GameTwo(props) {
             {getAlerts(notEnoughTokens, setNotEnoughTokens, negativeTokens, setNegativeTokens)}
         </div>
     )
+}
+
+function clearResources(setFromResources, setToResources, toResources, setTokensSpent, totalTokens) {
+    setFromResources(toResources)
+    setToResources(INITIAL_RESOURCE_DISTRIBUTION)
+    setTokensSpent(NO_TOKENS_SPENT)
 }
 
 function scaleHeights(resourceArray, totalTokens) {
