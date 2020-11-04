@@ -37,6 +37,7 @@ io.on('connection', socket => {
     socket.on('confirm choice for game 1', (prolificID, choices) => {
         // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
         console.log(choices);
+        prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
         DB_API.savePlayerChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
@@ -79,15 +80,19 @@ io.on('connection', socket => {
     });
 
     socket.on('confirm choice for game 2', (prolificID, competeToken, keepToken, investToken) => {
+        prolificID = prolificID.toString();
+        console.log("Game 2 decision received: ", prolificID, competeToken, keepToken, investToken);
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
+        player.setIsBot(false);
+        // console.log(room);
         // TODO: add allocation to db
         player.recordAllocationForGameTwo(competeToken, keepToken, investToken);
         room.addPlayerIDToConfirmedSet(prolificID);
 
         // let all bots select their choices
         room.players.forEach((playerInThisRoom) => {
-            if (playerInThisRoom.isBot) {
+            if (playerInThisRoom.isBot && playerInThisRoom.prolificID !== prolificID) {
                 let bot = playerInThisRoom;
                 let botAllocation = Game2.generateBotAllocation();
                 bot.recordAllocationForGameTwo(botAllocation[0], botAllocation[1], botAllocation[2]);

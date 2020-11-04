@@ -81,7 +81,7 @@ class Room {
     playersWithChoiceConfirmed = new Set(); // holds prolificID of players who have confirmed their choices
     allPlayerLocations = new Map();
     gameOneResults = []; // two groups for winners/losers
-    gameTwoPayoff = [];
+    gameTwoPayoff = GameTwo.generateCompeteAndInvestPayoff();
 
     constructor(roomName) {
         if (roomName === undefined) {
@@ -117,7 +117,6 @@ class Room {
 
     advanceToGameTwo() {
         this.turnNum = 0;
-        this.gameTwoPayoff = GameTwo.generateCompeteAndInvestPayoff();
     }
 
     addPlayerIDToConfirmedSet(prolificID) {
