@@ -1,13 +1,13 @@
 import { withStyles } from '@material-ui/core';
 import React from 'react';
-import Token from '../Tokens/token.png'
+import Token from '../Tokens/money-bag.png'
 
-const IMAGE_HEIGHT = '75vh'
-const IMAGE_WIDTH = '75vh'
+const IMAGE_HEIGHT = '45vh'
+const IMAGE_WIDTH = '45vh'
 
 const TOKENS_LABEL = "Tokens Left: "
 const styles = ({
-    fullCounter: {
+    fullDiv: {
       position: 'absolute',
       top: '9vh',
       left: '53.5vw',
@@ -16,6 +16,16 @@ const styles = ({
       width: '15vw',
       opacity: '.8',
       borderRadius: '20px',
+      alignItems: 'center',
+      verticalAlign: 'middle',
+    },
+    tokenIcon: {
+      position: 'relative',
+      top: '1vh',
+    },
+    tokenText: {
+      position: 'relative',
+      top: '1.5vh',
       alignItems: 'center',
       verticalAlign: 'middle',
     }
@@ -27,10 +37,14 @@ function TokenCounter(props) {
     const {classes} = props;
 
     return (
-        <div className={classes.fullCounter}>
+      <div className={classes.fullDiv}>
+        <div className={classes.tokenIcon}>
           {getTokenIcon()}
+        </div>
+        <div className={classes.tokenText}>
           {TOKENS_LABEL + props.tokens}
         </div>
+      </div>
     )
 }
 
