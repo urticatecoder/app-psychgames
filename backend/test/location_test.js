@@ -1,12 +1,8 @@
 const assert = require('assert');
-const BOT = require('../db/bot.js');
-const mongoose = require('mongoose');
-const { saveNewPlayerToDB } = require('../db/db_api.js');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
 calculateResults, getResults, zeroSumResults } = require('../db/results.js');
-const DB_API = require('../db/db_api.js');
 
 
 describe('Location sending and calculation', () => {
@@ -19,9 +15,9 @@ describe('Location sending and calculation', () => {
         room.addPlayer(new Player('test_id1'));
         room.getPlayerWithID('test_id').recordChoices(choices_other);
         room.getPlayerWithID('test_id1').recordChoices(choices);
-        console.log(room);
+        // console.log(room);
         let results = getResultsByProlificId(testID, room)
-        console.log(results);
+        // console.log(results);
         for(var i = 0; i < results.length; i++ ){
             assert(results[i] === 0);
         }
@@ -62,7 +58,7 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
 
         const count = getResultsByProlificId(testID, room);
-        console.log(count);
+        // console.log(count);
         assert(count[0] == 1.333333333333333 && count[1] == 5.333333333333333);
         assert(count[2] == -6.666666666666667);
         done();
@@ -290,7 +286,7 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
 
         let results = getResultsByProlificId(testID, room);
-        console.log(results);
+        // console.log(results);
         assert(results[0] == -2.6666666666666665);
         assert(results[1] == 1.3333333333333335);
         assert(results[2] == 1.3333333333333335);

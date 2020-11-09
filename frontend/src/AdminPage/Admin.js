@@ -7,16 +7,28 @@ class Admin extends React.Component {
 
     constructor(props){
         super(props);
-        this.csvLink = React.createRef();
+        this.gameOneDataLink = React.createRef();
+        this.gameTwoDataLink = React.createRef();
         this.state = { data: "Initialize value"}
     }
 
-    fetchData = () => {
-        axios.get('/download').then(res => {
+    fetchGameOneData = () => {
+        axios.get('/download-game1').then(res => {
             console.log(res);
             this.setState({ data: res.data}, () => {
                 setTimeout(() => {
-                    this.csvLink.current.link.click();
+                    this.gameOneDataLink.current.link.click();
+                }, 0);
+            })
+        }).catch(err => console.log(err));
+    }
+
+    fetchGameTwoData = () => {
+        axios.get('/download-game2').then(res => {
+            console.log(res);
+            this.setState({ data: res.data}, () => {
+                setTimeout(() => {
+                    this.gameTwoDataLink.current.link.click();
                 }, 0);
             })
         }).catch(err => console.log(err));
@@ -25,13 +37,21 @@ class Admin extends React.Component {
     render() {
         return (
             <div>
-                <button onClick={this.fetchData}>Download CSV</button>
+                <button onClick={this.fetchGameOneData}>Download Game 1 Data</button>
                 {/*{ this.state.data ? <CSVLink data={this.state.data} ref={this.csvLink}>Download</CSVLink> : null }*/}
                 <CSVLink
                     data={this.state.data}
                     filename="data.csv"
                     className="hidden"
-                    ref={this.csvLink}
+                    ref={this.gameOneDataLink}
+                    target="_blank"
+                />
+                <button onClick={this.fetchGameTwoData}>Download Game 2 Data</button>
+                <CSVLink
+                    data={this.state.data}
+                    filename="data.csv"
+                    className="hidden"
+                    ref={this.gameTwoDataLink}
                     target="_blank"
                 />
             </div>

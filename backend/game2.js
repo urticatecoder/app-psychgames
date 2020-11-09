@@ -106,7 +106,7 @@ function shuffleArray(array) {
 }
 
 function isGameTwoDone(room) {
-    return room.turnNum >= 25;
+    return room.turnNum >= 5;
 }
 
 module.exports = {

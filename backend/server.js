@@ -40,7 +40,8 @@ io.on('connection', socket => {
         prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
-        DB_API.savePlayerChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
+        // DB_API.savePlayerChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
+        DB_API.saveChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
         player.recordChoices(choices);
         room.addPlayerIDToConfirmedSet(prolificID);
 
@@ -50,7 +51,8 @@ io.on('connection', socket => {
             if (playerInThisRoom.isBot) {
                 let bot = playerInThisRoom;
                 let botChoices = BOT.determineBotChoice(bot.prolificID, allIDs);
-                DB_API.savePlayerChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
+                // DB_API.savePlayerChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
+                DB_API.saveChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
                 bot.recordChoices(botChoices);
                 room.addPlayerIDToConfirmedSet(bot.prolificID);
             }
@@ -67,12 +69,21 @@ io.on('connection', socket => {
                 let group = getWinnersAndLosers(room);
                 console.log("Winners: ", group[0]);
                 console.log("Losers: ", group[1]);
+                let win = group[0];
+                let lose = group[1];
+                if(win.length != 3){
+                    let size = win.length;
+                    for(var i = size; i > 3; i--){
+                        lose.push(win[i - 1]);
+                        win.pop();
+                    }
+                }
                 room.setGameOneResults(group);
-                io.in(room.name).emit('end game 1', group[0], group[1], allDoubleBonus.length, allTripleBonus.length);
+                io.in(room.name).emit('end game 1', win, lose, allDoubleBonus.length, allTripleBonus.length);
                 room.advanceToGameTwo();
             }
-            io.in(room.name).emit('location for game 1', resultForAllPlayers, allTripleBonus, 15,
-                allDoubleBonus, 8);
+            io.in(room.name).emit('location for game 1', resultForAllPlayers, allTripleBonus, 25,
+                allDoubleBonus, 15);
             room.advanceToNextRound();
         } else {
             // emit('someone has confirmed his/her choice') to 5 other
@@ -88,6 +99,8 @@ io.on('connection', socket => {
         // console.log(room);
         // TODO: add allocation to db
         player.recordAllocationForGameTwo(competeToken, keepToken, investToken);
+        let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn();
+        DB_API.saveAllocationToDB(prolificID, keepToken, investToken, competeToken, payoff[1], payoff[0], room.turnNum, player.isBot);
         room.addPlayerIDToConfirmedSet(prolificID);
 
         // let all bots select their choices
@@ -95,7 +108,8 @@ io.on('connection', socket => {
             if (playerInThisRoom.isBot && playerInThisRoom.prolificID !== prolificID) {
                 let bot = playerInThisRoom;
                 let botAllocation = Game2.generateBotAllocation();
-                bot.recordAllocationForGameTwo(botAllocation[0], botAllocation[1], botAllocation[2]);
+                bot.recordAllocationForGameTwo(botAllocation[0], botAllocation[1], botAllocation[2]); // compete, keep, invest
+                DB_API.saveAllocationToDB(bot.prolificID, botAllocation[1], botAllocation[2], botAllocation[0], payoff[1], payoff[0], room.turnNum, true);
                 room.addPlayerIDToConfirmedSet(bot.prolificID);
             }
         });
@@ -103,8 +117,7 @@ io.on('connection', socket => {
         if (room.hasEveryoneConfirmedChoiceInThisRoom()) { // all 6 have confirmed choices
             if (Game2.isGameTwoDone(room)) {
                 io.in(room.name).emit('end game 2');
-            }
-            else{
+            } else {
                 room.advanceToNextRound();
                 let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn();
                 let competePayoff = payoff[0], investPayoff = payoff[1];
