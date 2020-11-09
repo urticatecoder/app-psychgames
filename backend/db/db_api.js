@@ -98,6 +98,7 @@ module.exports = {
     getAllChoices: getAllChoices,
     saveExperimentSession: saveExperimentSession,
     saveChoiceToDB: saveChoiceToDB,
+    saveAllocationToDB: saveAllocationToDB,
     getAllChoicesByDateRange: getAllChoicesByDateRange,
 }
 
