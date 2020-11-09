@@ -100,7 +100,7 @@ io.on('connection', socket => {
                 let bot = playerInThisRoom;
                 let botAllocation = Game2.generateBotAllocation();
                 bot.recordAllocationForGameTwo(botAllocation[0], botAllocation[1], botAllocation[2]); // compete, keep, invest
-                DB_API.saveAllocationToDB(bot.prolificID, botAllocation[1], botAllocation[2], botAllocation[0], payoff[1], payoff[0], room.turnNum, player.isBot);
+                DB_API.saveAllocationToDB(bot.prolificID, botAllocation[1], botAllocation[2], botAllocation[0], payoff[1], payoff[0], room.turnNum, true);
                 room.addPlayerIDToConfirmedSet(bot.prolificID);
             }
         });

@@ -1,12 +1,13 @@
 let mongoose = require('mongoose');
 let Choice = require('./choice');
+let Allocation = require('./allocation');
 
 let PlayerSchema = new mongoose.Schema(
     {
         _id: false,
         prolificID: {type: String, required: true},
-        choice: {type: [Choice.ChoiceSchema], default: []}, // TODO: still need to figure out what's the best way to store a player's choice at each turn
-        allocation: {type: [Choice.ChoiceSchema], default: []},
+        choice: {type: [Choice.ChoiceSchema], default: []},
+        allocation: {type: [Allocation.AllocationSchema], default: []},
         payment: {type: Number, default: 0}, // this player's final payment in cents
     }
 );
