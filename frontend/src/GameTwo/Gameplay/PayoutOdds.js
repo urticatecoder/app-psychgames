@@ -22,17 +22,16 @@ const styles = ({
       verticalAlign: 'middle',
     },
     investText: {
-      position: 'absolute',
-      top: '2vh',
-      left: '5.8vh'
+      position: 'relative',
+      top: '2.5vh',        
+      alignItems: 'center',
+      verticalAlign: 'middle',
     },
     competeText: {
-      position: 'absolute',
-      top: '5vh',
-      left: '4.5vh'
-
-    //   alignItems: 'center',
-    //   verticalAlign: 'middle',
+      position: 'relative',
+      top: '3vh',
+      alignItems: 'center',
+      verticalAlign: 'middle',
     }
   });
 
