@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import '../../CommonStylings/FullScreenDiv.css'
-import PlayerColumn from '../Gameplay/PlayerColumn';
+import PlayerColumn from './PlayerColumn';
 import {Grid, withStyles} from '@material-ui/core'
 import socket from "../../socketClient";
 import Alert from '@material-ui/lab/Alert';
@@ -8,7 +8,7 @@ import {Snackbar} from '@material-ui/core'
 import ConfirmButton from './ConfirmButton';
 import { withRouter } from "react-router-dom";
 import GroupBox from './GroupBox'
-import GameTimer from './GameTimer'
+import GameTimer from '../../CommonComponents/GameTimer'
 
 const SUMMARY_ROUTE = '/summary'
 
@@ -23,6 +23,8 @@ const INITIAL_HEIGHT = 0;
 const NUM_PLAYERS = 6
 const VERTICAL_CONSTANT = 1;
 const VERTICAL_SCALAR = .58;
+const NEGATIVE_ONE = -1;
+
 const MAX_PLAYERS_SELECTED = 2;
 const PLAYERS = [0, 1, 2, 3, 4, 5]
 
@@ -53,6 +55,15 @@ const ERROR_HORIZONTAL = "left"
 const RESET_TIMER = true
 const DO_NOT_RESET_TIMER = false
 
+const INVALID_INDEX = -1;
+
+const FIRST_CODE = 0;
+const SECOND_CODE = 1;
+const THIRD_CODE = 2;
+
+const PAUSE_BETWEEN_ANIMATIONS = 2000;
+const IN_BONUS = true;
+
 const styles = ({
     gameplay: {
       position: 'absolute',
@@ -70,24 +81,34 @@ function ColumnController(props) {
 
     const [fromHeights, setFromHeights] = useState(createPlayerArray(BOTTOM_OF_SCREEN))
     const [toHeights, setToHeights] = useState(createPlayerArray(scaleHeight(INITIAL_HEIGHT)))
+    const [currentHeights, setCurrentHeights] = useState(createPlayerArray(scaleHeight(INITIAL_HEIGHT)))
     const [selected, setSelected] = useState(createPlayerArray(NOT_SELECTED))
+    const [doubles, setDoubles] = useState(createPlayerArray(NOT_SELECTED))
+    const [triples, setTriples] = useState(createPlayerArray(NOT_SELECTED))
     const [selectedSelf, setSelectedSelf] = useState(DID_NOT_SELECT_SELF)
     const [tooManySelections, setTooManySelections] = useState(NOT_TOO_MANY_SELECTIONS)
     const [resetTimer, setResetTimer] = useState(DO_NOT_RESET_TIMER)
     const [submitDecisions, setSubmitDecisions] = useState(DO_NOT_SUBMIT_DECISIONS)
 
     useEffect(() => {
-        socket.on("location for game 1", (locations) => {
-            console.log(locations)
-            setFromHeights(toHeights)
-            setToHeights(scaleHeights(locations))
+        socket.on("location for game 1", (locations, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
+            console.log(currentHeights)
+            handleTripleBonuses(tripleBonuses, tripleIncrease, props.allLoginCodes, setFromHeights, setToHeights, currentHeights, setCurrentHeights, setTriples);
+            clearBonusArray(setTriples, (tripleBonuses.length * PAUSE_BETWEEN_ANIMATIONS));
+
+            handleDoubleBonuses(doubleBonuses, doubleIncrease, props.allLoginCodes, setFromHeights, setToHeights, currentHeights, setCurrentHeights, setDoubles, tripleBonuses.length);
+            clearBonusArray(setDoubles, (tripleBonuses.length + doubleBonuses.length) * PAUSE_BETWEEN_ANIMATIONS);
+
+            updateHeightsDelayed(currentHeights, scaleHeights(locations), setFromHeights, setToHeights, setCurrentHeights, (tripleBonuses.length + doubleBonuses.length) * PAUSE_BETWEEN_ANIMATIONS)
             setResetTimer(RESET_TIMER)
         });
 
-        socket.on("end game 1", (winners, losers) => {
+        socket.on("end game 1", (winners, losers, doubleBonuses, tripleBonuses) => {
             props.setWinners(winners)
             props.setLosers(losers)
-            moveToSummary(props)
+            console.log(doubleBonuses)
+            console.log(tripleBonuses)
+            setTimeout(() => moveToSummary(props), (doubleBonuses + tripleBonuses) * PAUSE_BETWEEN_ANIMATIONS)
         });
 
         return () => {
@@ -95,7 +116,7 @@ function ColumnController(props) {
             socket.off("location for game 1");
             socket.off("end game 1");
         }
-    }, []);
+    }, [toHeights, currentHeights, fromHeights]);
 
     const {classes} = props
 
@@ -116,7 +137,7 @@ function ColumnController(props) {
                     style={{height: '80vh'}}
                     >
                     {PLAYERS.map((player) => {
-                        return getColumn(player, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, props.allLoginCodes, props.loginCode)
+                        return getColumn(player, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, props.allLoginCodes, props.loginCode, doubles, triples)
                     })}
                 </Grid>
                 <GroupBox groupNumber='Two'/>
@@ -124,6 +145,91 @@ function ColumnController(props) {
 
         </div>
     )
+}
+
+// FIXME: REMOVE DUPLICATION
+function handleTripleBonuses(tripleArray, tripleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, setTriples) {
+    let oldHeights = originalHeights.slice(0);
+    console.log("TRIPLE")
+    for (let i = 0; i < tripleArray.length; i++) {
+        let loginCodes = tripleArray[i];
+        let newHeights = oldHeights.slice(0);
+        let firstIndex = getPlayerIndex(loginCodes[FIRST_CODE], allLoginCodes);
+        let secondIndex = getPlayerIndex(loginCodes[SECOND_CODE], allLoginCodes);
+        let thirdIndex = getPlayerIndex(loginCodes[THIRD_CODE], allLoginCodes);
+        let scaledBonus = scaleBonus(tripleIncrease);
+        newHeights[firstIndex] += scaledBonus;
+        newHeights[secondIndex] += scaledBonus;
+        newHeights[thirdIndex] += scaledBonus;
+        console.log("OLD HEIGHT")
+        console.log(oldHeights)
+        console.log("NEW HEIGHT")
+        console.log(newHeights)
+        updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, (i) * PAUSE_BETWEEN_ANIMATIONS)
+        markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, (i) * PAUSE_BETWEEN_ANIMATIONS);
+        oldHeights = newHeights;
+    }
+}
+
+function markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, delay) {
+    updateBonusArray([firstIndex, secondIndex, thirdIndex], setTriples, delay);
+}
+
+function markDoubleDelayed(firstIndex, secondIndex, setDoubles, delay) {
+    updateBonusArray([firstIndex, secondIndex], setDoubles, delay);
+}
+
+function clearBonusArray(setBonus, delay) {
+    setTimeout(() => setBonus(createPlayerArray(NOT_SELECTED)), delay)
+}
+
+function updateBonusArray(indexArray, setBonus, delay) {
+    let bonusArray = createPlayerArray(NOT_SELECTED);
+    indexArray.forEach((index) => {
+        bonusArray[index] = IN_BONUS;
+    })
+    setTimeout(() => setBonus(bonusArray), delay);
+}
+
+function handleDoubleBonuses(doubleArray, doubleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, setDoubles, animationOffset) {
+    let oldHeights = originalHeights.slice(0);
+    console.log("DOUBLE")
+    for (let i = 0; i < doubleArray.length; i++) {
+        let loginCodes = doubleArray[i];
+        let newHeights = oldHeights.slice(0);
+        let firstIndex = getPlayerIndex(loginCodes[FIRST_CODE], allLoginCodes);
+        let secondIndex = getPlayerIndex(loginCodes[SECOND_CODE], allLoginCodes);
+        console.log(doubleIncrease);
+        let scaledBonus = scaleBonus(doubleIncrease);
+        console.log(scaledBonus);
+        newHeights[firstIndex] += scaledBonus;
+        newHeights[secondIndex] += scaledBonus;
+        console.log("OLD HEIGHT")
+        console.log(oldHeights)
+        console.log("NEW HEIGHT")
+        console.log(newHeights)
+        updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS);
+        markDoubleDelayed(firstIndex, secondIndex, setDoubles, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS);
+        oldHeights = newHeights;
+    }
+}
+
+function updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, delay) {
+    console.log(newHeights)
+    setCurrentHeight(newHeights);
+    setTimeout(() => updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights), delay);
+}
+
+function updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights) {
+        setOldHeights(oldHeights);
+        setNewHeights(newHeights);
+}
+
+function getPlayerIndex(loginCode, allLoginCodes) {
+    for (let i = 0; i < allLoginCodes.length; i++) {
+        if (allLoginCodes[i] == loginCode) return i;
+    }
+    return INVALID_INDEX;
 }
 
 function clearSelected(setSelected) {
@@ -149,12 +255,18 @@ function getAlertComponent(text, setClosed) {
     )
 }
 
-function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID) {
+function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID, doubles, triples) {
+    console.log(doubles)
+    console.log(triples)
     return(
         <Grid item>
-            <PlayerColumn onSelect = {() => selectPlayer(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, playerIDs, myID)} selected={selected[playerNumber]} from={fromHeights[playerNumber]} to={toHeights[playerNumber]} player={playerNumber} />
+            <PlayerColumn onSelect = {() => selectPlayer(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, playerIDs, myID)} selected={selected[playerNumber]} double={doubles[playerNumber]} triple={triples[playerNumber]} from={fromHeights[playerNumber]} to={toHeights[playerNumber]} player={playerNumber} />
         </Grid>
     )
+}
+
+function scaleBonus(bonus) {
+    return NEGATIVE_ONE * VERTICAL_SCALAR * bonus;
 }
 
 function scaleHeight(height) {
@@ -209,5 +321,6 @@ function invertHeight(height) {
 function moveToSummary(props) {
     props.history.push(SUMMARY_ROUTE)
 }
+
 
 export default (withRouter(withStyles(styles)(ColumnController)));

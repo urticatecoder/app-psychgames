@@ -1,3 +1,6 @@
+const GameTwoAllocation = require('./game2.js').GameTwoAllocation;
+const GameTwo = require('./game2.js');
+
 class Lobby {
     currRoomID = 0;
     rooms = [];
@@ -36,7 +39,7 @@ class Lobby {
 
     findRoomForPlayerToJoin(prolificID) {
         if (this.playerToRoom.has(prolificID)) {
-            throw 'Duplicated prolificID found';
+            throw `Duplicated prolificID ${prolificID} found`;
         }
         let player = new Player(prolificID);
         this.currRoom.addPlayer(player);
@@ -60,6 +63,16 @@ class Lobby {
     getNumOfPlayersInRoom(roomName) {
         return this.roomToPlayer.get(roomName).length;
     }
+
+    reset() {
+        this.currRoomID = 0;
+        this.rooms = [];
+        this.currRoom = undefined;
+        this.playerToRoom.clear();
+        this.roomToPlayer.clear();
+        this.botID = 0;
+        this.allocateNewRoom();
+    }
 }
 
 class Room {
@@ -67,6 +80,8 @@ class Room {
     players = []; // holds player objects who are in this room
     playersWithChoiceConfirmed = new Set(); // holds prolificID of players who have confirmed their choices
     allPlayerLocations = new Map();
+    gameOneResults = []; // two groups for winners/losers
+    gameTwoPayoff = GameTwo.generateCompeteAndInvestPayoff();
 
     constructor(roomName) {
         if (roomName === undefined) {
@@ -100,6 +115,10 @@ class Room {
         this.playersWithChoiceConfirmed.clear();
     }
 
+    advanceToGameTwo() {
+        this.turnNum = 0;
+    }
+
     addPlayerIDToConfirmedSet(prolificID) {
         this.playersWithChoiceConfirmed.add(prolificID);
     }
@@ -126,11 +145,82 @@ class Room {
         );
     }
 
+    get gameOneResults() {
+        return this.gameOneResults;
+    }
 
+    setGameOneResults(results) {
+        this.gameOneResults = results;
+    }
+
+    getTeamAllocationAtCurrentTurn() {
+        // winners
+        let winnerIDs = this.gameOneResults[0];
+        let winnerAllocations = [];
+        winnerIDs.forEach((id) => {
+            winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
+        });
+        let winnerSum = GameTwoAllocation.sumAllocations(winnerAllocations);
+
+        // losers
+        let loserIDs = this.gameOneResults[1];
+        let loserAllocations = [];
+        loserIDs.forEach((id) => {
+            loserAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
+        });
+        let loserSum = GameTwoAllocation.sumAllocations(loserAllocations);
+
+        return [winnerSum.allocationAsArray, loserSum.allocationAsArray];
+    }
+
+    getCompeteAndInvestPayoffAtCurrentTurn() {
+        return this.getCompeteAndInvestPayoffAtTurnNum(this.turnNum);
+    }
+
+    getCompeteAndInvestPayoffAtTurnNum(turnNum) {
+        let idx = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
+        return this.gameTwoPayoff[idx];
+    }
+
+    getPlayerAllocationAtTurnNum(prolificID, turnNum) {
+        let player = this.getPlayerWithID(prolificID);
+        return player.getAllocationAtTurn(turnNum);
+    }
+
+    // need to refactor this code
+    getOthersAllocationAtTurnNum(prolificID, turnNum) {
+        let teammatesAllocation = [];
+        let opponentsAllocation = [];
+        if (this.gameOneResults[0].includes(prolificID)) {
+            this.gameOneResults[0].forEach((id) => {
+                if (id !== prolificID) { // excluding self
+                    let teammate = this.getPlayerWithID(id);
+                    teammatesAllocation.push(teammate.getAllocationAtTurn(turnNum));
+                }
+            });
+            this.gameOneResults[1].forEach((id) => {
+                let opponent = this.getPlayerWithID(id);
+                opponentsAllocation.push(opponent.getAllocationAtTurn(turnNum));
+            });
+        } else {
+            this.gameOneResults[1].forEach((id) => {
+                if (id !== prolificID) { // excluding self
+                    let teammate = this.getPlayerWithID(id);
+                    teammatesAllocation.push(teammate.getAllocationAtTurn(turnNum));
+                }
+            });
+            this.gameOneResults[0].forEach((id) => {
+                let opponent = this.getPlayerWithID(id);
+                opponentsAllocation.push(opponent.getAllocationAtTurn(turnNum));
+            });
+        }
+        return [teammatesAllocation, opponentsAllocation];
+    }
 }
 
 class Player {
-    choices = []; // stores an array of array
+    choices = []; // stores an array of array to represent choices made by this player in game 1
+    allocations = []; // for game 2
 
     constructor(prolificID) {
         if (prolificID === undefined) {
@@ -161,6 +251,21 @@ class Player {
         }
         return this.choices[turnNum];
     }
+
+    recordAllocationForGameTwo(compete, keep, invest) {
+        this.allocations.push(new GameTwoAllocation(compete, keep, invest));
+    }
+
+    getAllocationAtTurn(turnNum) {
+        if (turnNum <= 0) {
+            throw 'Invalid turn num.';
+        }
+        turnNum = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
+        if (turnNum >= this.allocations.length) {
+            throw 'Array index out of bound.';
+        }
+        return this.allocations[turnNum];
+    }
 }
 
 const lobby = new Lobby();
@@ -170,8 +275,10 @@ module.exports = {
     Room,
     Player,
     LobbyInstance: lobby,
-    LobbySocketListener: function (io, socket) {
+    LobbyBotSocketListener: function (io, socket) {
         socket.on("enter lobby", (prolificID) => {
+            prolificID = prolificID.toString();
+            // console.log("Received enter lobby from frontend with prolificID: ", prolificID);
             let roomName = lobby.findRoomForPlayerToJoin(prolificID);
             socket.join(roomName);
             socket.roomName = roomName;
@@ -190,12 +297,29 @@ module.exports = {
                 io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
                 lobby.allocateNewRoom();
             }
-
             // if (Lobby.getNumOfPeopleInRoom(io, roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
             //     // the current room is full, we have to use a new room
             //     io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
             //     lobby.allocateNewRoom();
             // }
+        });
+    },
+    LobbyDefaultSocketListener: function (io, socket) {
+        socket.on("enter lobby", (prolificID) => {
+            prolificID = prolificID.toString();
+            let roomName = lobby.findRoomForPlayerToJoin(prolificID);
+            socket.join(roomName);
+            socket.roomName = roomName;
+            socket.prolificID = prolificID;
+            socket.to(roomName).emit('join', socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
+            socket.emit('num of people in the room', Lobby.getNumOfPeopleInRoom(io, roomName)); // only to self
+            // console.log(Lobby.getNumOfPeopleInRoom(io, roomName));
+
+            if (lobby.getNumOfPlayersInRoom(roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
+                // the current room is full, we have to use a new room
+                io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
+                lobby.allocateNewRoom();
+            }
         });
     }
 };

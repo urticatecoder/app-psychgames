@@ -1,5 +1,6 @@
 const supertest = require('supertest');
 const app = require('../app.js');
+const lobby = require('../lobby').LobbyInstance;
 
 describe("API route test", function () {
     it("GET / should has status code 200", function (done) {
@@ -35,5 +36,54 @@ describe("API route test", function () {
                 if (err) throw err;
                 done();
             });
+    });
+
+    it("GET /player-ids", function (done) {
+        // console.log(lobby);
+        lobby.findRoomForPlayerToJoin('123');
+        lobby.findRoomForPlayerToJoin('234');
+        lobby.findRoomForPlayerToJoin('456');
+        supertest(app)
+            .get("/player-ids?loginCode=123")
+            .expect({'ids': ['123', '234', '456']})
+            .end(function (err, res) {
+                if (err) done(err);
+            });
+
+        supertest(app)
+            .get("/player-ids?loginCode=CS408")
+            .expect({'error': 'ProlificID CS408 not found.'})
+            .end(function (err, res) {
+                if (err) done(err);
+            });
+
+        done();
+    });
+
+    it("GET /game1-results", function (done) {
+        let room = lobby.getRoomPlayerIsIn('123');
+        let winners = ['123', '456', '789'];
+        let losers = ['abc', 'def', 'zzz'];
+        room.setGameOneResults([winners, losers]);
+
+        supertest(app)
+            .get("/game1-results?loginCode=123")
+            .expect({'winners': ['123', '456', '789'], 'losers': ['abc', 'def', 'zzz']})
+            .end(function (err, res) {
+                if (err) done(err);
+            });
+
+        supertest(app)
+            .get("/game1-results?loginCode=CS408")
+            .expect({'error': 'ProlificID CS408 not found.'})
+            .end(function (err, res) {
+                if (err) done(err);
+            });
+
+        done();
+    });
+    after(function (done) {
+        lobby.reset();
+        done();
     });
 });
