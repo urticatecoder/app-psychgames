@@ -82,6 +82,12 @@ app.get("/download-game2", async (req, res) => {
     res.status(200).json(result);
 });
 
+app.get("/auth", (req, res) => {
+    let username = req.query.username;
+    let password = req.query.password;
+    res.status(200).send({'isValid': username === 'mel' && password === 'CS408'});
+});
+
 app.get("/player-ids", (req, res) => {
     let prolificID = req.query.loginCode;
     let room = lobby.getRoomPlayerIsIn(prolificID);

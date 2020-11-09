@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './App.css';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Lobby from './Lobby/Lobby';
 import Login from './Login/Login';
 import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
@@ -8,6 +8,8 @@ import Summary from './GameOne/Summary/Summary';
 import GameOne from './GameOne/Gameplay/GameOne';
 import GameTwo from './GameTwo/Gameplay/GameTwo';
 import Admin from './AdminPage/Admin';
+import AdminAuth from "./AdminPage/AdminAuth";
+import PrivateRoute from "./AdminPage/PrivateRoute";
 
 
 const CLASS_NAME = 'App';
@@ -44,18 +46,19 @@ function App() {
 
         <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode} setAllLoginCodes={setAllLoginCodes}/>}/>
         <Route path='/game-two' render={() => (<GameTwo loginCode = {loginCode} />)}/>
-
-        <Route path='/admin' render={() => <Admin/>}/>
-
+        <Switch>
+          <Route exact path='/adminLogin' render={() => <AdminAuth/>} component={AdminAuth}/>
+          <PrivateRoute exact path='/admin'/>
+        </Switch>
         <Route path='/summary' render={() => (<Summary winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
 
-        <Route 
-          path="/game-one" 
+        <Route
+          path="/game-one"
           render={() => (<GameOne setWinners={setWinners} setLosers={setLosers} loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
         />
 
-        <Route 
-          path="/one-welcome" 
+        <Route
+          path="/one-welcome"
           render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' /* route='one-introduction'/> */ route='game-two'/>)}
         />
         <Route
