@@ -1,5 +1,6 @@
 const GameTwoAllocation = require('./game2.js').GameTwoAllocation;
 const GameTwo = require('./game2.js');
+const DB_API = require('./db/db_api');
 
 class Lobby {
     currRoomID = 0;
@@ -295,6 +296,7 @@ module.exports = {
             if (lobby.getNumOfPlayersInRoom(roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
                 io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
+                DB_API.saveExperimentSession(lobby.getAllPlayersIDsInRoomWithName(roomName));
                 lobby.allocateNewRoom();
             }
             // if (Lobby.getNumOfPeopleInRoom(io, roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
