@@ -26,9 +26,9 @@ function getResults(playerProlific, prolificIDArray, room){
     let doublePair = getDoublePairMap(prolificIDArray, room);
     let triplePair = getTriplePairMap(prolificIDArray, room);
     var count = 0;
-    count += singlePair.get(playerProlific)*4;
-    count += doublePair.get(playerProlific)*8;
-    count += triplePair.get(playerProlific)*15;
+    count += singlePair.get(playerProlific)*10;
+    count += doublePair.get(playerProlific)*15;
+    count += triplePair.get(playerProlific)*25;
     return count;
 } 
 

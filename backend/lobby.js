@@ -103,7 +103,7 @@ class Room {
             throw 'Parameter is not an instance of the Player class.';
         }
         this.players.push(player);
-        this.allPlayerLocations.set(player.prolificID, 0);
+        this.allPlayerLocations.set(player.prolificID, 50);
     }
 
     advanceToNextRound() {
