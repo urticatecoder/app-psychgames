@@ -64,6 +64,8 @@ const THIRD_CODE = 2;
 const PAUSE_BETWEEN_ANIMATIONS = 2000;
 const IN_BONUS = true;
 
+const NORMAL_ANIMATION_OFFSET = 1
+
 const styles = ({
     gameplay: {
       position: 'absolute',
@@ -108,7 +110,7 @@ function ColumnController(props) {
             props.setLosers(losers)
             console.log(doubleBonuses)
             console.log(tripleBonuses)
-            setTimeout(() => moveToSummary(props), (doubleBonuses + tripleBonuses) * PAUSE_BETWEEN_ANIMATIONS)
+            setTimeout(() => moveToSummary(props), (doubleBonuses + tripleBonuses + NORMAL_ANIMATION_OFFSET) * PAUSE_BETWEEN_ANIMATIONS)
         });
 
         return () => {

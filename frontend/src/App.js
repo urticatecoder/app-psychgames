@@ -45,22 +45,26 @@ function App() {
         <Route path="/" exact render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}/>
 
         <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode} setAllLoginCodes={setAllLoginCodes}/>}/>
-        <Route path='/game-two' render={() => (<GameTwo loginCode = {loginCode} />)}/>
+
         <Switch>
           <Route exact path='/adminLogin' render={() => <AdminAuth/>} component={AdminAuth}/>
           <PrivateRoute exact path='/admin'/>
         </Switch>
+
+        <Route path='/game-two' render={() => (<GameTwo loginCode = {loginCode} winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
+
         <Route path='/summary' render={() => (<Summary winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
 
         <Route
-          path="/game-one"
-          render={() => (<GameOne setWinners={setWinners} setLosers={setLosers} loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
+            path="/game-one"
+            render={() => (<GameOne setWinners={setWinners} setLosers={setLosers} loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
         />
 
         <Route
-          path="/one-welcome"
-          render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' /* route='one-introduction'/> */ route='game-two'/>)}
+            path="/one-welcome"
+            render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' /* route='one-introduction'/> */ route='game-one'/>)}
         />
+
         <Route
           path="/one-introduction"
           render={() => (<InstructionsScreen file='Instructions/Introduction.txt' title='General Introduction' route='one-logic'/>)}

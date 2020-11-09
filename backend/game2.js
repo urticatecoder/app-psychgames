@@ -1,6 +1,7 @@
 class GameTwoAllocation {
     static TOKEN_VALUE = 0.5;
     static POSSIBLE_PAYOFF = [0, 0.5, 1, 1.5, 2];
+    static MAX_NUM_OF_TURNS = 5;
 
     constructor(compete, keep, invest) {
         this.compete = compete;
@@ -106,7 +107,7 @@ function shuffleArray(array) {
 }
 
 function isGameTwoDone(room) {
-    return room.turnNum >= 25;
+    return room.turnNum >= GameTwoAllocation.MAX_NUM_OF_TURNS;
 }
 
 module.exports = {
