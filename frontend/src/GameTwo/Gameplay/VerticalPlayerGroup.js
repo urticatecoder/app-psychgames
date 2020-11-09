@@ -44,18 +44,31 @@ const styles = {
 }
 
 function VerticalPlayerGroup(props) {
+    console.log('here')
+    console.log(props)
     const {classes} = props
     let isGroupOne = props.type == GROUP_ONE
     let groupColor = (isGroupOne) ? GROUP_ONE_COLOR : GROUP_TWO_COLOR;
     let formattingName = (isGroupOne) ? classes.outerDiv1 : classes.outerDiv2;
-
+    var allLoginCodes = props.allLoginCodes
+    //FIXME: delete this, only needed for user testing
+    var tempPlayers;
+    if (props.type == 1 && props.players.length == 0) {
+        tempPlayers = [allLoginCodes[0], allLoginCodes[1], allLoginCodes[2]]
+    } 
+    else if (props.type == 0 && props.players.length == 0) {
+        tempPlayers = [allLoginCodes[3], allLoginCodes[4], allLoginCodes[5]]
+    }
+    else {
+        tempPlayers = props.players
+    }
     return (
         <div className={formattingName}>
             <div className={classes.groupBox} style={{backgroundColor: groupColor}}>
                 <div className={classes.innerDiv}>
-                    {getFormattedImage(classes, props.players[FIRST_PLAYER_INDEX], props.allLoginCodes)} 
-                    {getFormattedImage(classes, props.players[SECOND_PLAYER_INDEX], props.allLoginCodes)}                    
-                    {getFormattedImage(classes, props.players[THIRD_PLAYER_INDEX], props.allLoginCodes)}                    
+                    {getFormattedImage(classes, tempPlayers[FIRST_PLAYER_INDEX], props.allLoginCodes)} 
+                    {getFormattedImage(classes, tempPlayers[SECOND_PLAYER_INDEX], props.allLoginCodes)}                    
+                    {getFormattedImage(classes, tempPlayers[THIRD_PLAYER_INDEX], props.allLoginCodes)}                    
                 </div>
             </div>
         </div>
@@ -63,7 +76,9 @@ function VerticalPlayerGroup(props) {
 }
 
 function getFormattedImage(classes, code, allLoginCodes) {
+    
     let codeIndex = allLoginCodes.indexOf(code);
+    
     return(
         <div className={classes.imageDiv}>
             <PlayerProfile player={codeIndex}/>

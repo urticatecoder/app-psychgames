@@ -11,6 +11,7 @@ import ConfirmButton2 from './ConfirmButton2'
 import socket from "../../socketClient";
 import { withRouter } from "react-router-dom";
 import TokenCounter from '../Tokens/TokenCounter';
+import PayoutOdds from './PayoutOdds';
 
 const GROUP_ONE = 1;
 const GROUP_TWO = 2;
@@ -50,8 +51,11 @@ const DO_NOT_SUBMIT_DECISIONS = false
 const RESET_TIMER = true
 const DO_NOT_RESET_TIMER = false
 
-function GameTwo(props) {
+const INITIAL_COMPETE_PAYOFF = 1
+const INITIAL_INVEST_PAYOFF = 1
 
+function GameTwo(props) {
+    
     const FULL_DIV = 'fullDiv';
     const [totalTokens, setTotalTokens] = useState(10)
     const [fromResources, setFromResources] = useState(INITIAL_RESOURCE_DISTRIBUTION)
@@ -61,10 +65,18 @@ function GameTwo(props) {
     const [tokensSpent, setTokensSpent] = useState(NO_TOKENS_SPENT)
     const [resetTimer, setResetTimer] = useState(DO_NOT_RESET_TIMER)
     const [submitDecisions, setSubmitDecisions] = useState(DO_NOT_SUBMIT_DECISIONS)
+    const [payoffCompete, setCompetePayoff] = useState(INITIAL_COMPETE_PAYOFF)
+    const [payoffInvest, setInvestPayoff] = useState(INITIAL_INVEST_PAYOFF)
 
     useEffect(() => {
         socket.on("end current turn for game 2", (competePayoff, investPayoff) => {
             console.log('called')
+            console.log(competePayoff)
+            setCompetePayoff(competePayoff)
+            console.log(payoffCompete)
+            console.log(investPayoff)
+            setInvestPayoff(investPayoff)
+            console.log(payoffInvest)
             setResetTimer(RESET_TIMER)
         });
 
@@ -77,16 +89,18 @@ function GameTwo(props) {
             socket.off("end current turn for game 2");
             socket.off("end game 2");
         }
-    }, []);
+    }, [payoffCompete, payoffCompete]);
 
     return (
         <div className={FULL_DIV}>
             <TokenCounter tokens={totalTokens - tokensSpent}/>
+            <PayoutOdds investOdds={payoffInvest} competeOdds={payoffCompete}/> 
             <GameTimer setSubmitDecisions={setSubmitDecisions} resetTimer={resetTimer} setResetTimer={setResetTimer}/>
             <ConfirmButton2 submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} resources={toResources} clearSelected={() => clearResources(setFromResources, setToResources, toResources, setTokensSpent, totalTokens)} loginCode={props.loginCode}/>
 
-            <VerticalPlayerGroup type={GROUP_ONE} allLoginCodes={[1, 2, 3, 4, 5, 6]} players={[1, 2, 3]}/>
-            <VerticalPlayerGroup type={GROUP_TWO} allLoginCodes={[1, 2, 3, 4, 5, 6]} players={[4, 5, 6]}/>
+            {/* TYPE IS FOR USER TESTING ONLY -- DELETE AFTER */}
+            <VerticalPlayerGroup type={GROUP_ONE} allLoginCodes={props.allLoginCodes} players={props.winners} type={0}/>
+            <VerticalPlayerGroup type={GROUP_TWO} allLoginCodes={props.allLoginCodes} players={props.losers} type={1}/>
             {getResourceButton(KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}
             {getResourceButton(INVEST, INVEST_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}
             {getResourceButton(COMPETE, COMPETE_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}
