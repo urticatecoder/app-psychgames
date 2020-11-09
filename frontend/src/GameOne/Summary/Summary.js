@@ -3,6 +3,7 @@ import PlayerGroup from '../../Icons/Components/PlayerGroup';
 import { Typography, Grid, Button, withStyles } from '@material-ui/core';
 import '../../CommonStylings/FullScreenDiv.css';
 import DelayedConfetti from './DelayedConfetti';
+import ContinueButton from '../../CommonComponents/ContinueButton';
  
 const FULL_DIV = 'fullDiv';
 const WINNING_HEADER = 'Winning Players'
@@ -48,6 +49,10 @@ function GroupScreen(props) {
             <DelayedConfetti/>
             {getGroup(classes.winners, classes.playerGroup, WINNING_HEADER, winnerIndices, WINNER_ID)}
             {getGroup(classes.losers, classes.playerGroup, LOSING_HEADER, loserIndices, LOSER_ID)}
+            <br/>
+            <br/>
+            <br/>
+            <ContinueButton className={classes.continueButton} route='game-two'/>
         </div>
     )
 }
