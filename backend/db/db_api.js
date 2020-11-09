@@ -1,18 +1,6 @@
 const PlayerModel = require('./models/player.js').PlayerModel;
 const ChoiceModel = require('./models/choice.js').ChoiceModel;
 const ExperimentModel = require('./models/experiment.js').ExperimentModel;
-const lobby = require('../lobby.js').LobbyInstance;
-
-function saveNewPlayerToDB(prolificID) {
-    let player = new PlayerModel({prolificID: prolificID});
-    return player.save();
-    // player.save(function (err) {
-    //     if (err) {
-    //         console.log(err);
-    //     }
-    //     // console.log("Successfully saved player to database.");
-    // });
-}
 
 function saveExperimentSession(playerIDs) {
     let experiment = new ExperimentModel();
@@ -24,7 +12,7 @@ function saveExperimentSession(playerIDs) {
 }
 
 function saveChoiceToDB(prolificID, selectedPlayerID, turnNum, madeByBot) {
-    ExperimentModel.findOne({"players.prolificID": prolificID}).then((experiment) => {
+    return ExperimentModel.findOne({"players.prolificID": prolificID}).then((experiment) => {
         experiment.players.forEach((player) => {
             if (player.prolificID === prolificID) {
                 player.choice.push({
@@ -35,12 +23,12 @@ function saveChoiceToDB(prolificID, selectedPlayerID, turnNum, madeByBot) {
                 });
             }
         });
-        experiment.save();
+        return experiment.save();
     });
 }
 
 function saveAllocationToDB(prolificID, keepToken, investToken, competeToken, investPayoff, competePayoff, turnNum, madeByBot) {
-    ExperimentModel.findOne({"players.prolificID": prolificID}).then((experiment) => {
+    return ExperimentModel.findOne({"players.prolificID": prolificID}).then((experiment) => {
         experiment.players.forEach((player) => {
             if (player.prolificID === prolificID) {
                 player.allocation.push({
@@ -55,32 +43,8 @@ function saveAllocationToDB(prolificID, keepToken, investToken, competeToken, in
                 });
             }
         });
-        experiment.save();
+        return experiment.save();
     });
-}
-
-async function findPlayerByID(prolificID) {
-    try {
-        return await PlayerModel.findOne({'prolificID': prolificID}).exec();
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-async function findChoicesByID(prolificID, turnNum) {
-    try {
-        return await ChoiceModel.findOne({'prolificID': prolificID, 'turnNum': turnNum}).exec();
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-async function getAllChoices() {
-    try {
-        return await ChoiceModel.find().select('-_id -__v');
-    } catch (e) {
-        console.log(e);
-    }
 }
 
 async function getAllChoicesByDateRange() {
@@ -91,11 +55,54 @@ async function getAllChoicesByDateRange() {
     }
 }
 
+/**
+ * @deprecated Will be deleted in the final version
+ */
+function saveNewPlayerToDB(prolificID) {
+    let player = new PlayerModel({prolificID: prolificID});
+    return player.save();
+    // player.save(function (err) {
+    //     if (err) {
+    //         console.log(err);
+    //     }
+    //     // console.log("Successfully saved player to database.");
+    // });
+}
+
+/**
+ * @deprecated Will be deleted in the final version
+ */
+async function findPlayerByID(prolificID) {
+    try {
+        return await PlayerModel.findOne({'prolificID': prolificID}).exec();
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+/**
+ * @deprecated Will be deleted in the final version
+ */
+async function findChoicesByID(prolificID, turnNum) {
+    try {
+        return await ChoiceModel.findOne({'prolificID': prolificID, 'turnNum': turnNum}).exec();
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+/**
+ * @deprecated Will be deleted in the final version
+ */
+async function getAllChoices() {
+    try {
+        return await ChoiceModel.find().select('-_id -__v');
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 module.exports = {
-    saveNewPlayerToDB: saveNewPlayerToDB,
-    findPlayerByID: findPlayerByID,
-    findChoicesByID: findChoicesByID,
-    getAllChoices: getAllChoices,
     saveExperimentSession: saveExperimentSession,
     saveChoiceToDB: saveChoiceToDB,
     saveAllocationToDB: saveAllocationToDB,
