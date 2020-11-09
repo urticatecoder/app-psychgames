@@ -28,7 +28,7 @@ function StartButton(props) {
                 variant="contained" 
                 disabled = {!props.startStatus}
                 color= {props.startStatus ? "primary" : "secondary"}
-                onClick={() => props.history.push("/one-welcome")}
+                onClick={() => props.history.push("/game-one")}
                 >
                 {BUTTON_MESSAGE}
             </Button>
