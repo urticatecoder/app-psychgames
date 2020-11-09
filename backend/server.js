@@ -82,8 +82,8 @@ io.on('connection', socket => {
                 io.in(room.name).emit('end game 1', win, lose, allDoubleBonus.length, allTripleBonus.length);
                 room.advanceToGameTwo();
             }
-            io.in(room.name).emit('location for game 1', resultForAllPlayers, allTripleBonus, 15,
-                allDoubleBonus, 8);
+            io.in(room.name).emit('location for game 1', resultForAllPlayers, allTripleBonus, 25,
+                allDoubleBonus, 15);
             room.advanceToNextRound();
         } else {
             // emit('someone has confirmed his/her choice') to 5 other
