@@ -55,7 +55,7 @@ const INITIAL_COMPETE_PAYOFF = 1
 const INITIAL_INVEST_PAYOFF = 1
 
 function GameTwo(props) {
-
+    
     const FULL_DIV = 'fullDiv';
     const [totalTokens, setTotalTokens] = useState(10)
     const [fromResources, setFromResources] = useState(INITIAL_RESOURCE_DISTRIBUTION)
@@ -98,8 +98,9 @@ function GameTwo(props) {
             <GameTimer setSubmitDecisions={setSubmitDecisions} resetTimer={resetTimer} setResetTimer={setResetTimer}/>
             <ConfirmButton2 submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} resources={toResources} clearSelected={() => clearResources(setFromResources, setToResources, toResources, setTokensSpent, totalTokens)} loginCode={props.loginCode}/>
 
-            <VerticalPlayerGroup type={GROUP_ONE} allLoginCodes={props.allLoginCodes} players={props.winners}/>
-            <VerticalPlayerGroup type={GROUP_TWO} allLoginCodes={props.allLoginCodes} players={props.losers}/>
+            {/* TYPE IS FOR USER TESTING ONLY -- DELETE AFTER */}
+            <VerticalPlayerGroup type={GROUP_ONE} allLoginCodes={props.allLoginCodes} players={props.winners} type={0}/>
+            <VerticalPlayerGroup type={GROUP_TWO} allLoginCodes={props.allLoginCodes} players={props.losers} type={1}/>
             {getResourceButton(KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}
             {getResourceButton(INVEST, INVEST_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}
             {getResourceButton(COMPETE, COMPETE_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}
