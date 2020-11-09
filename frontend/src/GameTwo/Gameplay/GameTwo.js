@@ -98,8 +98,8 @@ function GameTwo(props) {
             <GameTimer setSubmitDecisions={setSubmitDecisions} resetTimer={resetTimer} setResetTimer={setResetTimer}/>
             <ConfirmButton2 submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} resources={toResources} clearSelected={() => clearResources(setFromResources, setToResources, toResources, setTokensSpent, totalTokens)} loginCode={props.loginCode}/>
 
-            <VerticalPlayerGroup type={GROUP_ONE} allLoginCodes={[1, 2, 3, 4, 5, 6]} players={[1, 2, 3]}/>
-            <VerticalPlayerGroup type={GROUP_TWO} allLoginCodes={[1, 2, 3, 4, 5, 6]} players={[4, 5, 6]}/>
+            <VerticalPlayerGroup type={GROUP_ONE} allLoginCodes={props.allLoginCodes} players={props.winners}/>
+            <VerticalPlayerGroup type={GROUP_TWO} allLoginCodes={props.allLoginCodes} players={props.losers}/>
             {getResourceButton(KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}
             {getResourceButton(INVEST, INVEST_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}
             {getResourceButton(COMPETE, COMPETE_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}

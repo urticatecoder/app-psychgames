@@ -43,7 +43,7 @@ function App() {
         <Route path="/" exact render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}/>
 
         <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode} setAllLoginCodes={setAllLoginCodes}/>}/>
-        <Route path='/game-two' render={() => (<GameTwo loginCode = {loginCode} />)}/>
+        <Route path='/game-two' render={() => (<GameTwo loginCode = {loginCode} winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
 
         <Route path='/admin' render={() => <Admin/>}/>
 
@@ -56,7 +56,7 @@ function App() {
 
         <Route 
           path="/one-welcome" 
-          render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' /* route='one-introduction'/> */ route='game-two'/>)}
+          render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' /* route='one-introduction'/> */ route='game-one'/>)}
         />
         <Route
           path="/one-introduction"

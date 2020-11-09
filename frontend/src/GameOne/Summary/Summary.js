@@ -68,6 +68,7 @@ function getGroup(divClassName, groupClassName, headerText, playersShown, textID
     )
 }
 
+// FIXME: duplicated code
 function getAvatarIndices(loginCodes, allLoginCodes) {
     let indices = []
     
