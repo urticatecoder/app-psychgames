@@ -7,18 +7,27 @@ const lobby = require('../lobby.js').LobbyInstance;
 function getResultsByProlificId(prolificIDArray, room) {
     let allLocations = room.playerLocation;
     let allResults = [];
-
+    let initialResults = [];
+    console.log(allLocations);
     for (let i = 0; i < prolificIDArray.length; i++) {
         let playerProlific = prolificIDArray[i];
         let playerRoundResult = getResults(playerProlific, prolificIDArray, room);
 
         let playerInitialLocation = allLocations.get(playerProlific);
+        initialResults.push(playerInitialLocation);
         let newPlayerLocation = playerInitialLocation + playerRoundResult;
-        // room.setPlayerLocation(playerProlific, newPlayerLocation);
+        room.setPlayerLocation(playerProlific, newPlayerLocation);
         allResults.push(newPlayerLocation);
     }
-    let newResults = zeroSumResults(allResults, prolificIDArray, room);
-    return newResults;
+    // let roundResults = zeroSumResults(initialResults, prolificIDArray, room);
+    // let newResults = [];
+    // for(var i = 0; i < initialResults.length; i++){
+    //     newResults.push(roundResults[i] + allResults[i]);
+    //     let playerProlific = prolificIDArray[i];
+    //     room.setPlayerLocation(playerProlific, newResults[i]);
+    // }
+    console.log(allResults);
+    return allResults;
 }
 
 function getResults(playerProlific, prolificIDArray, room){
@@ -26,9 +35,9 @@ function getResults(playerProlific, prolificIDArray, room){
     let doublePair = getDoublePairMap(prolificIDArray, room);
     let triplePair = getTriplePairMap(prolificIDArray, room);
     var count = 0;
-    count += singlePair.get(playerProlific)*4;
-    count += doublePair.get(playerProlific)*8;
-    count += triplePair.get(playerProlific)*15;
+    count += singlePair.get(playerProlific)*10;
+    count += doublePair.get(playerProlific)*15;
+    count += triplePair.get(playerProlific)*25;
     return count;
 } 
 
@@ -41,10 +50,10 @@ function zeroSumResults(allResults, prolificIDArray, room){
 
     var newResults = [];
     for(var i = 0; i < allResults.length; i++){
-        let playerProlific = prolificIDArray[i];
+        // let playerProlific = prolificIDArray[i];
         let newLocation = allResults[i] - average;
         newResults.push(newLocation);
-        room.setPlayerLocation(playerProlific, newLocation);
+        // room.setPlayerLocation(playerProlific, newLocation);
     }
     return newResults;
 }
