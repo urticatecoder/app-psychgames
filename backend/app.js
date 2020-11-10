@@ -89,6 +89,11 @@ app.get("/auth", (req, res) => {
     res.status(200).send({'isValid': username === 'mel' && password === 'CS408'});
 });
 
+app.get("/minDate", async (req, res) => {
+    let entry = await DB_API.getOldestEntry();
+    res.status(200).send({'minDate': entry.date});
+});
+
 app.get("/player-ids", (req, res) => {
     let prolificID = req.query.loginCode;
     let room = lobby.getRoomPlayerIsIn(prolificID);

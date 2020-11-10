@@ -56,6 +56,22 @@ async function getAllChoicesByDateRange(startDate, endDate) {
     }
 }
 
+async function getLatestEntry() {
+    try {
+        return await ExperimentModel.find().sort({ date: -1 })[0];
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function getOldestEntry() {
+    try {
+        return await ExperimentModel.findOne().sort({ date: 1 });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 /**
  * @deprecated Will be deleted in the final version
  */
@@ -108,5 +124,7 @@ module.exports = {
     saveChoiceToDB: saveChoiceToDB,
     saveAllocationToDB: saveAllocationToDB,
     getAllChoicesByDateRange: getAllChoicesByDateRange,
+    getLatestEntry: getLatestEntry,
+    getOldestEntry: getOldestEntry,
 }
 

@@ -14,7 +14,14 @@ class Admin extends React.Component {
         super(props);
         this.gameOneDataLink = React.createRef();
         this.gameTwoDataLink = React.createRef();
-        this.state = { data: "Initialize value", startDate: null, endDate: null};
+        this.state = { data: "Initialize value", startDate: null, endDate: null, minDate: null};
+    }
+
+    componentDidMount() {
+        axios.get('/minDate').then(res => {
+            console.log(res.data.minDate);
+            this.setState({minDate: moment(res.data.minDate)});
+        })
     }
 
     fetchGameOneData = () => {
@@ -57,6 +64,10 @@ class Admin extends React.Component {
         }).catch(err => console.log(err));
     }
 
+    isOutsideRange = (date) => {
+        return moment(date).isAfter(moment(Date.now())) || moment(date).isBefore(this.state.minDate);
+    }
+
     render() {
         return (
             <div>
@@ -66,6 +77,9 @@ class Admin extends React.Component {
                     startDateId="start_date_id" // PropTypes.string.isRequired,
                     endDate={this.state.endDate} // momentPropTypes.momentObj or null,
                     endDateId="end_date_id" // PropTypes.string.isRequired,
+                    minDate={this.state.minDate}
+                    maxDate={moment(Date.now())}
+                    isOutsideRange={this.isOutsideRange}
                     onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
                     focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
                     onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
