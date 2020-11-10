@@ -2,21 +2,26 @@ const GameTwoAllocation = require('./game2.js').GameTwoAllocation;
 const GameTwo = require('./game2.js');
 const DB_API = require('./db/db_api');
 
+/**
+ * @author Xi Pu
+ * Class representing lobby. It contains all the data to support features like putting players into groups of 6
+ * and keep tracks of the current state of the entire game e.g. which player is in which room
+ * Intended to be used as a singleton global variable.
+ * You can use the following example import statement to get the global instance.
+ * @example
+ * const lobby = require("./lobby.js").LobbyInstance;
+ */
 class Lobby {
-    currRoomID = 0;
+    currRoomID = 0; // used as part of a room's name
     rooms = [];
-    currRoom;
+    currRoom; // new players who enter the lobby will join this room
     playerToRoom = new Map(); // stores a mapping of a player's id to the room instance he is in
-    roomToPlayer = new Map();
+    roomToPlayer = new Map(); // stores a mapping of a room instance to an array of players who are in this room
     static MAX_CAPACITY_PER_ROOM = 6;
-    botID = 0;
+    botID = 0; // used as part of a bot's id
 
     constructor() {
         this.allocateNewRoom();
-    }
-
-    static getNumOfPeopleInRoom(serverSocket, roomName) {
-        return serverSocket.sockets.adapter.rooms[roomName].length;
     }
 
     allocateNewRoom() {
@@ -60,6 +65,16 @@ class Lobby {
         return this.currRoom.name;
     }
 
+    /**
+     * @deprecated use getNumOfPeopleInRoom(roomName) instead
+     * @param serverSocket
+     * @param roomName
+     * @returns {number}
+     */
+    static getNumOfPeopleInRoom(serverSocket, roomName) {
+        return serverSocket.sockets.adapter.rooms[roomName].length;
+    }
+
     // need to refactor this method later
     getNumOfPlayersInRoom(roomName) {
         return this.roomToPlayer.get(roomName).length;
@@ -76,14 +91,25 @@ class Lobby {
     }
 }
 
+
+/**
+ * @author Xi Pu
+ * Class representing a room of 6 players. It contains data/information specific to a room/experiment session
+ * allocateNewRoom in the lobby class is used to add new room instances
+ * @see Lobby.allocateNewRoom
+ */
 class Room {
     turnNum = 1; // the current turn number in this room starting at 1
     players = []; // holds player objects who are in this room
-    playersWithChoiceConfirmed = new Set(); // holds prolificID of players who have confirmed their choices
+    playersWithChoiceConfirmed = new Set(); // holds prolificID of players who have confirmed their choices at the current turn
     allPlayerLocations = new Map();
-    gameOneResults = []; // two groups for winners/losers
+    gameOneResults = []; // two groups for winners/losers, winners = gameOneResults[0], losers = gameOneResults[1]
     gameTwoPayoff = GameTwo.generateCompeteAndInvestPayoff();
 
+    /**
+     * @constructor
+     * @param roomName {string}
+     */
     constructor(roomName) {
         if (roomName === undefined) {
             throw 'Room name not defined';
@@ -103,6 +129,9 @@ class Room {
         this.allPlayerLocations.set(prolificID, newLocation);
     }
 
+    /**
+     * @param player Must be an instance of Player
+     */
     addPlayer(player) {
         if (!(player instanceof Player)) {
             throw 'Parameter is not an instance of the Player class.';
@@ -151,6 +180,11 @@ class Room {
         return this.gameOneResults;
     }
 
+    /**
+     * Set who are the winners and losers for game 1. This will be used to form groups in game 2
+     * @param results {[][]} an array of two arrays that represents winners and losers.
+     * Example input: [['player1', 'player2', 'player4'], ['player3', 'player5', player6]]
+     */
     setGameOneResults(results) {
         this.gameOneResults = results;
     }
@@ -175,10 +209,17 @@ class Room {
         return [winnerSum.allocationAsArray, loserSum.allocationAsArray];
     }
 
+    /**
+     * @return {number[]} an array of two numbers. The first number is the compete payoff and the second number is the invest payoff
+     */
     getCompeteAndInvestPayoffAtCurrentTurn() {
         return this.getCompeteAndInvestPayoffAtTurnNum(this.turnNum);
     }
 
+    /**
+     * @param turnNum {number}
+     * @return {number[]} an array of two numbers. The first number is the compete payoff and the second number is the invest payoff
+     */
     getCompeteAndInvestPayoffAtTurnNum(turnNum) {
         let idx = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
         return this.gameTwoPayoff[idx];
@@ -220,10 +261,19 @@ class Room {
     }
 }
 
+/**
+ * @author Xi Pu
+ * Class representing an individual player.
+ * It contains data/information specific to a player, e.g. prolificID, choices and allocations he/she made in each turn of game 1 and 2.
+ */
 class Player {
     choices = []; // stores an array of array to represent choices made by this player in game 1
-    allocations = []; // for game 2
+    allocations = []; // stores an array of array to represent allocations of tokens made by this player in game 2
 
+    /**
+     * @constructor
+     * @param prolificID {string}
+     */
     constructor(prolificID) {
         if (prolificID === undefined) {
             throw 'prolificID not defined';
@@ -232,6 +282,9 @@ class Player {
         this.isBot = false;
     }
 
+    /**
+     * @param isBot {boolean}
+     */
     setIsBot(isBot) {
         if (typeof (isBot) !== 'boolean') {
             throw 'Parameter is not a Boolean type.';
@@ -239,6 +292,9 @@ class Player {
         this.isBot = isBot;
     }
 
+    /**
+     * @param choice {string[]} an array of selected players' IDs in game 1
+     */
     recordChoices(choice) {
         if (!(choice instanceof Array)) {
             throw 'Parameter is not an Array.';
@@ -246,6 +302,10 @@ class Player {
         this.choices.push(choice);
     }
 
+    /**
+     * @param turnNum {number}
+     * @return {string[]}
+     */
     getChoiceAtTurn(turnNum) {
         turnNum = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
         if (turnNum >= this.choices.length) {
@@ -254,6 +314,11 @@ class Player {
         return this.choices[turnNum];
     }
 
+    /**
+     * @param compete {number}
+     * @param keep {number}
+     * @param invest {number}
+     */
     recordAllocationForGameTwo(compete, keep, invest) {
         this.allocations.push(new GameTwoAllocation(compete, keep, invest));
     }
@@ -270,7 +335,13 @@ class Player {
     }
 }
 
-const lobby = new Lobby();
+/**
+ * @author Xi Pu
+ * The following code is for exporting all the classes in this file, the singleton lobby instance and two socket listeners.
+ * LobbyBotSocketListener is used only for testing by automatically adding bots
+ * LobbyDefaultSocketListener is used in production
+ */
+const lobby = new Lobby(); // this is the global lobby instance that will be exported for other modules to get access to
 
 module.exports = {
     Lobby,
@@ -280,14 +351,12 @@ module.exports = {
     LobbyBotSocketListener: function (io, socket) {
         socket.on("enter lobby", (prolificID) => {
             prolificID = prolificID.toString();
-            // console.log("Received enter lobby from frontend with prolificID: ", prolificID);
             let roomName = lobby.findRoomForPlayerToJoin(prolificID);
             socket.join(roomName);
             socket.roomName = roomName;
             socket.prolificID = prolificID;
             socket.to(roomName).emit('join', socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
-            socket.emit('num of people in the room', Lobby.getNumOfPeopleInRoom(io, roomName)); // only to self
-            // console.log(Lobby.getNumOfPeopleInRoom(io, roomName));
+            socket.emit('num of people in the room', lobby.getNumOfPlayersInRoom(roomName)); // only to self
 
             // add 5 bot players once a player joins the lobby
             for (let i = 1; i <= 5; i++) {
@@ -300,11 +369,6 @@ module.exports = {
                 DB_API.saveExperimentSession(lobby.getAllPlayersIDsInRoomWithName(roomName));
                 lobby.allocateNewRoom();
             }
-            // if (Lobby.getNumOfPeopleInRoom(io, roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
-            //     // the current room is full, we have to use a new room
-            //     io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
-            //     lobby.allocateNewRoom();
-            // }
         });
     },
     LobbyDefaultSocketListener: function (io, socket) {
@@ -315,8 +379,7 @@ module.exports = {
             socket.roomName = roomName;
             socket.prolificID = prolificID;
             socket.to(roomName).emit('join', socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
-            socket.emit('num of people in the room', Lobby.getNumOfPeopleInRoom(io, roomName)); // only to self
-            // console.log(Lobby.getNumOfPeopleInRoom(io, roomName));
+            socket.emit('num of people in the room', lobby.getNumOfPlayersInRoom(roomName)); // only to self
 
             if (lobby.getNumOfPlayersInRoom(roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
