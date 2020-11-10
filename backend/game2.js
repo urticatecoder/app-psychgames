@@ -1,3 +1,12 @@
+/**
+ * @author Xi Pu
+ * This file contains a data class for game 2 and a few helper functions to calculate stats related to game 2
+ */
+
+/**
+ * Class representing the amount of tokens allocated for each token category.
+ * It has a few static helper functions for aggregating instances of GameTwoAllocation
+ */
 class GameTwoAllocation {
     static TOKEN_VALUE = 0.5;
     static POSSIBLE_PAYOFF = [0, 0.5, 1, 1.5, 2];
@@ -25,6 +34,11 @@ class GameTwoAllocation {
         return [this.compete, this.keep, this.invest];
     }
 
+    /**
+     * @param allocation1 must be an instance of GameTwoAllocation
+     * @param allocation2 must be an instance of GameTwoAllocation
+     * @return {GameTwoAllocation}
+     */
     static addAllocations(allocation1, allocation2) {
         if (!(allocation1 instanceof GameTwoAllocation) || !(allocation2 instanceof GameTwoAllocation)) {
             throw 'Not an instance of GameTwoAllocation.';
@@ -34,6 +48,10 @@ class GameTwoAllocation {
             allocation1.numOfInvestToken + allocation2.numOfInvestToken);
     }
 
+    /**
+     * @param allocations {GameTwoAllocation[]}
+     * @return {GameTwoAllocation}
+     */
     static sumAllocations(allocations) {
         let sum = new GameTwoAllocation(0, 0, 0);
         allocations.forEach((allocation) => {
@@ -43,6 +61,12 @@ class GameTwoAllocation {
     }
 }
 
+/**
+ * @param prolificID {string}
+ * @param room Must be a room instance
+ * @param turnNum {number}
+ * @returns {number} payment for the player
+ */
 function calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum) {
     let tokenValue = GameTwoAllocation.TOKEN_VALUE;
     let payoff = room.getCompeteAndInvestPayoffAtTurnNum(turnNum);
@@ -68,6 +92,9 @@ function calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum) {
     return payment;
 }
 
+/**
+ * @return {number[]} an array consists of 3 integers, representing the amount of tokens allocated for each category
+ */
 function generateBotAllocation() {
     let i = 3; // there are 3 types of tokens
     let totalAvailableTokens = 10;
@@ -98,7 +125,11 @@ function generateCompeteAndInvestPayoff() {
     return allPairs;
 }
 
-/* adapted from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array */
+/**
+ * Shuffle an array in place. This function will not return anything.
+ * Adapted from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+ * @param array {Object[]}
+ */
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));

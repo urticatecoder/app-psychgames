@@ -1,7 +1,16 @@
+/**
+ * @author Xi Pu
+ * This module contains helper methods to save into or read from a MongoDB database by using Mongoose.
+ */
+
 const PlayerModel = require('./models/player.js').PlayerModel;
 const ChoiceModel = require('./models/choice.js').ChoiceModel;
 const ExperimentModel = require('./models/experiment.js').ExperimentModel;
 
+/**
+ * @param playerIDs {string[]}
+ * @return {Promise<*>}
+ */
 function saveExperimentSession(playerIDs) {
     let experiment = new ExperimentModel();
     experiment.players = [];
@@ -11,13 +20,20 @@ function saveExperimentSession(playerIDs) {
     return experiment.save();
 }
 
-function saveChoiceToDB(prolificID, selectedPlayerID, turnNum, madeByBot) {
+/**
+ * @param prolificID {string}
+ * @param selectedPlayerIDs {string[]}
+ * @param turnNum {number}
+ * @param madeByBot {boolean} is this choice made by a bot
+ * @return {Promise|PromiseLike<*>|Promise<*>}
+ */
+function saveChoiceToDB(prolificID, selectedPlayerIDs, turnNum, madeByBot) {
     return ExperimentModel.findOne({"players.prolificID": prolificID}).then((experiment) => {
         experiment.players.forEach((player) => {
             if (player.prolificID === prolificID) {
                 player.choice.push({
                     prolificID: prolificID,
-                    selectedPlayerID: selectedPlayerID,
+                    selectedPlayerID: selectedPlayerIDs,
                     turnNum: turnNum,
                     madeByBot: madeByBot
                 });
@@ -27,6 +43,17 @@ function saveChoiceToDB(prolificID, selectedPlayerID, turnNum, madeByBot) {
     });
 }
 
+/**
+ * @param prolificID {string}
+ * @param keepToken {number}
+ * @param investToken {number}
+ * @param competeToken {number}
+ * @param investPayoff {number}
+ * @param competePayoff {number}
+ * @param turnNum {number}
+ * @param madeByBot {boolean} is this allocation made by a bot
+ * @return {Promise|PromiseLike<*>|Promise<*>}
+ */
 function saveAllocationToDB(prolificID, keepToken, investToken, competeToken, investPayoff, competePayoff, turnNum, madeByBot) {
     return ExperimentModel.findOne({"players.prolificID": prolificID}).then((experiment) => {
         experiment.players.forEach((player) => {
@@ -47,8 +74,12 @@ function saveAllocationToDB(prolificID, keepToken, investToken, competeToken, in
     });
 }
 
-/* in the format of 2020-11-10 */
-async function getAllChoicesByDateRange(startDate, endDate) {
+/**
+ * @param startDate {string} in the format of YYYY-MM-DD, e.g. "2020-11-10"
+ * @param endDate {string} in the format of YYYY-MM-DD, e.g. "2020-11-11"
+ * @return {Promise<*>}
+ */
+async function getAllDataByDateRange(startDate, endDate) {
     try {
         return await ExperimentModel.find({date: {$gte: startDate, $lte: endDate}});
     } catch (e) {
@@ -123,8 +154,7 @@ module.exports = {
     saveExperimentSession: saveExperimentSession,
     saveChoiceToDB: saveChoiceToDB,
     saveAllocationToDB: saveAllocationToDB,
-    getAllChoicesByDateRange: getAllChoicesByDateRange,
-    getLatestEntry: getLatestEntry,
+    getAllDataByDateRange: getAllDataByDateRange,
     getOldestEntry: getOldestEntry,
 }
 
