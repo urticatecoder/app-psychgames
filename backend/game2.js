@@ -4,7 +4,7 @@
  */
 
 /**
- * Class representing the amount of tokens allocated for each token category
+ * Class representing the amount of tokens allocated for each token category.
  * It has a few static helper functions for aggregating instances of GameTwoAllocation
  */
 class GameTwoAllocation {
