@@ -35,7 +35,8 @@ app.get("/login-code", ((req, res) => {
 }));
 
 app.get("/download-game1", async (req, res) => {
-    let experiments = await DB_API.getAllChoicesByDateRange();
+    console.log(req.query.startDate, req.query.endDate);
+    let experiments = await DB_API.getAllChoicesByDateRange(req.query.startDate, req.query.endDate);
     let result = []
     experiments.forEach((experiment) => {
         let players = experiment.players;
@@ -57,7 +58,7 @@ app.get("/download-game1", async (req, res) => {
 })
 
 app.get("/download-game2", async (req, res) => {
-    let experiments = await DB_API.getAllChoicesByDateRange();
+    let experiments = await DB_API.getAllChoicesByDateRange(req.query.startDate, req.query.endDate);
     let result = []
     experiments.forEach((experiment) => {
         let players = experiment.players;

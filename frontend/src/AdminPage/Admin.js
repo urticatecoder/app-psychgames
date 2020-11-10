@@ -3,17 +3,31 @@ import '../CommonStylings/FullScreenDiv.css';
 import axios from 'axios';
 import { CSVLink, CSVDownload } from "react-csv";
 
+import moment from 'moment';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
+import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
+
 class Admin extends React.Component {
 
     constructor(props){
         super(props);
         this.gameOneDataLink = React.createRef();
         this.gameTwoDataLink = React.createRef();
-        this.state = { data: "Initialize value"}
+        this.state = { data: "Initialize value", startDate: null, endDate: null};
     }
 
     fetchGameOneData = () => {
-        axios.get('/download-game1').then(res => {
+        if (this.state.startDate === null || this.state.endDate === null) {
+            alert("Please select a date range!");
+            return;
+        }
+        axios.get('/download-game1', {
+            params: {
+                startDate: this.state.startDate.format(moment.HTML5_FMT.DATE),
+                endDate: this.state.endDate.format(moment.HTML5_FMT.DATE)
+            }
+        }).then(res => {
             console.log(res);
             this.setState({ data: res.data}, () => {
                 setTimeout(() => {
@@ -24,7 +38,16 @@ class Admin extends React.Component {
     }
 
     fetchGameTwoData = () => {
-        axios.get('/download-game2').then(res => {
+        if (this.state.startDate === null || this.state.endDate === null) {
+            alert("Please select a date range!");
+            return;
+        }
+        axios.get('/download-game2', {
+            params: {
+                startDate: this.state.startDate.format(moment.HTML5_FMT.DATE),
+                endDate: this.state.endDate.format(moment.HTML5_FMT.DATE)
+            }
+        }).then(res => {
             console.log(res);
             this.setState({ data: res.data}, () => {
                 setTimeout(() => {
@@ -37,6 +60,17 @@ class Admin extends React.Component {
     render() {
         return (
             <div>
+                <p>Please select a date range to export data collected within the selected range</p>
+                <DateRangePicker
+                    startDate={this.state.startDate} // momentPropTypes.momentObj or null,
+                    startDateId="start_date_id" // PropTypes.string.isRequired,
+                    endDate={this.state.endDate} // momentPropTypes.momentObj or null,
+                    endDateId="end_date_id" // PropTypes.string.isRequired,
+                    onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
+                    focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+                    onFocusChange={focusedInput => this.setState({ focusedInput })} // PropTypes.func.isRequired,
+                />
+                <br/>
                 <button onClick={this.fetchGameOneData}>Download Game 1 Data</button>
                 {/*{ this.state.data ? <CSVLink data={this.state.data} ref={this.csvLink}>Download</CSVLink> : null }*/}
                 <CSVLink

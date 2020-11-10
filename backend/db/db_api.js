@@ -47,9 +47,10 @@ function saveAllocationToDB(prolificID, keepToken, investToken, competeToken, in
     });
 }
 
-async function getAllChoicesByDateRange() {
+/* in the format of 2020-11-10 */
+async function getAllChoicesByDateRange(startDate, endDate) {
     try {
-        return await ExperimentModel.find({date: {$gte: '2020-11-08', $lte: '2020-11-10'}});
+        return await ExperimentModel.find({date: {$gte: startDate, $lte: endDate}});
     } catch (e) {
         console.log(e);
     }
