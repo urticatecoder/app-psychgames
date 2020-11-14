@@ -118,6 +118,10 @@ app.get("/minDate", async (req, res) => {
     res.status(200).send({'minDate': entry.date});
 });
 
+app.get("/verification-code", (req, res) => {
+   res.status(200).send({'code': 'CS408'});
+});
+
 /**
  * This route will give you an array of all players' ids in the same room as the player who has the given ID in the request.
  * Note that the array will also contain the player's own ID.
