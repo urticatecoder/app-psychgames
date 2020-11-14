@@ -8,7 +8,7 @@ import Summary from './GameOne/Summary/Summary';
 import GameOne from './GameOne/Gameplay/GameOne';
 import GameTwo from './GameTwo/Gameplay/GameTwo';
 import Admin from './AdminPage/Admin';
-
+import ProlificScreen from './Prolific/ProlificScreen'
 
 const CLASS_NAME = 'App';
 const HOME_PATH = '/';
@@ -48,7 +48,7 @@ function App() {
         <Route path='/admin' render={() => <Admin/>}/>
 
         <Route path='/summary' render={() => (<Summary winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
-
+        <Route path='/prolific' render={() => (<ProlificScreen/>)}/>
         <Route 
           path="/game-one" 
           render={() => (<GameOne setWinners={setWinners} setLosers={setLosers} loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
