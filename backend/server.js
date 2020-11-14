@@ -19,11 +19,6 @@ db.once('open', function () {
     console.log("Connected to db successfully.");
 });
 
-// let ID1 = '123';
-// let ID2 = '456'
-// let choices = ['player4', 'player5', 'player9'];
-// Promise.all([DB_API.savePlayerChoiceToDB(ID1, choices, 1, false),
-//     DB_API.savePlayerChoiceToDB(ID2, choices, 1, true)]).then(() => console.log("Saved!!"));
 
 io.on('connection', socket => {
     console.log('New client connected');
@@ -40,7 +35,6 @@ io.on('connection', socket => {
         prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
-        // DB_API.savePlayerChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
         DB_API.saveChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
         player.recordChoices(choices);
         room.addPlayerIDToConfirmedSet(prolificID);
@@ -51,7 +45,6 @@ io.on('connection', socket => {
             if (playerInThisRoom.isBot) {
                 let bot = playerInThisRoom;
                 let botChoices = BOT.determineBotChoice(bot.prolificID, allIDs);
-                // DB_API.savePlayerChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
                 DB_API.saveChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
                 bot.recordChoices(botChoices);
                 room.addPlayerIDToConfirmedSet(bot.prolificID);
@@ -96,8 +89,7 @@ io.on('connection', socket => {
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
         player.setIsBot(false);
-        // console.log(room);
-        // TODO: add allocation to db
+
         player.recordAllocationForGameTwo(competeToken, keepToken, investToken);
         let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn();
         DB_API.saveAllocationToDB(prolificID, keepToken, investToken, competeToken, payoff[1], payoff[0], room.turnNum, player.isBot);

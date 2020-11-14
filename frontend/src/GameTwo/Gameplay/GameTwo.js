@@ -81,7 +81,7 @@ function GameTwo(props) {
         });
 
         socket.on("end game 2",() => {
-           props.history.push('/')
+           props.history.push('/prolific')
         });
 
         return () => {
