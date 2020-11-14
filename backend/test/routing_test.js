@@ -82,6 +82,17 @@ describe("API route test", function () {
 
         done();
     });
+
+    it("GET /verification-code", function(done) {
+        supertest(app)
+            .get("/verification-code")
+            .expect({'code': 'CS408'})
+            .end(function (err, res) {
+                if (err) done(err);
+                else done();
+            });
+    });
+
     after(function (done) {
         lobby.reset();
         done();
