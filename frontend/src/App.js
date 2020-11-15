@@ -11,6 +11,7 @@ import Admin from './AdminPage/Admin';
 import ProlificScreen from './Prolific/ProlificScreen'
 import AdminAuth from "./AdminPage/AdminAuth";
 import PrivateRoute from "./AdminPage/PrivateRoute";
+import MainAvatar from './Lobby/MainAvatar';
 
 
 const CLASS_NAME = 'App';
@@ -46,6 +47,7 @@ function App() {
         <Route path="/" exact render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}/>
 
         <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode} setAllLoginCodes={setAllLoginCodes}/>}/>
+        <Route path='/player-assignment' render={() => <MainAvatar/>}/>
 
         <Switch>
           <Route exact path='/adminLogin' render={() => <AdminAuth/>} component={AdminAuth}/>
