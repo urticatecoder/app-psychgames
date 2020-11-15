@@ -12,7 +12,7 @@ import ProlificScreen from './Prolific/ProlificScreen'
 import AdminAuth from "./AdminPage/AdminAuth";
 import PrivateRoute from "./AdminPage/PrivateRoute";
 import MainAvatar from './Lobby/MainAvatar';
-
+import TutorialScreen from './Tutorials/TutorialScreen';
 
 const CLASS_NAME = 'App';
 const HOME_PATH = '/';
@@ -48,6 +48,7 @@ function App() {
 
         <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode} setAllLoginCodes={setAllLoginCodes}/>}/>
         <Route path='/player-assignment' render={() => <MainAvatar/>}/>
+        <Route path='/game-one-tutorial' render={() => <TutorialScreen URL='Tutorials/GameOne.mov' nextRoute='/player-assignment' initialPause={1000} videoLength={53000} text='Game One Tutorial'/>}/>
 
         <Switch>
           <Route exact path='/adminLogin' render={() => <AdminAuth/>} component={AdminAuth}/>

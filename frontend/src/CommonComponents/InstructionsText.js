@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {Typography, withStyles} from '@material-ui/core';
 import '../CommonStylings/FullScreenDiv.css'
-import ContinueButton from './ContinueButton';
 
 const styles = ({
     title: {
