@@ -293,7 +293,7 @@ describe('Location sending and calculation', () => {
     //     assert(results[2] == 1.3333333333333335);
     //     done();
     // });
-    it('identify happy paths for passiveness', (done) => {
+    it('identify no passiveness in player', (done) => {
         const testID = ['test_id1', 'test_id2', 'test_id3'];
         var choicesOne = ['test_id3'];
         var choicesTwo = [];
@@ -306,7 +306,28 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
         let result = checkPassiveness('test_id2', room);
-        console.log(result);
+    
+        assert(null === result);
+        done();
+    })
+    it('identify passiveness in player', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = [];
+        var choicesTwo = [];
+        var choicesThree = [];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+        let result;
+        for(var i = 0; i < 4; i++){
+            result = checkPassiveness('test_id2', room);
+        }
+        assert(result === 'test_id2');
+        // assert(null === result);
         done();
     })
 })

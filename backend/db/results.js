@@ -49,7 +49,7 @@ function checkPassiveness(playerProlific, room){
     let choice = allChoices.get(playerProlific);
     if(choice[0] == null){
         if(passive.has(playerProlific)){
-            passive.set(playerProlific, passive.get(playerProlific));
+            passive.set(playerProlific, passive.get(playerProlific) + 1);
         }
         else{
             passive.set(playerProlific, 1);
