@@ -8,6 +8,7 @@ const app = express();
 const path = require('path');
 const lobby = require('./lobby.js').LobbyInstance;
 const DB_API = require('./db/db_api');
+const Game2 = require('./game2');
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
@@ -119,7 +120,15 @@ app.get("/minDate", async (req, res) => {
 });
 
 app.get("/verification-code", (req, res) => {
-   res.status(200).send({'code': 'CS408'});
+    let prolificID = req.query.loginCode;
+    if (prolificID === undefined) {
+        res.status(200).send({'code': 'CS408'});
+    } else {
+        res.status(200).send({'code': 'CS408',
+            'payment': Game2.calculateFinalPaymentForAPlayer(prolificID, lobby)}
+            );
+    }
+
 });
 
 /**
