@@ -110,10 +110,12 @@ io.on('connection', socket => {
             if (Game2.isGameTwoDone(room)) {
                 io.in(room.name).emit('end game 2');
             } else {
+                let allocation = room.getTeamAllocationAtCurrentTurn();
                 room.advanceToNextRound();
-                let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn();
+                let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
                 let competePayoff = payoff[0], investPayoff = payoff[1];
-                io.in(room.name).emit('end current turn for game 2', competePayoff, investPayoff);
+                io.in(room.name).emit('end current turn for game 2', competePayoff, investPayoff, allocation[0], allocation[1]);
+
             }
         }
     });
