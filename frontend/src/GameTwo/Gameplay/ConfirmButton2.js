@@ -5,8 +5,8 @@ import socket from "../../socketClient";
 const CONFIRM_CHOICES_TEXT = "Confirm Decision!"
 
 const KEEP_INDEX = 0
-const INVEST_INDEX = 0
-const COMPETE_INDEX = 0
+const INVEST_INDEX = 1
+const COMPETE_INDEX = 2
 
 //FIXME: duplicated with game one
 const styles = ({
