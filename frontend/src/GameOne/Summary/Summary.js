@@ -15,6 +15,8 @@ const WINNERS = [0, 1, 2]
 const LOSERS = [3, 4, 5]
 const NUM_PLAYERS = 6
 
+const ALWAYS_ENABLED = false;
+
 const styles = ({
     winners: {
         marginTop: '15vh',
@@ -52,7 +54,7 @@ function GroupScreen(props) {
             <br/>
             <br/>
             <br/>
-            <ContinueButton className={classes.continueButton} route='game-two'/>
+            <ContinueButton className={classes.continueButton} route='game-two' disabled={ALWAYS_ENABLED}/>
         </div>
     )
 }

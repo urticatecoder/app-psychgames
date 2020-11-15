@@ -14,6 +14,8 @@ const FULL_DIV = 'fullDiv'
 const IMAGE_HEIGHT = 250
 const IMAGE_WIDTH = 250
 
+const ALWAYS_ENABLED = false;
+
 const styles = ({
     playerDescription: {
         marginTop: '200px',
@@ -41,7 +43,7 @@ function MainAvatar(props) {
             />
             </div>
             <div className={classes.continueButton}>
-                <ContinueButton className={classes.continueButton} route={'game-one'}/>
+                <ContinueButton className={classes.continueButton} route={'game-one'} disabled={ALWAYS_ENABLED}/>
             </div>
         </div>
     )

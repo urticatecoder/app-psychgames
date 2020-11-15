@@ -8,7 +8,7 @@ import socket from "../socketClient";
 
 const INITIAL_TEST_TIME = 1 * 1000;
 const RESET_TEST_TIME = 1 * 1000;
-const INITIAL_START_TIME = 6 * 50000;
+const INITIAL_START_TIME = 1 * 60000;
 const RESET_START_TIME = 1 * 5000;
 
 const LAST_TIME_UNIT = 'h';
@@ -75,7 +75,7 @@ function StartTimer(props) {
 
             <Timer
                 id={TIMER_ID}
-                initialTime={INITIAL_TEST_TIME}
+                initialTime={INITIAL_START_TIME}
                 lastUnit={LAST_TIME_UNIT}
                 direction={DIRECTION}
                 timeToUpdate={TIMER_UPDATE}

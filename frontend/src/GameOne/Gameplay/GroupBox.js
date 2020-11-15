@@ -11,7 +11,6 @@ const styles = {
         borderRadius: '50px',
         backgroundColor: '#FF9133',
         opacity: '.8',
-        width: '60vw',
         height: '55px',
         margin: 'auto',
     },
@@ -23,11 +22,10 @@ const styles = {
 function GroupBox(props) {
     const {classes} = props
     let groupColor = (props.groupNumber == GROUP_ONE) ? GROUP_ONE_COLOR : GROUP_TWO_COLOR
-    
     return (
-        <div style={{backgroundColor: groupColor}} className={classes.groupBox}>
-            <div className={classes.innerDiv}>
-            <Typography className={classes.innerDiv} variant='h4'> {GROUP} {props.groupNumber} </Typography>
+        <div style={{backgroundColor: groupColor, width: props.width}} className={classes.groupBox}>
+            <div className={classes.innerDiv} >
+            <Typography className={classes.innerDiv}  variant='h4'> {GROUP} {props.groupNumber} </Typography>
             </div>
         </div>
     )

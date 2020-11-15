@@ -30,7 +30,7 @@ function ResourceBar(props) {
           height: props.to + 'vh',
         },
         config: {
-          mass: 10,
+          mass: 2,
         },
       });
 

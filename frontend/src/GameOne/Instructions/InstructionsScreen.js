@@ -5,6 +5,7 @@ import InstructionsText from '../../CommonComponents/InstructionsText';
 import {withStyles} from '@material-ui/core';
 
 const FULL_DIV = 'fullDiv';
+const ENABLE = false;
 
 const styles = ({
     instructions: {
@@ -31,7 +32,7 @@ function Welcome(props) {
                 />
             </div>
             <div className={classes.button}>
-                <ContinueButton route={props.route}/>
+                <ContinueButton route={props.route} disabled={ENABLE}/>
             </div>
         </div>
     )
