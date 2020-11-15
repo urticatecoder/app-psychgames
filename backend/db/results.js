@@ -277,6 +277,15 @@ function getWinnersAndLosers(room) {
             losers.push(tempPlayer);
         }
     }
+    // If winners is > 3, ensure that the amount of winners/losers is 3
+    // FIXME - NEED to update this to be based on the highest score over winter break
+    if(winners.length >= 3){
+        let size = winners.length;
+        for(var i = size; i > 3; i--){
+            losers.push(winners[i - 1]);
+            winners.pop();
+        }
+    }
     return [winners, losers];
 }
 
