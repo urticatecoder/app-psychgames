@@ -8,8 +8,10 @@ import Summary from './GameOne/Summary/Summary';
 import GameOne from './GameOne/Gameplay/GameOne';
 import GameTwo from './GameTwo/Gameplay/GameTwo';
 import Admin from './AdminPage/Admin';
+import ProlificScreen from './Prolific/ProlificScreen'
 import AdminAuth from "./AdminPage/AdminAuth";
 import PrivateRoute from "./AdminPage/PrivateRoute";
+import MainAvatar from './Lobby/MainAvatar';
 
 
 const CLASS_NAME = 'App';
@@ -45,6 +47,7 @@ function App() {
         <Route path="/" exact render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}/>
 
         <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode} setAllLoginCodes={setAllLoginCodes}/>}/>
+        <Route path='/player-assignment' render={() => <MainAvatar/>}/>
 
         <Switch>
           <Route exact path='/adminLogin' render={() => <AdminAuth/>} component={AdminAuth}/>
@@ -54,10 +57,10 @@ function App() {
         <Route path='/game-two' render={() => (<GameTwo loginCode = {loginCode} winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
 
         <Route path='/summary' render={() => (<Summary winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
-
-        <Route
-            path="/game-one"
-            render={() => (<GameOne setWinners={setWinners} setLosers={setLosers} loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
+        <Route path='/prolific' render={() => (<ProlificScreen/>)}/>
+        <Route 
+          path="/game-one" 
+          render={() => (<GameOne setWinners={setWinners} setLosers={setLosers} loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
         />
 
         <Route
