@@ -61,6 +61,12 @@ class GameTwoAllocation {
     }
 }
 
+function calculateFinalPaymentForAPlayer(prolificID, lobby) {
+    let turnNum = getRandomInt(GameTwoAllocation.MAX_NUM_OF_TURNS - 1) + 1; // select a random turn num to calculate final payment
+    let room = lobby.getRoomPlayerIsIn(prolificID);
+    return calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum);
+}
+
 /**
  * @param prolificID {string}
  * @param room Must be a room instance
@@ -147,4 +153,6 @@ module.exports = {
     calculatePaymentForAPlayerAtTurn: calculatePaymentForAPlayerAtTurn,
     generateBotAllocation: generateBotAllocation,
     isGameTwoDone: isGameTwoDone,
+    getRandomInt: getRandomInt,
+    calculateFinalPaymentForAPlayer: calculateFinalPaymentForAPlayer,
 }
