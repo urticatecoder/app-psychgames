@@ -26,6 +26,7 @@ function ContinueButton(props) {
                 variant="contained" 
                 color= {"primary"}
                 onClick={() => props.history.push(props.route)}
+                disabled={props.disabled}
                 >
                 {BUTTON_MESSAGE}
             </Button>

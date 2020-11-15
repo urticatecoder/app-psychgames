@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './App.css';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Lobby from './Lobby/Lobby';
 import Login from './Login/Login';
 import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
@@ -8,7 +8,11 @@ import Summary from './GameOne/Summary/Summary';
 import GameOne from './GameOne/Gameplay/GameOne';
 import GameTwo from './GameTwo/Gameplay/GameTwo';
 import Admin from './AdminPage/Admin';
-
+import ProlificScreen from './Prolific/ProlificScreen'
+import AdminAuth from "./AdminPage/AdminAuth";
+import PrivateRoute from "./AdminPage/PrivateRoute";
+import MainAvatar from './Lobby/MainAvatar';
+import TutorialScreen from './Tutorials/TutorialScreen';
 
 const CLASS_NAME = 'App';
 const HOME_PATH = '/';
@@ -43,21 +47,28 @@ function App() {
         <Route path="/" exact render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}/>
 
         <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode} setAllLoginCodes={setAllLoginCodes}/>}/>
+        <Route path='/player-assignment' render={() => <MainAvatar/>}/>
+        <Route path='/game-one-tutorial' render={() => <TutorialScreen URL='Tutorials/GameOne.mov' nextRoute='/player-assignment' initialPause={1000} videoLength={53000} text='Game One Tutorial'/>}/>
+
+        <Switch>
+          <Route exact path='/adminLogin' render={() => <AdminAuth/>} component={AdminAuth}/>
+          <PrivateRoute exact path='/admin'/>
+        </Switch>
+
         <Route path='/game-two' render={() => (<GameTwo loginCode = {loginCode} winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
 
-        <Route path='/admin' render={() => <Admin/>}/>
-
         <Route path='/summary' render={() => (<Summary winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
-
+        <Route path='/prolific' render={() => (<ProlificScreen/>)}/>
         <Route 
           path="/game-one" 
           render={() => (<GameOne setWinners={setWinners} setLosers={setLosers} loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
         />
 
-        <Route 
-          path="/one-welcome" 
-          render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' /* route='one-introduction'/> */ route='game-one'/>)}
+        <Route
+            path="/one-welcome"
+            render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' /* route='one-introduction'/> */ route='game-one'/>)}
         />
+
         <Route
           path="/one-introduction"
           render={() => (<InstructionsScreen file='Instructions/Introduction.txt' title='General Introduction' route='one-logic'/>)}

@@ -1,8 +1,14 @@
+/**
+ * @author Xi Pu
+ * This file contains all the API routes the backend provides.
+ */
+
 const express = require("express");
 const app = express();
 const path = require('path');
 const lobby = require('./lobby.js').LobbyInstance;
 const DB_API = require('./db/db_api');
+const Game2 = require('./game2');
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
@@ -17,6 +23,11 @@ app.get("/test_api", (req, res) => {
     res.status(200).send("Hello World!");
 });
 
+/**
+ * This route is used for validating login codes entered by participants in the frontend.
+ * It will accept a login code in the request and respond with two params: one boolean isValid
+ * to indicate if the login code is valid and one string error that contains a error message when isValid is false
+ */
 app.get("/login-code", ((req, res) => {
     let prolificID = req.query.loginCode;
     let error = '';
@@ -34,8 +45,13 @@ app.get("/login-code", ((req, res) => {
     res.status(200).send({'isValid': isValid, 'error': error});
 }));
 
+/**
+ * This route is used for downloading game 1 data.
+ * It will accept a start date and end date, and respond with experiment data collected between the start date and end date in json format
+ */
 app.get("/download-game1", async (req, res) => {
-    let experiments = await DB_API.getAllChoicesByDateRange();
+    console.log(req.query.startDate, req.query.endDate);
+    let experiments = await DB_API.getAllDataByDateRange(req.query.startDate, req.query.endDate);
     let result = []
     experiments.forEach((experiment) => {
         let players = experiment.players;
@@ -56,8 +72,12 @@ app.get("/download-game1", async (req, res) => {
     res.status(200).json(result);
 })
 
+/**
+ * This route is used for downloading game 2 data.
+ * It will accept a start date and end date, and respond with experiment data collected between the start date and end date in json format
+ */
 app.get("/download-game2", async (req, res) => {
-    let experiments = await DB_API.getAllChoicesByDateRange();
+    let experiments = await DB_API.getAllDataByDateRange(req.query.startDate, req.query.endDate);
     let result = []
     experiments.forEach((experiment) => {
         let players = experiment.players;
@@ -82,6 +102,39 @@ app.get("/download-game2", async (req, res) => {
     res.status(200).json(result);
 });
 
+/**
+ * This route is used for authenticating admin account information users enter in the admin login page
+ */
+app.get("/auth", (req, res) => {
+    let username = req.query.username;
+    let password = req.query.password;
+    res.status(200).send({'isValid': username === 'mel' && password === 'CS408'});
+});
+
+/**
+ * This route will tell you when was the oldest entry in the database saved
+ */
+app.get("/minDate", async (req, res) => {
+    let entry = await DB_API.getOldestEntry();
+    res.status(200).send({'minDate': entry.date});
+});
+
+app.get("/verification-code", (req, res) => {
+    let prolificID = req.query.loginCode;
+    if (prolificID === undefined) {
+        res.status(200).send({'code': 'CS408'});
+    } else {
+        res.status(200).send({'code': 'CS408',
+            'payment': Game2.calculateFinalPaymentForAPlayer(prolificID, lobby)}
+            );
+    }
+
+});
+
+/**
+ * This route will give you an array of all players' ids in the same room as the player who has the given ID in the request.
+ * Note that the array will also contain the player's own ID.
+ */
 app.get("/player-ids", (req, res) => {
     let prolificID = req.query.loginCode;
     let room = lobby.getRoomPlayerIsIn(prolificID);
@@ -93,6 +146,9 @@ app.get("/player-ids", (req, res) => {
     }
 });
 
+/**
+ * This route will tell you who the winners/losers for the experiment session where the player with the given ID is in.
+ */
 app.get("/game1-results", (req, res) => {
     let prolificID = req.query.loginCode;
     let room = lobby.getRoomPlayerIsIn(prolificID);

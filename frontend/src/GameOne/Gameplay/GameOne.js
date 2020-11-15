@@ -11,7 +11,6 @@ function GameOne(props) {
     return (
         <div className={FULL_DIV}>
             <ColumnController setWinners={props.setWinners} setLosers={props.setLosers} loginCode = {props.loginCode} allLoginCodes={props.allLoginCodes}/>
-            {/* <ContinueButton route='summary'/> */}
         </div>
     )
 }

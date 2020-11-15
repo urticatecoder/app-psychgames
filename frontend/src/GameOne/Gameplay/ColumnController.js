@@ -130,7 +130,7 @@ function ColumnController(props) {
             <ConfirmButton submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} selected={selected} clearSelected={() => clearSelected(setSelected)} loginCode={props.loginCode} allLoginCodes={props.allLoginCodes}/>
 
             <div className={classes.gameplay}>
-                <GroupBox groupNumber='One'/>
+                <GroupBox groupNumber='One' width='60vw'/>
                 <Grid
                     container
                     direction="row"
@@ -142,7 +142,7 @@ function ColumnController(props) {
                         return getColumn(player, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, props.allLoginCodes, props.loginCode, doubles, triples)
                     })}
                 </Grid>
-                <GroupBox groupNumber='Two'/>
+                <GroupBox groupNumber='Two' width='60vw'/>
             </div>
 
         </div>
