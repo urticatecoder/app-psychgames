@@ -2,7 +2,7 @@ const assert = require('assert');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
-calculateResults, getResults, zeroSumResults } = require('../db/results.js');
+calculateResults, checkPassiveness} = require('../db/results.js');
 
 
 describe('Location sending and calculation', () => {
@@ -293,4 +293,20 @@ describe('Location sending and calculation', () => {
     //     assert(results[2] == 1.3333333333333335);
     //     done();
     // });
+    it('identify happy paths for passiveness', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id3'];
+        var choicesTwo = [];
+        var choicesThree = ['test_id2'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+        let result = checkPassiveness('test_id2', room);
+        console.log(result);
+        done();
+    })
 })

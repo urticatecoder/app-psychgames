@@ -47,7 +47,22 @@ function getResults(playerProlific, prolificIDArray, room){
 function checkPassiveness(playerProlific, room){
     let allChoices = room.getEveryoneChoiceAtCurrentTurn();
     let choice = allChoices.get(playerProlific);
-    console.log(choice);
+    if(choice[0] == null){
+        if(passive.has(playerProlific)){
+            passive.set(playerProlific, passive.get(playerProlific));
+        }
+        else{
+            passive.set(playerProlific, 1);
+        }
+    }
+    else{
+        passive.set(playerProlific, 0);
+    }
+
+    if(passive.get(playerProlific) >= 5){
+        return playerProlific
+    }
+    return null;
 }
 
 function zeroSumResults(allResults, prolificIDArray, room){
