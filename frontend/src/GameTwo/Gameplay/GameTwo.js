@@ -5,13 +5,16 @@ import VerticalPlayerGroup from './VerticalPlayerGroup';
 import ResourceButton from './ResourceButton';
 import StartTimer from '../../Lobby/StartTimer';
 import Alert from '@material-ui/lab/Alert';
-import {Snackbar} from '@material-ui/core'
+import {Snackbar, Typography, withStyles} from '@material-ui/core'
 import GameTimer from '../../CommonComponents/GameTimer';
 import ConfirmButton2 from './ConfirmButton2'
 import socket from "../../socketClient";
 import { withRouter } from "react-router-dom";
 import TokenCounter from '../Tokens/TokenCounter';
 import PayoutOdds from './PayoutOdds';
+import '../Results/DelayedBar';
+import DelayedBar from '../Results/DelayedBar';
+import GroupBox from '../../GameOne/Gameplay/GroupBox';
 
 const GROUP_ONE = 1;
 const GROUP_TWO = 2;
@@ -54,12 +57,45 @@ const DO_NOT_RESET_TIMER = false
 const INITIAL_COMPETE_PAYOFF = 1
 const INITIAL_INVEST_PAYOFF = 1
 
+const DO_NOT_SHOW_RESULTS = false;
+const SHOW_RESULTS = true;
+
+const TIME_TO_SHOW_RESULTS = 7000;
+
+const RESULTS_DELAY_KEEP = 1000
+const RESULTS_DELAY_INVEST = 2000
+const RESULTS_DELAY_COMPETE = 3000
+const RESULTS_DELAY_GROUP_ONE = 0
+const RESULTS_DELAY_GROUP_TWO = 3000
+
+
+
+const styles = ({
+    groupOne: {
+      position: 'absolute',
+      top: '85vh',
+      left: '5vw',
+    },
+    groupTwo: {
+        position: 'absolute',
+      top: '85vh',
+      left: '55vw',
+    },
+    resultsText: {
+        marginTop: '5vh'
+    }
+  });
+
+
+//FIXME: Make each screen a separate component
 function GameTwo(props) {
     
     const FULL_DIV = 'fullDiv';
     const [totalTokens, setTotalTokens] = useState(10)
     const [fromResources, setFromResources] = useState(INITIAL_RESOURCE_DISTRIBUTION)
     const [toResources, setToResources] = useState(fromResources)
+    const [currentResources, setCurrentResources] = useState(INITIAL_RESOURCE_DISTRIBUTION)
+
     const [notEnoughTokens, setNotEnoughTokens] = useState(ENOUGH_TOKENS)
     const [negativeTokens, setNegativeTokens] = useState(NOT_NEGATIVE_TOKENS)
     const [tokensSpent, setTokensSpent] = useState(NO_TOKENS_SPENT)
@@ -67,17 +103,26 @@ function GameTwo(props) {
     const [submitDecisions, setSubmitDecisions] = useState(DO_NOT_SUBMIT_DECISIONS)
     const [payoffCompete, setCompetePayoff] = useState(INITIAL_COMPETE_PAYOFF)
     const [payoffInvest, setInvestPayoff] = useState(INITIAL_INVEST_PAYOFF)
+    const [showResults, setShowResults] = useState(DO_NOT_SHOW_RESULTS)
+    const [groupOneResults, setGroupOneResults] = useState(INITIAL_RESOURCE_DISTRIBUTION)
+    const [groupTwoResults, setGroupTwoResults] = useState(INITIAL_RESOURCE_DISTRIBUTION)
 
     useEffect(() => {
-        socket.on("end current turn for game 2", (competePayoff, investPayoff) => {
-            console.log('called')
-            console.log(competePayoff)
+        socket.on("end current turn for game 2", (competePayoff, investPayoff, winnerResults, loserResults) => {
             setCompetePayoff(competePayoff)
-            console.log(payoffCompete)
-            console.log(investPayoff)
             setInvestPayoff(investPayoff)
-            console.log(payoffInvest)
             setResetTimer(RESET_TIMER)
+            setCurrentResources(INITIAL_RESOURCE_DISTRIBUTION)
+            console.log('results')
+            console.log(winnerResults);
+            console.log(loserResults);
+
+            setShowResults(SHOW_RESULTS);
+            setGroupOneResults(winnerResults)
+            setGroupTwoResults(loserResults)
+            setTimeout(() => {
+                setShowResults(DO_NOT_SHOW_RESULTS);
+            }, TIME_TO_SHOW_RESULTS);
         });
 
         socket.on("end game 2",() => {
@@ -89,25 +134,58 @@ function GameTwo(props) {
             socket.off("end current turn for game 2");
             socket.off("end game 2");
         }
-    }, [payoffCompete, payoffCompete]);
+    }, [payoffCompete, payoffInvest, resetTimer, currentResources, showResults, groupOneResults, groupTwoResults]);
+
+    const {classes} = props
+    let resourceResultsView = getResourceResults(classes, groupOneResults, groupTwoResults)
+    let resourceChoiceView = getResourceChoices(props, setFromResources, setToResources, fromResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources, payoffInvest, payoffCompete, resetTimer, setResetTimer, setSubmitDecisions, submitDecisions);
+    let resourceView = (showResults) ? resourceResultsView : resourceChoiceView
 
     return (
         <div className={FULL_DIV}>
+            {resourceView}
+            {getAlerts(notEnoughTokens, setNotEnoughTokens, negativeTokens, setNegativeTokens)}
+        </div>
+    )
+}
+
+function getResourceResults(classes, groupOneResults, groupTwoResults) {
+    return(
+        <div>
+            <div className={classes.resultsText}>
+                <Typography variant='h3'>Results from Previous Turn:</Typography>
+            </div>
+            <DelayedBar resource={KEEP} group={1} delay={RESULTS_DELAY_KEEP} tokens={groupOneResults[KEEP_INDEX]}/>
+            <DelayedBar resource={INVEST} group={1} delay={RESULTS_DELAY_INVEST} tokens={groupOneResults[INVEST_INDEX]}/>
+            <DelayedBar resource={COMPETE} group={1} delay={RESULTS_DELAY_COMPETE} tokens={groupOneResults[COMPETE_INDEX]}/>
+            <DelayedBar resource={KEEP} group={2} delay={RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_KEEP} tokens={groupTwoResults[KEEP_INDEX]}/>
+            <DelayedBar resource={INVEST} group={2} delay={RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_INVEST} tokens={groupTwoResults[INVEST_INDEX]}/>
+            <DelayedBar resource={COMPETE} group={2} delay={RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_COMPETE} tokens={groupTwoResults[COMPETE_INDEX]}/>
+            <div className={classes.groupOne}>
+                <GroupBox groupNumber='One' width={'40vw'}/>
+            </div>
+            <div className={classes.groupTwo}>
+                <GroupBox groupNumber='Two' width={'40vw'}/>
+            </div>
+        </div>
+    )
+}
+ 
+function getResourceChoices(props, setFromResources, setToResources, fromResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources, payoffInvest, payoffCompete, resetTimer, setResetTimer, setSubmitDecisions, submitDecisions) {
+    return(
+        <div>
             <TokenCounter tokens={totalTokens - tokensSpent}/>
             <PayoutOdds investOdds={payoffInvest} competeOdds={payoffCompete}/> 
             <GameTimer setSubmitDecisions={setSubmitDecisions} resetTimer={resetTimer} setResetTimer={setResetTimer}/>
-            <ConfirmButton2 submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} resources={toResources} clearSelected={() => clearResources(setFromResources, setToResources, toResources, setTokensSpent, totalTokens)} loginCode={props.loginCode}/>
-
-            {/* TYPE IS FOR USER TESTING ONLY -- DELETE AFTER */}
+            <ConfirmButton2 submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} resources={currentResources} clearSelected={() => clearResources(setFromResources, setToResources, toResources, setTokensSpent, totalTokens)} loginCode={props.loginCode}/>
             <VerticalPlayerGroup type={GROUP_ONE} allLoginCodes={props.allLoginCodes} players={props.losers} type={0}/>
             <VerticalPlayerGroup type={GROUP_TWO} allLoginCodes={props.allLoginCodes} players={props.winners} type={1}/>
-            {getResourceButton(KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}
-            {getResourceButton(INVEST, INVEST_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}
-            {getResourceButton(COMPETE, COMPETE_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}
+            {getResourceButton(KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}
+            {getResourceButton(INVEST, INVEST_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}
+            {getResourceButton(COMPETE, COMPETE_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}
             {getResourceBar(KEEP, KEEP_INDEX, fromResources, toResources)} 
             {getResourceBar(INVEST, INVEST_INDEX, fromResources, toResources)}
             {getResourceBar(COMPETE, COMPETE_INDEX, fromResources, toResources)}
-            {getAlerts(notEnoughTokens, setNotEnoughTokens, negativeTokens, setNegativeTokens)}
         </div>
     )
 }
@@ -127,9 +205,9 @@ function scaleHeight(resourceTokens, totalTokens) {
     return resourceProportion * VERTICAL_SCALAR;
 }
 
-function getResourceButton(resource, resourceIndex, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent) {
+function getResourceButton(resource, resourceIndex, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources) {
     return <ResourceButton resource={resource} 
-            addToken={() => updateResource(resourceIndex, setFromResources, setToResources, toResources, totalTokens, INCREASING, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)} 
+            addToken={() => updateResource(resourceIndex, setFromResources, setToResources, toResources, totalTokens, INCREASING, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)} 
             removeToken={() => updateResource(resourceIndex, setFromResources, setToResources, toResources, totalTokens, DECREASING, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}/>
 }
 
@@ -137,7 +215,7 @@ function getResourceBar(resource, resourceIndex, fromResources, toResources) {
     return <ResourceBar resource={resource} from={fromResources[resourceIndex]} to={toResources[resourceIndex]}/>
 }
 
-function updateResource(resourceIndex, setFromResources, setToResources, originalResources, totalTokens, isIncreasing, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent) {
+function updateResource(resourceIndex, setFromResources, setToResources, originalResources, totalTokens, isIncreasing, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources) {
 
      let addTokenOffset;
 
@@ -158,6 +236,11 @@ function updateResource(resourceIndex, setFromResources, setToResources, origina
      let fromResources = originalResources.slice(0);
      let toResources = fromResources.slice(0);
      toResources[resourceIndex] += addTokenOffset * scaleHeight(RESOURCE_INCREMENTER, totalTokens);
+
+     let newCurrentResources = currentResources.slice(0);
+     newCurrentResources[resourceIndex] += addTokenOffset
+
+     setCurrentResources(newCurrentResources)
      setTokensSpent(addTokenOffset + tokensSpent)
      setFromResources(fromResources);
      setToResources(toResources);
@@ -182,4 +265,4 @@ function getAlertComponent(text, setClosed) {
     )
 }
 
-export default withRouter(GameTwo);
+export default withRouter(withStyles(styles)(GameTwo));
