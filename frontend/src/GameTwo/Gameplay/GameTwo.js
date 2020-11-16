@@ -208,7 +208,7 @@ function scaleHeight(resourceTokens, totalTokens) {
 function getResourceButton(resource, resourceIndex, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources) {
     return <ResourceButton resource={resource} 
             addToken={() => updateResource(resourceIndex, setFromResources, setToResources, toResources, totalTokens, INCREASING, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)} 
-            removeToken={() => updateResource(resourceIndex, setFromResources, setToResources, toResources, totalTokens, DECREASING, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent)}/>
+            removeToken={() => updateResource(resourceIndex, setFromResources, setToResources, toResources, totalTokens, DECREASING, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}/>
 }
 
 function getResourceBar(resource, resourceIndex, fromResources, toResources) {
@@ -220,7 +220,7 @@ function updateResource(resourceIndex, setFromResources, setToResources, origina
      let addTokenOffset;
 
      if (isIncreasing) {
-         if (tokensSpent == totalTokens) {
+         if (tokensSpent >= totalTokens) {
              setNotEnoughTokens(NOT_ENOUGH_TOKENS);
              return;
          }

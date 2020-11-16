@@ -231,7 +231,6 @@ function getPlayerIndex(loginCode, allLoginCodes) {
     for (let i = 0; i < allLoginCodes.length; i++) {
         if (allLoginCodes[i] == loginCode) return i;
     }
-    return INVALID_INDEX;
 }
 
 function clearSelected(setSelected) {

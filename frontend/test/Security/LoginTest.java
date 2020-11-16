@@ -13,8 +13,8 @@ public class LoginTest {
     private WebDriver driver;
     private static final String CHROME_DRIVER = "webdriver.chrome.driver";
     private static final String CHROME_DRIVER_PATH = "/Users/ericdoppelt/CS408/app_psychgames/frontend/node_modules/chromedriver/lib/chromedriver/chromedriver";
-    private static final String LOCAL_LOGIN_URL = "http://localhost:3002/";
-    private static final String LOCAL_HOST_LOBBY = "http://localhost:3002/lobby";
+    private static final String LOCAL_LOGIN_URL = "http://localhost:3000/";
+    private static final String LOCAL_HOST_LOBBY = "http://localhost:3000/lobby";
 
     private static final String TEXTFIELD_ID = "loginTextField";
     private static final String BUTTON_ID = "loginButton";

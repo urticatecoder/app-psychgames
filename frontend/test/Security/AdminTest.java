@@ -12,8 +12,8 @@ public class AdminTest {
     private WebDriver driver;
     private static final String CHROME_DRIVER = "webdriver.chrome.driver";
     private static final String CHROME_DRIVER_PATH = "/Users/ericdoppelt/CS408/app_psychgames/frontend/node_modules/chromedriver/lib/chromedriver/chromedriver";
-    private static final String LOCAL_ADMIN_LOGIN_URL = "http://localhost:3002/adminLogin";
-    private static final String LOCAL_ADMIN_URL = "http://localhost:3002/admin";
+    private static final String LOCAL_ADMIN_LOGIN_URL = "http://localhost:3000/adminLogin";
+    private static final String LOCAL_ADMIN_URL = "http://localhost:3000/admin";
 
     private static final String USERNAME_ID = "admin-username";
     private static final String PASSWORD_ID = "admin-password";

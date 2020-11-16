@@ -7,6 +7,7 @@ import moment from 'moment';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { DateRangePicker, SingleDatePicker, DayPickerRangeController } from 'react-dates';
+import ContinueButton from '../CommonComponents/ContinueButton';
 
 class Admin extends React.Component {
 
@@ -102,6 +103,7 @@ class Admin extends React.Component {
                     ref={this.gameTwoDataLink}
                     target="_blank"
                 />
+                <ContinueButton route='/' disabled={false}/>
             </div>
         )
     }

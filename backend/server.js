@@ -62,17 +62,8 @@ io.on('connection', socket => {
                 let group = getWinnersAndLosers(room);
                 console.log("Winners: ", group[0]);
                 console.log("Losers: ", group[1]);
-                let win = group[0];
-                let lose = group[1];
-                if(win.length != 3){
-                    let size = win.length;
-                    for(var i = size; i > 3; i--){
-                        lose.push(win[i - 1]);
-                        win.pop();
-                    }
-                }
                 room.setGameOneResults(group);
-                io.in(room.name).emit('end game 1', win, lose, allDoubleBonus.length, allTripleBonus.length);
+                io.in(room.name).emit('end game 1', group[0], group[1], allDoubleBonus.length, allTripleBonus.length);
                 room.advanceToGameTwo();
             }
             io.in(room.name).emit('location for game 1', resultForAllPlayers, allTripleBonus, 25,

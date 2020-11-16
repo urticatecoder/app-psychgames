@@ -10,6 +10,9 @@ const BUTTON_MESSAGE = 'Enter Code';
 const BUTTON_ID = 'loginButton';
 const EMPTY_STRING = '';
 const INVALID_CODE = true;
+const TEST_SUBSTRING_START_INDEX = 0
+const TEST_SUBSTRING_END_INDEX = 5
+const TEST_PREFIX = "test:"
 
 const styles = ({
     loginButton: {
@@ -41,8 +44,19 @@ function LoginButton(props) {
 }
 
 function handleLogin(props) {
-    console.log('called')
-    console.log(props.code)
+    let testPrefix = props.code.substring(TEST_SUBSTRING_START_INDEX, TEST_SUBSTRING_END_INDEX)
+    let loginCodePostfix = props.code.substring(TEST_SUBSTRING_END_INDEX)
+    if (testPrefix == TEST_PREFIX) {
+        props.setLoginCode(loginCodePostfix)
+        axios.get('/login-code', {
+            params: {
+                loginCode: props.code
+            }
+        })
+        props.history.push('/prolific')
+        return;
+    }
+
     axios.get('/login-code', {
         params: {
             loginCode: props.code

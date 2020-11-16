@@ -75,7 +75,7 @@ function TutorialScreen(props) {
                     />
             </div>
             <div className={classes.buttonDiv}>
-                <ContinueButton route={props.nextRoute} disabled={!enableButton}/>
+                <ContinueButton route={props.nextRoute} disabled={false}/>
             </div>
         </div>
     )

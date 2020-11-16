@@ -1,6 +1,7 @@
 import React from 'react';
 import '../CommonStylings/FullScreenDiv.css';
 import axios from 'axios';
+import ContinueButton from '../CommonComponents/ContinueButton';
 
 /* modified based on https://gist.github.com/joelgriffith/43a4a8195c9fd237a222fe84c2b2e2b4 */
 class AdminAuth extends React.Component {
@@ -68,12 +69,16 @@ class AdminAuth extends React.Component {
                         </h3>
                     }
                     <label>User Name</label>
-                    <input type="text" value={this.state.username} onChange={this.handleUserChange}/>
+                    <input id='admin-username' type="text" value={this.state.username} onChange={this.handleUserChange}/>
                     <br/>
                     <label>Password</label>
-                    <input type="password" value={this.state.password} onChange={this.handlePassChange}/>
+                    <input id='admin-password' type="password" value={this.state.password} onChange={this.handlePassChange}/>
                     <br/>
-                    <input type="submit" value="Log In"/>
+                    <input id='admin-button' type="submit" value="Log In"/>
+                    {/* FOR TESTING
+                    <br/>
+                    <br/>
+                    <ContinueButton route='/' disabled={false}/> */}
                 </form>
             </div>
         );
