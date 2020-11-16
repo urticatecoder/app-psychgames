@@ -49,6 +49,7 @@ function App() {
         <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode} setAllLoginCodes={setAllLoginCodes}/>}/>
         <Route path='/player-assignment' render={() => <MainAvatar/>}/>
         <Route path='/game-one-tutorial' render={() => <TutorialScreen URL='Tutorials/GameOne.mov' nextRoute='/player-assignment' initialPause={1000} videoLength={53000} text='Game One Tutorial'/>}/>
+        <Route path='/game-two-tutorial' render={() => <TutorialScreen URL='Tutorials/GameTwo.mov' nextRoute='/game-two' initialPause={1000} videoLength={45000} text='Game Two Tutorial'/>}/>
 
         <Switch>
           <Route exact path='/adminLogin' render={() => <AdminAuth/>} component={AdminAuth}/>

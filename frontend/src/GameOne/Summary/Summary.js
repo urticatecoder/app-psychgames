@@ -54,7 +54,7 @@ function GroupScreen(props) {
             <br/>
             <br/>
             <br/>
-            <ContinueButton className={classes.continueButton} route='game-two' disabled={ALWAYS_ENABLED}/>
+            <ContinueButton className={classes.continueButton} route='game-two-tutorial' disabled={ALWAYS_ENABLED}/>
         </div>
     )
 }

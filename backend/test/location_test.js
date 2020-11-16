@@ -2,27 +2,27 @@ const assert = require('assert');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
-calculateResults, getResults, zeroSumResults } = require('../db/results.js');
+calculateResults, checkPassiveness} = require('../db/results.js');
 
 
 describe('Location sending and calculation', () => {
-    // it('calculates results and location correctly', (done) => {
-    //     var testID = ['test_id1', 'test_id'];
-    //     var choices = ['test_id'];
-    //     var choices_other = ['test_id1'];
-    //     const room = new Room('room 0');
-    //     room.addPlayer(new Player('test_id'));
-    //     room.addPlayer(new Player('test_id1'));
-    //     room.getPlayerWithID('test_id').recordChoices(choices_other);
-    //     room.getPlayerWithID('test_id1').recordChoices(choices);
-    //     // console.log(room);
-    //     let results = getResultsByProlificId(testID, room)
-    //     // console.log(results);
-    //     for(var i = 0; i < results.length; i++ ){
-    //         assert(results[i] === 0);
-    //     }
-    //     done();
-    // });
+    it('calculates results and location correctly', (done) => {
+        var testID = ['test_id1', 'test_id'];
+        var choices = ['test_id'];
+        var choices_other = ['test_id1'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id'));
+        room.addPlayer(new Player('test_id1'));
+        room.getPlayerWithID('test_id').recordChoices(choices_other);
+        room.getPlayerWithID('test_id1').recordChoices(choices);
+        // console.log(room);
+        let results = getResultsByProlificId(testID, room)
+        // console.log(results);
+        for(var i = 0; i < results.length; i++ ){
+            assert(results[i] !== 0);
+        }
+        done();
+    });
     // it('calculates triple bonus correctly', (done) => {
     //     const testID = ['test_id1', 'test_id2', 'test_id3'];
     //     var choicesOne = ['test_id2', 'test_id3'];
@@ -35,11 +35,12 @@ describe('Location sending and calculation', () => {
     //     room.getPlayerWithID('test_id1').recordChoices(choicesOne);
     //     room.getPlayerWithID('test_id3').recordChoices(choicesThree);
     //     room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
-    //
+    
     //     const count = getResultsByProlificId(testID, room);
     //     console.log(count);
     //     for(var i =0; i <count.length; i++){
-    //         assert(count[i] === 7);
+    //         console.log(count[i]);
+    //         // assert(count[i] === 25);
     //     }
     //     done();
     // });
@@ -56,7 +57,7 @@ describe('Location sending and calculation', () => {
     //     room.getPlayerWithID('test_id1').recordChoices(choicesOne);
     //     room.getPlayerWithID('test_id3').recordChoices(choicesThree);
     //     room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
-    //
+    
     //     const count = getResultsByProlificId(testID, room);
     //     // console.log(count);
     //     assert(count[0] == 1.333333333333333 && count[1] == 5.333333333333333);
@@ -292,4 +293,41 @@ describe('Location sending and calculation', () => {
     //     assert(results[2] == 1.3333333333333335);
     //     done();
     // });
+    it('identify no passiveness in player', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id3'];
+        var choicesTwo = [];
+        var choicesThree = ['test_id2'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+        let result = checkPassiveness('test_id2', room);
+    
+        assert(null === result);
+        done();
+    })
+    it('identify passiveness in player', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = [];
+        var choicesTwo = [];
+        var choicesThree = [];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+        let result;
+        for(var i = 0; i < 4; i++){
+            result = checkPassiveness('test_id2', room);
+        }
+        assert(result === 'test_id2');
+        // assert(null === result);
+        done();
+    })
 })

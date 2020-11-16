@@ -4,6 +4,8 @@ const DB_API = require('../db/db_api.js');
 const choice = require('./models/choice.js');
 const lobby = require('../lobby.js').LobbyInstance;
 
+var passive = new Map();
+
 function getResultsByProlificId(prolificIDArray, room) {
     let allLocations = room.playerLocation;
     let allResults = [];
@@ -34,12 +36,34 @@ function getResults(playerProlific, prolificIDArray, room){
     let singlePair = getSinglePairMap(prolificIDArray, room);
     let doublePair = getDoublePairMap(prolificIDArray, room);
     let triplePair = getTriplePairMap(prolificIDArray, room);
+
     var count = 0;
     count += singlePair.get(playerProlific)*10;
     count += doublePair.get(playerProlific)*15;
     count += triplePair.get(playerProlific)*25;
     return count;
 } 
+
+function checkPassiveness(playerProlific, room){
+    let allChoices = room.getEveryoneChoiceAtCurrentTurn();
+    let choice = allChoices.get(playerProlific);
+    if(choice[0] == null){
+        if(passive.has(playerProlific)){
+            passive.set(playerProlific, passive.get(playerProlific) + 1);
+        }
+        else{
+            passive.set(playerProlific, 1);
+        }
+    }
+    else{
+        passive.set(playerProlific, 0);
+    }
+
+    if(passive.get(playerProlific) >= 5){
+        return playerProlific
+    }
+    return null;
+}
 
 function zeroSumResults(allResults, prolificIDArray, room){
     var average = 0;
@@ -277,6 +301,15 @@ function getWinnersAndLosers(room) {
             losers.push(tempPlayer);
         }
     }
+    // If winners is > 3, ensure that the amount of winners/losers is 3
+    // FIXME - NEED to update this to be based on the highest score over winter break
+    if(winners.length >= 3){
+        let size = winners.length;
+        for(var i = size; i > 3; i--){
+            losers.push(winners[i - 1]);
+            winners.pop();
+        }
+    }
     return [winners, losers];
 }
 
@@ -290,4 +323,5 @@ module.exports = {
     calculateResults: getSinglePairMap,
     getResults: getResults,
     zeroSumResults: zeroSumResults,
+    checkPassiveness: checkPassiveness,
 }

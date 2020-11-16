@@ -75,7 +75,7 @@ function StartTimer(props) {
 
             <Timer
                 id={TIMER_ID}
-                initialTime={INITIAL_START_TIME}
+                initialTime={INITIAL_TEST_TIME}
                 lastUnit={LAST_TIME_UNIT}
                 direction={DIRECTION}
                 timeToUpdate={TIMER_UPDATE}
