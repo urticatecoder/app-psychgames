@@ -54,10 +54,10 @@ function VerticalPlayerGroup(props) {
     //FIXME: delete this, only needed for user testing
     var tempPlayers;
     if (props.type == 1 && props.players.length == 0) {
-        tempPlayers = [allLoginCodes[0], allLoginCodes[1], allLoginCodes[2]]
+        // tempPlayers = [allLoginCodes[0], allLoginCodes[1], allLoginCodes[2]]
     } 
     else if (props.type == 0 && props.players.length == 0) {
-        tempPlayers = [allLoginCodes[3], allLoginCodes[4], allLoginCodes[5]]
+        // tempPlayers = [allLoginCodes[3], allLoginCodes[4], allLoginCodes[5]]
     }
     else {
         tempPlayers = props.players

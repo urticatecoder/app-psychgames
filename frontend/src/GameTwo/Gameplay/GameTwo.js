@@ -220,7 +220,7 @@ function updateResource(resourceIndex, setFromResources, setToResources, origina
      let addTokenOffset;
 
      if (isIncreasing) {
-         if (tokensSpent == totalTokens) {
+         if (tokensSpent >= totalTokens) {
              setNotEnoughTokens(NOT_ENOUGH_TOKENS);
              return;
          }
