@@ -63,7 +63,7 @@ function Login(props) {
                 onChange={(e) => props.setLoginCode(e.target.value)}
                 >
             </TextField>
-            <LoginButton code={props.code} invalidCode={invalidCode} setInvalidCode={setInvalidCode}/>
+            <LoginButton code={props.code} invalidCode={invalidCode} setLoginCode={props.setLoginCode} setInvalidCode={setInvalidCode}/>
         </div>
     )
 }

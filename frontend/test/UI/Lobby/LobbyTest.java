@@ -1,9 +1,8 @@
-package Lobby;
+package UI.Lobby;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -12,7 +11,7 @@ public class LobbyTest {
     private WebDriver driver;
     private static final String CHROME_DRIVER = "webdriver.chrome.driver";
     private static final String CHROME_DRIVER_PATH = "/Users/ericdoppelt/CS408/app_psychgames/frontend/node_modules/chromedriver/lib/chromedriver/chromedriver";
-    private static final String LOCAL_HOST_LOBBY = "http://localhost:3000/lobby";
+    private static final String LOCAL_HOST_LOBBY = "http://localhost:3002/lobby";
 
     private static final String TEXT_ID = "timerText";
 
@@ -32,7 +31,7 @@ public class LobbyTest {
 
     private static final String PLAYER_ID = "timerText";
 
-    private static final String LOCAL_LOGIN_URL = "https://rise-to-the-top.herokuapp.com/";
+    private static final String LOCAL_LOGIN_URL = "http://localhost:3002/lobby/";
 
     private static final String VALID_LOGIN_CODE_ONE = "CS101";
     private static final String VALID_LOGIN_CODE_TWO = "CS201";

@@ -1,4 +1,4 @@
-package Lobby;
+package Security;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,16 +13,13 @@ public class LoginTest {
     private WebDriver driver;
     private static final String CHROME_DRIVER = "webdriver.chrome.driver";
     private static final String CHROME_DRIVER_PATH = "/Users/ericdoppelt/CS408/app_psychgames/frontend/node_modules/chromedriver/lib/chromedriver/chromedriver";
-    private static final String LOCAL_LOGIN_URL = "https://rise-to-the-top.herokuapp.com/";
-    private static final String LOCAL_HOST_LOBBY = "https://rise-to-the-top.herokuapp.com/lobby";
+    private static final String LOCAL_LOGIN_URL = "http://localhost:3000/";
+    private static final String LOCAL_HOST_LOBBY = "http://localhost:3000/lobby";
 
-    private static final String TEXT_ID = "loginText";
     private static final String TEXTFIELD_ID = "loginTextField";
     private static final String BUTTON_ID = "loginButton";
 
-    private static final String VALID_LOGIN_CODE = "CS408";
-    private static final String SECOND_VALID_CODE = "CS500";
-    private static final String THIRD_VALID_CODE = "9878";
+    private static final String VALID_CODE = "9878-1";
     private static final String INVALID_LOGIN_CODE = "CS307";
     private static final String EMPTY_LOGIN_CODE = " ";
 
@@ -43,7 +40,7 @@ public class LoginTest {
     // HAPPY PATH -- valid login code entered
     @Test
     public void testLoginValid() {
-        testCode(LOCAL_HOST_LOBBY, THIRD_VALID_CODE);
+        testCode(LOCAL_HOST_LOBBY, VALID_CODE);
     }
 
     // SAD PATH -- user randomly clicks on textfield

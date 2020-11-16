@@ -123,12 +123,12 @@ app.get("/verification-code", (req, res) => {
     let prolificID = req.query.loginCode;
     if (prolificID === undefined) {
         res.status(200).send({'code': 'Please send me a loginCode'});
-    } else if (prolificID === 'CS307') {
+    } else if (prolificID === 'CS307' || prolificID === '') {
         res.status(200).send({'code': 'INVALID_CODE'});
     } else {
         res.status(200).send({
                 'code': 'CS408',
-                'payment': Game2.calculateFinalPaymentForAPlayer(prolificID, lobby)
+                // 'payment': Game2.calculateFinalPaymentForAPlayer(prolificID, lobby)
             }
         );
     }

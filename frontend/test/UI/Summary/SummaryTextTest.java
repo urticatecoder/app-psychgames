@@ -1,4 +1,4 @@
-package GameOneSummary.Summary;
+package UI.Summary;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +12,7 @@ public class SummaryTextTest {
     private WebDriver driver;
     private static final String CHROME_DRIVER = "webdriver.chrome.driver";
     private static final String CHROME_DRIVER_PATH = "/Users/ericdoppelt/CS408/app_psychgames/frontend/node_modules/chromedriver/lib/chromedriver/chromedriver";
-    private static final String LOCAL_SUMMARY_URL = "https://rise-to-the-top.herokuapp.com/summary";
+    private static final String LOCAL_SUMMARY_URL = "http://localhost:3002/summary";
 
     private static final String WINNING_TEXT_ID = "winnerText";
     private static final String LOSING_TEXT_ID = "loserText";

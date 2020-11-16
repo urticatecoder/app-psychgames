@@ -3,7 +3,6 @@ import './App.css';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Lobby from './Lobby/Lobby';
 import Login from './Login/Login';
-import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
 import Summary from './GameOne/Summary/Summary';
 import GameOne from './GameOne/Gameplay/GameOne';
 import GameTwo from './GameTwo/Gameplay/GameTwo';
@@ -59,46 +58,11 @@ function App() {
         <Route path='/game-two' render={() => (<GameTwo loginCode = {loginCode} winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
 
         <Route path='/summary' render={() => (<Summary winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
-        <Route path='/prolific' render={() => (<ProlificScreen/>)}/>
+        <Route path='/prolific' render={() => (<ProlificScreen code={loginCode}/>)}/>
         <Route 
           path="/game-one" 
           render={() => (<GameOne setWinners={setWinners} setLosers={setLosers} loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
         />
-
-        <Route
-            path="/one-welcome"
-            render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' /* route='one-introduction'/> */ route='game-one'/>)}
-        />
-
-        <Route
-          path="/one-introduction"
-          render={() => (<InstructionsScreen file='Instructions/Introduction.txt' title='General Introduction' route='one-logic'/>)}
-        />
-        <Route
-          path="/one-logic"
-          render={() => (<InstructionsScreen file='Instructions/Logic.txt' title='What Happens in the Game?' route='one-end-rules'/>)}
-        />
-
-        <Route
-          path="/one-end-rules"
-          render={() => (<InstructionsScreen file='Instructions/EndRules.txt' title='When does the Game End?' route='one-moving'/>)}
-        />
-
-        <Route
-          path="/one-moving"
-          render={() => (<InstructionsScreen file='Instructions/Moving.txt' title='Moving' route='one-bonuses'/>)}
-        />
-
-        <Route
-          path="/one-bonuses"
-          render={() => (<InstructionsScreen file='Instructions/Bonuses.txt' title='Cooperation Bonuses' route='one-play-rules'/>)}
-        />
-
-        <Route
-          path="/one-play-rules"
-          render={() => (<InstructionsScreen file='Instructions/PlayRules.txt' title='How do I play?' route='game-one'/>)}
-        />
-
       </Router>
 
     </div>
