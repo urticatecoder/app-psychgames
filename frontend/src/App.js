@@ -59,7 +59,7 @@ function App() {
         <Route path='/game-two' render={() => (<GameTwo loginCode = {loginCode} winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
 
         <Route path='/summary' render={() => (<Summary winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
-        <Route path='/prolific' render={() => (<ProlificScreen/>)}/>
+        <Route path='/prolific' render={() => (<ProlificScreen code={loginCode}/>)}/>
         <Route 
           path="/game-one" 
           render={() => (<GameOne setWinners={setWinners} setLosers={setLosers} loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}

@@ -15,6 +15,8 @@ const THANKS_VARIANT = 'h2';
 const PAYOUT_VARIANT = 'h3'
 const DEFAULT_AMOUNT = '10.50';
 
+const PROLIFIC_CODE_ID = 'prolificCode';
+
 const styles = {
     prolificText: {
         marginTop: '140px',
@@ -32,8 +34,17 @@ function ProlificScreen(props) {
     const {classes} = props;
     const [prolificCode, setProlificCode] = useState(DEFAULT_CODE);
     const [payoutAmount, setPayoutAmount] = useState(DEFAULT_AMOUNT)
+    
+    
     useEffect(() => {
-        axios.get('/verification-code').then(res => {
+        console.log("CODE")
+        console.log(props.code)
+        axios.get('/verification-code', {
+            params: {
+                loginCode: props.code
+            }
+        }).then(res => {
+            console.log(res)
             setProlificCode(res.data.code)
         }).catch(err => console.log(err));      
     }, [prolificCode]);
@@ -41,7 +52,7 @@ function ProlificScreen(props) {
     return(
         <div className={FULL_DIV}>
             <Typography className={classes.thankYouText} variant={THANKS_VARIANT}>{THANK_YOU_MESSAGE}</Typography>
-            <Typography className={classes.prolificText} variant={CODE_VARIANT}>{INSTRUCTIONS_MESSAGE + prolificCode}</Typography>
+            <Typography id={PROLIFIC_CODE_ID} className={classes.prolificText} variant={CODE_VARIANT}>{INSTRUCTIONS_MESSAGE + prolificCode}</Typography>
             <Typography className={classes.payoutText} variant={PAYOUT_VARIANT}>{PAYOUT_MESSAGE + payoutAmount} </Typography>
         </div>
     )
