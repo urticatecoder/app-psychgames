@@ -42,9 +42,9 @@ function GroupScreen(props) {
     let winnerIndices = getAvatarIndices(props.winners, props.allLoginCodes)
     let loserIndices = getAvatarIndices(props.losers, props.allLoginCodes)
 
-    // FOR TESTING
-    if (winnerIndices.length == 0) winnerIndices = WINNERS
-    if (loserIndices.length == 0) loserIndices = LOSERS
+    // // FOR TESTING
+    // if (winnerIndices.length == 0) winnerIndices = WINNERS
+    // if (loserIndices.length == 0) loserIndices = LOSERS
 
     return(
         <div className={FULL_DIV}>
