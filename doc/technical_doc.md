@@ -1,6 +1,7 @@
 ### In-code Comments
 
-All the important methods, classes and modules in the repo include authors
+All the important methods, classes and modules in this repo include comments 
+that provide high level overview of their main functionalities as well as names of the authors.
 
 
 ### Database Schema
@@ -21,7 +22,7 @@ their corresponding functionality.
 
 There are two primary ways for the client and server to communicate. One is through sockets.
 The reason for using socket can be found in our project wiki. They are mainly used for implementing gameplay logic (
-e.g. receiving and responding to players' choices). Both the client and server contain socker listeners which will listen for messages 
+e.g. receiving and responding to players' choices). Both the client and server contain socket listeners which will listen for messages 
 sent by the socket emitters on the other side along with a few data parameters. 
 The other way for client and server to communicate is through API routes. All the API routes provided by
 the server can be found in `backend/app.js` with comments that describe what each API route does. API routes are used to complete 
