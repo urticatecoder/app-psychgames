@@ -1,0 +1,21 @@
+Backlog Documentation
+
+* Backend
+    * Currently, game one causes there to be winners that are stopped at the top of the screen. However, once they win, they are still able to be chosen by interactive players and by the bots. Thus, there needs to be work done that causes these winners to not be selected.
+    * In addition, the sprites currently start at location 0, which is the bottom of the screen. The pieces will be set to start at the middle of the screen. In addition, the single, bonus, double bonus, and triple bonus locations will be set back to the normal amounts. They were made way larger in order to have a faster demo to show off to class.
+    * The movements are based on the single, double, and triple bonuses. These need to be set to the zero-sum movement that is implemented in the code, but needs to be fine-tuned as it is not 100% correct.
+    * In addition, the results edge case of 4 players winning is handled by kicking the last index out. This will need to be configured to identify the score of each player, and making the 3 highest be the winners where the 3 lowest will be the losers.
+    * Setting up a methodology to determine where each of the money is coming from in the payout at the end of the research experiment. This will enable the users and researchers to see where the money came from.
+
+
+
+- Frontend
+    - A progress bar could be added that allows players to know how far into the experiment they are.
+    - A receipt should be shown on the final screen which allows players to know how their compensation was calculated.
+    - Avatar selection should be implemented in the lobby, allowing users to have some level of customization as they wait.
+    - A "passivity" check could to be added in the UI, such that if a user is unresponsive for multiple turns, the frontend should alert the user and prompt them to notify the site that they are still active.
+    - The formatting should be consistent *across all screen sizes*. This entails redoing some Material UI stylings to be proportional to screen sizes rather than hardcoding.
+    - The UI needs to add in checks to ensure that all users play the game at the same speed. This entails adding timers to pages such as Avatar Selection such that users cannot remain in a lobby screen once Game One has started, as the route should automatically update.
+    -   The Confirm button in Game One should be disabled until all the animations are done rendering.
+    -   The bug in Game Two must be resolved where investing tokens and then uninvesting them allows a user to invest a negative amount of tokens.
+    -   The admin page could be redesigned to use Material UI stylings for consistency.
