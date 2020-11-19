@@ -33,6 +33,12 @@ const styles = ({
   });
 
   
+/**
+ * Component used to visualize the number of tokens a player has during a round of Game Two.
+ * @param {*} props tells how many tokens a player has at the moment.
+ * 
+ * @author Eric Doppelt
+ */
 function TokenCounter(props) { 
 
     const {classes} = props;

@@ -10,7 +10,8 @@ const styles = {
 }
 
 const WAIT_FOR_CONFETTI = 1500
-
+const NO_CONFETTI = false;
+const YES_CONFETTI = true;
 const CONFIG = {
     angle: 0,
     spread: 360,
@@ -25,12 +26,18 @@ const CONFIG = {
     colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
   };
 
+  /**
+   * Component used to display confetti in the Summary screen following Game One.
+   * @param {*} props is used only to style the component using withStyles
+   * 
+   * @author Eric Doppelt
+   */
   function DelayedConfetti(props) {
     const {classes} = props;
-    const [confetti, setConfetti] = useState(false);
+    const [confetti, setConfetti] = useState(NO_CONFETTI);
 
     setTimeout(() => {
-        setConfetti(true)
+        setConfetti(YES_CONFETTI)
       }, WAIT_FOR_CONFETTI);
 
       return(

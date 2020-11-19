@@ -1,8 +1,9 @@
 import React from 'react';
 
-import Keep from '../images/Resources/Keep.png'
-import Invest from '../images/Resources/Invest.png'
-import Compete from '../images/Resources/Compete.png'
+import Keep from '../images/Resources/keep.png'
+import Invest from '../images/Resources/invest.png'
+import Compete from '../images/Resources/compete.png'
+import { ResourceNames } from '../../util/common_constants/game_two/GameTwoBundler';
 
 const IMAGE_HEIGHT = '70vh'
 const IMAGE_WIDTH = '70vw'
@@ -14,6 +15,14 @@ const COMPETE_ID = 'compete';
 const KEEP_LABEL = 'Keep';
 const INVEST_LABEL = 'Invest';
 const COMPETE_LABEL = 'Compete';
+
+/**
+ * Constant that encodes all the information needed to visualize resource options in Game Two (compete, keep, invest).
+ * Includes labels and images for each option.
+ * Each resource option is indexed by its name.
+ * 
+ * @author Eric Doppelt
+ */
 
 function getResource(image, id) {
     return(
@@ -33,15 +42,14 @@ const COMPETE = getResource(Compete, COMPETE_ID)
 
 const ResourceInfo = {
     keep: KEEP,
-    keepID: KEEP_ID,
+    keepID: ResourceNames.KEEP,
     keepLabel: KEEP_LABEL,
     invest: INVEST,
-    investID: INVEST_ID,
+    investID: ResourceNames.INVEST,
     investLabel: INVEST_LABEL,
     compete: COMPETE,
-    competeID: COMPETE_ID,
+    competeID: ResourceNames.COMPETE,
     competeLabel: COMPETE_LABEL,
-    
 }
 
 export default ResourceInfo;

@@ -4,8 +4,8 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import Lobby from './lobby/Lobby';
 import Login from './login/Login';
 import Summary from './game_one/summary/Summary';
-import GameOne from './game_one/gameplay/GameOne';
-import GameTwo from './game_two/gameplay/GameTwo';
+import GameOne from './game_one/GameOne';
+import GameTwo from './game_two/GameTwo';
 import ProlificScreen from './prolific/ProlificScreen'
 import AdminAuth from "./admin_page/AdminAuth";
 import PrivateRoute from "./admin_page/PrivateRoute";
