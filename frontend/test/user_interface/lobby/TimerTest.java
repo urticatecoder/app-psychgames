@@ -9,22 +9,23 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.junit.jupiter.api.Assertions;
 
+/*
+    Tests for the Start Timer in the UI
+    Author: Eric Doppelt
+ */
+
 public class TimerTest {
 
     private WebDriver driver;
     private static final String CHROME_DRIVER = "webdriver.chrome.driver";
     private static final String CHROME_DRIVER_PATH = "/Users/ericdoppelt/CS408/app_psychgames/frontend/node_modules/chromedriver/lib/chromedriver/chromedriver";
-    private static final String LOCAL_HOST_LOBBY = "http://localhost:3002/lobby";
-    private static final String LOCAL_HOST_WELCOME = "http://localhost:3002/game-one-tutorial";
+    private static final String LOCAL_HOST_LOBBY = "http://localhost:3000/lobby";
+    private static final String LOCAL_HOST_TUTORIAL = "http://localhost:3000/game-one-tutorial";
     private static final String TEXT_ID = "timerText";
     private static final String BUTTON_ID = "timerButton";
     private static final String THREAD_SLEEP_MESSAGE = "Error with Thread Sleep";
     private static final int TIMER_WAIT = 61000;
 
-    private static final String TEXTFIELD_ID = "loginTextField";
-    private static final String LOGIN_BUTTON_ID = "loginButton";
-
-    private static final String LOCAL_LOGIN_URL = "http://localhost:3002/";
 
     @Before
     public void init() {
@@ -40,6 +41,7 @@ public class TimerTest {
         Assert.assertEquals(LOCAL_HOST_LOBBY, driver.getCurrentUrl());
     }
 
+    // HAPPY PATH -- user waits the timer length and then clicks
     @Test
     public void testProperClick() {
         try {
@@ -48,7 +50,7 @@ public class TimerTest {
             System.out.println(THREAD_SLEEP_MESSAGE);
         }
         driver.findElement(By.id(BUTTON_ID)).click();
-        Assert.assertEquals(LOCAL_HOST_WELCOME, driver.getCurrentUrl());
+        Assert.assertEquals(LOCAL_HOST_TUTORIAL, driver.getCurrentUrl());
     }
 
     // SAD PATH -- user tries to move on before time goes off

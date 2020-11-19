@@ -7,6 +7,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+/*
+    Tests for various valid and invalid combinations of login codes trying to access the Prolific Code in the UI
+    Author: Eric Doppelt
+ */
+
 public class ProlificCodeTest {
     private WebDriver driver;
     private static final String CHROME_DRIVER = "webdriver.chrome.driver";
@@ -36,7 +41,7 @@ public class ProlificCodeTest {
         driver.get(LOCAL_LOGIN_URL);
     }
 
-    // SAD PATH -- no code entered
+    // HAPPY PATH -- check the initial URL is valid
     @Test
     public void testInitialURL() {
         Assert.assertEquals(LOCAL_LOGIN_URL, driver.getCurrentUrl());
@@ -48,13 +53,13 @@ public class ProlificCodeTest {
         testCode(VALID_MESSAGE, VALID_LOGIN_CODE);
     }
 
-    // SAD PATH -- user randomly clicks on textfield
+    // SAD PATH -- invalid login code entered
     @Test
     public void testInvalidProlificCode() {
         testCode(INVALID_MESSAGE, INVALID_LOGIN_CODE);
     }
 
-    // SAD PATH -- invalid login code entered
+    // SAD PATH -- empty login code entered
     @Test
     public void testEmptyProlificCode() {
         testCode(INVALID_MESSAGE, EMPTY_LOGIN_CODE);
