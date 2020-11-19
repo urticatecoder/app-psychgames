@@ -19,3 +19,4 @@ Backlog Documentation
     - The Confirm button in Game One should be disabled until all the animations are done rendering.
     - The bug in Game Two must be resolved where investing tokens and then uninvesting them allows a user to invest a negative amount of tokens.
     - The admin page could be redesigned to use Material UI stylings for consistency.
+    - Change colors in Game One to be accessible to the color blind.
