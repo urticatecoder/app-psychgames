@@ -1,8 +1,8 @@
 import React from 'react';
-import ResourceImages from '../../Icons/Components/ResourceImages';
+import ResourceImages from '../../icons/components/ResourceImages';
 import { withStyles } from '@material-ui/core/styles';
-import getBackgroundColor from '../../Icons/Components/getResourceBackgroundColor';
-import getMarginLeft from '../../Icons/Components/getResourceMarginLeft';
+import getBackgroundColor from '../../icons/components/getResourceBackgroundColor';
+import getMarginLeft from '../../icons/components/getResourceMarginLeft';
 
 const LABEL = 'Label';
 const REMOVE_TOKEN_LABEL = "-1 Token";

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSpring, animated } from 'react-spring';
-import PlayerButton from '../../Icons/Components/PlayerButton.js';
+import PlayerButton from '../../icons/components/PlayerButton.js';
 
 function PlayerColumn(props) {
     const spring = useSpring({

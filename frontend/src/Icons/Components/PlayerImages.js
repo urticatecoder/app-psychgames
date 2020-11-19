@@ -1,11 +1,11 @@
 import React from 'react';
 
-import Flame from '../Images/Shapes/flame.png'
-import Arrow from '../Images/Shapes/arrow.png'
-import Cross from '../Images/Shapes/cross.png'
-import Headset from '../Images/Shapes/headset.png'
-import Leaves from '../Images/Shapes/leaves.png'
-import Triangle from '../Images/Shapes/triangle.png'
+import Flame from '../images/Shapes/flame.png'
+import Arrow from '../images/Shapes/arrow.png'
+import Cross from '../images/Shapes/cross.png'
+import Headset from '../images/Shapes/headset.png'
+import Leaves from '../images/Shapes/leaves.png'
+import Triangle from '../images/Shapes/triangle.png'
 
 const IMAGE_HEIGHT = '85vh'
 const IMAGE_WIDTH = '85vw'

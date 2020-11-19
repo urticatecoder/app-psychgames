@@ -2,7 +2,7 @@
 import React, {useState} from 'react';
 import {Typography, TextField, Box} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import '../CommonStylings/FullScreenDiv.css'
+import '../common_stylings/FullScreenDiv.css'
 import LoginButton from './LoginButton'
 
 const WELCOME_MESSAGE = 'Welcome to Rise to the Top!';

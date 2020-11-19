@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {withStyles} from '@material-ui/core'
 import { useSpring, animated } from 'react-spring';
-import getBackgroundColor from '../../Icons/Components/getResourceBackgroundColor';
+import getBackgroundColor from '../../icons/components/getResourceBackgroundColor';
 
 const INITIAL_HEIGHT = 0;
 const COLON_SPACE = ": "

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import StartTimer from './StartTimer';
 import StartButton from './StartButton';
-import '../CommonStylings/FullScreenDiv.css'
+import '../common_stylings/FullScreenDiv.css'
 
 function Lobby(props) {
     const DEFAULT_START_STATUS = false;

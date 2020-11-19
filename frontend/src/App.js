@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
 import './App.css';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import Lobby from './Lobby/Lobby';
-import Login from './Login/Login';
-import Summary from './GameOne/Summary/Summary';
-import GameOne from './GameOne/Gameplay/GameOne';
-import GameTwo from './GameTwo/Gameplay/GameTwo';
-import ProlificScreen from './Prolific/ProlificScreen'
-import AdminAuth from "./AdminPage/AdminAuth";
-import PrivateRoute from "./AdminPage/PrivateRoute";
-import MainAvatar from './Lobby/MainAvatar';
-import TutorialScreen from './Tutorials/TutorialScreen';
+import Lobby from './lobby/Lobby';
+import Login from './login/Login';
+import Summary from './game_one/summary/Summary';
+import GameOne from './game_one/gameplay/GameOne';
+import GameTwo from './game_two/gameplay/GameTwo';
+import ProlificScreen from './prolific/ProlificScreen'
+import AdminAuth from "./admin_page/AdminAuth";
+import PrivateRoute from "./admin_page/PrivateRoute";
+import MainAvatar from './lobby/MainAvatar';
+import TutorialScreen from './tutorials/TutorialScreen';
 
 const TEST_CODE = 123
 const TEST_CODES = [123, 456, 789, 12, 34, 56]

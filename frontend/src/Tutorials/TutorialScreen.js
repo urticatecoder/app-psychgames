@@ -2,8 +2,8 @@
 import React, {useState} from 'react';
 import ReactPlayer from 'react-player';
 import { withStyles } from '@material-ui/core/styles';
-import '../CommonStylings/FullScreenDiv.css';
-import ContinueButton from '../CommonComponents/ContinueButton';
+import '../common_stylings/FullScreenDiv.css'
+import ContinueButton from '../common_components/ContinueButton';
 import { Typography, Box} from '@material-ui/core';
 
 const FULL_DIV = 'fullDiv';

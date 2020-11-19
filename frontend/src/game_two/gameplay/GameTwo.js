@@ -1,19 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import '../../CommonStylings/FullScreenDiv.css'
+import '../../common_stylings/FullScreenDiv.css'
 import ResourceBar from './ResourceBar';
 import VerticalPlayerGroup from './VerticalPlayerGroup';
 import ResourceButton from './ResourceButton';
 import Alert from '@material-ui/lab/Alert';
 import {Snackbar, Typography, withStyles} from '@material-ui/core'
-import GameTimer from '../../CommonComponents/GameTimer';
+import GameTimer from '../../common_components/GameTimer';
 import ConfirmButton2 from './ConfirmButton2'
 import socket from "../../socketClient";
 import { withRouter } from "react-router-dom";
-import TokenCounter from '../Tokens/TokenCounter';
+import TokenCounter from '../tokens/TokenCounter';
 import PayoutOdds from './PayoutOdds';
-import '../Results/DelayedBar';
-import DelayedBar from '../Results/DelayedBar';
-import GroupBox from '../../GameOne/Gameplay/GroupBox';
+import '../results/DelayedBar';
+import DelayedBar from '../results/DelayedBar';
+import GroupBox from '../../game_one/gameplay/GroupBox';
 
 const GROUP_ONE = 1;
 const GROUP_TWO = 2;

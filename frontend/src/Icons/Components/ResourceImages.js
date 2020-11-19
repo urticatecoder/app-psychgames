@@ -1,8 +1,8 @@
 import React from 'react';
 
-import Keep from '../Images/Resources/Keep.png'
-import Invest from '../Images/Resources/Invest.png'
-import Compete from '../Images/Resources/Compete.png'
+import Keep from '../images/Resources/Keep.png'
+import Invest from '../images/Resources/Invest.png'
+import Compete from '../images/Resources/Compete.png'
 
 const IMAGE_HEIGHT = '70vh'
 const IMAGE_WIDTH = '70vw'

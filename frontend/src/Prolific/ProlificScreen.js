@@ -2,7 +2,7 @@
 import React, {useState, useEffect} from 'react';
 import {Typography} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import '../CommonStylings/FullScreenDiv.css'
+import '../common_stylings/FullScreenDiv.css'
 import axios from 'axios';
 const FULL_DIV = 'fullDiv';
 

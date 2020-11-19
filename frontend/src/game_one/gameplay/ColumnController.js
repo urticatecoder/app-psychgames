@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import '../../CommonStylings/FullScreenDiv.css'
+import '../../common_stylings/FullScreenDiv.css'
 import PlayerColumn from './PlayerColumn';
 import {Grid, withStyles} from '@material-ui/core'
 import socket from "../../socketClient";
@@ -8,7 +8,7 @@ import {Snackbar} from '@material-ui/core'
 import ConfirmButton from './ConfirmButton';
 import { withRouter } from "react-router-dom";
 import GroupBox from './GroupBox'
-import GameTimer from '../../CommonComponents/GameTimer'
+import GameTimer from '../../common_components/GameTimer'
 
 const SUMMARY_ROUTE = '/summary'
 

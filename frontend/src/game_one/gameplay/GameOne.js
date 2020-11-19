@@ -1,4 +1,4 @@
-import '../../CommonStylings/FullScreenDiv.css'
+import '../../common_stylings/FullScreenDiv.css'
 import ColumnController from './ColumnController'
 import React from 'react';
 

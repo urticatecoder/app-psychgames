@@ -1,6 +1,6 @@
 import React from 'react';
 import {withStyles} from '@material-ui/core';
-import PlayerProfile from '../../Icons/Components/PlayerProfile';
+import PlayerProfile from '../../icons/components/PlayerProfile';
 
 const GROUP_ONE = 1
 

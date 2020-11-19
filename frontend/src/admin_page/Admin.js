@@ -1,5 +1,5 @@
 import React from 'react';
-import '../CommonStylings/FullScreenDiv.css';
+import '../common_stylings/FullScreenDiv.css'
 import axios from 'axios';
 import { CSVLink } from "react-csv";
 
@@ -7,7 +7,7 @@ import moment from 'moment';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { DateRangePicker } from 'react-dates';
-import ContinueButton from '../CommonComponents/ContinueButton';
+import ContinueButton from '../common_components/ContinueButton';
 
 class Admin extends React.Component {
 

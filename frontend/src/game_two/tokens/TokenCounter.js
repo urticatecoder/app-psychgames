@@ -1,6 +1,6 @@
 import { withStyles } from '@material-ui/core';
 import React from 'react';
-import Token from '../Tokens/money-bag.png'
+import Token from './money-bag.png'
 
 const IMAGE_HEIGHT = '45vh'
 const IMAGE_WIDTH = '45vh'

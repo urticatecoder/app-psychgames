@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSpring, animated } from 'react-spring';
 import {withStyles} from '@material-ui/core';
-import getBackgroundColor from '../../Icons/Components/getResourceBackgroundColor';
-import getMarginLeft from '../../Icons/Components/getResourceMarginLeft';
+import getBackgroundColor from '../../icons/components/getResourceBackgroundColor';
+import getMarginLeft from '../../icons/components/getResourceMarginLeft';
 
 const styles = ({
     outerDiv: {

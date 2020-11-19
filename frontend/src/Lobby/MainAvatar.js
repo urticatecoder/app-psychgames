@@ -2,9 +2,9 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
-import '../CommonStylings/FullScreenDiv.css';
-import ContinueButton from '../CommonComponents/ContinueButton';
-import Flame from '../Icons/Images/Shapes/flame.png';
+import '../common_stylings/FullScreenDiv.css'
+import ContinueButton from '../common_components/ContinueButton';
+import Flame from '../icons/images/Shapes/flame.png';
 
 const PLAYER_DESCRIPTION = "You have been assigned the following player:";
 const PLAYER_VARIANT = 'h2';
