@@ -13,6 +13,12 @@ const TEST_SUBSTRING_START_INDEX = 0;
 const TEST_SUBSTRING_END_INDEX = 5;
 const TEST_PREFIX = "test:";
 
+const PRIMARY_COLOR = "primary";
+
+const LOGIN_CODE_ROUTE = "/login-code";
+const PROLIFIC_ROUTE = "/prolific";
+const LOBBY_ROUTE = "/lobby";
+
 const styles = {
   loginButton: {
     marginTop: "60px",
@@ -21,6 +27,14 @@ const styles = {
   },
 };
 
+/**
+ * Component used to allow users to login to the site using the code given to them by Prolific.
+ * Communicates with the backend by sending the login code and moving to the lobby if it is approved, or marking it as invalid if it is rejected.
+ * Contains a  "back door" to the prolific page for testing, where entering a code beginning with "test:" will go straight to the closing screen of the site.
+ * @param {} props tells the button what the login code is and gives a method to set the code as invalid, if need be.
+ * 
+ * @author Eric Doppelt
+ */
 function LoginButton(props) {
   const { classes } = props;
 
@@ -31,7 +45,7 @@ function LoginButton(props) {
         id={BUTTON_ID}
         variant={Variants.CONTAINED}
         disabled={props.code === EMPTY_STRING}
-        color="primary"
+        color={PRIMARY_COLOR}
         value={props.loginCode}
         onClick={() => handleLogin(props)}
       >
@@ -49,24 +63,24 @@ function handleLogin(props) {
   let loginCodePostfix = props.code.substring(TEST_SUBSTRING_END_INDEX);
   if (testPrefix === TEST_PREFIX) {
     props.setLoginCode(loginCodePostfix);
-    axios.get("/login-code", {
+    axios.get(LOGIN_CODE_ROUTE, {
       params: {
         loginCode: props.code,
       },
     });
-    props.history.push("/prolific");
+    props.history.push(PROLIFIC_ROUTE);
     return;
   }
 
   axios
-    .get("/login-code", {
+    .get(LOGIN_CODE_ROUTE, {
       params: {
         loginCode: props.code,
       },
     })
     .then(function (res) {
       let isValid = res.data.isValid;
-      if (isValid) props.history.push("/lobby");
+      if (isValid) props.history.push(LOBBY_ROUTE);
       else props.setInvalidCode(INVALID_CODE);
     });
 }
