@@ -1,8 +1,13 @@
+/**
+ * @author Xi Pu
+ * React component for the admin page.
+ * It contains a date range picker and two buttons to download game 1 and game 2 separately.
+ */
+
 import React from 'react';
 import '../common_stylings/FullScreenDiv.css'
 import axios from 'axios';
 import { CSVLink } from "react-csv";
-
 import moment from 'moment';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
