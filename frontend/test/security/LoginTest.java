@@ -8,9 +8,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 
-/*
+/**
     Tests for various valid and invalid combinations of login codes trying to access the Start Timer in the UI.
-    Author: Eric Doppelt
+    @author: Eric Doppelt
  */
 
 public class LoginTest {

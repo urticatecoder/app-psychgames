@@ -7,9 +7,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-/*
+/**
     Tests for various valid and invalid combinations of login codes trying to access the Prolific Code in the UI
-    Author: Eric Doppelt
+    @author: Eric Doppelt
  */
 
 public class ProlificCodeTest {

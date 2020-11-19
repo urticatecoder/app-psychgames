@@ -7,9 +7,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-/*
+/**
     Tests for the Summary Text in the UI shown after Game One
-    Author: Eric Doppelt
+    @author: Eric Doppelt
  */
 public class SummaryTextTest {
 
