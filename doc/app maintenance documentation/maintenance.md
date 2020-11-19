@@ -23,3 +23,7 @@ In addition, our package.json lists all of the versions of any library used in o
 Currently, the only data that is used or collected is in mongoDB. In order to access this information that is created throughout each research study with the correct results information, please contact Nick. 
 
 Over the winter break, Nick will be creating a mechanism that will store the accepted prolific IDs in mongoDB. We envision Mel will be given access in order to add to the Collection with prolific IDs as more users will be using the application.
+
+The tutorials placed into our app for Game 1 and Game 2 are readily accessible in order to change them. Currently, our client is updating the video for winter break, and it will be very easy to add in the frontend as long as it is the same file name as the current video.
+
+In terms of data of the game, downloading data is done on the site UI. This will need to be updated to ensure only the correct parties can access it.
