@@ -1,4 +1,4 @@
-package user_interface.Summary;
+package user_interface.summary;
 
 import org.junit.Assert;
 import org.junit.Before;

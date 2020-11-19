@@ -1,4 +1,4 @@
-package user_interface.Lobby;
+package user_interface.lobby;
 
 import org.junit.Assert;
 import org.junit.Before;
