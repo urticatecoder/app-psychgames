@@ -3,7 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
 import "../util/common_stylings/FullScreenDiv.css";
 import ContinueButton from "../util/common_components/ContinueButton";
-import Flame from "../icons/images/Shapes/flame.png";
+import Flame from "../icons/images/shapes/flame.png";
 import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 
 const PLAYER_DESCRIPTION = "You have been assigned the following player:";

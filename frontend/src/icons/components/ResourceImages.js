@@ -1,8 +1,8 @@
 import React from 'react';
 
-import Keep from '../images/Resources/keep.png'
-import Invest from '../images/Resources/invest.png'
-import Compete from '../images/Resources/compete.png'
+import Keep from '../images/resources/keep.png'
+import Invest from '../images/resources/invest.png'
+import Compete from '../images/resources/compete.png'
 import { ResourceNames } from '../../util/common_constants/game_two/GameTwoBundler';
 
 const IMAGE_HEIGHT = '70vh'

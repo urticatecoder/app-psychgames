@@ -5,7 +5,7 @@ import VerticalPlayerGroup from "./components/VerticalPlayerGroup";
 import ResourceButton from "./components/ResourceButton";
 import { Typography, withStyles } from "@material-ui/core";
 import GameTimer from "../util/common_components/GameTimer";
-import ConfirmButton2 from "./components/ConfirmButtonTwo";
+import ConfirmButtonTwo from "./components/ConfirmButtonTwo";
 import socket from "../socketClient";
 import { withRouter } from "react-router-dom";
 import TokenCounter from "./tokens/TokenCounter";
@@ -13,7 +13,8 @@ import PayoutOdds from "./components/PayoutOdds";
 import "./results/DelayedBar";
 import DelayedBar from "./results/DelayedBar";
 import GroupBox from "../game_one/components/GroupBox";
-import { Variants } from "../util/common_constants/stylings/StylingsBundler";
+import { ResourceNames } from "../util/common_constants/game_two/GameTwoBundler";
+import { Variants } from '../util/common_constants/stylings/StylingsBundler';
 import getAlerts from './components/getAlerts';
 
 const GROUP_ONE = 1;
@@ -21,10 +22,6 @@ const GROUP_TWO = 2;
 
 const GROUP_ONE_TEXT = "One";
 const GROUP_TWO_TEXT = "Two";
-
-const KEEP = "keep";
-const INVEST = "invest";
-const COMPETE = "compete";
 
 const KEEP_INDEX = 0;
 const INVEST_INDEX = 1;
@@ -167,12 +164,7 @@ function GameTwo(props) {
   return (
     <div className={FULL_DIV}>
       {resourceView}
-      {getAlerts(
-        notEnoughTokens,
-        setNotEnoughTokens,
-        negativeTokens,
-        setNegativeTokens
-      )}
+      {getAlerts(notEnoughTokens, setNotEnoughTokens, negativeTokens, setNegativeTokens)}
     </div>
   );
 }
@@ -185,42 +177,14 @@ function getResourceResults(classes, groupOneResults, groupTwoResults) {
           {END_TURN_TEXT}
         </Typography>
       </div>
-      <DelayedBar
-        resource={KEEP}
-        group={GROUP_ONE}
-        delay={RESULTS_DELAY_KEEP}
-        tokens={groupOneResults[KEEP_INDEX]}
-      />
-      <DelayedBar
-        resource={INVEST}
-        group={GROUP_ONE}
-        delay={RESULTS_DELAY_INVEST}
-        tokens={groupOneResults[INVEST_INDEX]}
-      />
-      <DelayedBar
-        resource={COMPETE}
-        group={GROUP_ONE}
-        delay={RESULTS_DELAY_COMPETE}
-        tokens={groupOneResults[COMPETE_INDEX]}
-      />
-      <DelayedBar
-        resource={KEEP}
-        group={GROUP_TWO}
-        delay={RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_KEEP}
-        tokens={groupTwoResults[KEEP_INDEX]}
-      />
-      <DelayedBar
-        resource={INVEST}
-        group={GROUP_TWO}
-        delay={RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_INVEST}
-        tokens={groupTwoResults[INVEST_INDEX]}
-      />
-      <DelayedBar
-        resource={COMPETE}
-        group={GROUP_TWO}
-        delay={RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_COMPETE}
-        tokens={groupTwoResults[COMPETE_INDEX]}
-      />
+      {getDelayedBar(ResourceNames.KEEP, GROUP_ONE, RESULTS_DELAY_KEEP, groupOneResults[KEEP_INDEX])}
+      {getDelayedBar(ResourceNames.INVEST, GROUP_ONE, RESULTS_DELAY_INVEST, groupOneResults[INVEST_INDEX])}
+      {getDelayedBar(ResourceNames.COMPETE, GROUP_ONE, RESULTS_DELAY_COMPETE, groupOneResults[COMPETE_INDEX])}
+
+      {getDelayedBar(ResourceNames.KEEP, GROUP_TWO, RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_KEEP, groupTwoResults[KEEP_INDEX])}
+      {getDelayedBar(ResourceNames.INVEST, GROUP_TWO, RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_INVEST, groupTwoResults[INVEST_INDEX])}
+      {getDelayedBar(ResourceNames.COMPETE, GROUP_TWO, RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_COMPETE, groupTwoResults[COMPETE_INDEX])}
+
       <div className={classes.groupOne}>
         <GroupBox groupNumber={GROUP_ONE_TEXT} width={GROUP_BOX_WIDTH} />
       </div>
@@ -231,26 +195,19 @@ function getResourceResults(classes, groupOneResults, groupTwoResults) {
   );
 }
 
-function getResourceChoices(
-  props,
-  setFromResources,
-  setToResources,
-  fromResources,
-  toResources,
-  totalTokens,
-  setNotEnoughTokens,
-  setNegativeTokens,
-  tokensSpent,
-  setTokensSpent,
-  setCurrentResources,
-  currentResources,
-  payoffInvest,
-  payoffCompete,
-  resetTimer,
-  setResetTimer,
-  setSubmitDecisions,
-  submitDecisions
-) {
+function getDelayedBar(resource, group, delay, tokens) {
+  return(
+    <DelayedBar
+        resource={resource}
+        group={group}
+        delay={delay}
+        tokens={tokens}
+      />
+  )
+}
+
+function getResourceChoices(props, setFromResources, setToResources, fromResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, 
+  tokensSpent, setTokensSpent, setCurrentResources, currentResources, payoffInvest, payoffCompete, resetTimer, setResetTimer, setSubmitDecisions, submitDecisions) {
   return (
     <div>
       <TokenCounter tokens={totalTokens - tokensSpent} />
@@ -260,19 +217,11 @@ function getResourceChoices(
         resetTimer={resetTimer}
         setResetTimer={setResetTimer}
       />
-      <ConfirmButton2
+      <ConfirmButtonTwo
         submit={submitDecisions}
         clearSubmission={() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)}
         resources={currentResources}
-        clearSelected={() =>
-          clearResources(
-            setFromResources,
-            setToResources,
-            toResources,
-            setTokensSpent,
-            totalTokens
-          )
-        }
+        clearSelected={() =>clearResources(setFromResources, setToResources, toResources, setTokensSpent)}
         loginCode={props.loginCode}
       />
       <VerticalPlayerGroup
@@ -285,62 +234,21 @@ function getResourceChoices(
         allLoginCodes={props.allLoginCodes}
         players={props.winners}
       />
-      {getResourceButton(
-        KEEP,
-        KEEP_INDEX,
-        setFromResources,
-        setToResources,
-        toResources,
-        totalTokens,
-        setNotEnoughTokens,
-        setNegativeTokens,
-        tokensSpent,
-        setTokensSpent,
-        setCurrentResources,
-        currentResources
-      )}
-      {getResourceButton(
-        INVEST,
-        INVEST_INDEX,
-        setFromResources,
-        setToResources,
-        toResources,
-        totalTokens,
-        setNotEnoughTokens,
-        setNegativeTokens,
-        tokensSpent,
-        setTokensSpent,
-        setCurrentResources,
-        currentResources
-      )}
-      {getResourceButton(
-        COMPETE,
-        COMPETE_INDEX,
-        setFromResources,
-        setToResources,
-        toResources,
-        totalTokens,
-        setNotEnoughTokens,
-        setNegativeTokens,
-        tokensSpent,
-        setTokensSpent,
-        setCurrentResources,
-        currentResources
-      )}
-      {getResourceBar(KEEP, KEEP_INDEX, fromResources, toResources)}
-      {getResourceBar(INVEST, INVEST_INDEX, fromResources, toResources)}
-      {getResourceBar(COMPETE, COMPETE_INDEX, fromResources, toResources)}
+      {getResourceButton(ResourceNames.KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
+        setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}
+      {getResourceButton(ResourceNames.INVEST, INVEST_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
+        setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}
+      {getResourceButton(ResourceNames.COMPETE, COMPETE_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
+        setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}
+
+      {getResourceBar(ResourceNames.KEEP, KEEP_INDEX, fromResources, toResources)}
+      {getResourceBar(ResourceNames.INVEST, INVEST_INDEX, fromResources, toResources)}
+      {getResourceBar(ResourceNames.COMPETE, COMPETE_INDEX, fromResources, toResources)}
     </div>
   );
 }
 
-function clearResources(
-  setFromResources,
-  setToResources,
-  toResources,
-  setTokensSpent,
-  totalTokens
-) {
+function clearResources(setFromResources, setToResources, toResources, setTokensSpent) {
   setFromResources(toResources);
   setToResources(INITIAL_RESOURCE_DISTRIBUTION);
   setTokensSpent(NO_TOKENS_SPENT);
@@ -351,54 +259,18 @@ function scaleHeight(resourceTokens, totalTokens) {
   return resourceProportion * VERTICAL_SCALAR;
 }
 
-function getResourceButton(
-  resource,
-  resourceIndex,
-  setFromResources,
-  setToResources,
-  toResources,
-  totalTokens,
-  setNotEnoughTokens,
-  setNegativeTokens,
-  tokensSpent,
-  setTokensSpent,
-  setCurrentResources,
-  currentResources
-) {
+function getResourceButton(resource, resourceIndex, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
+  setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources) {
   return (
     <ResourceButton
       resource={resource}
       addToken={() =>
-        updateResource(
-          resourceIndex,
-          setFromResources,
-          setToResources,
-          toResources,
-          totalTokens,
-          INCREASING,
-          setNotEnoughTokens,
-          setNegativeTokens,
-          tokensSpent,
-          setTokensSpent,
-          setCurrentResources,
-          currentResources
-        )
+        updateResource(resourceIndex, setFromResources, setToResources, toResources, totalTokens, INCREASING, setNotEnoughTokens,
+          setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)
       }
       removeToken={() =>
-        updateResource(
-          resourceIndex,
-          setFromResources,
-          setToResources,
-          toResources,
-          totalTokens,
-          DECREASING,
-          setNotEnoughTokens,
-          setNegativeTokens,
-          tokensSpent,
-          setTokensSpent,
-          setCurrentResources,
-          currentResources
-        )
+        updateResource(resourceIndex, setFromResources, setToResources, toResources, totalTokens, DECREASING, setNotEnoughTokens,
+          setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)
       }
     />
   );
@@ -414,20 +286,8 @@ function getResourceBar(resource, resourceIndex, fromResources, toResources) {
   );
 }
 
-function updateResource(
-  resourceIndex,
-  setFromResources,
-  setToResources,
-  originalResources,
-  totalTokens,
-  isIncreasing,
-  setNotEnoughTokens,
-  setNegativeTokens,
-  tokensSpent,
-  setTokensSpent,
-  setCurrentResources,
-  currentResources
-) {
+function updateResource(resourceIndex, setFromResources, setToResources, originalResources, totalTokens, isIncreasing, setNotEnoughTokens,
+  setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources) {
   let addTokenOffset;
 
   if (isIncreasing) {
