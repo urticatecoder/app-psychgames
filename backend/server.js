@@ -60,8 +60,6 @@ io.on('connection', socket => {
             let resultForAllPlayers = getResultsByProlificId(allIDs, room);
             if (isGameOneDone(room)) {
                 let group = getWinnersAndLosers(room);
-                console.log("Winners: ", group[0]);
-                console.log("Losers: ", group[1]);
                 room.setGameOneResults(group);
                 io.in(room.name).emit('end game 1', group[0], group[1], allDoubleBonus.length, allTripleBonus.length);
                 room.advanceToGameTwo();

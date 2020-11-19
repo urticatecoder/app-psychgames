@@ -1,5 +1,5 @@
 /**
- * @author Xi Pu
+ * @author Xi Pu, Nick DeCapite
  * This module contains helper methods to save into or read from a MongoDB database by using Mongoose.
  */
 

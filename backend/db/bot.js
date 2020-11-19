@@ -1,3 +1,14 @@
+/**
+ * @author Nick DeCapite
+ * determines who the bot selects every single round based on random choice
+ * will have a model for selection implemented over winter break
+ */
+
+/**
+ * @param selfID {string} of bot
+ * @param prolificIDs {string array} of players in game
+ * @returns botChoices {string list}
+ */
 function determineBotChoice(selfID, prolificIDs) {
     let numberOfChoices = 2;
     let botChoices = [];

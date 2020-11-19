@@ -1,5 +1,5 @@
 /**
- * @author Xi Pu
+ * @author Xi Pu, Nick DeCapite
  * A schema for storing data related to a specific choice made by a player in game 1.
  * The schema is defined below.
  * See comments for a description of what each field represents.
