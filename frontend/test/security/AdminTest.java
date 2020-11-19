@@ -1,4 +1,4 @@
-package Security;
+package security;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,6 +11,7 @@ public class AdminTest {
 
     private WebDriver driver;
     private static final String CHROME_DRIVER = "webdriver.chrome.driver";
+
     private static final String CHROME_DRIVER_PATH = "/Users/ericdoppelt/CS408/app_psychgames/frontend/node_modules/chromedriver/lib/chromedriver/chromedriver";
     private static final String LOCAL_ADMIN_LOGIN_URL = "http://localhost:3000/adminLogin";
     private static final String LOCAL_ADMIN_URL = "http://localhost:3000/admin";
@@ -50,42 +51,45 @@ public class AdminTest {
         Assert.assertEquals(LOCAL_ADMIN_LOGIN_URL, driver.getCurrentUrl());
     }
 
+    // SAD PATH -- user tries to click the login button without entering any login information
     @Test
     public void testAdminClickBeforeInput() {
         driver.findElement(By.id(BUTTON_ID)).click();
         Assert.assertEquals(LOCAL_ADMIN_LOGIN_URL, driver.getCurrentUrl());
     }
 
-    // SAD PATH -- invalid login code entered
+    // SAD PATH -- invalid username, valid password entered
     @Test
     public void testAdminInvalidUsername() {
         testCode(LOCAL_ADMIN_LOGIN_URL, INVALID_USERNAME, VALID_PASSWORD);
     }
 
-    // SAD PATH -- invalid login code entered
+    // SAD PATH -- valid username, invalid password entered
     @Test
     public void testAdminInvalidPassword() {
         testCode(LOCAL_ADMIN_LOGIN_URL, VALID_USERNAME, INVALID_PASSWORD);
     }
 
-    // SAD PATH -- no code entered
+    // SAD PATH -- invalid username and password entered
     @Test
     public void testAdminInvalidBoth() {
         testCode(LOCAL_ADMIN_LOGIN_URL, INVALID_USERNAME, INVALID_PASSWORD);
     }
+
+    // SAD PATH -- empty username and valid password entered
 
     @Test
     public void testAdminEmptyUsername() {
         testCode(LOCAL_ADMIN_LOGIN_URL, EMPTY_USERNAME, VALID_PASSWORD);
     }
 
-    // SAD PATH -- invalid login code entered
+    // SAD PATH -- valid username and empty password entered
     @Test
     public void testAdminEmptyPassword() {
         testCode(LOCAL_ADMIN_LOGIN_URL, VALID_USERNAME, EMPTY_PASSWORD);
     }
 
-    // SAD PATH -- no code entered
+    // SAD PATH -- empty username and empty password entered
     @Test
     public void testAdminEmptyBoth() {
         testCode(LOCAL_ADMIN_LOGIN_URL, EMPTY_USERNAME, EMPTY_PASSWORD);

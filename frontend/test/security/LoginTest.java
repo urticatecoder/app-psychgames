@@ -1,4 +1,4 @@
-package Security;
+package security;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -7,6 +7,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+
+/*
+    Tests for various valid and invalid combinations of login codes trying to access the Start Timer in the UI.
+    Author: Eric Doppelt
+ */
 
 public class LoginTest {
 
@@ -56,18 +61,19 @@ public class LoginTest {
         testCode(LOCAL_LOGIN_URL, INVALID_LOGIN_CODE);
     }
 
-    // SAD PATH -- invalid login code entered
+    // SAD PATH -- empty login code entered
     @Test
     public void testEmptyLogin() {
         testCode(LOCAL_LOGIN_URL, EMPTY_LOGIN_CODE);
     }
 
-    // SAD PATH -- no code entered
+    // HAPPY PATH -- check that the initial URL is correct
     @Test
     public void testInitialURL() {
         Assert.assertEquals(LOCAL_LOGIN_URL, driver.getCurrentUrl());
     }
 
+    // SAD PATH -- test that a login code can only be used once
     @Test
     public void testDuplicatedCode() {
         testCode(LOCAL_HOST_LOBBY, duplicatedCode);
