@@ -3,8 +3,15 @@ import PlayerImages from './PlayerImages';
 import { Typography } from '@material-ui/core';
 
 const LABEL = 'label'
-function PlayerProfile(props) {
 
+/**
+ * Component used to visualize avatars with a label indicating the avatar's name beneath it.
+ * This is used in the PlayerGroup, VerticalPlayerGroup, and MainAvatar files.
+ * @param {*} props tells the player to visualize based on its index.
+ * 
+ * @author Eric Doppelt
+ */
+function PlayerProfile(props) {
     return(
         <div>
         {PlayerImages[props.player]}

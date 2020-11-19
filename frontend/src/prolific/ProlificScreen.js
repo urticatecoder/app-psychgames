@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import "../common/common_stylings/FullScreenDiv.css";
+import "../util/common_stylings/FullScreenDiv.css";
 import axios from "axios";
-import { Variants } from "../common/common_constants/stylings/StylingsBundler";
+import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 
 const FULL_DIV = "fullDiv";
 
@@ -14,6 +14,8 @@ const THANK_YOU_MESSAGE = "Thank you for participating!";
 const DEFAULT_AMOUNT = "10.50";
 
 const PROLIFIC_CODE_ID = "prolificCode";
+
+const VERIFICATION_CODE_ROUTE = "/verification-code";
 
 const styles = {
   prolificText: {
@@ -30,6 +32,7 @@ const styles = {
 /**
  * Screen shown at the end of the game for users, telling them their total compensation and providing a code used to get paid on the Prolific site.
  * This is the last screen in the UI.
+ * @param {*} props is used to provide to tell the component the player's login code.
  *
  * @author Eric Doppelt
  */
@@ -40,12 +43,11 @@ function ProlificScreen(props) {
 
   useEffect(() => {
     axios
-      .get("/verification-code", {
+      .get(VERIFICATION_CODE_ROUTE, {
         params: {
           loginCode: props.code,
         },
-      })
-      .then((res) => {
+      }).then((res) => {
         setProlificCode(res.data.code);
       });
   }, [props.code, prolificCode]);
@@ -54,7 +56,7 @@ function ProlificScreen(props) {
     <div className={FULL_DIV}>
       <Typography
         className={classes.thankYouText}
-        variant={Variants.SMALL_TEXT}
+        variant={Variants.LARGEST_TEXT}
       >
         {THANK_YOU_MESSAGE}
       </Typography>

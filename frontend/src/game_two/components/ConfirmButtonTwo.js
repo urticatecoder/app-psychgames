@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, withStyles } from "@material-ui/core";
 import socket from "../../socketClient";
-import { Variants } from "../../common/common_constants/stylings/StylingsBundler";
+import { Variants } from "../../util/common_constants/stylings/StylingsBundler";
 
 const CONFIRM_CHOICES_TEXT = "Confirm Decision!";
 
@@ -9,7 +9,9 @@ const KEEP_INDEX = 0;
 const INVEST_INDEX = 1;
 const COMPETE_INDEX = 2;
 
-//FIXME: duplicated with game one
+const PRIMARY_COLOR = "primary";
+const SEND_DECISION_WEBSOCKET = "confirm choice for game 2";
+
 const styles = {
   confirmButton: {
     position: "absolute",
@@ -24,7 +26,14 @@ const styles = {
   },
 };
 
-function ConfirmButton2(props) {
+/**
+ * Component that allows the submission of choices in Game Two.
+ * Handles the web socket call and sends investements passed in as props from Game Two.
+ * @param {*} props tell the choices to send in the web socket call.
+ *
+ * @author Eric Doppelt
+ */
+function ConfirmButtonTwo(props) {
   const { classes } = props;
 
   if (props.submit) {
@@ -36,7 +45,7 @@ function ConfirmButton2(props) {
     <Button
       className={classes.confirmButton}
       variant={Variants.CONTAINED}
-      color="primary"
+      color={PRIMARY_COLOR}
       onClick={() =>
         sendDecisions(props.resources, props.clearSelected, props.loginCode)
       }
@@ -47,14 +56,8 @@ function ConfirmButton2(props) {
 }
 
 function sendDecisions(resources, clearSelected, loginCode) {
-  socket.emit(
-    "confirm choice for game 2",
-    loginCode,
-    resources[COMPETE_INDEX],
-    resources[KEEP_INDEX],
-    resources[INVEST_INDEX]
-  );
+  socket.emit(SEND_DECISION_WEBSOCKET, loginCode, resources[COMPETE_INDEX], resources[KEEP_INDEX], resources[INVEST_INDEX]);
   clearSelected();
 }
 
-export default withStyles(styles)(ConfirmButton2);
+export default withStyles(styles)(ConfirmButtonTwo);

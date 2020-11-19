@@ -1,10 +1,10 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
-import "../common/common_stylings/FullScreenDiv.css";
-import ContinueButton from "../common/common_components/ContinueButton";
+import "../util/common_stylings/FullScreenDiv.css";
+import ContinueButton from "../util/common_components/ContinueButton";
 import Flame from "../icons/images/Shapes/flame.png";
-import { Variants } from "../common/common_constants/stylings/StylingsBundler";
+import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 
 const PLAYER_DESCRIPTION = "You have been assigned the following player:";
 const FULL_DIV = "fullDiv";
@@ -13,6 +13,8 @@ const IMAGE_WIDTH = 250;
 
 const ALT_TEXT = "Flame Avatar";
 const ALWAYS_ENABLED = false;
+
+const GAME_ONE_ROUTE = "game-one";
 
 const styles = {
   playerDescription: {
@@ -26,6 +28,12 @@ const styles = {
   },
 };
 
+/**
+ * Screen used to show the player that they are the flame avatar.
+ * @param {*} props is used to pass into Material UI's styling function.
+ *
+ * @author Eric Doppelt
+ */
 function MainAvatar(props) {
   const { classes } = props;
 
@@ -48,7 +56,7 @@ function MainAvatar(props) {
       <div className={classes.continueButton}>
         <ContinueButton
           className={classes.continueButton}
-          route={"game-one"}
+          route={GAME_ONE_ROUTE}
           disabled={ALWAYS_ENABLED}
         />
       </div>

@@ -1,10 +1,10 @@
 import React from "react";
 import PlayerGroup from "../../icons/components/PlayerGroup";
 import { Typography, withStyles } from "@material-ui/core";
-import "../../common/common_stylings/FullScreenDiv.css";
+import "../../util/common_stylings/FullScreenDiv.css";
 import DelayedConfetti from "./DelayedConfetti";
-import ContinueButton from "../../common/common_components/ContinueButton";
-import { Variants } from "../../common/common_constants/stylings/StylingsBundler";
+import ContinueButton from "../../util/common_components/ContinueButton";
+import { Variants } from "../../util/common_constants/stylings/StylingsBundler";
 
 const FULL_DIV = "fullDiv";
 const WINNING_HEADER = "Winning Players";
@@ -13,6 +13,7 @@ const WINNER_ID = "winnerText";
 const LOSER_ID = "loserText";
 
 const ALWAYS_ENABLED = false;
+const GAME_TWO_TUTORIAL_ROUTE = "game-two-tutorial"
 
 const styles = {
   winners: {
@@ -30,7 +31,13 @@ const styles = {
   },
 };
 
-function GroupScreen(props) {
+/**
+ * Component used to visualize the summary screen shown after Game One.
+ * @param {*} props tells which avatars won and lost.
+ * 
+ * @author Eric Doppelt
+ */
+function Summary(props) {
   const { classes } = props;
 
   let winnerIndices = getAvatarIndices(props.winners, props.allLoginCodes);
@@ -58,20 +65,14 @@ function GroupScreen(props) {
       <br />
       <ContinueButton
         className={classes.continueButton}
-        route="game-two-tutorial"
+        route={GAME_TWO_TUTORIAL_ROUTE}
         disabled={ALWAYS_ENABLED}
       />
     </div>
   );
 }
 
-function getGroup(
-  divClassName,
-  groupClassName,
-  headerText,
-  playersShown,
-  textID
-) {
+function getGroup(divClassName, groupClassName, headerText, playersShown, textID) {
   return (
     <div className={divClassName}>
       <Typography id={textID} variant={Variants.SMALL_TEXT}>
@@ -84,7 +85,6 @@ function getGroup(
   );
 }
 
-// FIXME: duplicated code
 function getAvatarIndices(loginCodes, allLoginCodes) {
   let indices = [];
 
@@ -99,4 +99,4 @@ function getAvatarIndices(loginCodes, allLoginCodes) {
   return indices;
 }
 
-export default withStyles(styles)(GroupScreen);
+export default withStyles(styles)(Summary);

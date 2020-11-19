@@ -1,10 +1,12 @@
 import React from "react";
 import { Button, withStyles } from "@material-ui/core";
 import socket from "../../socketClient";
-import { Variants } from "../../common/common_constants/stylings/StylingsBundler";
+import { Variants } from "../../util/common_constants/stylings/StylingsBundler";
 
 const CONFIRM_CHOICES_TEXT = "Confirm Decision!";
 const NUM_PLAYERS = 6;
+const PRIMARY_COLOR = "primary";
+const SEND_DECISIONS_WEBSOCKET = "confirm choice for game 1";
 
 const styles = {
   confirmButton: {
@@ -20,6 +22,13 @@ const styles = {
   },
 };
 
+/**
+ * Component that allows the submission of choices in Game One.
+ * Handles the web socket call and sends choices passed in as props from Game One.
+ * @param {*} props tell the choices to send in the web socket call.
+ * 
+ * @author Eric Doppelt
+ */
 function ConfirmButton(props) {
   const { classes } = props;
 
@@ -37,7 +46,7 @@ function ConfirmButton(props) {
     <Button
       className={classes.confirmButton}
       variant={Variants.CONTAINED}
-      color="primary"
+      color={PRIMARY_COLOR}
       onClick={() =>
         sendDecisions(
           props.selected,
@@ -53,15 +62,10 @@ function ConfirmButton(props) {
 }
 
 function sendDecisions(selected, clearSelected, loginCode, allLoginCodes) {
-  socket.emit(
-    "confirm choice for game 1",
-    loginCode,
-    getSelectedIDs(selected, allLoginCodes)
-  );
+  socket.emit(SEND_DECISIONS_WEBSOCKET, loginCode, getSelectedIDs(selected, allLoginCodes));
   clearSelected();
 }
 
-// MAKE THIS PUBLIC -- EXISTS IN COLUMN CONTROLLER
 function getSelectedIDs(selected, allIDs) {
   let selectedIDs = [];
   for (let i = 0; i < NUM_PLAYERS; i++) {

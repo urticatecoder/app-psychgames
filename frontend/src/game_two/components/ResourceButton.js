@@ -1,8 +1,8 @@
 import React from "react";
 import ResourceImages from "../../icons/components/ResourceImages";
 import { withStyles } from "@material-ui/core/styles";
-import getMarginLeft from "../../common/common_functions/getResourceMarginLeft";
-import getBackgroundColor from "../../common/common_functions/getResourceBackgroundColor";
+import getMarginLeft from "../../util/common_functions/getResourceMarginLeft";
+import getBackgroundColor from "../../util/common_functions/getResourceBackgroundColor";
 
 const LABEL = "Label";
 const REMOVE_TOKEN_LABEL = "-1 Token";
@@ -37,6 +37,13 @@ const styles = {
   },
 };
 
+/**
+ * Component used to visualize a button for a given resource in the UI during Game Two.
+ * Functionality includes visualizing the resource's icon and incrementing/decrementing tokens when the icon or the remove tokens button is clicked.
+ * @param {*} props tells which resource the button is for, in addition to providing methods to add and remove a token to the given resource.
+ * 
+ * @author Eric Doppelt
+ */
 function ResourceButton(props) {
   const { classes } = props;
   let background = getBackgroundColor(props.resource);

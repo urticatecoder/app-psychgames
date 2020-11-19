@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { withStyles } from "@material-ui/core/styles";
-import "../common/common_stylings/FullScreenDiv.css";
-import ContinueButton from "../common/common_components/ContinueButton";
+import "../util/common_stylings/FullScreenDiv.css";
+import ContinueButton from "../util/common_components/ContinueButton";
 import { Typography, Box } from "@material-ui/core";
-import { Variants } from "../common/common_constants/stylings/StylingsBundler";
+import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 
 const FULL_DIV = "fullDiv";
 const PLAY_VIDEO = true;
 const PAUSE_VIDEO = false;
 
+const ITALIC_FONT = "italic";
 const ENABLE_BUTTON = true;
+const FULL_SCREEN = "100%";
+
 // const DISABLE_BUTTON = false;
 
 const styles = {
@@ -38,6 +41,12 @@ const styles = {
   },
 };
 
+/**
+ * Screen used before Game One and Game Two which provides the tutorial video for each Game and enables the button once it ends.
+ * @param {*} props is used mainly to provide the relative file path to the tutorial video and the route to link to after it plays.
+ * 
+ * @author Eric Doppelt
+ */
 function TutorialScreen(props) {
   const [playVideo, setPlayVideo] = useState(PAUSE_VIDEO);
   const [enableButton, setEnableButton] = useState(ENABLE_BUTTON);
@@ -57,15 +66,14 @@ function TutorialScreen(props) {
     <div className={FULL_DIV}>
       <div className={classes.headerDiv}>
         <Typography variant={Variants.NORMAL_TEXT}>
-          <Box fontStyle="italic">{props.text}</Box>
+          <Box fontStyle={ITALIC_FONT}>{props.text}</Box>
         </Typography>
       </div>
       <div className={classes.videoOuterDiv}>
         <ReactPlayer
-          className="react-player fixed-bottom"
           url={props.URL}
-          width="100%"
-          height="100%"
+          width={FULL_SCREEN}
+          height={FULL_SCREEN}
           playing={playVideo}
         />
       </div>

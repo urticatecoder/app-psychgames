@@ -1,11 +1,15 @@
 import React from "react";
 import { Typography, withStyles } from "@material-ui/core";
-import { Variants } from "../../common/common_constants/stylings/StylingsBundler";
+import { Variants } from "../../util/common_constants/stylings/StylingsBundler";
 
 const GROUP = "Group ";
 const GROUP_ONE = "One";
+
 const GROUP_ONE_COLOR = "#FF9133";
 const GROUP_TWO_COLOR = "#9933FF";
+
+const GROUP_ONE_TOP = "0vh";
+const GROUP_TWO_TOP = "72vh";
 
 const styles = {
   groupBox: {
@@ -20,19 +24,25 @@ const styles = {
     top: "15%",
   },
 };
+
+/**
+ * Component used to display the orange and purple rectangles indiciating Group 1 and Group 2.
+ * @param {*} props tell the Box which group it respresents.
+ * 
+ * @author Eric Doppelt
+ */
 function GroupBox(props) {
   const { classes } = props;
-  let groupColor =
-    props.groupNumber === GROUP_ONE ? GROUP_ONE_COLOR : GROUP_TWO_COLOR;
+  let groupColor = (props.groupNumber === GROUP_ONE) ? GROUP_ONE_COLOR : GROUP_TWO_COLOR;
+  let marginTop = (props.groupNumber === GROUP_ONE) ? GROUP_ONE_TOP : GROUP_TWO_TOP;
   return (
     <div
-      style={{ backgroundColor: groupColor, width: props.width }}
       className={classes.groupBox}
+      style={{ backgroundColor: groupColor, width: props.width, top: marginTop}}
     >
       <div className={classes.innerDiv}>
         <Typography className={classes.innerDiv} variant={Variants.SMALL_TEXT}>
-          {" "}
-          {GROUP} {props.groupNumber}{" "}
+          {GROUP} {props.groupNumber}
         </Typography>
       </div>
     </div>

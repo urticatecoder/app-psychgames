@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Typography, TextField, Box } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import "../common/common_stylings/FullScreenDiv.css";
+import "../util/common_stylings/FullScreenDiv.css";
 import LoginButton from "./LoginButton";
-import { Variants } from "../common/common_constants/stylings/StylingsBundler";
+import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 
 const WELCOME_MESSAGE = "Welcome to Rise to the Top!";
 const INSTRUCTIONS_MESSAGE = "Please enter your Prolific code.";
@@ -13,6 +13,7 @@ const FULL_DIV = "fullDiv";
 const TEXT_ID = "loginText";
 const TEXTFIELD_ID = "loginTextField";
 const NO_CODE = false;
+const ITALIC_FONT = "italic";
 
 const styles = {
   welcomeText: {
@@ -35,6 +36,12 @@ const styles = {
   },
 };
 
+/**
+ * Component used to visualize the entire login screen. The connection to the backend is given in LoginButton.
+ * @param {*} props tells the component the user's login code and provides a method to reset it.
+ * 
+ * @author Eric Doppelt
+ */
 function Login(props) {
   const { classes } = props;
   const [invalidCode, setInvalidCode] = useState(NO_CODE);
@@ -52,7 +59,7 @@ function Login(props) {
         className={classes.welcomeInstruction}
         variant={Variants.SMALL_TEXT}
       >
-        <Box fontStyle="italic">{INSTRUCTIONS_MESSAGE}</Box>
+        <Box fontStyle={ITALIC_FONT}>{INSTRUCTIONS_MESSAGE}</Box>
       </Typography>
       <TextField
         className={classes.loginField}
@@ -62,11 +69,10 @@ function Login(props) {
             input: classes.loginInput,
           },
         }}
-        value={props.loginCode}
         label={LOGIN_LABEL}
         error={invalidCode}
         onChange={(e) => props.setLoginCode(e.target.value)}
-      ></TextField>
+      />
       <LoginButton
         code={props.code}
         invalidCode={invalidCode}

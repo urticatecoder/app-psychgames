@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Typography, withStyles } from "@material-ui/core";
 import Timer from "react-compound-timer";
-import { Variants } from "../../common/common_constants/stylings/StylingsBundler";
+import { Variants } from "../../util/common_constants/stylings/StylingsBundler";
 
 const styles = {
   timerInstruction: {

@@ -1,8 +1,8 @@
 import React from "react";
 import { useSpring, animated } from "react-spring";
 import { withStyles } from "@material-ui/core";
-import getBackgroundColor from "../../common/common_functions/getResourceBackgroundColor";
-import getMarginLeft from "../../common/common_functions/getResourceMarginLeft";
+import getBackgroundColor from "../../util/common_functions/getResourceBackgroundColor";
+import getMarginLeft from "../../util/common_functions/getResourceMarginLeft";
 
 const styles = {
   outerDiv: {
@@ -18,6 +18,13 @@ const styles = {
   },
 };
 
+/**
+ * Component utilizing the Spring package to provide animations for the vertical bars used in Game Two.
+ * When a user removes or adds a token to a resource option, it triggers the animation in the Resource Bar.
+ * @param {*} props provide the starting and ending height fot the animaiton, in addition to the type of resource the component is representing (which affectst its color and positioning.
+ * 
+ * @author Eric Doppelt
+ */
 function ResourceBar(props) {
   const spring = useSpring({
     from: {

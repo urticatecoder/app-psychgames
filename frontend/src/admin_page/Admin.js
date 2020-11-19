@@ -5,14 +5,14 @@
  */
 
 import React from "react";
-import "../common/common_stylings/FullScreenDiv.css";
+import "../util/common_stylings/FullScreenDiv.css";
 import axios from "axios";
 import { CSVLink } from "react-csv";
 import moment from "moment";
 import "react-dates/initialize";
 import "react-dates/lib/css/_datepicker.css";
 import { DateRangePicker } from "react-dates";
-import ContinueButton from "../common/common_components/ContinueButton";
+import ContinueButton from "../util/common_components/ContinueButton";
 
 class Admin extends React.Component {
   constructor(props) {

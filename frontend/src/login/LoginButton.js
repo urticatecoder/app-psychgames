@@ -3,7 +3,7 @@ import { Button } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
-import { Variants } from "../common/common_constants/stylings/StylingsBundler";
+import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 
 const BUTTON_MESSAGE = "Enter Code";
 const BUTTON_ID = "loginButton";
@@ -32,6 +32,7 @@ function LoginButton(props) {
         variant={Variants.CONTAINED}
         disabled={props.code === EMPTY_STRING}
         color="primary"
+        value={props.loginCode}
         onClick={() => handleLogin(props)}
       >
         {BUTTON_MESSAGE}

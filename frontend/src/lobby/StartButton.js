@@ -2,10 +2,15 @@ import React from "react";
 import { Button } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import { Variants } from "../common/common_constants/stylings/StylingsBundler";
+import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 
 const BUTTON_MESSAGE = "Begin Experiment";
 const BUTTON_ID = "timerButton";
+
+const PRIMARY_COLOR = "primary";
+const SECONDARY_COLOR = "secondary";
+const GAME_ONE_TUTORIAL_ROUTE = "/game-one-tutorial";
+
 const styles = {
   startButton: {
     marginTop: "60px",
@@ -14,6 +19,12 @@ const styles = {
   },
 };
 
+/**
+ * Component used as the button that starts the research experiment. It is enabled once the timer in the lobby reaches zero.
+ * @param {*} props is used to tell the start button when it should enable itself to allow users into the game.
+ * 
+ * @author Eric Doppelt
+ */
 function StartButton(props) {
   const { classes } = props;
 
@@ -24,8 +35,8 @@ function StartButton(props) {
         className={classes.startButton}
         variant={Variants.CONTAINED}
         disabled={!props.startStatus}
-        color={props.startStatus ? "primary" : "secondary"}
-        onClick={() => props.history.push("/game-one-tutorial")}
+        color={props.startStatus ? PRIMARY_COLOR : SECONDARY_COLOR}
+        onClick={() => props.history.push(GAME_ONE_TUTORIAL_ROUTE)}
       >
         {BUTTON_MESSAGE}
       </Button>
