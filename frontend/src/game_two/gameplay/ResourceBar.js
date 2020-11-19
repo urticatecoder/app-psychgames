@@ -1,47 +1,47 @@
-import React from 'react';
-import { useSpring, animated } from 'react-spring';
-import {withStyles} from '@material-ui/core';
-import getBackgroundColor from '../../icons/components/getResourceBackgroundColor';
-import getMarginLeft from '../../icons/components/getResourceMarginLeft';
+import React from "react";
+import { useSpring, animated } from "react-spring";
+import { withStyles } from "@material-ui/core";
+import getBackgroundColor from "../../common/common_functions/getResourceBackgroundColor";
+import getMarginLeft from "../../common/common_functions/getResourceMarginLeft";
 
-const styles = ({
-    outerDiv: {
-        position: 'absolute',
-        bottom: '35vh',
+const styles = {
+  outerDiv: {
+    position: "absolute",
+    bottom: "35vh",
+  },
+  barFormatting: {
+    position: "relative",
+    borderRadius: 20,
+    width: "80px",
+    display: "inline-block",
+    marginLeft: ".75vw",
+  },
+};
 
+function ResourceBar(props) {
+  const spring = useSpring({
+    from: {
+      height: props.from + "vh",
     },
-    barFormatting: {
-        position: 'relative',
-        borderRadius: 20,
-        width: '80px',
-        display: 'inline-block',
-        marginLeft: '.75vw',
-    }
+    to: {
+      height: props.to + "vh",
+    },
+    config: {
+      mass: 2,
+    },
   });
 
-function ResourceBar(props) { 
-
-    const spring = useSpring({
-        from: {
-          height: props.from + 'vh',
-        },
-        to: {
-          height: props.to + 'vh',
-        },
-        config: {
-          mass: 2,
-        },
-      });
-
-    const {classes} = props;
-    let background = getBackgroundColor(props.resource);
-    let marginL = getMarginLeft(props.resource);
-    return (
-        <div className={classes.outerDiv}>
-            <animated.div className={classes.barFormatting} style={{ ...spring, backgroundColor: background, left: marginL}}/>
-        </div>
-    )
+  const { classes } = props;
+  let background = getBackgroundColor(props.resource);
+  let marginL = getMarginLeft(props.resource);
+  return (
+    <div className={classes.outerDiv}>
+      <animated.div
+        className={classes.barFormatting}
+        style={{ ...spring, backgroundColor: background, left: marginL }}
+      />
+    </div>
+  );
 }
 
 export default withStyles(styles)(ResourceBar);
-

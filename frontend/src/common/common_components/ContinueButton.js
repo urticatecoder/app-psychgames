@@ -2,9 +2,9 @@ import React from "react";
 import { Button } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
+import { Variants } from "../common_constants/stylings/StylingsBundler";
 
 const BUTTON_MESSAGE = "Continue";
-const BUTTON_VARIANT = "contained";
 const BUTTON_COLOR = "primary";
 
 const styles = {
@@ -26,7 +26,7 @@ function ContinueButton(props) {
   return (
     <Button
       className={classes.continueButton}
-      variant={BUTTON_VARIANT}
+      variant={Variants.CONTAINED}
       color={BUTTON_COLOR}
       onClick={() => props.history.push(props.route)}
       disabled={props.disabled}

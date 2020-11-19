@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, withStyles } from "@material-ui/core";
 import socket from "../../socketClient";
+import { Variants } from "../../common/common_constants/stylings/StylingsBundler";
 
 const CONFIRM_CHOICES_TEXT = "Confirm Decision!";
 const NUM_PLAYERS = 6;
@@ -35,7 +36,7 @@ function ConfirmButton(props) {
   return (
     <Button
       className={classes.confirmButton}
-      variant="contained"
+      variant={Variants.CONTAINED}
       color="primary"
       onClick={() =>
         sendDecisions(
