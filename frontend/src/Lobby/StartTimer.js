@@ -6,10 +6,8 @@ import {Typography, Box} from '@material-ui/core';
 import {withStyles} from '@material-ui/core/styles';
 import socket from "../socketClient";
 
-const INITIAL_TEST_TIME = 1 * 1000;
-const RESET_TEST_TIME = 1 * 1000;
-const INITIAL_START_TIME = 1 * 60000;
-const RESET_START_TIME = 1 * 5000;
+
+const INITIAL_START_TIME = 1 * 6000;
 
 const LAST_TIME_UNIT = 'h';
 const DIRECTION = 'backward';
@@ -39,31 +37,30 @@ const styles = ({
 
 function StartTimer(props) {
     const {classes} = props;
-    const MAX_ROOM_CAPACITY = 5;
+    const MAX_ROOM_CAPACITY = 6;
     const [waitingOnPlayerCounter, setWaitingOnPlayerCounter] = useState(MAX_ROOM_CAPACITY);
     const INSTRUCTIONS_MESSAGE = (counter) => `Please wait while ${counter} other players join in.`;
 
+    let code = props.code;
+    let setAllLoginCodes = props.setAllLoginCodes;
     useEffect(() => {
-        socket.emit("enter lobby", props.code);
+        socket.emit("enter lobby", code);
         socket.on("join", (msg) => {
             setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
-            console.log(msg);
         });
         socket.on('room fill', (msg) => {
-            props.setAllLoginCodes(msg)
-            console.log(msg);
+            setAllLoginCodes(msg)
         })
         socket.on('num of people in the room', (numOfPlayers) => {
-            console.log(numOfPlayers);
+            setWaitingOnPlayerCounter(MAX_ROOM_CAPACITY - numOfPlayers);
         });
 
         return () => {
-            console.log("remove listeners");
             socket.off("join");
             socket.off('room fill');
             socket.off('num of people in the room');
         }
-    }, []);
+    }, [code, setAllLoginCodes]);
 
     return (
         <div className={classes.startTimer} id={DIV_ID}>
@@ -75,7 +72,7 @@ function StartTimer(props) {
 
             <Timer
                 id={TIMER_ID}
-                initialTime={INITIAL_TEST_TIME}
+                initialTime={INITIAL_START_TIME}
                 lastUnit={LAST_TIME_UNIT}
                 direction={DIRECTION}
                 timeToUpdate={TIMER_UPDATE}

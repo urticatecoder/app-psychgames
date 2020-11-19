@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {Button} from '@material-ui/core';
 import { withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
@@ -33,7 +33,7 @@ function LoginButton(props) {
                 className = {classes.loginButton}
                 id={BUTTON_ID}
                 variant="contained"
-                disabled = {props.code == EMPTY_STRING}
+                disabled = {props.code === EMPTY_STRING}
                 color= "primary"
                 onClick={() => handleLogin(props)}
                 >
@@ -46,7 +46,7 @@ function LoginButton(props) {
 function handleLogin(props) {
     let testPrefix = props.code.substring(TEST_SUBSTRING_START_INDEX, TEST_SUBSTRING_END_INDEX)
     let loginCodePostfix = props.code.substring(TEST_SUBSTRING_END_INDEX)
-    if (testPrefix == TEST_PREFIX) {
+    if (testPrefix === TEST_PREFIX) {
         props.setLoginCode(loginCodePostfix)
         axios.get('/login-code', {
             params: {
@@ -62,9 +62,7 @@ function handleLogin(props) {
             loginCode: props.code
         }
     }).then(function (res) {
-        console.log(res)
         let isValid = res.data.isValid;
-        console.log(isValid)
         if (isValid) props.history.push("/lobby");
         else props.setInvalidCode(INVALID_CODE);
     });

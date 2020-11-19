@@ -1,8 +1,8 @@
 
 import React, {useState, useEffect} from 'react';
-import {Typography, Box, Button} from '@material-ui/core';
+import {Typography} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import '../CommonStylings/FullScreenDiv.css'
+import '../common_stylings/FullScreenDiv.css'
 import axios from 'axios';
 const FULL_DIV = 'fullDiv';
 
@@ -33,21 +33,18 @@ function ProlificScreen(props) {
 
     const {classes} = props;
     const [prolificCode, setProlificCode] = useState(DEFAULT_CODE);
-    const [payoutAmount, setPayoutAmount] = useState(DEFAULT_AMOUNT)
+    const payoutAmount = DEFAULT_AMOUNT;
     
     
     useEffect(() => {
-        console.log("CODE")
-        console.log(props.code)
         axios.get('/verification-code', {
             params: {
                 loginCode: props.code
             }
         }).then(res => {
-            console.log(res)
             setProlificCode(res.data.code)
-        }).catch(err => console.log(err));      
-    }, [prolificCode]);
+        })     
+    }, [props.code, prolificCode]);
 
     return(
         <div className={FULL_DIV}>

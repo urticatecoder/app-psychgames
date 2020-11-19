@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {Button} from '@material-ui/core';
 import { withRouter } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';

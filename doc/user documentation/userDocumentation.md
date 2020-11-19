@@ -1,0 +1,3 @@
+**The tutorials in order to understand our application and how Game 1 and Game 2 are played are located in the application.**
+
+In order to access our application, each user will start by signing up for the research study on Prolific. They will be given a time an date to undergo the research study. During this accepted time, they will be given the link to our application and a prolific ID. The user will enter the prolific ID into the designated location(the user will know where, it is the starting screen).

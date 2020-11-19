@@ -2,7 +2,6 @@ import React from 'react';
 import PlayerImages from './PlayerImages';
 import { Typography } from '@material-ui/core';
 
-const NAME = 'name'
 const LABEL = 'label'
 function PlayerProfile(props) {
 

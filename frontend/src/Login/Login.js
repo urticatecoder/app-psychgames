@@ -1,13 +1,12 @@
 
 import React, {useState} from 'react';
-import {Typography, TextField, Box, Button} from '@material-ui/core';
+import {Typography, TextField, Box} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import '../CommonStylings/FullScreenDiv.css'
+import '../common_stylings/FullScreenDiv.css'
 import LoginButton from './LoginButton'
 
 const WELCOME_MESSAGE = 'Welcome to Rise to the Top!';
 const INSTRUCTIONS_MESSAGE = 'Please enter your Prolific code.';
-const DEFAULT_LOGIN = '';
 const LOGIN_LABEL = 'Login Code';
 const FULL_DIV = 'fullDiv';
 const HEADER_VARIANT = 'h3';
