@@ -11,7 +11,7 @@ public class LobbyTest {
     private WebDriver driver;
     private static final String CHROME_DRIVER = "webdriver.chrome.driver";
     private static final String CHROME_DRIVER_PATH = "/Users/ericdoppelt/CS408/app_psychgames/frontend/node_modules/chromedriver/lib/chromedriver/chromedriver";
-    private static final String LOCAL_HOST_LOBBY = "http://localhost:3002/lobby";
+    private static final String LOCAL_HOST_LOBBY = "http://localhost:3000/lobby";
 
     private static final String TEXT_ID = "timerText";
 
