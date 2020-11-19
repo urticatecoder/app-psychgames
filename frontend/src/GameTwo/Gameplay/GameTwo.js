@@ -111,10 +111,6 @@ function GameTwo(props) {
             setInvestPayoff(investPayoff)
             setResetTimer(RESET_TIMER)
             setCurrentResources(INITIAL_RESOURCE_DISTRIBUTION)
-            console.log('results')
-            console.log(winnerResults);
-            console.log(loserResults);
-
             setShowResults(SHOW_RESULTS);
             setGroupOneResults(winnerResults)
             setGroupTwoResults(loserResults)
@@ -128,7 +124,6 @@ function GameTwo(props) {
         });
 
         return () => {
-            console.log("remove listeners");
             socket.off("end current turn for game 2");
             socket.off("end game 2");
         }

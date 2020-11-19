@@ -45,8 +45,6 @@ function ConfirmButton2(props) {
 }
 
 function sendDecisions(resources, clearSelected, loginCode) {
-    console.log('called emit')
-    console.log(resources)
     socket.emit('confirm choice for game 2', loginCode, resources[COMPETE_INDEX], resources[KEEP_INDEX], resources[INVEST_INDEX])
     clearSelected()
 }

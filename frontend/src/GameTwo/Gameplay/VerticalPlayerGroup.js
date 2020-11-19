@@ -40,8 +40,7 @@ const styles = {
 }
 
 function VerticalPlayerGroup(props) {
-    console.log('here')
-    console.log(props)
+
     const {classes} = props
     let isGroupOne = props.type === GROUP_ONE
     let groupColor = (isGroupOne) ? GROUP_ONE_COLOR : GROUP_TWO_COLOR;

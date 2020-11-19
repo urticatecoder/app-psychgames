@@ -37,7 +37,7 @@ const styles = ({
 
 function StartTimer(props) {
     const {classes} = props;
-    const MAX_ROOM_CAPACITY = 5;
+    const MAX_ROOM_CAPACITY = 6;
     const [waitingOnPlayerCounter, setWaitingOnPlayerCounter] = useState(MAX_ROOM_CAPACITY);
     const INSTRUCTIONS_MESSAGE = (counter) => `Please wait while ${counter} other players join in.`;
 
@@ -47,18 +47,15 @@ function StartTimer(props) {
         socket.emit("enter lobby", code);
         socket.on("join", (msg) => {
             setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
-            console.log(msg);
         });
         socket.on('room fill', (msg) => {
             setAllLoginCodes(msg)
-            console.log(msg);
         })
         socket.on('num of people in the room', (numOfPlayers) => {
-            console.log(numOfPlayers);
+            setWaitingOnPlayerCounter(MAX_ROOM_CAPACITY - numOfPlayers);
         });
 
         return () => {
-            console.log("remove listeners");
             socket.off("join");
             socket.off('room fill');
             socket.off('num of people in the room');

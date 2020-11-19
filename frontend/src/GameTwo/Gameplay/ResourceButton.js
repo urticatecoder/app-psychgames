@@ -39,7 +39,6 @@ const styles = ({
 
 function ResourceButton(props) {
     const {classes} = props;
-    console.log(props.resource)
     let background = getBackgroundColor(props.resource);
     let marginL = getMarginLeft(props.resource);
 
