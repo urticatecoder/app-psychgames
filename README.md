@@ -13,14 +13,15 @@ At the end of the game, the user's choices and initial ranking will be stored in
 ### Dependencies ps://rise-to-the-top.herokuapp.com/)
 
 Libraries/frameworks used:
-	•	React: MIT License
-	•	Node.js: MIT License
-	•	Express: MIT License
-	•	Socket.io: MIT License
-	•	Mongoose: MIT License
-	•	Mocha: MIT License
-	•	Axios: MIT License
-	•	Moment: MIT License
+- React: MIT License
+- Node.js: MIT License
+- Express: MIT License
+- Socket.io: MIT License
+- Mongoose: MIT License
+- Mocha: MIT License
+- Axios: MIT License
+- Moment: MIT License
+
 
 ### Installation
 
