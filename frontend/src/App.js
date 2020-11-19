@@ -6,7 +6,7 @@ import Login from './login/Login';
 import Summary from './game_one/summary/Summary';
 import GameOne from './game_one/gameplay/GameOne';
 import GameTwo from './game_two/gameplay/GameTwo';
-import ProlificScreen from './prolific/ProlificScreen'
+import ProlificScreen from './testProlific/ProlificScreen'
 import AdminAuth from "./admin_page/AdminAuth";
 import PrivateRoute from "./admin_page/PrivateRoute";
 import MainAvatar from './lobby/MainAvatar';
