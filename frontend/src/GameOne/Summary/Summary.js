@@ -35,7 +35,6 @@ const styles = ({
 function GroupScreen(props) {
     const {classes} = props;
    
-    console.log(props)
     let winnerIndices = getAvatarIndices(props.winners, props.allLoginCodes)
     let loserIndices = getAvatarIndices(props.losers, props.allLoginCodes)
 

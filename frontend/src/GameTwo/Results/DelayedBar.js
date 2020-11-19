@@ -44,9 +44,6 @@ function DelayedBar(props) {
 
     const {classes} = props
     const [toHeight, setToHeight] = useState(INITIAL_HEIGHT);
-    
-    console.log(props.tokens)
-    console.log(props.delay)
 
     const spring = useSpring({
         from: {
@@ -61,7 +58,6 @@ function DelayedBar(props) {
       });
 
     setTimeout(() => {
-        console.log()
         setToHeight(props.tokens)
     }, props.delay);
 

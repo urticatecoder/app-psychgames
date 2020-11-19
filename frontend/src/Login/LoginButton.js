@@ -62,9 +62,7 @@ function handleLogin(props) {
             loginCode: props.code
         }
     }).then(function (res) {
-        console.log(res)
         let isValid = res.data.isValid;
-        console.log(isValid)
         if (isValid) props.history.push("/lobby");
         else props.setInvalidCode(INVALID_CODE);
     });

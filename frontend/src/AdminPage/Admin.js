@@ -20,7 +20,6 @@ class Admin extends React.Component {
 
     componentDidMount() {
         axios.get('/minDate').then(res => {
-            console.log(res.data.minDate);
             this.setState({minDate: moment(res.data.minDate)});
         })
     }
@@ -36,13 +35,12 @@ class Admin extends React.Component {
                 endDate: this.state.endDate.format(moment.HTML5_FMT.DATE)
             }
         }).then(res => {
-            console.log(res);
             this.setState({ data: res.data}, () => {
                 setTimeout(() => {
                     this.gameOneDataLink.current.link.click();
                 }, 0);
             })
-        }).catch(err => console.log(err));
+        });
     }
 
     fetchGameTwoData = () => {
@@ -56,13 +54,12 @@ class Admin extends React.Component {
                 endDate: this.state.endDate.format(moment.HTML5_FMT.DATE)
             }
         }).then(res => {
-            console.log(res);
             this.setState({ data: res.data}, () => {
                 setTimeout(() => {
                     this.gameTwoDataLink.current.link.click();
                 }, 0);
             })
-        }).catch(err => console.log(err));
+        });
     }
 
     isOutsideRange = (date) => {

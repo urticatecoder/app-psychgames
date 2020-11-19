@@ -145,7 +145,6 @@ function ColumnController(props) {
 // FIXME: REMOVE DUPLICATION
 function handleTripleBonuses(tripleArray, tripleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, setTriples) {
     let oldHeights = originalHeights.slice(0);
-    console.log("TRIPLE")
     for (let i = 0; i < tripleArray.length; i++) {
         let loginCodes = tripleArray[i];
         let newHeights = oldHeights.slice(0);
@@ -156,10 +155,6 @@ function handleTripleBonuses(tripleArray, tripleIncrease, allLoginCodes, setOldH
         newHeights[firstIndex] += scaledBonus;
         newHeights[secondIndex] += scaledBonus;
         newHeights[thirdIndex] += scaledBonus;
-        console.log("OLD HEIGHT")
-        console.log(oldHeights)
-        console.log("NEW HEIGHT")
-        console.log(newHeights)
         updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, (i) * PAUSE_BETWEEN_ANIMATIONS)
         markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, (i) * PAUSE_BETWEEN_ANIMATIONS);
         oldHeights = newHeights;
@@ -188,21 +183,14 @@ function updateBonusArray(indexArray, setBonus, delay) {
 
 function handleDoubleBonuses(doubleArray, doubleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, setDoubles, animationOffset) {
     let oldHeights = originalHeights.slice(0);
-    console.log("DOUBLE")
     for (let i = 0; i < doubleArray.length; i++) {
         let loginCodes = doubleArray[i];
         let newHeights = oldHeights.slice(0);
         let firstIndex = getPlayerIndex(loginCodes[FIRST_CODE], allLoginCodes);
         let secondIndex = getPlayerIndex(loginCodes[SECOND_CODE], allLoginCodes);
-        console.log(doubleIncrease);
         let scaledBonus = scaleBonus(doubleIncrease);
-        console.log(scaledBonus);
         newHeights[firstIndex] += scaledBonus;
         newHeights[secondIndex] += scaledBonus;
-        console.log("OLD HEIGHT")
-        console.log(oldHeights)
-        console.log("NEW HEIGHT")
-        console.log(newHeights)
         updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS);
         markDoubleDelayed(firstIndex, secondIndex, setDoubles, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS);
         oldHeights = newHeights;
@@ -210,7 +198,6 @@ function handleDoubleBonuses(doubleArray, doubleIncrease, allLoginCodes, setOldH
 }
 
 function updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, delay) {
-    console.log(newHeights)
     setCurrentHeight(newHeights);
     setTimeout(() => updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights), delay);
 }
@@ -250,8 +237,6 @@ function getAlertComponent(text, setClosed) {
 }
 
 function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID, doubles, triples) {
-    console.log(doubles)
-    console.log(triples)
     return(
         <Grid item>
             <PlayerColumn onSelect = {() => selectPlayer(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, playerIDs, myID)} selected={selected[playerNumber]} double={doubles[playerNumber]} triple={triples[playerNumber]} from={fromHeights[playerNumber]} to={toHeights[playerNumber]} player={playerNumber} />
