@@ -1,3 +1,9 @@
+/**
+ * @author Xi Pu
+ * React component for the admin authentication page. Associated route: /adminRoute
+ * Any request to /admin will be redirected to this route.
+ */
+
 import React from 'react';
 import '../CommonStylings/FullScreenDiv.css';
 import axios from 'axios';

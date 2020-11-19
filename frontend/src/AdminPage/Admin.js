@@ -1,3 +1,9 @@
+/**
+ * @author Xi Pu
+ * React component for the admin page.
+ * It contains a date range picker and two buttons to download game 1 and game 2 separately.
+ */
+
 import React, {useEffect, useState} from 'react';
 import '../CommonStylings/FullScreenDiv.css';
 import axios from 'axios';
