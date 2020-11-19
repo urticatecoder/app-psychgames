@@ -25,16 +25,20 @@ Libraries/frameworks used:
 
 ### Installation
 
-For deployment, contact eric.doppelt@duke.edu to gain access to this project’s repository:
-1. Clone from Git to local machine	
-- Run `git clone` https://github.com/ericdoppelt/psych-games
-2. In terminal, using command cd, open the psych-games directory on local machine
-3. *Important* Before running application, install node modules and dependencies (backend)
-- Run `npm install`
-4. *Important* Before running application, install node modules and dependencies (frontend)
-- Run `cd frontend`
-- Run `npm install`
+For deployment, contact eric.doppelt@duke.edu to gain access to this project’s repository.
+
+1. Clone from Git to local machine.
+- Run `git clone` https://github.com/ericdoppelt/psych-games.
+2. In terminal, using command cd, open the psych-games directory on your local machine.
+3. Install npm, using the following instructions provided here: https://www.npmjs.com/get-npm.
+3. Before running application, install node modules and dependencies (backend).
+- Run `npm install`.
+4. Before running application, install node modules and dependencies (frontend).
+- Run `cd frontend`.
+- Run `npm install`.
 3. Run application
-- Run `cd frontend`
-- Run `npm start`, open your browser and go to [http://localhost:3001/](http://localhost:3000/)
+- Run `npm start` in the main directory.
+- Open a new terminal, and navigate to the main directory.
+- Run `cd frontend`.
+- Run `npm start`, open your browser and go to [http://localhost:3000/](http://localhost:3000/)
 
