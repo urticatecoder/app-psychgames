@@ -24,11 +24,13 @@ const HEADSET_LABEL = 'Headset';
 const LEAVES_LABEL = 'Leaves';
 const TRIANGLE_LABEL = 'Triangle';
 
+//FIXME: duplicated code with resources in game 2
 function getPlayer(image, id) {
     return(
         <img
         src={image}
         id={id}
+        alt={id}
         width={IMAGE_HEIGHT}
         height={IMAGE_WIDTH}
         />

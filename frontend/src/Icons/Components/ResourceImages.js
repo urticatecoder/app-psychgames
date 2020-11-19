@@ -20,6 +20,7 @@ function getResource(image, id) {
         <img
         src={image}
         id={id}
+        alt={id}
         width={IMAGE_HEIGHT}
         height={IMAGE_WIDTH}
         />

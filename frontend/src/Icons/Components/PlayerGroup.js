@@ -1,13 +1,12 @@
 import React from 'react';
 import PlayerProfile from './PlayerProfile';
-import { Typography, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 const GRID_DIRECTION = 'row';
 const GRID_JUSTIFY = 'center';
 const GRID_SPACING = 10;
 
 function PlayerGroup(props) {
-    const {classes} = props;
 
     return(
             <Grid

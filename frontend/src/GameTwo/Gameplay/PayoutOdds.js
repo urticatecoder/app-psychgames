@@ -1,9 +1,5 @@
 import { Typography, withStyles } from '@material-ui/core';
 import React from 'react';
-import Token from '../Tokens/money-bag.png'
-
-const IMAGE_HEIGHT = '45vh'
-const IMAGE_WIDTH = '45vh'
 
 const INVEST_ODDS_LABEL = "Invest Odds: "
 const COMPETE_ODDS_LABEL = "Compete Odds: "
@@ -46,16 +42,6 @@ function TokenCounter(props) {
         <Typography className={classes.competeText}> {COMPETE_ODDS_LABEL + props.competeOdds} </Typography>
       </div>
     )
-}
-
-function getTokenIcon() {
-  return (
-      <img
-        src={Token}
-        width={IMAGE_HEIGHT}
-        height={IMAGE_WIDTH}
-        />
-  )
 }
 
 export default withStyles(styles)(TokenCounter);

@@ -6,26 +6,11 @@ import Login from './Login/Login';
 import Summary from './GameOne/Summary/Summary';
 import GameOne from './GameOne/Gameplay/GameOne';
 import GameTwo from './GameTwo/Gameplay/GameTwo';
-import Admin from './AdminPage/Admin';
 import ProlificScreen from './Prolific/ProlificScreen'
 import AdminAuth from "./AdminPage/AdminAuth";
 import PrivateRoute from "./AdminPage/PrivateRoute";
 import MainAvatar from './Lobby/MainAvatar';
 import TutorialScreen from './Tutorials/TutorialScreen';
-
-const CLASS_NAME = 'App';
-const HOME_PATH = '/';
-const LOBBY_PATH = '/lobby';
-const WELCOME_PATH = '/one-welcome';
-const INTRODUCTION_PATH = '/one-introduction';
-const LOGIC_PATH = '/one-logic';
-const END_RULES_PATH = '/one-end-rules';
-const MOVING_PATH = '/one-moving';
-const BONUSES_PATH = '/one-bonuses';
-const PLAY_RULES_PATH = '/one-play-rules';
-
-const NO_CODE = '';
-const NO_CODES = ['', '', '', '', '', '']
 
 const TEST_CODE = 123
 const TEST_CODES = [123, 456, 789, 12, 34, 56]

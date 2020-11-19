@@ -4,6 +4,7 @@ import Token from '../Tokens/money-bag.png'
 
 const IMAGE_HEIGHT = '45vh'
 const IMAGE_WIDTH = '45vh'
+const TOKEN_ALT = 'Token Counter'
 
 const TOKENS_LABEL = "Tokens Left: "
 const styles = ({
@@ -52,6 +53,7 @@ function getTokenIcon() {
   return (
       <img
         src={Token}
+        alt={TOKEN_ALT}
         width={IMAGE_HEIGHT}
         height={IMAGE_WIDTH}
         />

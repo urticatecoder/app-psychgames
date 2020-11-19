@@ -5,12 +5,14 @@ const COMPETE = "compete"
 const KEEP_MARGIN_LEFT = '45vw';
 const INVEST_MARGIN_LEFT = '57vw';
 const COMPETE_MARGIN_LEFT = '69vw';
+const DEFAULT_MARGIN_LEFT = '0vw';
 
 function getResourceMarginLeft(resource) {
     switch(resource) {
         case KEEP: return KEEP_MARGIN_LEFT;
         case INVEST: return INVEST_MARGIN_LEFT;
         case COMPETE: return COMPETE_MARGIN_LEFT;
+        default: return DEFAULT_MARGIN_LEFT;
     }
 }
 

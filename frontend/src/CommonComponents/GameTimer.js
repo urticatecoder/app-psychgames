@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Typography, withStyles} from '@material-ui/core';
 import Timer from 'react-compound-timer'
 

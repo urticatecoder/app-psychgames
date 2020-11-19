@@ -1,19 +1,18 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import PlayerProfile from '../Icons/Components/PlayerProfile';
 import { Typography } from '@material-ui/core';
-import '../CommonStylings/FullScreenDiv.css'
+import '../CommonStylings/FullScreenDiv.css';
 import ContinueButton from '../CommonComponents/ContinueButton';
-import Flame from '../Icons/Images/Shapes/flame.png'
+import Flame from '../Icons/Images/Shapes/flame.png';
 
-const PLAYER_DESCRIPTION = "You have been assigned the following player:"
-const DEFAULT_PLAYER = 0
+const PLAYER_DESCRIPTION = "You have been assigned the following player:";
 const PLAYER_VARIANT = 'h2';
-const FULL_DIV = 'fullDiv'
-const IMAGE_HEIGHT = 250
-const IMAGE_WIDTH = 250
+const FULL_DIV = 'fullDiv';
+const IMAGE_HEIGHT = 250;
+const IMAGE_WIDTH = 250;
 
+const ALT_TEXT = "Flame Avatar";
 const ALWAYS_ENABLED = false;
 
 const styles = ({
@@ -40,6 +39,7 @@ function MainAvatar(props) {
                 src={Flame}
                 width={IMAGE_HEIGHT}
                 height={IMAGE_WIDTH}
+                alt={ALT_TEXT}
             />
             </div>
             <div className={classes.continueButton}>

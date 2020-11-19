@@ -3,7 +3,6 @@ import ResourceImages from '../../Icons/Components/ResourceImages';
 import { withStyles } from '@material-ui/core/styles';
 import getBackgroundColor from '../../Icons/Components/getResourceBackgroundColor';
 import getMarginLeft from '../../Icons/Components/getResourceMarginLeft';
-import { Typography } from '@material-ui/core';
 
 const LABEL = 'Label';
 const REMOVE_TOKEN_LABEL = "-1 Token";

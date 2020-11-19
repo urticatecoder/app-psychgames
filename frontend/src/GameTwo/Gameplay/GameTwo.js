@@ -3,7 +3,6 @@ import '../../CommonStylings/FullScreenDiv.css'
 import ResourceBar from './ResourceBar';
 import VerticalPlayerGroup from './VerticalPlayerGroup';
 import ResourceButton from './ResourceButton';
-import StartTimer from '../../Lobby/StartTimer';
 import Alert from '@material-ui/lab/Alert';
 import {Snackbar, Typography, withStyles} from '@material-ui/core'
 import GameTimer from '../../CommonComponents/GameTimer';
@@ -36,39 +35,38 @@ const DECREASING = false;
 
 const ENOUGH_TOKENS = false;
 const NOT_ENOUGH_TOKENS = true;
-const NOT_ENOUGH_TOKENS_MESSAGE = "You do not have any tokens to invest."
+const NOT_ENOUGH_TOKENS_MESSAGE = "You do not have any tokens to invest.";
 
 const NEGATIVE_TOKENS = true;
 const NOT_NEGATIVE_TOKENS = false;
-const NEGATIVE_TOKENS_MESSAGE = "You cannot remove tokens before adding them."
+const NEGATIVE_TOKENS_MESSAGE = "You cannot remove tokens before adding them.";
 
-const OPEN_MESSAGE = true
-const ERROR_MESSAGE_LENGTH = 2000
-const CLOSED_MESSAGE = false
-const ERROR_VERTICALITY = "top"
-const ERROR_HORIZONTAL = "left"
-const ALERT_LEVEL = "error"
+const OPEN_MESSAGE = true;
+const ERROR_MESSAGE_LENGTH = 2000;
+const CLOSED_MESSAGE = false;
+const ERROR_VERTICALITY = "top";
+const ERROR_HORIZONTAL = "left";
+const ALERT_LEVEL = "error";
 
 const NO_TOKENS_SPENT = 0;
-const DO_NOT_SUBMIT_DECISIONS = false
-const RESET_TIMER = true
-const DO_NOT_RESET_TIMER = false
+const DO_NOT_SUBMIT_DECISIONS = false;
+const RESET_TIMER = true;
+const DO_NOT_RESET_TIMER = false;
 
-const INITIAL_COMPETE_PAYOFF = 1
-const INITIAL_INVEST_PAYOFF = 1
+const INITIAL_COMPETE_PAYOFF = 1;
+const INITIAL_INVEST_PAYOFF = 1;
 
 const DO_NOT_SHOW_RESULTS = false;
 const SHOW_RESULTS = true;
 
 const TIME_TO_SHOW_RESULTS = 7000;
 
-const RESULTS_DELAY_KEEP = 1000
-const RESULTS_DELAY_INVEST = 2000
-const RESULTS_DELAY_COMPETE = 3000
-const RESULTS_DELAY_GROUP_ONE = 0
-const RESULTS_DELAY_GROUP_TWO = 3000
+const RESULTS_DELAY_KEEP = 1000;
+const RESULTS_DELAY_INVEST = 2000;
+const RESULTS_DELAY_COMPETE = 3000;
+const RESULTS_DELAY_GROUP_TWO = 3000;
 
-
+const INITIAL_TOKENS = 10;
 
 const styles = ({
     groupOne: {
@@ -91,7 +89,7 @@ const styles = ({
 function GameTwo(props) {
     
     const FULL_DIV = 'fullDiv';
-    const [totalTokens, setTotalTokens] = useState(10)
+    const totalTokens = INITIAL_TOKENS
     const [fromResources, setFromResources] = useState(INITIAL_RESOURCE_DISTRIBUTION)
     const [toResources, setToResources] = useState(fromResources)
     const [currentResources, setCurrentResources] = useState(INITIAL_RESOURCE_DISTRIBUTION)
@@ -134,7 +132,7 @@ function GameTwo(props) {
             socket.off("end current turn for game 2");
             socket.off("end game 2");
         }
-    }, [payoffCompete, payoffInvest, resetTimer, currentResources, showResults, groupOneResults, groupTwoResults]);
+    }, [payoffCompete, payoffInvest, resetTimer, currentResources, showResults, groupOneResults, groupTwoResults, props.history]);
 
     const {classes} = props
     let resourceResultsView = getResourceResults(classes, groupOneResults, groupTwoResults)
@@ -178,8 +176,8 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
             <PayoutOdds investOdds={payoffInvest} competeOdds={payoffCompete}/> 
             <GameTimer setSubmitDecisions={setSubmitDecisions} resetTimer={resetTimer} setResetTimer={setResetTimer}/>
             <ConfirmButton2 submit={submitDecisions} clearSubmission = {() => setSubmitDecisions(DO_NOT_SUBMIT_DECISIONS)} resources={currentResources} clearSelected={() => clearResources(setFromResources, setToResources, toResources, setTokensSpent, totalTokens)} loginCode={props.loginCode}/>
-            <VerticalPlayerGroup type={GROUP_ONE} allLoginCodes={props.allLoginCodes} players={props.losers} type={0}/>
-            <VerticalPlayerGroup type={GROUP_TWO} allLoginCodes={props.allLoginCodes} players={props.winners} type={1}/>
+            <VerticalPlayerGroup type={GROUP_ONE} allLoginCodes={props.allLoginCodes} players={props.losers}/>
+            <VerticalPlayerGroup type={GROUP_TWO} allLoginCodes={props.allLoginCodes} players={props.winners}/>
             {getResourceButton(KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}
             {getResourceButton(INVEST, INVEST_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}
             {getResourceButton(COMPETE, COMPETE_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}
@@ -196,9 +194,6 @@ function clearResources(setFromResources, setToResources, toResources, setTokens
     setTokensSpent(NO_TOKENS_SPENT)
 }
 
-function scaleHeights(resourceArray, totalTokens) {
-    return resourceArray.map(resource => scaleHeight(resource, totalTokens));
-}
 
 function scaleHeight(resourceTokens, totalTokens) {
     let resourceProportion = resourceTokens / totalTokens;
@@ -226,7 +221,7 @@ function updateResource(resourceIndex, setFromResources, setToResources, origina
          }
          addTokenOffset = 1;
      } else {
-        if (originalResources[resourceIndex] == 0) {
+        if (originalResources[resourceIndex] === 0) {
             setNegativeTokens(NEGATIVE_TOKENS);
             return;
         }

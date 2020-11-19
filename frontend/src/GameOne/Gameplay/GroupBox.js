@@ -21,7 +21,7 @@ const styles = {
 }
 function GroupBox(props) {
     const {classes} = props
-    let groupColor = (props.groupNumber == GROUP_ONE) ? GROUP_ONE_COLOR : GROUP_TWO_COLOR
+    let groupColor = (props.groupNumber === GROUP_ONE) ? GROUP_ONE_COLOR : GROUP_TWO_COLOR
     return (
         <div style={{backgroundColor: groupColor, width: props.width}} className={classes.groupBox}>
             <div className={classes.innerDiv} >

@@ -1,7 +1,6 @@
 import React from 'react';
 import '../CommonStylings/FullScreenDiv.css';
 import axios from 'axios';
-import ContinueButton from '../CommonComponents/ContinueButton';
 
 /* modified based on https://gist.github.com/joelgriffith/43a4a8195c9fd237a222fe84c2b2e2b4 */
 class AdminAuth extends React.Component {

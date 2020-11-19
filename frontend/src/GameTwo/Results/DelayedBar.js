@@ -86,7 +86,7 @@ function scaleHeight(tokens) {
 }
 
 function getMarginL(resource, group) {
-    let offset = (group == 1) ? 0 : 50
+    let offset = (group === 1) ? 0 : 50
     
     switch(resource) {
         case KEEP:
@@ -95,6 +95,7 @@ function getMarginL(resource, group) {
             return offset + 21.75;
         case COMPETE:
             return offset + 33.5;
+        default: return offset;
     }
 }
 

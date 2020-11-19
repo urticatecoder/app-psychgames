@@ -29,7 +29,6 @@ const MAX_PLAYERS_SELECTED = 2;
 const PLAYERS = [0, 1, 2, 3, 4, 5]
 
 const NOT_SELECTED = false
-const SELECTED = true
 
 const NOT_SELECTED_INT = 0
 const SELECTED_INT = 1
@@ -54,8 +53,6 @@ const ERROR_HORIZONTAL = "left"
 
 const RESET_TIMER = true
 const DO_NOT_RESET_TIMER = false
-
-const INVALID_INDEX = -1;
 
 const FIRST_CODE = 0;
 const SECOND_CODE = 1;
@@ -94,7 +91,6 @@ function ColumnController(props) {
 
     useEffect(() => {
         socket.on("location for game 1", (locations, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
-            console.log(currentHeights)
             handleTripleBonuses(tripleBonuses, tripleIncrease, props.allLoginCodes, setFromHeights, setToHeights, currentHeights, setCurrentHeights, setTriples);
             clearBonusArray(setTriples, (tripleBonuses.length * PAUSE_BETWEEN_ANIMATIONS));
 
@@ -108,17 +104,14 @@ function ColumnController(props) {
         socket.on("end game 1", (winners, losers, doubleBonuses, tripleBonuses) => {
             props.setWinners(winners)
             props.setLosers(losers)
-            console.log(doubleBonuses)
-            console.log(tripleBonuses)
             setTimeout(() => moveToSummary(props), (doubleBonuses + tripleBonuses + NORMAL_ANIMATION_OFFSET) * PAUSE_BETWEEN_ANIMATIONS)
         });
 
         return () => {
-            console.log("remove listeners");
             socket.off("location for game 1");
             socket.off("end game 1");
         }
-    }, [toHeights, currentHeights, fromHeights]);
+    }, [currentHeights, props]);
 
     const {classes} = props
 
@@ -229,7 +222,7 @@ function updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights) {
 
 function getPlayerIndex(loginCode, allLoginCodes) {
     for (let i = 0; i < allLoginCodes.length; i++) {
-        if (allLoginCodes[i] == loginCode) return i;
+        if (allLoginCodes[i] === loginCode) return i;
     }
 }
 
@@ -286,7 +279,7 @@ function createPlayerArray(height) {
 }
 
 function selectPlayer(player, selected, setSelected, setSelectedSelf, setTooManySelections, playerIDs, myID) {
-    if (playerIDs[player] == myID) {
+    if (playerIDs[player] === myID) {
         setSelectedSelf(SELECTED_SELF)
         return;
     }

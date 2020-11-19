@@ -1,6 +1,5 @@
 import '../../CommonStylings/FullScreenDiv.css'
 import ColumnController from './ColumnController'
-import ContinueButton from '../../CommonComponents/ContinueButton'
 import React from 'react';
 
 const FULL_DIV = 'fullDiv';
