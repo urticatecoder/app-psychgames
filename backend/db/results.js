@@ -18,11 +18,8 @@ var passive = new Map();
  */
 function getResultsByProlificId(prolificIDArray, room) {
     let allLocations = room.playerLocation;
-    let allResults = [];
-    let initialResults = [];
     let roundResults = [];
     let initialLocations = [];
-    console.log(allLocations);
     for (let i = 0; i < prolificIDArray.length; i++) {
         let playerProlific = prolificIDArray[i];
         let playerRoundResult = getResults(playerProlific, prolificIDArray, room);
@@ -30,13 +27,7 @@ function getResultsByProlificId(prolificIDArray, room) {
 
         let playerInitialLocation = allLocations.get(playerProlific);
         initialLocations.push(playerInitialLocation);
-        // initialResults.push(playerInitialLocation);
-        // let newPlayerLocation = playerInitialLocation + playerRoundResult;
-        // room.setPlayerLocation(playerProlific, newPlayerLocation);
-        // allResults.push(newPlayerLocation);
     }
-    console.log(initialLocations);
-    console.log(roundResults);
     let zeroSumRoundResults = zeroSumResults(roundResults, prolificIDArray, room);
     let newResults = [];
     for(var i = 0; i < zeroSumRoundResults.length; i++){
@@ -64,7 +55,6 @@ function getResults(playerProlific, prolificIDArray, room){
     count += triplePair.get(playerProlific)*15;
     return count;
 } 
-
 
 /**
  * @param playerProlific {string} ID of player
