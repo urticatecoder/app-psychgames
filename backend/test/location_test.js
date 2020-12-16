@@ -2,7 +2,7 @@ const assert = require('assert');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
-calculateResults, checkPassiveness} = require('../db/results.js');
+calculateResults, checkPassiveness, zeroSumResults} = require('../db/results.js');
 
 
 describe('Location sending and calculation', () => {
@@ -347,4 +347,75 @@ describe('Location sending and calculation', () => {
         // assert(null === result);
         done();
     })
+    it('calculates zero sum to be 0', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        let ans = [4,4,4];
+        let result = zeroSumResults(ans, testID, room);
+        assert(result[0] === 0);
+        assert(result[1] === 0);
+        assert(result[2] === 0);
+        done();
+    });
+    it('calculates zero sum with different values', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        let ans = [8,16,12];
+        let result = zeroSumResults(ans, testID, room);
+        assert(result[0] === -4);
+        assert(result[1] === 4);
+        assert(result[2] === 0);
+        done();
+    });
+    it('calculates zero sum with 6 players', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3', 'test_id4', 'test_id5', 'test_id6'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        let ans = [8,16,12,0,0,0];
+        let result = zeroSumResults(ans, testID, room);
+        assert(result[0] === 2);
+        assert(result[1] === 10);
+        assert(result[2] === 6);
+        assert(result[3] === -6);
+        assert(result[4] === -6);
+        assert(result[5] === -6);
+        done();
+    });
+    it('calculates zero sum with 6 players and decimal values', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3', 'test_id4', 'test_id5', 'test_id6'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        let ans = [19,15,4,15,0,4];
+        let result = zeroSumResults(ans, testID, room);
+        assert(result[0] === 9.5);
+        assert(result[1] === 5.5);
+        assert(result[2] === -5.5);
+        assert(result[3] === 5.5);
+        assert(result[4] === -9.5);
+        assert(result[5] === -5.5);
+        done();
+    });
+    it('calculates zero sum with 3 players and endless decimals', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        let ans = [0,12,8];
+        let result = zeroSumResults(ans, testID, room);
+        assert(result[0] === -6.666666666666667);
+        assert(result[1] === 5.333333333333333);
+        assert(result[2] === 1.333333333333333);
+        done();
+    });
 })
