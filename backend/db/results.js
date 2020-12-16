@@ -20,25 +20,31 @@ function getResultsByProlificId(prolificIDArray, room) {
     let allLocations = room.playerLocation;
     let allResults = [];
     let initialResults = [];
+    let roundResults = [];
+    let initialLocations = [];
     console.log(allLocations);
     for (let i = 0; i < prolificIDArray.length; i++) {
         let playerProlific = prolificIDArray[i];
         let playerRoundResult = getResults(playerProlific, prolificIDArray, room);
+        roundResults.push(playerRoundResult);
 
         let playerInitialLocation = allLocations.get(playerProlific);
-        initialResults.push(playerInitialLocation);
-        let newPlayerLocation = playerInitialLocation + playerRoundResult;
-        room.setPlayerLocation(playerProlific, newPlayerLocation);
-        allResults.push(newPlayerLocation);
+        initialLocations.push(playerInitialLocation);
+        // initialResults.push(playerInitialLocation);
+        // let newPlayerLocation = playerInitialLocation + playerRoundResult;
+        // room.setPlayerLocation(playerProlific, newPlayerLocation);
+        // allResults.push(newPlayerLocation);
     }
-    // let roundResults = zeroSumResults(initialResults, prolificIDArray, room);
-    // let newResults = [];
-    // for(var i = 0; i < initialResults.length; i++){
-    //     newResults.push(roundResults[i] + allResults[i]);
-    //     let playerProlific = prolificIDArray[i];
-    //     room.setPlayerLocation(playerProlific, newResults[i]);
-    // }
-    return allResults;
+    console.log(initialLocations);
+    console.log(roundResults);
+    let zeroSumRoundResults = zeroSumResults(roundResults, prolificIDArray, room);
+    let newResults = [];
+    for(var i = 0; i < zeroSumRoundResults.length; i++){
+        newResults.push(zeroSumRoundResults[i] + initialLocations[i]);
+        let playerProlific = prolificIDArray[i];
+        room.setPlayerLocation(playerProlific, newResults[i]);
+    }
+    return newResults;
 }
 
 /**
@@ -53,9 +59,9 @@ function getResults(playerProlific, prolificIDArray, room){
     let triplePair = getTriplePairMap(prolificIDArray, room);
 
     var count = 0;
-    count += singlePair.get(playerProlific)*10;
-    count += doublePair.get(playerProlific)*15;
-    count += triplePair.get(playerProlific)*25;
+    count += singlePair.get(playerProlific)*4;
+    count += doublePair.get(playerProlific)*8;
+    count += triplePair.get(playerProlific)*15;
     return count;
 } 
 
@@ -87,7 +93,7 @@ function checkPassiveness(playerProlific, room){
 }
 
 /**
- * @deprecated Will be refined over winter break, is currently not used
+ * @param all
  */
 function zeroSumResults(allResults, prolificIDArray, room){
     var average = 0;
@@ -98,10 +104,10 @@ function zeroSumResults(allResults, prolificIDArray, room){
 
     var newResults = [];
     for(var i = 0; i < allResults.length; i++){
-        // let playerProlific = prolificIDArray[i];
+        let playerProlific = prolificIDArray[i];
         let newLocation = allResults[i] - average;
         newResults.push(newLocation);
-        // room.setPlayerLocation(playerProlific, newLocation);
+        room.setPlayerLocation(playerProlific, newLocation);
     }
     return newResults;
 }

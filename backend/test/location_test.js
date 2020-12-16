@@ -418,4 +418,42 @@ describe('Location sending and calculation', () => {
         assert(result[2] === 1.333333333333333);
         done();
     });
+    it('returns the zero sum locations', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = [];
+        var choicesTwo = [];
+        var choicesThree = [];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+        let result = getResultsByProlificId(testID, room);
+        console.log(result);
+        assert(result[0] === 50);
+        assert(result[1] === 50);
+        assert(result[2] === 50);
+        done();
+    });
+    it('returns the zero sum locations and records them', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        var choicesOne = ['test_id2'];
+        var choicesTwo = ['test_id1', 'test_id3'];
+        var choicesThree = ['test_id1'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+        let result = getResultsByProlificId(testID, room);
+        let endResults = room.playerLocation;
+        assert(result[0] === 54 && endResults.get('test_id1') === 54);
+        assert(result[1] === 50 && endResults.get('test_id2') === 50);
+        assert(result[2] === 46 && endResults.get('test_id3') === 46);
+        done();
+    });
 })
