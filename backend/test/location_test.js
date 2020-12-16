@@ -23,6 +23,23 @@ describe('Location sending and calculation', () => {
         }
         done();
     });
+    it('players start at location 50', (done) => {
+        var testID = ['test_id1', 'test_id'];
+        var choices = [];
+        var choices_other = [];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id'));
+        room.addPlayer(new Player('test_id1'));
+        room.getPlayerWithID('test_id').recordChoices(choices_other);
+        room.getPlayerWithID('test_id1').recordChoices(choices);
+        // console.log(room);
+        let results = getResultsByProlificId(testID, room)
+        // console.log(results);
+        for(var i = 0; i < results.length; i++ ){
+            assert(results[i] === 50);
+        }
+        done();
+    });
     // it('calculates triple bonus correctly', (done) => {
     //     const testID = ['test_id1', 'test_id2', 'test_id3'];
     //     var choicesOne = ['test_id2', 'test_id3'];
