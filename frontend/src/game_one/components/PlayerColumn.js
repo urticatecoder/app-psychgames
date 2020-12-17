@@ -29,6 +29,7 @@ function PlayerColumn(props) {
         double={props.double}
         triple={props.triple}
         selected={props.selected}
+        disabled={props.disabled}
       />
     </animated.div>
   );

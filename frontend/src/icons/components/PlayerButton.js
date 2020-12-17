@@ -20,11 +20,15 @@ function PlayerButton(props) {
   return (
     <div
       style={{ backgroundColor: background, borderRadius: BORDER_RADIUS }}
-      onClick={() => props.onSelect()}
+      onClick={() => handleSelect(props.disabled, props.onSelect)}
     >
       {PlayerImages[props.player]}
     </div>
   );
+}
+
+function handleSelect(disabled, onSelect) {
+  if (!disabled) onSelect();
 }
 
 function getBackgroundColor(isDouble, isTriple, isSelected) {

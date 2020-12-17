@@ -57,15 +57,15 @@ function GameTimer(props) {
           },
         ]}
       >
-        {({ reset, start }) => (
+        {({ reset, start, pause }) => (
           <div className={classes.timerMargin}>
             <React.Fragment>
               {checkForReset(
                 reset,
-                start,
                 props.resetTimer,
                 props.setResetTimer
               )}
+              {checkForPause(props.pauseTimer, pause, start)}
               {TIMER_MESSAGE}
               <Typography variant={Variants.LARGEST_TEXT}>
                 <Timer.Seconds />
@@ -78,10 +78,17 @@ function GameTimer(props) {
   );
 }
 
-function checkForReset(reset, start, resetTimer, setResetTimer) {
+function checkForReset(reset, resetTimer, setResetTimer) {
   if (resetTimer) {
     reset();
     setResetTimer(RESET_TIMER);
+  }
+}
+
+function checkForPause(pauseTimer, pause, start) {
+  if (pauseTimer) {
+    pause();
+  } else {
     start();
   }
 }

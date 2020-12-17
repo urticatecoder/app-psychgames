@@ -28,8 +28,12 @@ const SELECTED_SELF = true;
 const DID_NOT_SELECT_SELF = false;
 const TOO_MANY_SELECTIONS = true;
 const NOT_TOO_MANY_SELECTS = false;
+
 const RESET_TIMER = true;
 const DO_NOT_RESET_TIMER = false;
+const PAUSE_TIMER = true;
+const DO_NOT_PAUSE_TIMER = false;
+
 const FIRST_CODE = 0;
 const SECOND_CODE = 1;
 const THIRD_CODE = 2;
@@ -46,6 +50,12 @@ const ANIMATED_COLUMNS_HEIGHT = "80vh";
 
 const END_TURN_WEBSOCKET = "location for game 1";
 const END_GAME_WEBSOCKET = "end game 1";
+
+const DISABLE_BUTTON = true;
+const DO_NOT_DISABLE_BUTTON = false;
+
+const DISABLE_PLAYERS = createPlayerArray(true);
+const ENABLE_PLAYERS = createPlayerArray(false);
 
 const styles = {
   animatedColumns: {
@@ -85,11 +95,14 @@ function GameOne(props) {
   const [doubles, setDoubles] = useState(initialSelections);
   const [triples, setTriples] = useState(initialSelections);
 
+  const [disabledPlayers, setDisabledPlayers] = useState(createPlayerArray())
   const [selectedSelf, setSelectedSelf] = useState(DID_NOT_SELECT_SELF);
   const [tooManySelects, setTooManySelects] = useState(NOT_TOO_MANY_SELECTS);
 
   const [resetTimer, setResetTimer] = useState(DO_NOT_RESET_TIMER);
+  const [pauseTimer, setPauseTimer] =  useState()
   const [submitDecisions, setSubmitDecisions] = useState(DONT_SUBMIT_DECISIONS);
+  const [disableButton, setDisableButton] = useState(DO_NOT_DISABLE_BUTTON);
 
   useEffect(() => {
     socket.on(END_TURN_WEBSOCKET, (locations, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
@@ -128,10 +141,13 @@ function GameOne(props) {
           setStartHeights,
           setEndHeights,
           setCurrentHeight,
-          (tripleBonuses.length + doubleBonuses.length) *
-            PAUSE_BETWEEN_ANIMATIONS
-        );
-        setResetTimer(RESET_TIMER);
+          allBonusPause);
+        
+        let allMovementPause = allBonusPause + PAUSE_BETWEEN_ANIMATIONS;
+
+        handleDisablePlayers(allMovementPause, setDisabledPlayers);
+        handleGameTimer(allMovementPause, setResetTimer, setPauseTimer);
+        handleSubmitButton(allMovementPause, setDisableButton);
       }
     );
 
@@ -164,6 +180,7 @@ function GameOne(props) {
         setSubmitDecisions={setSubmitDecisions}
         resetTimer={resetTimer}
         setResetTimer={setResetTimer}
+        pauseTimer={pauseTimer}
       />
       <ConfirmButton
         submit={submitDecisions}
@@ -172,6 +189,7 @@ function GameOne(props) {
         clearSelected={() => clearSelected(setSelected)}
         loginCode={props.loginCode}
         allLoginCodes={props.allLoginCodes}
+        disabled={disableButton}
       />
 
       <div className={classes.animatedColumns}>
@@ -195,7 +213,8 @@ function GameOne(props) {
               props.allLoginCodes,
               props.loginCode,
               doubles,
-              triples
+              triples,
+              disabledPlayers
             );
           })}
         </Grid>
@@ -207,8 +226,30 @@ function GameOne(props) {
   );
 }
 
+// TO IMPLEMENT DISABLING TOP PLAYERS, HAVE NICK SEND AN ARRAY
+function handleDisablePlayers(animationPause, setDisabledPlayers) {
+  setDisabledPlayers(DISABLE_PLAYERS);
+  setTimeout(() => {
+    setDisabledPlayers(ENABLE_PLAYERS);
+  }, animationPause);
+}
 
-function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID, doubles, triples) {
+function handleGameTimer(animationPause, setResetTimer, setPauseTimer) {
+  setResetTimer(RESET_TIMER);
+  setPauseTimer(PAUSE_TIMER);
+  setTimeout(() => {
+    setPauseTimer(DO_NOT_PAUSE_TIMER);
+  }, animationPause);
+}
+
+function handleSubmitButton(animationPause, setDisableButton) {
+  setDisableButton(DISABLE_BUTTON);
+  setTimeout(() => {
+    setDisableButton(DO_NOT_DISABLE_BUTTON);
+  }, animationPause);
+}
+
+function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID, doubles, triples, disabledPlayers) {
   return (
     <Grid item>
       <PlayerColumn
@@ -229,6 +270,7 @@ function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooM
         from={fromHeights[playerNumber]}
         to={toHeights[playerNumber]}
         player={playerNumber}
+        disabled={disabledPlayers[playerNumber]}
       />
     </Grid>
   );
