@@ -4,7 +4,7 @@ import PlayerImages from "./PlayerImages";
 const SELECTED = "#32a852";
 const NOT_SELECTED = "#0093f542";
 const DOUBLE_BONUS = "#fca103";
-const TRIPLE_BONUS = "#fc0352";
+const TRIPLE_BONUS = "#0010f5";
 const BORDER_RADIUS = 30;
 
 /**
