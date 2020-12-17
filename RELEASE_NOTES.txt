@@ -41,6 +41,5 @@ implement other measures to keep the game proceding at the same pace, such as ad
 
 Lastly, the site has been tested on two platforms with varyling levels of comprehensiveness. The site has been tested manually and automatically on Google Chrome (Version 86.0.4240.183) by using Istanbul to generatet code coverage reports for playing through the site manually.
 Selenium tetsts have also run on Chrome to ensure that all login pages function securely. The site has been manually tested on Safari (Version 13.1.2) and Firefox (Version 82.0.3) and performed as expected.
-)
 
 

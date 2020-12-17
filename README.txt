@@ -10,7 +10,7 @@ The first is a simple game that focuses on forming social groups. In simple term
 Secondly, the two teams will then compete with one another. There will be another iterative process, wherein each player will have a certain number of tokens that they can either invest, keep, or compete with. Investing will convert their money and give it to teammates at a positive exchange rate. Keeping money will allow it to be accessible at a later turn. Competing will convert money and lower the opposing team's bankroll.
 At the end of the game, the user's choices and initial ranking will be stored in a database to explore the mechanisms behind social groupings and hierarchies.
 
-### Dependencies 
+### Dependencies
 
 Libraries/frameworks used:
 - React: MIT License
