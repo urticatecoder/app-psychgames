@@ -1,108 +1,124 @@
-// CLASS THAT CREATES A TIMER FOR THE LOBBY
-
-import React, {useEffect, useState} from 'react';
-import Timer from 'react-compound-timer'
-import {Typography, Box} from '@material-ui/core';
-import {withStyles} from '@material-ui/core/styles';
+import React, { useEffect, useState } from "react";
+import Timer from "react-compound-timer";
+import { Typography, Box } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 import socket from "../socketClient";
+import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 
-const INITIAL_TEST_TIME = 60 * 1000;
-const RESET_TEST_TIME = 1 * 1000;
-const INITIAL_START_TIME = 6 * 50000;
-const RESET_START_TIME = 1 * 5000;
+const INITIAL_START_TIME = 1 * 6000;
 
-const LAST_TIME_UNIT = 'h';
-const DIRECTION = 'backward';
+const LAST_TIME_UNIT = "h";
+const DIRECTION = "backward";
 
-const WELCOME_MESSAGE = 'The game will begin in:';
-const WELCOME_VARIANT = 'h3';
-const INSTRUCTIONS_VARIANT = 'h4';
-const MINUTES = 'Minutes';
-const SECONDS = 'Seconds';
+const WELCOME_MESSAGE = "The game will begin in:";
+const MINUTES = "Minutes";
+const SECONDS = "Seconds";
 const START_GAME = true;
 
 const STOP_TIMER = 0;
 const TIMER_UPDATE = 10;
-const TIMER_ID = 'timer';
-const TEXT_ID = 'timerText';
-const DIV_ID = 'timerDiv';
+const TIMER_ID = "timer";
+const TEXT_ID = "timerText";
+const DIV_ID = "timerDiv";
 
-const styles = ({
+const MAX_ROOM_CAPACITY = 6;
+
+const ENTER_LOBBY_WEBSOCKET = "enter lobby";
+const JOIN_LOBBY_WEBSOCKET = "join";
+const ROOM_FULL_WEBSOCKET = "room fill";
+const PEOPLE_IN_ROOM_WEBSOCKET = "num of people in the room";
+
+const ITALIC_FONT = "italic";
+const styles = {
   welcomeInstruction: {
-      marginTop: '150px',
+    marginTop: "150px",
   },
   timerInstruction: {
-    marginTop: '50px',
+    marginTop: "50px",
   },
+};
 
-});
-
+/**
+ * Component used for the timer in the lobby, which ticks as players enter the game.
+ * The timer enabled the start button once it hits zero.
+ * The timer is also accompanied by some text which indicates how many players are needed to start the game.
+ * @param {*} props provides a method which when called enables the StartButton component to begin the game.
+ * 
+ * @author Eric Doppelt 
+ */
 function StartTimer(props) {
-    const {classes} = props;
-    const MAX_ROOM_CAPACITY = 5;
-    const [waitingOnPlayerCounter, setWaitingOnPlayerCounter] = useState(MAX_ROOM_CAPACITY);
-    const INSTRUCTIONS_MESSAGE = (counter) => `Please wait while ${counter} other players join in.`;
+  const { classes } = props;
+  const [waitingOnPlayerCounter, setWaitingOnPlayerCounter] = useState(MAX_ROOM_CAPACITY);
 
-    useEffect(() => {
-        socket.emit("enter lobby", props.code);
-        socket.on("join", (msg) => {
-            setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
-            console.log(msg);
-        });
-        socket.on('room fill', (msg) => {
-            props.setAllLoginCodes(msg)
-            console.log(msg);
-        })
-        socket.on('num of people in the room', (numOfPlayers) => {
-            console.log(numOfPlayers);
-        });
+  const INSTRUCTIONS_MESSAGE = (counter) => `Please wait while ${counter} other players join in.`;
 
-        return () => {
-            console.log("remove listeners");
-            socket.off("join");
-            socket.off('room fill');
-            socket.off('num of people in the room');
-        }
-    }, []);
+  let code = props.code;
+  let setAllLoginCodes = props.setAllLoginCodes;
 
-    return (
-        <div className={classes.startTimer} id={DIV_ID}>
+  useEffect(() => {
+    socket.emit(ENTER_LOBBY_WEBSOCKET, code);
+    socket.on(JOIN_LOBBY_WEBSOCKET, () => {
+      setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
+    });
+    socket.on(ROOM_FULL_WEBSOCKET, (msg) => {
+      setAllLoginCodes(msg);
+    });
+    socket.on(PEOPLE_IN_ROOM_WEBSOCKET, (numOfPlayers) => {
+      setWaitingOnPlayerCounter(MAX_ROOM_CAPACITY - numOfPlayers);
+    });
 
-            <Typography className={classes.welcomeInstruction} id={TEXT_ID} variant={INSTRUCTIONS_VARIANT}>
-                <Box fontStyle="italic">{INSTRUCTIONS_MESSAGE(waitingOnPlayerCounter)}</Box>
+    return () => {
+      socket.off(JOIN_LOBBY_WEBSOCKET);
+      socket.off(ROOM_FULL_WEBSOCKET);
+      socket.off(PEOPLE_IN_ROOM_WEBSOCKET);
+    };
+  }, [code, setAllLoginCodes]);
+
+  return (
+    <div className={classes.startTimer} id={DIV_ID}>
+      <Typography
+        className={classes.welcomeInstruction}
+        id={TEXT_ID}
+        variant={Variants.SMALL_TEXT}
+      >
+        <Box fontStyle={ITALIC_FONT}>
+          {INSTRUCTIONS_MESSAGE(waitingOnPlayerCounter)}
+        </Box>
+      </Typography>
+      <Typography
+        className={classes.timerInstruction}
+        variant={Variants.NORMAL_TEXT}
+      >
+        {WELCOME_MESSAGE}
+      </Typography>
+
+      <Timer
+        id={TIMER_ID}
+        initialTime={INITIAL_START_TIME}
+        lastUnit={LAST_TIME_UNIT}
+        direction={DIRECTION}
+        timeToUpdate={TIMER_UPDATE}
+        checkpoints={[
+          {
+            time: STOP_TIMER,
+            callback: () => props.setStartStatus(START_GAME),
+          },
+        ]}
+      >
+        {() => (
+          <React.Fragment>
+            <Typography variant={Variants.NORMAL_TEXT}>
+              <br />
+              <Timer.Minutes /> {MINUTES}
+              <br />
+              <Timer.Seconds /> {SECONDS}
+              <br />
             </Typography>
-            <Typography className={classes.timerInstruction} variant={WELCOME_VARIANT}>{WELCOME_MESSAGE}</Typography>
-
-            <Timer
-                id={TIMER_ID}
-                initialTime={INITIAL_TEST_TIME}
-                lastUnit={LAST_TIME_UNIT}
-                direction={DIRECTION}
-                timeToUpdate={TIMER_UPDATE}
-                checkpoints={[
-                    {
-                        time: STOP_TIMER,
-                        callback: () => props.setStartStatus(START_GAME),
-                    },
-                ]}
-            >
-                {() => (
-                    <React.Fragment>
-
-                        <Typography variant={WELCOME_VARIANT}>
-                            <br/>
-                            <Timer.Minutes/> {MINUTES}
-                            <br/>
-                            <Timer.Seconds/> {SECONDS}
-                            <br/>
-                        </Typography>
-                    </React.Fragment>
-
-
-                )}
-            </Timer>
-        </div>
-    );
+          </React.Fragment>
+        )}
+      </Timer>
+    </div>
+  );
 }
 
 export default withStyles(styles)(StartTimer);
