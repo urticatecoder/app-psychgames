@@ -289,7 +289,7 @@ function getResourceBar(resource, resourceIndex, fromResources, toResources) {
 function updateResource(resourceIndex, setFromResources, setToResources, originalResources, totalTokens, isIncreasing, setNotEnoughTokens,
   setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources) {
   let addTokenOffset;
-
+  
   if (isIncreasing) {
     if (tokensSpent >= totalTokens) {
       setNotEnoughTokens(NOT_ENOUGH_TOKENS);
@@ -297,7 +297,7 @@ function updateResource(resourceIndex, setFromResources, setToResources, origina
     }
     addTokenOffset = 1;
   } else {
-    if (originalResources[resourceIndex] === 0) {
+    if (currentResources[resourceIndex] === 0) {
       setNegativeTokens(NEGATIVE_TOKENS);
       return;
     }

@@ -47,6 +47,7 @@ function ConfirmButton(props) {
       className={classes.confirmButton}
       variant={Variants.CONTAINED}
       color={PRIMARY_COLOR}
+      disabled = {props.disabled}
       onClick={() =>
         sendDecisions(
           props.selected,
