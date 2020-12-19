@@ -11,6 +11,7 @@ import AdminAuth from "./admin_page/AdminAuth";
 import PrivateRoute from "./admin_page/PrivateRoute";
 import MainAvatar from "./lobby/MainAvatar";
 import TutorialScreen from "./tutorials/TutorialScreen";
+import AvatarSelector from "../src/avatar_selection/AvatarSelector";
 
 const TEST_CODE = 123;
 const TEST_CODES = [123, 456, 789, 12, 34, 56];
@@ -25,6 +26,7 @@ const CLASS_NAME = "App";
 const LOGIN_ROUTE = "/";
 const LOBBY_ROUTE = "/lobby";
 const PLAYER_ASSIGNMENT_ROUTE = "/player-assignment";
+const AVATAR_SELECTION_ROUTE = "/avatar-selection";
 
 const GAME_ONE_TUTORIAL_ROUTE = "/game-one-tutorial";
 const GAME_ONE_TUTORIAL_FILEPATH = "Tutorials/GameOne.mov";
@@ -69,6 +71,12 @@ function App() {
               setAllLoginCodes={setAllLoginCodes}
             />
           )}
+        />
+
+        <Route
+          path={AVATAR_SELECTION_ROUTE}
+          exact
+          render={() => <AvatarSelector/>}
         />
 
         <Route path={PLAYER_ASSIGNMENT_ROUTE} render={() => <MainAvatar />} />
