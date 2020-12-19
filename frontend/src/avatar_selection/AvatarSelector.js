@@ -10,6 +10,15 @@ const NUMBER_OPTIONS = 25;
 const SELECTED = true;
 const NOT_SELECTED = false;
 
+const NUM_COLUMNS = 8;
+const NUM_ROWS = 3;
+
+const BASE_HEIGHT_OFFSET = 40;
+const OPTION_HEIGHT_OFFSET = 20;
+
+const BASE_WIDTH_OFFSET = 10;
+const OPTION_WIDTH_OFFSET = 10;
+
 const styles = {
   confirmButton: {
     position: "absolute",
@@ -40,12 +49,18 @@ function AvatarSelector(props) {
   return (
     <div className={FULL_DIV}>
       {PLAYER_OPTION_NUMBERS.map((player) => {
-            return (
-              <OptionButton
-                player={player}
-                selected={selectedPlayers[player]}
-                onSelect={() => selectPlayer(player, setSelectedPlayers, setSelectedIndex)}
-              />
+        let leftMargin = getDivX(player);
+        let topMargin = getDivY(player);
+        console.log(leftMargin);
+        console.log(topMargin);
+        return (
+          <div style={{position: "absolute", left: leftMargin, top: topMargin}}>
+            <OptionButton
+              player={player}
+              selected={selectedPlayers[player]}
+              onSelect={() => selectPlayer(player, setSelectedPlayers, setSelectedIndex)}
+            />
+          </div>
             )
       })}
     </div>
@@ -54,7 +69,6 @@ function AvatarSelector(props) {
 
 function selectPlayer(index, setSelectedPlayers, setSelectedIndex) {
   let selectedPlayers = getFalseArray();
-  console.log(selectedPlayers);
   selectedPlayers[index] = SELECTED;
   setSelectedPlayers(selectedPlayers);
   setSelectedIndex(index);
@@ -62,6 +76,16 @@ function selectPlayer(index, setSelectedPlayers, setSelectedIndex) {
 
 function getFalseArray() {
   return new Array(NUMBER_OPTIONS).fill(NOT_SELECTED);
+}
+
+function getDivX(player) {
+  let column = player % NUM_COLUMNS;
+  return BASE_WIDTH_OFFSET + column * OPTION_WIDTH_OFFSET + 'vw';
+}
+
+function getDivY(player) {
+  let row = player % NUM_ROWS;
+  return BASE_HEIGHT_OFFSET + row *  OPTION_HEIGHT_OFFSET + 'vh';
 }
 
 export default withStyles(styles)(AvatarSelector);

@@ -54,7 +54,6 @@ const SOLAR_ID = "solar";
 const TRAPEZOID_ID = "trapezoid";
 const UP_ARROWS_ID = "up-arrows";
 const YELLOW_CROSSHAIR_ID = "yellow-crosshair";
-const YELLOW_THERMOSTAT_ID = "yellow-thermostat";
 
 const BEIGE_TRIANGLE_LABEL = "Beige-Triangle";
 const BLACK_ARROWS_LABEL = "Black-Arrows";
@@ -80,7 +79,6 @@ const SOLAR_LABEL = "Solar";
 const TRAPEZOID_LABEL = "Trapezoid";
 const UP_ARROWS_LABEL = "Up-Arrows";
 const YELLOW_CROSSHAIR_LABEL = "Yellow-Crosshair";
-const YELLOW_THERMOSTAT_LABEL = "Yellow-Thermostat";
 
 /**
  * Constant that holds images, names, and labels for every avatar used in the avatar selection process.
@@ -124,7 +122,6 @@ const OPTION_TWENTY = getOption(Solar, SOLAR_ID);
 const OPTION_TWENTY_ONE = getOption(Trapezoid, TRAPEZOID_ID);
 const OPTION_TWENTY_TWO = getOption(UpArrows, UP_ARROWS_ID);
 const OPTION_TWENTY_THREE = getOption(YellowCrosshair, YELLOW_CROSSHAIR_ID);
-const OPTION_TWENTY_FOUR = getOption(YellowThermostat, YELLOW_THERMOSTAT_ID);
 
 const PlayerOptions = {
   0: OPTION_ZERO,
@@ -199,9 +196,6 @@ const PlayerOptions = {
   23: OPTION_TWENTY_THREE,
   name23: YELLOW_CROSSHAIR_ID,
   label23: YELLOW_CROSSHAIR_LABEL,
-  24: OPTION_TWENTY_FOUR,
-  name24: YELLOW_THERMOSTAT_ID,
-  label24: YELLOW_THERMOSTAT_LABEL,
 };
 
 export default PlayerOptions;
