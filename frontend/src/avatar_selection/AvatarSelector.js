@@ -1,10 +1,15 @@
-import React from "react";
+import React, {useState} from "react";
 import { Typography, withStyles } from "@material-ui/core";
 import '../util/common_stylings/FullScreenDiv.css';
 import OptionButton from '../icons/components/OptionButton';
 
 const FULL_DIV = "fullDiv";
-const PLAYER_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
+const PLAYER_OPTION_NUMBERS = Array.from(Array(25).keys());
+const DEFAULT_SELECTION_INDEX = 0;
+const NUMBER_OPTIONS = 25;
+const SELECTED = true;
+const NOT_SELECTED = false;
+
 const styles = {
   confirmButton: {
     position: "absolute",
@@ -29,110 +34,34 @@ const styles = {
 function AvatarSelector(props) {
   const { classes } = props;
 
+  const [selectedPlayers, setSelectedPlayers] = useState(getFalseArray());
+  const [selectedIndex, setSelectedIndex] = useState(DEFAULT_SELECTION_INDEX);
+
   return (
     <div className={FULL_DIV}>
-        <OptionButton
-          player={0}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={1}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={2}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={3}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={4}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={5}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={6}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={7}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={8}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={9}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={10}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={11}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={12}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={13}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={14}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={15}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={16}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={17}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={18}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={19}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={20}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={21}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={22}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={23}
-          onSelect={() => console.log(0)}
-        />
-        <OptionButton
-          player={24}
-          onSelect={() => console.log(0)}
-        />
+      {PLAYER_OPTION_NUMBERS.map((player) => {
+            return (
+              <OptionButton
+                player={player}
+                selected={selectedPlayers[player]}
+                onSelect={() => selectPlayer(player, setSelectedPlayers, setSelectedIndex)}
+              />
+            )
+      })}
     </div>
   );
+}
+
+function selectPlayer(index, setSelectedPlayers, setSelectedIndex) {
+  let selectedPlayers = getFalseArray();
+  console.log(selectedPlayers);
+  selectedPlayers[index] = SELECTED;
+  setSelectedPlayers(selectedPlayers);
+  setSelectedIndex(index);
+}
+
+function getFalseArray() {
+  return new Array(NUMBER_OPTIONS).fill(NOT_SELECTED);
 }
 
 export default withStyles(styles)(AvatarSelector);
