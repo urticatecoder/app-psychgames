@@ -13,7 +13,7 @@ const IMAGE_WIDTH = 250;
 
 const ALT_TEXT = "Flame Avatar";
 const ALWAYS_ENABLED = false;
-
+const BUTTON_MESSAGE = "Continue to Tutorial";
 const GAME_ONE_ROUTE = "game-one";
 
 const styles = {
@@ -58,6 +58,7 @@ function MainAvatar(props) {
           className={classes.continueButton}
           route={GAME_ONE_ROUTE}
           disabled={ALWAYS_ENABLED}
+          message={BUTTON_MESSAGE}
         />
       </div>
     </div>

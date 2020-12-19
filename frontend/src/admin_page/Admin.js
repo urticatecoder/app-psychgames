@@ -121,7 +121,7 @@ class Admin extends React.Component {
           ref={this.gameTwoDataLink}
           target="_blank"
         />
-        <ContinueButton route="/" disabled={false} />
+        <ContinueButton message="continue" route="/" disabled={false} />
       </div>
     );
   }

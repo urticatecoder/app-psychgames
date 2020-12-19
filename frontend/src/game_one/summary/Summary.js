@@ -11,7 +11,7 @@ const WINNING_HEADER = "Winning Players";
 const LOSING_HEADER = "Losing Players";
 const WINNER_ID = "winnerText";
 const LOSER_ID = "loserText";
-
+const BUTTON_MESSAGE = "Continue to Game Two";
 const ALWAYS_ENABLED = false;
 const GAME_TWO_TUTORIAL_ROUTE = "game-two-tutorial"
 
@@ -67,6 +67,7 @@ function Summary(props) {
         className={classes.continueButton}
         route={GAME_TWO_TUTORIAL_ROUTE}
         disabled={ALWAYS_ENABLED}
+        message={BUTTON_MESSAGE}
       />
     </div>
   );

@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { Typography, withStyles } from "@material-ui/core";
 import '../util/common_stylings/FullScreenDiv.css';
 import OptionButton from '../icons/components/OptionButton';
+import ContinueButton from '../util/common_components/ContinueButton';
 
 const FULL_DIV = "fullDiv";
 const PLAYER_OPTION_NUMBERS = Array.from(Array(25).keys());
@@ -13,23 +14,23 @@ const NOT_SELECTED = false;
 const NUM_COLUMNS = 8;
 const NUM_ROWS = 3;
 
-const BASE_HEIGHT_OFFSET = 40;
-const OPTION_HEIGHT_OFFSET = 20;
+const BASE_HEIGHT_OFFSET = 35;
+const OPTION_HEIGHT_OFFSET = 18;
 
 const BASE_WIDTH_OFFSET = 10;
-const OPTION_WIDTH_OFFSET = 10;
+const OPTION_WIDTH_OFFSET = 10.5;
+
+const BUTTON_POSITION_TYPE = "absolute";
+const BUTTON_MESSAGE = "Return to Lobby";
+const LOBBY_ROUTE = '/lobby';
+const DISABLED = false;
 
 const styles = {
   confirmButton: {
     position: "absolute",
-    top: "68vh",
-    left: "5vw",
-    height: "5vh",
-    width: "15vw",
-    opacity: ".9",
-    borderRadius: "8px",
-    alignItems: "center",
-    fontSize: "15px",
+    bottom: "6vh",
+    left: "44.5vw",
+    opacity: .9
   },
 };
 
@@ -54,7 +55,7 @@ function AvatarSelector(props) {
         console.log(leftMargin);
         console.log(topMargin);
         return (
-          <div style={{position: "absolute", left: leftMargin, top: topMargin}}>
+          <div style={{position: BUTTON_POSITION_TYPE, left: leftMargin, top: topMargin}}>
             <OptionButton
               player={player}
               selected={selectedPlayers[player]}
@@ -63,6 +64,14 @@ function AvatarSelector(props) {
           </div>
             )
       })}
+
+      <div className = {classes.confirmButton}>
+        <ContinueButton
+          message={BUTTON_MESSAGE} 
+          route={LOBBY_ROUTE} 
+          disabled={DISABLED}
+        />
+      </div>
     </div>
   );
 }

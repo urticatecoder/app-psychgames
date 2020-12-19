@@ -31,7 +31,7 @@ function ContinueButton(props) {
       onClick={() => props.history.push(props.route)}
       disabled={props.disabled}
     >
-      {BUTTON_MESSAGE}
+      {props.message}
     </Button>
   );
 }
