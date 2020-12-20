@@ -2,7 +2,8 @@ const assert = require('assert');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
-calculateResults, checkPassiveness, zeroSumResults, getSinglePairMap, getDoublePairMap, getTriplePairMap} = require('../db/results.js');
+calculateResults, checkPassiveness, zeroSumResults, getSinglePairMap,
+ getDoublePairMap, getTriplePairMap, isGameOneDone} = require('../db/results.js');
 
 
 describe('Location sending and calculation', () => {
@@ -586,4 +587,17 @@ describe('Location sending and calculation', () => {
         assert(single.get(testID[5]) === 0 && double.get(testID[5]) === 0);
         done();
     });
+    it('does Game 1 end', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.setPlayerLocation('test_id1', 100);
+        room.setPlayerLocation('test_id2', 120);
+        room.setPlayerLocation('test_id3', 130);
+        assert(isGameOneDone(room) === true);
+        done();
+    });
+    
 })
