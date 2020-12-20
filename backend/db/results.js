@@ -393,4 +393,7 @@ module.exports = {
     getResults: getResults,
     zeroSumResults: zeroSumResults,
     checkPassiveness: checkPassiveness,
+    getSinglePairMap: getSinglePairMap,
+    getDoublePairMap: getDoublePairMap,
+    getTriplePairMap: getTriplePairMap
 }
