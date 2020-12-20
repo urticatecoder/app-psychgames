@@ -12,6 +12,7 @@ import PrivateRoute from "./admin_page/PrivateRoute";
 import MainAvatar from "./lobby/MainAvatar";
 import TutorialScreen from "./tutorials/TutorialScreen";
 import AvatarSelector from "../src/avatar_selection/AvatarSelector";
+import { select } from "async";
 
 const TEST_CODE = 123;
 const TEST_CODES = [123, 456, 789, 12, 34, 56];
@@ -47,11 +48,14 @@ const ADMIN_PRIVATE_ROUTE = "/admin";
 const SUMMARY_ROUTE = "/summary";
 const PROLIFIC_ROUTE = "/prolific";
 
+const DEFAULT_SELECTION_INDEX = -1;
+
 function App() {
   const [loginCode, setLoginCode] = useState(TEST_CODE);
   const [allLoginCodes, setAllLoginCodes] = useState(TEST_CODES);
   const [winners, setWinners] = useState(NO_WINNERS);
   const [losers, setLosers] = useState(NO_LOSERS);
+  const [selectedIndex, setSelectedIndex] = useState(DEFAULT_SELECTION_INDEX);
 
   return (
     <div className={CLASS_NAME}>
@@ -76,7 +80,7 @@ function App() {
         <Route
           path={AVATAR_SELECTION_ROUTE}
           exact
-          render={() => <AvatarSelector/>}
+          render={() => <AvatarSelector selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex}/>}
         />
 
         <Route path={PLAYER_ASSIGNMENT_ROUTE} render={() => <MainAvatar />} />

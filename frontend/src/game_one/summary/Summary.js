@@ -68,6 +68,8 @@ function Summary(props) {
         route={GAME_TWO_TUTORIAL_ROUTE}
         disabled={ALWAYS_ENABLED}
         message={BUTTON_MESSAGE}
+        height='50px' 
+        width='200px'
       />
     </div>
   );

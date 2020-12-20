@@ -1,12 +1,12 @@
 import React, {useState} from "react";
-import { Typography, withStyles } from "@material-ui/core";
+import { Typography, Box, withStyles } from "@material-ui/core";
 import '../util/common_stylings/FullScreenDiv.css';
 import OptionButton from '../icons/components/OptionButton';
 import ContinueButton from '../util/common_components/ContinueButton';
+import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 
 const FULL_DIV = "fullDiv";
 const PLAYER_OPTION_NUMBERS = Array.from(Array(25).keys());
-const DEFAULT_SELECTION_INDEX = 0;
 const NUMBER_OPTIONS = 25;
 const SELECTED = true;
 const NOT_SELECTED = false;
@@ -14,7 +14,7 @@ const NOT_SELECTED = false;
 const NUM_COLUMNS = 8;
 const NUM_ROWS = 3;
 
-const BASE_HEIGHT_OFFSET = 35;
+const BASE_HEIGHT_OFFSET = 30;
 const OPTION_HEIGHT_OFFSET = 18;
 
 const BASE_WIDTH_OFFSET = 10;
@@ -25,10 +25,18 @@ const BUTTON_MESSAGE = "Return to Lobby";
 const LOBBY_ROUTE = '/lobby';
 const DISABLED = false;
 
+const AVATAR_SELECTION_MESSAGE = "Please choose your avatar from the options below."
+const ITALIC_FONT = "italic";
+
+
 const styles = {
+  instructionText: {
+    marginTop: "12vh",
+    opacity: .9
+  },
   confirmButton: {
     position: "absolute",
-    bottom: "6vh",
+    bottom: "8vh",
     left: "44.5vw",
     opacity: .9
   },
@@ -44,11 +52,22 @@ const styles = {
 function AvatarSelector(props) {
   const { classes } = props;
 
-  const [selectedPlayers, setSelectedPlayers] = useState(getFalseArray());
-  const [selectedIndex, setSelectedIndex] = useState(DEFAULT_SELECTION_INDEX);
+  const [selectedPlayers, setSelectedPlayers] = useState(getUpdatedSelectionArray(props.selectedIndex));
 
   return (
     <div className={FULL_DIV}>
+      <div>
+        <Typography
+          className={classes.instructionText}
+          variant={Variants.LARGE_TEXT}
+        >
+          <Box fontStyle={ITALIC_FONT}>
+            {AVATAR_SELECTION_MESSAGE}
+          </Box>
+        </Typography>
+      </div>
+
+
       {PLAYER_OPTION_NUMBERS.map((player) => {
         let leftMargin = getDivX(player);
         let topMargin = getDivY(player);
@@ -59,7 +78,7 @@ function AvatarSelector(props) {
             <OptionButton
               player={player}
               selected={selectedPlayers[player]}
-              onSelect={() => selectPlayer(player, setSelectedPlayers, setSelectedIndex)}
+              onSelect={() => selectPlayer(player, setSelectedPlayers, props.setSelectedIndex)}
             />
           </div>
             )
@@ -70,9 +89,12 @@ function AvatarSelector(props) {
           message={BUTTON_MESSAGE} 
           route={LOBBY_ROUTE} 
           disabled={DISABLED}
+          height='50px' 
+          width='200px'
         />
       </div>
     </div>
+    
   );
 }
 
@@ -85,6 +107,15 @@ function selectPlayer(index, setSelectedPlayers, setSelectedIndex) {
 
 function getFalseArray() {
   return new Array(NUMBER_OPTIONS).fill(NOT_SELECTED);
+}
+
+function getUpdatedSelectionArray(selectedIndex) {
+  let selectedPlayers = getFalseArray();
+  if (selectedIndex < 0) return selectedPlayers;
+  else {
+    selectedPlayers[selectedIndex] = true;
+  }
+  return selectedPlayers;
 }
 
 function getDivX(player) {

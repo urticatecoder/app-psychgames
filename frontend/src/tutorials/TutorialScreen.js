@@ -79,7 +79,7 @@ function TutorialScreen(props) {
         />
       </div>
       <div className={classes.buttonDiv}>
-        <ContinueButton message={BUTTON_MESSAGE} route={props.nextRoute} disabled={!enableButton} />
+        <ContinueButton  height='50px' width='200px' message={BUTTON_MESSAGE} route={props.nextRoute} disabled={!enableButton} />
       </div>
     </div>
   );
