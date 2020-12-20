@@ -24,7 +24,6 @@ import Solar from "../images/shapes/solar.png";
 import Trapezoid from "../images/shapes/trapezoid.png";
 import UpArrows from "../images/shapes/up-arrows.png";
 import YellowCrosshair from "../images/shapes/yellow-crosshair.png";
-import YellowThermostat from "../images/shapes/yellow-thermostat.png";
 
 
 const IMAGE_HEIGHT = "100vh";
@@ -127,75 +126,122 @@ const PlayerOptions = {
   0: OPTION_ZERO,
   name0: BEIGE_TRIANGLE_ID,
   label0: BEIGE_TRIANGLE_LABEL,
+  image0: BeigeTriangle,
+
   1: OPTION_ONE,
   name1: BLACK_ARROWS_ID,
   label1: BLACK_ARROWS_LABEL,
+  image1: BlackArrows,
+
   2: OPTION_TWO,
   name2: BLACK_EYE_ID,
   label2: BLACK_EYE_LABEL,
+  image2: BlackEye,
+
   3: OPTION_THREE,
   name3: BLUE_ARROWS_ID,
   label3: BLUE_ARROWS_LABEL,
+  image3: BlueArrows,
+
   4: OPTION_FOUR,
   name4: BLUE_CIRCLES_ID,
   label4: BLUE_CIRCLES_LABEL,
+  image4: BlueCircles,
+
   5: OPTION_FIVE,
   name5: BLUE_PYRAMIDS_ID,
   label5: BLUE_PYRAMIDS_LABEL,
+  image5: BluePyramids,
+
   6: OPTION_SIX,
   name6: CHAINLINK_ID,
   label6: CHAINLINK_LABEL,
+  image6: Chainlink,
+
   7: OPTION_SEVEN,
   name7: FEMALE_PURPLE_ID,
   label7: FEMALE_PURPLE_LABEL,
+  image7: FemalePurple,
+
   8: OPTION_EIGHT,
   name8: FEMALE_RED_ID,
   label8: FEMALE_RED_LABEL,
+  image8: FemaleRed,
+
   9: OPTION_NINE,
   name9: GREEN_CIRCLE_ARROW_ID,
   label9: GREEN_CIRCLE_ARROW_LABEL,
+  image9: GreenCircleArrow,
+
   10: OPTION_TEN,
   name10: GREEN_ELLIPTICAL_ID,
   label10: GREEN_ELLIPTICAL_LABEL,
+  image10: GreenElliptical,
+
   11: OPTION_ELEVEN,
   name0: GREEN_FENCE_ID,
   label0: GREEN_FENCE_LABEL,
+  image11: GreenFence,
+
   12: OPTION_TWELVE,
   name12: GREEN_LEAF_ID,
   label12: GREEN_LEAF_LABEL,
+  image12: GreenLeaf,
+
   13: OPTION_THIRTEEN,
   name13: GREEN_LENS_ID,
   label13: GREEN_LENS_LABEL,
+  image13: GreenLens,
+
   14: OPTION_FOURTEEN,
   name14: GREEN_SQUARE_ID,
   label14: GREEN_SQUARE_LABEL,
+  image14: GreenSquare,
+
   15: OPTION_FIFTEEN,
   name15: GREEN_TRIDENT_ID,
   label15: GREEN_TRIDENT_LABEL,
+  image15: GreenTrident,
+
   16: OPTION_SIXTEEN,
   name16: HOURGLASS_ID,
   label16: HOURGLASS_LABEL,
+  image16: Hourglass,
+
   17: OPTION_SEVENTEEN,
   name17: MALE_YELLOW_ID,
   label17: MALE_YELLOW_LABEL,
+  image17: MaleYellow,
+
   18: OPTION_EIGHTEEN,
   name18: PINK_SLIDER_ID,
   label18: PINK_SLIDER_LABEL,
+  image18: PinkSlider,
+
   19: OPTION_NINETEEN,
   name19: RED_X_ID,
   label19: RED_X_LABEL,
+  image19: RedX,
+
   20: OPTION_TWENTY,
   name20: SOLAR_ID,
   label20: SOLAR_LABEL,
+  image20: Solar,
+
   21: OPTION_TWENTY_ONE,
   name21: TRAPEZOID_ID,
   label21: TRAPEZOID_LABEL,
+  image21: Trapezoid,
+
   22: OPTION_TWENTY_TWO,
   name22: UP_ARROWS_ID,
   label22: UP_ARROWS_LABEL,
+  image22: UpArrows,
+
   23: OPTION_TWENTY_THREE,
   name23: YELLOW_CROSSHAIR_ID,
   label23: YELLOW_CROSSHAIR_LABEL,
+  image23: YellowCrosshair,
 };
 
 export default PlayerOptions;

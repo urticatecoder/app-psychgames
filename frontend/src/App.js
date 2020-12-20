@@ -83,7 +83,7 @@ function App() {
           render={() => <AvatarSelector selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex}/>}
         />
 
-        <Route path={PLAYER_ASSIGNMENT_ROUTE} render={() => <MainAvatar />} />
+        <Route path={PLAYER_ASSIGNMENT_ROUTE} render={() => <MainAvatar selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex}/>} />
         <Route
           path={GAME_ONE_TUTORIAL_ROUTE}
           render={() => (
