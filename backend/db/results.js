@@ -123,11 +123,17 @@ function getSinglePairMap(prolificIDArray, room){
             singleMap.set(playerChosen, singleMap.get(playerChosen) + 1);
         }
     }
+    let tripleMap = getTriplePairMap(prolificIDArray, room);
     //remove the double and triple bonuses
     for (var i = 0; i < prolificIDArray.length; i++) {
         let tempPlayer = prolificIDArray[i];
         let tempCount = doubleAndTripleCount.get(tempPlayer);
-        singleMap.set(tempPlayer, singleMap.get(tempPlayer) - tempCount);
+        if(tripleMap.get(tempPlayer) !== 0){
+            singleMap.set(tempPlayer, singleMap.get(tempPlayer) - tempCount + 1);
+        }
+        else{
+            singleMap.set(tempPlayer, singleMap.get(tempPlayer) - tempCount);
+        }
     }
     
     return singleMap;
