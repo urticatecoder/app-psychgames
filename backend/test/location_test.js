@@ -527,7 +527,7 @@ describe('Location sending and calculation', () => {
         assert(double.get(testID[1]) === 1 && double.get(testID[2]) === 1);
         done();
     });
-    it('triple bonuses 3 players', (done) => {
+    it('1 triple bonus 3 players', (done) => {
         const testID = ['test_id1', 'test_id2', 'test_id3'];
         var choicesOne = ['test_id2', 'test_id3'];
         var choicesTwo = ['test_id3', 'test_id1'];
@@ -542,9 +542,38 @@ describe('Location sending and calculation', () => {
         let single = getSinglePairMap(testID, room);
         let double = getDoublePairMap(testID, room);
         let triple = getTriplePairMap(testID, room);
-        console.log(single);
-        console.log(double);
-        console.log(triple);
+        for(var i = 0; i < testID.length; i++){
+            let player = testID[i];
+            assert(single.get(player) === 0);
+            assert(double.get(player) === 0);
+            assert(triple.get(player) === 1);
+        }
+        done();
+    });
+    it('2 triple bonus 6 players', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3', 'test_id4', 'test_id5', 'test_id6'];
+        var choicesOne = ['test_id2', 'test_id3'];
+        var choicesTwo = ['test_id3', 'test_id1'];
+        var choicesThree = ['test_id1', 'test_id2'];
+        var choicesFour = ['test_id5', 'test_id6'];
+        var choicesFive = ['test_id4', 'test_id6'];
+        var choicesSix = ['test_id4', 'test_id5'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.addPlayer(new Player('test_id4'));
+        room.addPlayer(new Player('test_id5'));
+        room.addPlayer(new Player('test_id6'));
+        room.getPlayerWithID('test_id1').recordChoices(choicesOne);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+        room.getPlayerWithID('test_id4').recordChoices(choicesFour);
+        room.getPlayerWithID('test_id5').recordChoices(choicesFive);
+        room.getPlayerWithID('test_id6').recordChoices(choicesSix);
+        let single = getSinglePairMap(testID, room);
+        let double = getDoublePairMap(testID, room);
+        let triple = getTriplePairMap(testID, room);
         for(var i = 0; i < testID.length; i++){
             let player = testID[i];
             assert(single.get(player) === 0);

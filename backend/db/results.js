@@ -178,11 +178,18 @@ function getDoublePairMap(prolificIDArray, room){
     for(var i = 0; i < prolificIDArray.length; i++){
         doubleMap.set(prolificIDArray[i], 0);
     }
-    let doublePairs = calculateAllDoubleBonuses(prolificIDArray, room);
-    // place double pairs into doubleAndTriple map
-    for (var i = 0; i < doublePairs.length; i++) {
-        doubleMap.set(doublePairs[i][0], doubleMap.get(doublePairs[i][0]) + 1);
-        doubleMap.set(doublePairs[i][1], doubleMap.get(doublePairs[i][1]) + 1);
+    // let doublePairs = calculateAllDoubleBonuses(prolificIDArray, room);
+    // // place double pairs into doubleAndTriple map
+    // for (var i = 0; i < doublePairs.length; i++) {
+    //     doubleMap.set(doublePairs[i][0], doubleMap.get(doublePairs[i][0]) + 1);
+    //     doubleMap.set(doublePairs[i][1], doubleMap.get(doublePairs[i][1]) + 1);
+    // }
+    let doubleAndTriple = getDoubleAndTripleCount(prolificIDArray, room);
+    let triple = getTriplePairMap(prolificIDArray, room);
+    // put double and triple counts into double map
+    for(var i = 0; i < prolificIDArray.length; i++){
+        let tempPlayer = prolificIDArray[i];
+        doubleMap.set(tempPlayer, doubleAndTriple.get(tempPlayer) - 3*triple.get(tempPlayer));
     }
     return doubleMap;
 }
@@ -249,6 +256,7 @@ function calculateAllDoubleBonuses(prolificIDArray, room) {
         }
         if(!triple){
             for (var j = 0; j < choicesProlific.length; j++) {
+                double = true;
                 let playerChosen = choicesProlific[j];
                 let choicesChosenPlayer = allChoices.get(playerChosen);
                 let tempDoubleBonus = [];
