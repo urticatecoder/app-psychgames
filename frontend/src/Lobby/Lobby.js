@@ -39,6 +39,8 @@ function Lobby(props) {
         code={props.code}
         setStartStatus={setStartStatus}
         setAllLoginCodes={props.setAllLoginCodes}
+        loggedIn={props.loggedIn}
+        setLoggedIn={props.setLoggedIn}
       />
       <div className={classes.avatarButton}>
         <ContinueButton

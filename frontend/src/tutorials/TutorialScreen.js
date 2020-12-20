@@ -36,9 +36,8 @@ const styles = {
     top: "12vh",
   },
   buttonDiv: {
-    position: "absolute",
-    top: "92vh",
-    left: "45vw",
+    position: "relative",
+    marginTop: '84vh',
   },
 };
 
@@ -79,7 +78,7 @@ function TutorialScreen(props) {
         />
       </div>
       <div className={classes.buttonDiv}>
-        <ContinueButton  height='50px' width='200px' message={BUTTON_MESSAGE} route={props.nextRoute} disabled={!enableButton} />
+        <ContinueButton  height='60px' width='280px' message={BUTTON_MESSAGE} route={props.nextRoute} disabled={!enableButton} />
       </div>
     </div>
   );

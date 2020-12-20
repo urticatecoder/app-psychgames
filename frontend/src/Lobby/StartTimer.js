@@ -29,6 +29,8 @@ const ROOM_FULL_WEBSOCKET = "room fill";
 const PEOPLE_IN_ROOM_WEBSOCKET = "num of people in the room";
 
 const ITALIC_FONT = "italic";
+const LOGGED_IN = true;
+
 const styles = {
   welcomeInstruction: {
     marginTop: "150px",
@@ -56,7 +58,11 @@ function StartTimer(props) {
   let setAllLoginCodes = props.setAllLoginCodes;
 
   useEffect(() => {
-    socket.emit(ENTER_LOBBY_WEBSOCKET, code);
+    if (!props.loggedIn) {
+      socket.emit(ENTER_LOBBY_WEBSOCKET, code);
+      props.setLoggedIn(LOGGED_IN);
+    }
+
     socket.on(JOIN_LOBBY_WEBSOCKET, () => {
       setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
     });

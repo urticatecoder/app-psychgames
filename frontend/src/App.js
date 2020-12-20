@@ -49,6 +49,7 @@ const SUMMARY_ROUTE = "/summary";
 const PROLIFIC_ROUTE = "/prolific";
 
 const DEFAULT_SELECTION_INDEX = -1;
+const LOGGED_OUT = false;
 
 function App() {
   const [loginCode, setLoginCode] = useState(TEST_CODE);
@@ -56,6 +57,7 @@ function App() {
   const [winners, setWinners] = useState(NO_WINNERS);
   const [losers, setLosers] = useState(NO_LOSERS);
   const [selectedIndex, setSelectedIndex] = useState(DEFAULT_SELECTION_INDEX);
+  const [loggedIn, setLoggedIn] = useState(LOGGED_OUT);
 
   return (
     <div className={CLASS_NAME}>
@@ -73,6 +75,8 @@ function App() {
               code={loginCode}
               setLoginCode={setLoginCode}
               setAllLoginCodes={setAllLoginCodes}
+              loggedIn = {loggedIn}
+              setLoggedIn = {setLoggedIn}
             />
           )}
         />
@@ -83,7 +87,13 @@ function App() {
           render={() => <AvatarSelector selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex}/>}
         />
 
-        <Route path={PLAYER_ASSIGNMENT_ROUTE} render={() => <MainAvatar selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex}/>} />
+        <Route 
+          path={PLAYER_ASSIGNMENT_ROUTE} 
+          render={() => <MainAvatar 
+          selectedIndex={selectedIndex} 
+          setSelectedIndex={setSelectedIndex}/>} 
+        />
+
         <Route
           path={GAME_ONE_TUTORIAL_ROUTE}
           render={() => (
@@ -128,6 +138,7 @@ function App() {
               winners={winners}
               losers={losers}
               allLoginCodes={allLoginCodes}
+              selectedIndex={selectedIndex}
             />
           )}
         />
@@ -137,6 +148,7 @@ function App() {
           render={() => (
             <Summary
               winners={winners}
+              selectedIndex={selectedIndex}
               losers={losers}
               allLoginCodes={allLoginCodes}
             />
@@ -156,6 +168,7 @@ function App() {
               setLosers={setLosers}
               loginCode={loginCode}
               allLoginCodes={allLoginCodes}
+              selectedIndex={selectedIndex}
             />
           )}
         />

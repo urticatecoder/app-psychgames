@@ -214,7 +214,8 @@ function GameOne(props) {
               props.loginCode,
               doubles,
               triples,
-              disabledPlayers
+              disabledPlayers,
+              props.selectedIndex
             );
           })}
         </Grid>
@@ -249,7 +250,7 @@ function handleSubmitButton(animationPause, setDisableButton) {
   }, animationPause);
 }
 
-function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID, doubles, triples, disabledPlayers) {
+function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID, doubles, triples, disabledPlayers, selectedIndex) {
   return (
     <Grid item>
       <PlayerColumn
@@ -271,6 +272,7 @@ function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooM
         to={toHeights[playerNumber]}
         player={playerNumber}
         disabled={disabledPlayers[playerNumber]}
+        selectedIndex={selectedIndex}
       />
     </Grid>
   );
