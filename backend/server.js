@@ -38,7 +38,6 @@ io.on('connection', socket => {
         DB_API.saveChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
         player.recordChoices(choices);
         room.addPlayerIDToConfirmedSet(prolificID);
-
         // let all bots select their choices
         let allIDs = lobby.getAllPlayersIDsInRoomWithName(room.roomName)
         room.players.forEach((playerInThisRoom) => {
@@ -58,6 +57,8 @@ io.on('connection', socket => {
             let allDoubleBonus = calculateAllDoubleBonuses(allIDs, room);
             //players will be emitted to the "net zero" position after showing who selected who (to be implemented)
             let resultForAllPlayers = getResultsByProlificId(allIDs, room);
+            //turn count for game 1
+            room.setGameOneTurnCount(room.gameOneTurnCount + 1);
             if (isGameOneDone(room)) {
                 let group = getWinnersAndLosers(room);
                 room.setGameOneResults(group);

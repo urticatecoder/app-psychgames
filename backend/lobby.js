@@ -105,7 +105,7 @@ class Room {
     allPlayerLocations = new Map();
     gameOneResults = []; // two groups for winners/losers, winners = gameOneResults[0], losers = gameOneResults[1]
     gameTwoPayoff = GameTwo.generateCompeteAndInvestPayoff();
-
+    gameOneTurnCount = 0; // turns for game 1
     /**
      * @constructor
      * @param roomName {string}
@@ -127,6 +127,14 @@ class Room {
 
     setPlayerLocation(prolificID, newLocation) {
         this.allPlayerLocations.set(prolificID, newLocation);
+    }
+
+    get GameOneTurnCount(){
+        return this.gameOneTurnCount;
+    }
+
+    setGameOneTurnCount(newCount){
+        this.gameOneTurnCount = newCount;
     }
 
     /**

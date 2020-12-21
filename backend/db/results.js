@@ -33,7 +33,11 @@ function getResultsByProlificId(prolificIDArray, room) {
     for(var i = 0; i < zeroSumRoundResults.length; i++){
         newResults.push(zeroSumRoundResults[i] + initialLocations[i]);
         let playerProlific = prolificIDArray[i];
-        room.setPlayerLocation(playerProlific, newResults[i]);
+        if(newResults[i] < 0){
+            room.setPlayerLocation(playerProlific, 0);
+        } else{
+            room.setPlayerLocation(playerProlific, newResults[i]);
+        }
     }
     return newResults;
 }
@@ -123,11 +127,17 @@ function getSinglePairMap(prolificIDArray, room){
             singleMap.set(playerChosen, singleMap.get(playerChosen) + 1);
         }
     }
+    let tripleMap = getTriplePairMap(prolificIDArray, room);
     //remove the double and triple bonuses
     for (var i = 0; i < prolificIDArray.length; i++) {
         let tempPlayer = prolificIDArray[i];
         let tempCount = doubleAndTripleCount.get(tempPlayer);
-        singleMap.set(tempPlayer, singleMap.get(tempPlayer) - tempCount);
+        if(tripleMap.get(tempPlayer) !== 0){
+            singleMap.set(tempPlayer, singleMap.get(tempPlayer) - tempCount + 1);
+        }
+        else{
+            singleMap.set(tempPlayer, singleMap.get(tempPlayer) - tempCount);
+        }
     }
     
     return singleMap;
@@ -172,11 +182,18 @@ function getDoublePairMap(prolificIDArray, room){
     for(var i = 0; i < prolificIDArray.length; i++){
         doubleMap.set(prolificIDArray[i], 0);
     }
-    let doublePairs = calculateAllDoubleBonuses(prolificIDArray, room);
-    // place double pairs into doubleAndTriple map
-    for (var i = 0; i < doublePairs.length; i++) {
-        doubleMap.set(doublePairs[i][0], doubleMap.get(doublePairs[i][0]) + 1);
-        doubleMap.set(doublePairs[i][1], doubleMap.get(doublePairs[i][1]) + 1);
+    // let doublePairs = calculateAllDoubleBonuses(prolificIDArray, room);
+    // // place double pairs into doubleAndTriple map
+    // for (var i = 0; i < doublePairs.length; i++) {
+    //     doubleMap.set(doublePairs[i][0], doubleMap.get(doublePairs[i][0]) + 1);
+    //     doubleMap.set(doublePairs[i][1], doubleMap.get(doublePairs[i][1]) + 1);
+    // }
+    let doubleAndTriple = getDoubleAndTripleCount(prolificIDArray, room);
+    let triple = getTriplePairMap(prolificIDArray, room);
+    // put double and triple counts into double map
+    for(var i = 0; i < prolificIDArray.length; i++){
+        let tempPlayer = prolificIDArray[i];
+        doubleMap.set(tempPlayer, doubleAndTriple.get(tempPlayer) - 3*triple.get(tempPlayer));
     }
     return doubleMap;
 }
@@ -243,6 +260,7 @@ function calculateAllDoubleBonuses(prolificIDArray, room) {
         }
         if(!triple){
             for (var j = 0; j < choicesProlific.length; j++) {
+                double = true;
                 let playerChosen = choicesProlific[j];
                 let choicesChosenPlayer = allChoices.get(playerChosen);
                 let tempDoubleBonus = [];
@@ -352,7 +370,7 @@ function isGameOneDone(room) {
             playerMax += 1;
         }
     }
-    return playerMax >= 3;
+    return playerMax >= 3 || room.gameOneTurnCount >= 5;
 }
 /**
  * @param room {room object} the room the players are in 
@@ -362,21 +380,19 @@ function getWinnersAndLosers(room) {
     let allLocations = room.playerLocation;
     let winners = [];
     let losers = [];
+    let highScores = [];
     for (let tempPlayer of allLocations.keys()) {
-        if (allLocations.get(tempPlayer) >= 100) {
-            winners.push(tempPlayer);
-        }
-        else {
-            losers.push(tempPlayer);
-        }
+        highScores.push(allLocations.get(tempPlayer));
     }
-    // If winners is > 3, ensure that the amount of winners/losers is 3
-    // FIXME - NEED to update this to be based on the highest score over winter break
-    if(winners.length >= 3){
-        let size = winners.length;
-        for(var i = size; i > 3; i--){
-            losers.push(winners[i - 1]);
-            winners.pop();
+    highScores.sort(function(a, b) {
+        return b - a;
+    });
+    
+    for(let tempPlayer of allLocations.keys()) {
+        if(allLocations.get(tempPlayer) >= highScores[2]){
+            winners.push(tempPlayer);
+        } else{
+            losers.push(tempPlayer);
         }
     }
     return [winners, losers];
@@ -393,4 +409,7 @@ module.exports = {
     getResults: getResults,
     zeroSumResults: zeroSumResults,
     checkPassiveness: checkPassiveness,
+    getSinglePairMap: getSinglePairMap,
+    getDoublePairMap: getDoublePairMap,
+    getTriplePairMap: getTriplePairMap
 }
