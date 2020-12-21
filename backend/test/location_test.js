@@ -3,7 +3,7 @@ const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
 calculateResults, checkPassiveness, zeroSumResults, getSinglePairMap,
- getDoublePairMap, getTriplePairMap, isGameOneDone} = require('../db/results.js');
+ getDoublePairMap, getTriplePairMap, isGameOneDone, getWinnersAndLosers} = require('../db/results.js');
 
 
 describe('Location sending and calculation', () => {
@@ -678,6 +678,26 @@ describe('Location sending and calculation', () => {
         let single = getSinglePairMap(testID, room);
         let double = getDoublePairMap(testID, room);
         let triple = getTriplePairMap(testID, room);
+        done();
+    });
+    it('winners and losers game 1', (done) => {
+        const testID = ['test_id1', 'test_id2', 'test_id3'];
+        const room = new Room('room 0');
+        room.addPlayer(new Player('test_id1'));
+        room.addPlayer(new Player('test_id2'));
+        room.addPlayer(new Player('test_id3'));
+        room.addPlayer(new Player('test_id4'));
+        room.addPlayer(new Player('test_id5'));
+        room.addPlayer(new Player('test_id6'));
+        room.setPlayerLocation('test_id1', 100);
+        room.setPlayerLocation('test_id2', 120);
+        room.setPlayerLocation('test_id3', 130);
+        room.setPlayerLocation('test_id4', 180);
+        room.setPlayerLocation('test_id5', 60);
+        room.setPlayerLocation('test_id6', 0);
+        let group = getWinnersAndLosers(room);
+        console.log(group[0]);
+        console.log(group[1]);
         done();
     });
     

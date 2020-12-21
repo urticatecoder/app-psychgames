@@ -370,7 +370,7 @@ function isGameOneDone(room) {
             playerMax += 1;
         }
     }
-    return playerMax >= 3;
+    return playerMax >= 3 || room.gameOneTurnCount >= 5;
 }
 /**
  * @param room {room object} the room the players are in 
@@ -380,21 +380,19 @@ function getWinnersAndLosers(room) {
     let allLocations = room.playerLocation;
     let winners = [];
     let losers = [];
+    let highScores = [];
     for (let tempPlayer of allLocations.keys()) {
-        if (allLocations.get(tempPlayer) >= 100) {
-            winners.push(tempPlayer);
-        }
-        else {
-            losers.push(tempPlayer);
-        }
+        highScores.push(allLocations.get(tempPlayer));
     }
-    // If winners is > 3, ensure that the amount of winners/losers is 3
-    // FIXME - NEED to update this to be based on the highest score over winter break
-    if(winners.length >= 3){
-        let size = winners.length;
-        for(var i = size; i > 3; i--){
-            losers.push(winners[i - 1]);
-            winners.pop();
+    highScores.sort(function(a, b) {
+        return b - a;
+    });
+    
+    for(let tempPlayer of allLocations.keys()) {
+        if(allLocations.get(tempPlayer) >= highScores[2]){
+            winners.push(tempPlayer);
+        } else{
+            losers.push(tempPlayer);
         }
     }
     return [winners, losers];
