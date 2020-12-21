@@ -1,6 +1,7 @@
 import React from "react";
 
-import Flame from "../images/shapes/flame.png";
+import GameImage from './GameImage';
+
 import Arrow from "../images/shapes/arrow.png";
 import Cross from "../images/shapes/cross.png";
 import Headset from "../images/shapes/headset.png";
@@ -10,14 +11,12 @@ import Triangle from "../images/shapes/triangle.png";
 const IMAGE_HEIGHT = "85vh";
 const IMAGE_WIDTH = "85vw";
 
-const FLAME_ID = "flame";
 const ARROW_ID = "arrow";
 const CROSS_ID = "cross";
 const HEADSET_ID = "headset";
 const LEAVES_ID = "leaves";
 const TRIANGLE_ID = "triangle";
 
-const FLAME_LABEL = "Flame";
 const ARROW_LABEL = "Arrow";
 const CROSS_LABEL = "Cross";
 const HEADSET_LABEL = "Headset";
@@ -33,26 +32,22 @@ const TRIANGLE_LABEL = "Triangle";
 
 function getPlayer(image, id) {
   return (
-    <img
-      src={image}
+    <GameImage
+      image={image}
       id={id}
-      alt={id}
-      width={IMAGE_HEIGHT}
-      height={IMAGE_WIDTH}
+      width={IMAGE_WIDTH}
+      height={IMAGE_HEIGHT}
     />
   );
 }
-const PLAYER_ZERO = getPlayer(Flame, CROSS_ID);
-const PLAYER_ONE = getPlayer(Triangle, FLAME_ID);
-const PLAYER_TWO = getPlayer(Cross, TRIANGLE_ID);
+
+const PLAYER_ONE = getPlayer(Triangle, TRIANGLE_ID);
+const PLAYER_TWO = getPlayer(Cross, CROSS_ID);
 const PLAYER_THREE = getPlayer(Arrow, ARROW_ID);
 const PLAYER_FOUR = getPlayer(Headset, HEADSET_ID);
 const PLAYER_FIVE = getPlayer(Leaves, LEAVES_ID);
 
 const PlayerInfo = {
-  0: PLAYER_ZERO,
-  name0: FLAME_ID,
-  label0: FLAME_LABEL,
   1: PLAYER_ONE,
   name1: TRIANGLE_ID,
   label1: TRIANGLE_LABEL,

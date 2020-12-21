@@ -14,6 +14,7 @@ const ITALIC_FONT = "italic";
 const ENABLE_BUTTON = true;
 const FULL_SCREEN = "100%";
 
+const BUTTON_MESSAGE = "Continue to Game One";
 // const DISABLE_BUTTON = false;
 
 const styles = {
@@ -35,9 +36,8 @@ const styles = {
     top: "12vh",
   },
   buttonDiv: {
-    position: "absolute",
-    top: "92vh",
-    left: "45vw",
+    position: "relative",
+    marginTop: '84vh',
   },
 };
 
@@ -78,7 +78,7 @@ function TutorialScreen(props) {
         />
       </div>
       <div className={classes.buttonDiv}>
-        <ContinueButton route={props.nextRoute} disabled={!enableButton} />
+        <ContinueButton  height='60px' width='280px' message={BUTTON_MESSAGE} route={props.nextRoute} disabled={!enableButton} />
       </div>
     </div>
   );

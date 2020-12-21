@@ -98,7 +98,7 @@ class AdminAuth extends React.Component {
           {/* FOR TESTING
                     <br/>
                     <br/>
-                    <ContinueButton route='/' disabled={false}/> */}
+                    <ContinueButton message="Continue" route='/' disabled={false}/> */}
         </form>
       </div>
     );
