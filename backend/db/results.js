@@ -33,7 +33,11 @@ function getResultsByProlificId(prolificIDArray, room) {
     for(var i = 0; i < zeroSumRoundResults.length; i++){
         newResults.push(zeroSumRoundResults[i] + initialLocations[i]);
         let playerProlific = prolificIDArray[i];
-        room.setPlayerLocation(playerProlific, newResults[i]);
+        if(newResults[i] < 0){
+            room.setPlayerLocation(playerProlific, 0);
+        } else{
+            room.setPlayerLocation(playerProlific, newResults[i]);
+        }
     }
     return newResults;
 }
