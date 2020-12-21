@@ -228,11 +228,13 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
         type={GROUP_ONE}
         allLoginCodes={props.allLoginCodes}
         players={props.losers}
+        selectedIndex={props.selectedIndex}
       />
       <VerticalPlayerGroup
         type={GROUP_TWO}
         allLoginCodes={props.allLoginCodes}
         players={props.winners}
+        selectedIndex={props.selectedIndex}
       />
       {getResourceButton(ResourceNames.KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
         setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}
