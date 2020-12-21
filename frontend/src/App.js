@@ -11,6 +11,8 @@ import AdminAuth from "./admin_page/AdminAuth";
 import PrivateRoute from "./admin_page/PrivateRoute";
 import MainAvatar from "./lobby/MainAvatar";
 import TutorialScreen from "./tutorials/TutorialScreen";
+import AvatarSelector from "../src/avatar_selection/AvatarSelector";
+import { select } from "async";
 
 const TEST_CODE = 123;
 const TEST_CODES = [123, 456, 789, 12, 34, 56];
@@ -25,6 +27,7 @@ const CLASS_NAME = "App";
 const LOGIN_ROUTE = "/";
 const LOBBY_ROUTE = "/lobby";
 const PLAYER_ASSIGNMENT_ROUTE = "/player-assignment";
+const AVATAR_SELECTION_ROUTE = "/avatar-selection";
 
 const GAME_ONE_TUTORIAL_ROUTE = "/game-one-tutorial";
 const GAME_ONE_TUTORIAL_FILEPATH = "Tutorials/GameOne.mov";
@@ -45,11 +48,16 @@ const ADMIN_PRIVATE_ROUTE = "/admin";
 const SUMMARY_ROUTE = "/summary";
 const PROLIFIC_ROUTE = "/prolific";
 
+const DEFAULT_SELECTION_INDEX = -1;
+const LOGGED_OUT = false;
+
 function App() {
   const [loginCode, setLoginCode] = useState(TEST_CODE);
   const [allLoginCodes, setAllLoginCodes] = useState(TEST_CODES);
   const [winners, setWinners] = useState(NO_WINNERS);
   const [losers, setLosers] = useState(NO_LOSERS);
+  const [selectedIndex, setSelectedIndex] = useState(DEFAULT_SELECTION_INDEX);
+  const [loggedIn, setLoggedIn] = useState(LOGGED_OUT);
 
   return (
     <div className={CLASS_NAME}>
@@ -67,11 +75,25 @@ function App() {
               code={loginCode}
               setLoginCode={setLoginCode}
               setAllLoginCodes={setAllLoginCodes}
+              loggedIn = {loggedIn}
+              setLoggedIn = {setLoggedIn}
             />
           )}
         />
 
-        <Route path={PLAYER_ASSIGNMENT_ROUTE} render={() => <MainAvatar />} />
+        <Route
+          path={AVATAR_SELECTION_ROUTE}
+          exact
+          render={() => <AvatarSelector selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex}/>}
+        />
+
+        <Route 
+          path={PLAYER_ASSIGNMENT_ROUTE} 
+          render={() => <MainAvatar 
+          selectedIndex={selectedIndex} 
+          setSelectedIndex={setSelectedIndex}/>} 
+        />
+
         <Route
           path={GAME_ONE_TUTORIAL_ROUTE}
           render={() => (
@@ -116,6 +138,7 @@ function App() {
               winners={winners}
               losers={losers}
               allLoginCodes={allLoginCodes}
+              selectedIndex={selectedIndex}
             />
           )}
         />
@@ -125,6 +148,7 @@ function App() {
           render={() => (
             <Summary
               winners={winners}
+              selectedIndex={selectedIndex}
               losers={losers}
               allLoginCodes={allLoginCodes}
             />
@@ -144,6 +168,7 @@ function App() {
               setLosers={setLosers}
               loginCode={loginCode}
               allLoginCodes={allLoginCodes}
+              selectedIndex={selectedIndex}
             />
           )}
         />

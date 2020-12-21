@@ -1,7 +1,5 @@
 import React from 'react';
-import PlayerImages from './PlayerImages';
-import { Typography } from '@material-ui/core';
-
+import getImage from './getImage';
 const LABEL = 'label'
 
 /**
@@ -14,10 +12,10 @@ const LABEL = 'label'
 function PlayerProfile(props) {
     return(
         <div>
-        {PlayerImages[props.player]}
-        <Typography id={LABEL + PlayerImages[LABEL + props.player]}>{PlayerImages[LABEL + props.player]}</Typography>
+        {getImage(props.player, props.selectedIndex)}
         </div>
     )
 }
+
 
 export default (PlayerProfile);

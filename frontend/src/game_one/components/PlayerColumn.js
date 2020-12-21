@@ -30,6 +30,7 @@ function PlayerColumn(props) {
         triple={props.triple}
         selected={props.selected}
         disabled={props.disabled}
+        selectedIndex={props.selectedIndex}
       />
     </animated.div>
   );

@@ -13,7 +13,7 @@ const FULL_DIV = "fullDiv";
 const SUMMARY_ROUTE = "/summary";
 const MAX_HEIGHT = 100;
 const BOTTOM_OF_SCREEN = 100;
-const INITIAL_HEIGHT = 0;
+const INITIAL_HEIGHT = 50;
 const NUM_PLAYERS = 6;
 const VERTICAL_CONSTANT = 1;
 const VERTICAL_SCALAR = 0.58;
@@ -214,7 +214,8 @@ function GameOne(props) {
               props.loginCode,
               doubles,
               triples,
-              disabledPlayers
+              disabledPlayers,
+              props.selectedIndex
             );
           })}
         </Grid>
@@ -249,7 +250,7 @@ function handleSubmitButton(animationPause, setDisableButton) {
   }, animationPause);
 }
 
-function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID, doubles, triples, disabledPlayers) {
+function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID, doubles, triples, disabledPlayers, selectedIndex) {
   return (
     <Grid item>
       <PlayerColumn
@@ -271,6 +272,7 @@ function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooM
         to={toHeights[playerNumber]}
         player={playerNumber}
         disabled={disabledPlayers[playerNumber]}
+        selectedIndex={selectedIndex}
       />
     </Grid>
   );
