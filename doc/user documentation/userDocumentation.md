@@ -1,0 +1,5 @@
+**The tutorials in order to understand our application and how Game 1 and Game 2 are played are located in the application.**
+
+In order to access our application, each user will start by signing up for the research study on the site Prolific. They will be given a time and date to participate in the research study. During this accepted time, they will be sent the link to our web application and a unique login ID. The user will enter the prolific ID into the designated location that says "Please enter your login code" with a TextField labeled as "Login Code".
+
+From here, the experiment begins. A series of instructions and video tutorials will walk the user through the study. There is no prior knowledge needed, and the walkthrough happens as the game progresses. Tutorials for each game can be found at routes "/game-one-tutorial" and "/game-two-tutorial".

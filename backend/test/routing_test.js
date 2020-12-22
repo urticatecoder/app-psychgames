@@ -85,8 +85,8 @@ describe("API route test", function () {
 
     it("GET /verification-code", function(done) {
         supertest(app)
-            .get("/verification-code")
-            .expect({'code': 'CS408'})
+            .get("/verification-code?loginCode=CS307")
+            .expect({'code': 'INVALID_CODE'})
             .end(function (err, res) {
                 if (err) done(err);
                 else done();

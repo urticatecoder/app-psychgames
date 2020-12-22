@@ -1,106 +1,179 @@
-import React, {useState} from 'react';
-import './App.css';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import Lobby from './Lobby/Lobby';
-import Login from './Login/Login';
-import InstructionsScreen from './GameOne/Instructions/InstructionsScreen';
-import Summary from './GameOne/Summary/Summary';
-import GameOne from './GameOne/Gameplay/GameOne';
-import GameTwo from './GameTwo/Gameplay/GameTwo';
-import Admin from './AdminPage/Admin';
-import ProlificScreen from './Prolific/ProlificScreen'
-import AdminAuth from "./AdminPage/AdminAuth";
-import PrivateRoute from "./AdminPage/PrivateRoute";
-import MainAvatar from './Lobby/MainAvatar';
-import TutorialScreen from './Tutorials/TutorialScreen';
+import React, { useState } from "react";
+import "./App.css";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Lobby from "./lobby/Lobby";
+import Login from "./login/Login";
+import Summary from "./game_one/summary/Summary";
+import GameOne from "./game_one/GameOne";
+import GameTwo from "./game_two/GameTwo";
+import ProlificScreen from "./prolific/ProlificScreen";
+import AdminAuth from "./admin_page/AdminAuth";
+import PrivateRoute from "./admin_page/PrivateRoute";
+import MainAvatar from "./lobby/MainAvatar";
+import TutorialScreen from "./tutorials/TutorialScreen";
+import AvatarSelector from "../src/avatar_selection/AvatarSelector";
+import { select } from "async";
 
-const CLASS_NAME = 'App';
-const HOME_PATH = '/';
-const LOBBY_PATH = '/lobby';
-const WELCOME_PATH = '/one-welcome';
-const INTRODUCTION_PATH = '/one-introduction';
-const LOGIC_PATH = '/one-logic';
-const END_RULES_PATH = '/one-end-rules';
-const MOVING_PATH = '/one-moving';
-const BONUSES_PATH = '/one-bonuses';
-const PLAY_RULES_PATH = '/one-play-rules';
+const TEST_CODE = 123;
+const TEST_CODES = [123, 456, 789, 12, 34, 56];
 
-const NO_CODE = '';
-const NO_CODES = ['', '', '', '', '', '']
+const NO_WINNERS = [];
+const NO_LOSERS = [];
 
-const TEST_CODE = 123
-const TEST_CODES = [123, 456, 789, 12, 34, 56]
+const DEFAULT_ANIMATION_PAUSE = 1000;
 
-const NO_WINNERS = []
-const NO_LOSERS = []
+const CLASS_NAME = "App";
+
+const LOGIN_ROUTE = "/";
+const LOBBY_ROUTE = "/lobby";
+const PLAYER_ASSIGNMENT_ROUTE = "/player-assignment";
+const AVATAR_SELECTION_ROUTE = "/avatar-selection";
+
+const GAME_ONE_TUTORIAL_ROUTE = "/game-one-tutorial";
+const GAME_ONE_TUTORIAL_FILEPATH = "Tutorials/GameOne.mov";
+const GAME_ONE_TUTORIAL_LENGTH = 53000;
+const GAME_ONE_TUTORIAL_TEXT = "Game One Tutorial";
+
+const GAME_TWO_TUTORIAL_ROUTE = "/game-two-tutorial";
+const GAME_TWO_TUTORIAL_FILEPATH = "Tutorials/GameTwo.mov";
+const GAME_TWO_TUTORIAL_LENGTH = 45000;
+const GAME_TWO_TUTORIAL_TEXT = "Game Two Tutorial";
+
+const GAME_ONE_ROUTE = "/game-one";
+const GAME_TWO_ROUTE = "/game-two";
+
+const ADMIN_LOGIN_ROUTE = "/adminLogin";
+const ADMIN_PRIVATE_ROUTE = "/admin";
+
+const SUMMARY_ROUTE = "/summary";
+const PROLIFIC_ROUTE = "/prolific";
+
+const DEFAULT_SELECTION_INDEX = -1;
+const LOGGED_OUT = false;
 
 function App() {
-
-  const [loginCode, setLoginCode] = useState(TEST_CODE)
-  const [allLoginCodes, setAllLoginCodes] = useState(TEST_CODES)
-  const [winners, setWinners] = useState(NO_WINNERS)
-  const [losers, setLosers] = useState(NO_LOSERS)
+  const [loginCode, setLoginCode] = useState(TEST_CODE);
+  const [allLoginCodes, setAllLoginCodes] = useState(TEST_CODES);
+  const [winners, setWinners] = useState(NO_WINNERS);
+  const [losers, setLosers] = useState(NO_LOSERS);
+  const [selectedIndex, setSelectedIndex] = useState(DEFAULT_SELECTION_INDEX);
+  const [loggedIn, setLoggedIn] = useState(LOGGED_OUT);
 
   return (
-    <div className="App">
+    <div className={CLASS_NAME}>
       <Router>
-        <Route path="/" exact render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}/>
+        <Route
+          path={LOGIN_ROUTE}
+          exact
+          render={() => <Login code={loginCode} setLoginCode={setLoginCode} />}
+        />
 
-        <Route path='/lobby' render={() => <Lobby code={loginCode} setLoginCode={setLoginCode} setAllLoginCodes={setAllLoginCodes}/>}/>
-        <Route path='/player-assignment' render={() => <MainAvatar/>}/>
-        <Route path='/game-one-tutorial' render={() => <TutorialScreen URL='Tutorials/GameOne.mov' nextRoute='/player-assignment' initialPause={1000} videoLength={53000} text='Game One Tutorial'/>}/>
-        <Route path='/game-two-tutorial' render={() => <TutorialScreen URL='Tutorials/GameTwo.mov' nextRoute='/game-two' initialPause={1000} videoLength={45000} text='Game Two Tutorial'/>}/>
+        <Route
+          path={LOBBY_ROUTE}
+          render={() => (
+            <Lobby
+              code={loginCode}
+              setLoginCode={setLoginCode}
+              setAllLoginCodes={setAllLoginCodes}
+              loggedIn = {loggedIn}
+              setLoggedIn = {setLoggedIn}
+            />
+          )}
+        />
+
+        <Route
+          path={AVATAR_SELECTION_ROUTE}
+          exact
+          render={() => <AvatarSelector selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex}/>}
+        />
+
+        <Route 
+          path={PLAYER_ASSIGNMENT_ROUTE} 
+          render={() => <MainAvatar 
+          selectedIndex={selectedIndex} 
+          setSelectedIndex={setSelectedIndex}/>} 
+        />
+
+        <Route
+          path={GAME_ONE_TUTORIAL_ROUTE}
+          render={() => (
+            <TutorialScreen
+              URL={GAME_ONE_TUTORIAL_FILEPATH}
+              nextRoute={PLAYER_ASSIGNMENT_ROUTE}
+              initialPause={DEFAULT_ANIMATION_PAUSE}
+              videoLength={GAME_ONE_TUTORIAL_LENGTH}
+              text={GAME_ONE_TUTORIAL_TEXT}
+            />
+          )}
+        />
+
+        <Route
+          path={GAME_TWO_TUTORIAL_ROUTE}
+          render={() => (
+            <TutorialScreen
+              URL={GAME_TWO_TUTORIAL_FILEPATH}
+              nextRoute={GAME_TWO_ROUTE}
+              initialPause={DEFAULT_ANIMATION_PAUSE}
+              videoLength={GAME_TWO_TUTORIAL_LENGTH}
+              text={GAME_TWO_TUTORIAL_TEXT}
+            />
+          )}
+        />
 
         <Switch>
-          <Route exact path='/adminLogin' render={() => <AdminAuth/>} component={AdminAuth}/>
-          <PrivateRoute exact path='/admin'/>
+          <Route
+            exact
+            path={ADMIN_LOGIN_ROUTE}
+            render={() => <AdminAuth />}
+            component={AdminAuth}
+          />
+          <PrivateRoute exact path={ADMIN_PRIVATE_ROUTE} />
         </Switch>
 
-        <Route path='/game-two' render={() => (<GameTwo loginCode = {loginCode} winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
-
-        <Route path='/summary' render={() => (<Summary winners={winners} losers={losers} allLoginCodes={allLoginCodes}/>)}/>
-        <Route path='/prolific' render={() => (<ProlificScreen/>)}/>
-        <Route 
-          path="/game-one" 
-          render={() => (<GameOne setWinners={setWinners} setLosers={setLosers} loginCode = {loginCode} allLoginCodes={allLoginCodes}/>)}
+        <Route
+          path={GAME_TWO_ROUTE}
+          render={() => (
+            <GameTwo
+              loginCode={loginCode}
+              winners={winners}
+              losers={losers}
+              allLoginCodes={allLoginCodes}
+              selectedIndex={selectedIndex}
+            />
+          )}
         />
 
         <Route
-            path="/one-welcome"
-            render={() => (<InstructionsScreen file='Instructions/Welcome.txt' title='Game One' /* route='one-introduction'/> */ route='game-one'/>)}
+          path={SUMMARY_ROUTE}
+          render={() => (
+            <Summary
+              winners={winners}
+              selectedIndex={selectedIndex}
+              losers={losers}
+              allLoginCodes={allLoginCodes}
+              selectedIndex={selectedIndex}
+            />
+          )}
         />
 
         <Route
-          path="/one-introduction"
-          render={() => (<InstructionsScreen file='Instructions/Introduction.txt' title='General Introduction' route='one-logic'/>)}
-        />
-        <Route
-          path="/one-logic"
-          render={() => (<InstructionsScreen file='Instructions/Logic.txt' title='What Happens in the Game?' route='one-end-rules'/>)}
+          path={PROLIFIC_ROUTE}
+          render={() => <ProlificScreen code={loginCode} />}
         />
 
         <Route
-          path="/one-end-rules"
-          render={() => (<InstructionsScreen file='Instructions/EndRules.txt' title='When does the Game End?' route='one-moving'/>)}
+          path={GAME_ONE_ROUTE}
+          render={() => (
+            <GameOne
+              setWinners={setWinners}
+              setLosers={setLosers}
+              loginCode={loginCode}
+              allLoginCodes={allLoginCodes}
+              selectedIndex={selectedIndex}
+            />
+          )}
         />
-
-        <Route
-          path="/one-moving"
-          render={() => (<InstructionsScreen file='Instructions/Moving.txt' title='Moving' route='one-bonuses'/>)}
-        />
-
-        <Route
-          path="/one-bonuses"
-          render={() => (<InstructionsScreen file='Instructions/Bonuses.txt' title='Cooperation Bonuses' route='one-play-rules'/>)}
-        />
-
-        <Route
-          path="/one-play-rules"
-          render={() => (<InstructionsScreen file='Instructions/PlayRules.txt' title='How do I play?' route='game-one'/>)}
-        />
-
       </Router>
-
     </div>
   );
 }

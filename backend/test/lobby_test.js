@@ -196,5 +196,18 @@ describe('Test Room class functionality', () => {
         expect(room.getPlayerWithID('123')).to.equal(player1);
         done();
     });
+    it('turn timer setter and getter works', (done) => {
+        const room = new Room('room 0');
+        let player1 = new Player('123');
+        let player2 = new Player('456');
+        let player3 = new Player('789');
+        room.addPlayer(player1);
+        room.addPlayer(player2);
+        room.addPlayer(player3);
+        expect(room.GameOneTurnCount).to.equal(0);
+        room.setGameOneTurnCount(25);
+        expect(room.GameOneTurnCount).to.equal(25);
+        done();
+    });
 });
 
