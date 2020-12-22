@@ -51,14 +51,16 @@ function Summary(props) {
         classes.playerGroup,
         WINNING_HEADER,
         winnerIndices,
-        WINNER_ID
+        WINNER_ID,
+        props.selectedIndex
       )}
       {getGroup(
         classes.losers,
         classes.playerGroup,
         LOSING_HEADER,
         loserIndices,
-        LOSER_ID
+        LOSER_ID,
+        props.selectedIndex
       )}
       <br />
       <br />
@@ -75,14 +77,14 @@ function Summary(props) {
   );
 }
 
-function getGroup(divClassName, groupClassName, headerText, playersShown, textID) {
+function getGroup(divClassName, groupClassName, headerText, playersShown, textID, selectedIndex) {
   return (
     <div className={divClassName}>
       <Typography id={textID} variant={Variants.SMALL_TEXT}>
         {headerText}
       </Typography>
       <div className={groupClassName}>
-        <PlayerGroup players={playersShown} />
+        <PlayerGroup players={playersShown} selectedIndex={selectedIndex}/>
       </div>
     </div>
   );
