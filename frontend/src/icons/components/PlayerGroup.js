@@ -23,7 +23,7 @@ function PlayerGroup(props) {
       {props.players.map((element) => {
         return (
           <Grid item>
-            <PlayerProfile player={element} />
+            <PlayerProfile player={element} selectedIndex={props.selectedIndex} />
           </Grid>
         );
       })}
