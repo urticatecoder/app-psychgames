@@ -12,7 +12,9 @@ import PrivateRoute from "./admin_page/PrivateRoute";
 import MainAvatar from "./lobby/MainAvatar";
 import TutorialScreen from "./tutorials/TutorialScreen";
 import AvatarSelector from "../src/avatar_selection/AvatarSelector";
-import { select } from "async";
+import PassiveAlert from './passivity/PassiveDialogue';
+import zIndex from "@material-ui/core/styles/zIndex";
+import { Typography } from "@material-ui/core";
 
 const TEST_CODE = 123;
 const TEST_CODES = [123, 456, 789, 12, 34, 56];
@@ -61,11 +63,13 @@ function App() {
 
   return (
     <div className={CLASS_NAME}>
+      <PassiveAlert loginCode={loginCode}/>
+
       <Router>
         <Route
           path={LOGIN_ROUTE}
           exact
-          render={() => <Login code={loginCode} setLoginCode={setLoginCode} />}
+          render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}
         />
 
         <Route
