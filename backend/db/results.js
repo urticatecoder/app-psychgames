@@ -80,7 +80,7 @@ function checkPassiveness(playerProlific, room){
         passive.set(playerProlific, 0);
     }
 
-    if(passive.get(playerProlific) >= 5){
+    if(passive.get(playerProlific) >= 3){
         return playerProlific
     }
     return null;

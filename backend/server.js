@@ -3,7 +3,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
 const BOT = require("./db/bot");
-const {getResultsByProlificId, isGameOneDone, getWinnersAndLosers, calculateAllTripleBonuses, calculateAllDoubleBonuses} = require("./db/results");
+const {getResultsByProlificId, isGameOneDone, getWinnersAndLosers, calculateAllTripleBonuses, calculateAllDoubleBonuses, checkPassiveness} = require("./db/results");
 const Game2 = require('./game2');
 const lobby = require("./lobby.js").LobbyInstance;
 
@@ -58,6 +58,20 @@ io.on('connection', socket => {
             //players will be emitted to the "net zero" position after showing who selected who (to be implemented)
             let resultForAllPlayers = getResultsByProlificId(allIDs, room);
             //turn count for game 1
+            allIDs.forEach(prolific => 
+                console.log(prolific));
+                let player = checkPassiveness(prolific, room);
+                if(player != null){
+                    io.in(room.name).emit('check passivity', player);
+                }
+                io.on('active player', (activePlayer) => {
+                    // let it pass
+                });
+
+                io.on('inactive player', (inactivePlayer) => {
+                    //make this player a bot
+                });
+
             room.setGameOneTurnCount(room.gameOneTurnCount + 1);
             if (isGameOneDone(room)) {
                 let group = getWinnersAndLosers(room);
