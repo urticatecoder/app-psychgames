@@ -60,20 +60,22 @@ io.on('connection', socket => {
             //turn count for game 1
             allIDs.forEach(prolific => 
                 console.log(prolific));
-                let player = checkPassiveness(prolific, room);
+                // let player = checkPassiveness(prolific, room);
+                let player = null;
                 if(player != null){
                     io.in(room.name).emit('check passivity', player);
+                    io.on('active player', (activePlayer) => {
+                        // let it pass
+                        console.log(activePlayer + ' is active');
+                    });
+    
+                    io.on('inactive player', (inactivePlayer) => {
+                        //make this player a bot
+                        console.log(inactivePlayer + ' is inactive');
+                    });
                 }
-                io.on('active player', (activePlayer) => {
-                    // let it pass
-                    console.log(activePlayer + ' is active');
-                });
-
-                io.on('inactive player', (inactivePlayer) => {
-                    //make this player a bot
-                    console.log(inactivePlayer + ' is inactive');
-                });
-
+                
+            console.log(room.getTimeOfGame);
             room.setGameOneTurnCount(room.gameOneTurnCount + 1);
             if (isGameOneDone(room)) {
                 let group = getWinnersAndLosers(room);
