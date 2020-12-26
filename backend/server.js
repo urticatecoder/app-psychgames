@@ -29,7 +29,7 @@ io.on('connection', socket => {
         require('./lobby.js').LobbyDefaultSocketListener(io, socket);
     }
 
-    socket.on('confirm choice for game 1', (prolificID, choices) => {
+    socket.on('confirm choice for game 1', (prolificID, choices, zeroTime) => {
         // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
         console.log(choices);
         prolificID = prolificID.toString();
@@ -49,8 +49,8 @@ io.on('connection', socket => {
                 room.addPlayerIDToConfirmedSet(bot.prolificID);
             }
         });
-
-        if (room.hasEveryoneConfirmedChoiceInThisRoom()) { // all 6 have confirmed choices
+        // if everyone has confirmed or timer has reached 0
+        if (room.hasEveryoneConfirmedChoiceInThisRoom() || zeroTime) { // all 6 have confirmed choices
             //emit list of lists of prolificIDs and int of how much to move up of triple bonuses
             let allTripleBonus = calculateAllTripleBonuses(allIDs, room);
             //emit list of lists of prolificIDs and int of how much to move up of double bonuses
@@ -66,10 +66,12 @@ io.on('connection', socket => {
                 }
                 io.on('active player', (activePlayer) => {
                     // let it pass
+                    console.log(activePlayer + ' is active');
                 });
 
                 io.on('inactive player', (inactivePlayer) => {
                     //make this player a bot
+                    console.log(inactivePlayer + ' is inactive');
                 });
 
             room.setGameOneTurnCount(room.gameOneTurnCount + 1);
