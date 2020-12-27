@@ -64,19 +64,19 @@ io.on('connection', socket => {
                 if(player != null){
                     console.log(player + " is possibly inactive.");
                     io.in(room.name).emit('check passivity', player);
-                    setTimeout( () => {
-                        io.on('active player', (activePlayer) => {
-                            // let it pass
-                            console.log(activePlayer + ' is active');
-                        });
-        
-                        io.on('inactive player', (inactivePlayer) => {
-                            //make this player a bot
-                            console.log(inactivePlayer + ' is inactive');
-                        });
-                    }, 20000); 
+
+                    // io.on('active player', (activePlayer) => {
+                    //     // let it pass
+                    //     console.log(activePlayer + ' is active');
+                    // });
+    
+                    // io.on('inactive player', (inactivePlayer) => {
+                    //     //make this player a bot
+                    //     console.log(inactivePlayer + ' is inactive');
+                    // });
                 }
             });
+            room.getTime(allIDs[0]);
             room.setGameOneTurnCount(room.gameOneTurnCount + 1);
             if (isGameOneDone(room)) {
                 let group = getWinnersAndLosers(room);
@@ -124,7 +124,6 @@ io.on('connection', socket => {
                 let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
                 let competePayoff = payoff[0], investPayoff = payoff[1];
                 io.in(room.name).emit('end current turn for game 2', competePayoff, investPayoff, allocation[0], allocation[1]);
-
             }
         }
     });
