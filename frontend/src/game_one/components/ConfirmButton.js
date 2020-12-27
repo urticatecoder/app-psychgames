@@ -37,7 +37,8 @@ function ConfirmButton(props) {
       props.selected,
       props.clearSelected,
       props.loginCode,
-      props.allLoginCodes
+      props.allLoginCodes,
+      props.timeLeft
     );
     props.clearSubmission();
   }
@@ -53,7 +54,8 @@ function ConfirmButton(props) {
           props.selected,
           props.clearSelected,
           props.loginCode,
-          props.allLoginCodes
+          props.allLoginCodes,
+          props.timeLeft
         )
       }
     >
@@ -62,8 +64,11 @@ function ConfirmButton(props) {
   );
 }
 
-function sendDecisions(selected, clearSelected, loginCode, allLoginCodes) {
-  socket.emit(SEND_DECISIONS_WEBSOCKET, loginCode, getSelectedIDs(selected, allLoginCodes));
+function sendDecisions(selected, clearSelected, loginCode, allLoginCodes, timeLeft) {
+  console.log('time left');
+  console.log(timeLeft);
+  
+  socket.emit(SEND_DECISIONS_WEBSOCKET, loginCode, getSelectedIDs(selected, allLoginCodes, timeLeft));
   clearSelected();
 }
 

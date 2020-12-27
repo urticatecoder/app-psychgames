@@ -53,7 +53,7 @@ function GameTimer(props) {
         checkpoints={[
           {
             time: TIME_OVER,
-            callback: () => props.setSubmitDecisions(SUBMIT_DECISIONS),
+            callback: () => handleTimeOver(props.setSubmitDecisions, props.setTimeLeft),
           },
         ]}
       >
@@ -76,6 +76,11 @@ function GameTimer(props) {
       </Timer>
     </div>
   );
+}
+
+function handleTimeOver(setSubmitDecisions, setTimeLeft) {
+  setTimeLeft(TIME_OVER);
+  setSubmitDecisions(SUBMIT_DECISIONS);
 }
 
 function checkForReset(reset, resetTimer, setResetTimer) {
