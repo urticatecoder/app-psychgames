@@ -3,7 +3,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
 const BOT = require("./db/bot");
-const {getResultsByProlificId, isGameOneDone, getWinnersAndLosers, calculateAllTripleBonuses, calculateAllDoubleBonuses} = require("./db/results");
+const {getResultsByProlificId, isGameOneDone, getWinnersAndLosers, calculateAllTripleBonuses, calculateAllDoubleBonuses, checkPassiveness} = require("./db/results");
 const Game2 = require('./game2');
 const lobby = require("./lobby.js").LobbyInstance;
 
@@ -29,7 +29,7 @@ io.on('connection', socket => {
         require('./lobby.js').LobbyDefaultSocketListener(io, socket);
     }
 
-    socket.on('confirm choice for game 1', (prolificID, choices) => {
+    socket.on('confirm choice for game 1', (prolificID, choices, zeroTime) => {
         // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
         console.log(choices);
         prolificID = prolificID.toString();
@@ -49,8 +49,8 @@ io.on('connection', socket => {
                 room.addPlayerIDToConfirmedSet(bot.prolificID);
             }
         });
-
-        if (room.hasEveryoneConfirmedChoiceInThisRoom()) { // all 6 have confirmed choices
+        // if everyone has confirmed or timer has reached 0
+        if (room.hasEveryoneConfirmedChoiceInThisRoom() || zeroTime) { // all 6 have confirmed choices
             //emit list of lists of prolificIDs and int of how much to move up of triple bonuses
             let allTripleBonus = calculateAllTripleBonuses(allIDs, room);
             //emit list of lists of prolificIDs and int of how much to move up of double bonuses
@@ -58,6 +58,28 @@ io.on('connection', socket => {
             //players will be emitted to the "net zero" position after showing who selected who (to be implemented)
             let resultForAllPlayers = getResultsByProlificId(allIDs, room);
             //turn count for game 1
+            allIDs.forEach(prolific => {
+                console.log(prolific);
+                let player = checkPassiveness(prolific, room);
+                if(player != null){
+                    console.log(player + " is possibly inactive.");
+                    io.in(room.name).emit('check passivity', player);
+                    setTimeout( () => {
+                        io.on('active player', (activePlayer) => {
+                            // let it pass
+                            console.log(activePlayer + ' is active');
+                        });
+        
+                        io.on('inactive player', (inactivePlayer) => {
+                            //make this player a bot
+                            console.log(inactivePlayer + ' is inactive');
+                        });
+                    }, 10000); 
+                }
+            });
+                
+                
+            console.log(room.getTime());
             room.setGameOneTurnCount(room.gameOneTurnCount + 1);
             if (isGameOneDone(room)) {
                 let group = getWinnersAndLosers(room);

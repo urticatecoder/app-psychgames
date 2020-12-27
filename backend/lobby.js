@@ -115,6 +115,9 @@ class Room {
             throw 'Room name not defined';
         }
         this.roomName = roomName;
+        let time = Date.now();
+        // getter method for time
+        this.getTime = function() { return (Date.now() - time) / 1000 ;}
     }
 
     get name() {
