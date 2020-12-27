@@ -58,11 +58,11 @@ io.on('connection', socket => {
             //players will be emitted to the "net zero" position after showing who selected who (to be implemented)
             let resultForAllPlayers = getResultsByProlificId(allIDs, room);
             //turn count for game 1
-            allIDs.forEach(prolific => 
-                console.log(prolific));
-                // let player = checkPassiveness(prolific, room);
-                let player = null;
+            allIDs.forEach(prolific => {
+                console.log(prolific);
+                let player = checkPassiveness(prolific, room);
                 if(player != null){
+                    console.log(player + " is possibly inactive.");
                     io.in(room.name).emit('check passivity', player);
                     io.on('active player', (activePlayer) => {
                         // let it pass
@@ -74,8 +74,10 @@ io.on('connection', socket => {
                         console.log(inactivePlayer + ' is inactive');
                     });
                 }
+            });
                 
-            console.log(room.getTimeOfGame);
+                
+            console.log(room.getTime());
             room.setGameOneTurnCount(room.gameOneTurnCount + 1);
             if (isGameOneDone(room)) {
                 let group = getWinnersAndLosers(room);

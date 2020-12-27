@@ -106,7 +106,6 @@ class Room {
     gameOneResults = []; // two groups for winners/losers, winners = gameOneResults[0], losers = gameOneResults[1]
     gameTwoPayoff = GameTwo.generateCompeteAndInvestPayoff();
     gameOneTurnCount = 0; // turns for game 1
-    delta = 0;
     /**
      * @constructor
      * @param roomName {string}
@@ -116,15 +115,9 @@ class Room {
             throw 'Room name not defined';
         }
         this.roomName = roomName;
-        this.start = Date.now();
         let time = Date.now();
-        setInterval(function() {
-            this.delta = Date.now() - this.start; // milliseconds elapsed since start
-            console.log(this.delta);
-            console.log(this.delta);
-            console.log(Date.now() - time);
-        }, 1000); // update about every second
-        consol
+        // getter method for time
+        this.getTime = function() { return Date.now() - time;}
     }
 
     get name() {
@@ -145,10 +138,6 @@ class Room {
 
     setGameOneTurnCount(newCount){
         this.gameOneTurnCount = newCount;
-    }
-
-    get getTimeOfGame(){
-        return this.delta;
     }
 
     /**
