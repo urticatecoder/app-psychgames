@@ -117,7 +117,7 @@ class Room {
         this.roomName = roomName;
         let time = Date.now();
         // getter method for time
-        this.getTime = function() { return Date.now() - time;}
+        this.getTime = function() { return (Date.now() - time) / 1000 ;}
     }
 
     get name() {

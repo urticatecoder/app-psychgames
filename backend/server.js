@@ -64,15 +64,17 @@ io.on('connection', socket => {
                 if(player != null){
                     console.log(player + " is possibly inactive.");
                     io.in(room.name).emit('check passivity', player);
-                    io.on('active player', (activePlayer) => {
-                        // let it pass
-                        console.log(activePlayer + ' is active');
-                    });
-    
-                    io.on('inactive player', (inactivePlayer) => {
-                        //make this player a bot
-                        console.log(inactivePlayer + ' is inactive');
-                    });
+                    setTimeout( () => {
+                        io.on('active player', (activePlayer) => {
+                            // let it pass
+                            console.log(activePlayer + ' is active');
+                        });
+        
+                        io.on('inactive player', (inactivePlayer) => {
+                            //make this player a bot
+                            console.log(inactivePlayer + ' is inactive');
+                        });
+                    }, 10000); 
                 }
             });
                 
