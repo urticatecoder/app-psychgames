@@ -64,10 +64,10 @@ function PassiveAlert(props) {
                 <DialogContentText>{SUBMESSAGE}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => emitSocket(ACTIVE_PLAYER_WEBSOCKET, props.loginCode, setOpen, setResponded)} variant={BUTTON_VARIANT} color={NO_COLOR}>
+                <Button onClick={() => emitSocket(INACTIVE_PLAYER_WEBSOCKET, props.loginCode, setOpen, setResponded)} variant={BUTTON_VARIANT} color={NO_COLOR}>
                     {NO}
                 </Button>
-                <Button onClick={() => emitSocket(INACTIVE_PLAYER_WEBSOCKET, props.loginCode, setOpen, setResponded)} variant={BUTTON_VARIANT} color={YES_COLOR}>
+                <Button onClick={() => emitSocket(ACTIVE_PLAYER_WEBSOCKET, props.loginCode, setOpen, setResponded)} variant={BUTTON_VARIANT} color={YES_COLOR}>
                     {YES}
                 </Button>
             </DialogActions>
@@ -76,6 +76,7 @@ function PassiveAlert(props) {
 }
 
 function emitSocket(webSocket, loginCode, setOpen, setResponded) {
+    console.log(webSocket);
     socket.emit(webSocket, loginCode);
     setOpen(CLOSE_DIALOGUE);
     setResponded(RESPONDED);
