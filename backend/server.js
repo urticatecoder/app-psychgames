@@ -29,6 +29,14 @@ io.on('connection', socket => {
         require('./lobby.js').LobbyDefaultSocketListener(io, socket);
     }
 
+    socket.on('time in lobby', (prolificID) => {
+        if(prolificID != null){
+            let time = room.getTime(prolificID);
+            console.log(prolificID + ' time is' + time);
+            io.in(room.name).emit('player time', time);
+        }
+    })
+
     socket.on('confirm choice for game 1', (prolificID, choices, zeroTime) => {
         // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
         console.log(choices);
