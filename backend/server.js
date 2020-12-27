@@ -77,9 +77,6 @@ io.on('connection', socket => {
                     }, 10000); 
                 }
             });
-                
-                
-            console.log(room.getTime());
             room.setGameOneTurnCount(room.gameOneTurnCount + 1);
             if (isGameOneDone(room)) {
                 let group = getWinnersAndLosers(room);
