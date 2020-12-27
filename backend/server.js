@@ -74,7 +74,7 @@ io.on('connection', socket => {
                             //make this player a bot
                             console.log(inactivePlayer + ' is inactive');
                         });
-                    }, 10000); 
+                    }, 20000); 
                 }
             });
             room.setGameOneTurnCount(room.gameOneTurnCount + 1);
