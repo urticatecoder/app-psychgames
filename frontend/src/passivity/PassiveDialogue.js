@@ -8,6 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import socket from "../socketClient";
+import { withRouter } from 'react-router-dom';
 
 const MESSAGE = 'Are you still there?';
 const SUBMESSAGE= 'Please indicate whether you plan to keep participating in the games. Note that you will not be compensated unless you complete the experiment.'
@@ -39,7 +40,7 @@ const styles = ({
 function PassiveAlert(props) {
 
     
-    const [open, setOpen] = useState(OPEN_DIALOGUE);
+    const [open, setOpen] = useState(CLOSE_DIALOGUE);
     const [responded, setResponded] = useState(RESPONDED);
 
     useEffect(() => {
@@ -64,7 +65,7 @@ function PassiveAlert(props) {
                 <DialogContentText>{SUBMESSAGE}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => emitSocket(INACTIVE_PLAYER_WEBSOCKET, props.loginCode, setOpen, setResponded)} variant={BUTTON_VARIANT} color={NO_COLOR}>
+                <Button onClick={() => exitGame(INACTIVE_PLAYER_WEBSOCKET, props.loginCode, setOpen, setResponded, props)} variant={BUTTON_VARIANT} color={NO_COLOR}>
                     {NO}
                 </Button>
                 <Button onClick={() => emitSocket(ACTIVE_PLAYER_WEBSOCKET, props.loginCode, setOpen, setResponded)} variant={BUTTON_VARIANT} color={YES_COLOR}>
@@ -75,6 +76,11 @@ function PassiveAlert(props) {
     )
 }
 
+function exitGame(webSocket, loginCode, setOpen, setResponded, props) {
+    emitSocket(webSocket, loginCode, setOpen, setResponded);
+    props.history.push('/');
+}
+
 function emitSocket(webSocket, loginCode, setOpen, setResponded) {
     console.log(webSocket);
     socket.emit(webSocket, loginCode);
@@ -82,4 +88,4 @@ function emitSocket(webSocket, loginCode, setOpen, setResponded) {
     setResponded(RESPONDED);
 }
 
-export default withStyles(styles)((PassiveAlert));
+export default withRouter(withStyles(styles)(PassiveAlert));

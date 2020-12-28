@@ -63,9 +63,10 @@ function App() {
 
   return (
     <div className={CLASS_NAME}>
-      <PassiveAlert loginCode={loginCode}/>
 
       <Router>
+      <PassiveAlert loginCode={loginCode}/>
+
         <Route
           path={LOGIN_ROUTE}
           exact

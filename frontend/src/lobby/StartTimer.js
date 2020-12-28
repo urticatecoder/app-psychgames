@@ -61,8 +61,9 @@ function StartTimer(props) {
   const [waitingOnPlayerCounter, setWaitingOnPlayerCounter] = useState(MAX_ROOM_CAPACITY);
   const [timeLeft, setTimeLeft] = useState(INITIAL_TIME_LEFT);
   const [resetter, setResetter] = useState(DONT_RESET);
+  const [counter, setCounter] = useState(MAX_ROOM_CAPACITY);
 
-  const INSTRUCTIONS_MESSAGE = (counter) => `Please wait while ${counter} other players join in.`;
+  const INSTRUCTIONS_MESSAGE = (counter) => `Please wait while 5 other players join in.`;
 
   let code = props.code;
   let setAllLoginCodes = props.setAllLoginCodes;
