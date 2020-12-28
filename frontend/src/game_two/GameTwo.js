@@ -69,6 +69,9 @@ const PROLIFIC_ROUTE = "/prolific";
 const END_TURN_TEXT = "Results from Previous Turn:";
 const GROUP_BOX_WIDTH = "40vw";
 
+const INITIAL_TIME_LEFT = -1;
+const DONT_NOTE_TIME = false;
+
 const styles = {
   groupOne: {
     position: "absolute",
@@ -109,6 +112,9 @@ function GameTwo(props) {
   const [showResults, setShowResults] = useState(DO_NOT_SHOW_RESULTS);
   const [groupOneResults, setGroupOneResults] = useState(INITIAL_RESOURCE_DISTRIBUTION);
   const [groupTwoResults, setGroupTwoResults] = useState(INITIAL_RESOURCE_DISTRIBUTION);
+
+  const [timeLeft, setTimeLeft] = useState(INITIAL_TIME_LEFT);
+  const [noteTime, setNoteTime] = useState(DONT_NOTE_TIME);
 
   useEffect(() => {
     socket.on(END_TURN_WEBSOCKET, (competePayoff, investPayoff, winnerResults, loserResults) => {
@@ -156,7 +162,11 @@ function GameTwo(props) {
     resetTimer,
     setResetTimer,
     setSubmitDecisions,
-    submitDecisions
+    submitDecisions,
+    noteTime,
+    setNoteTime,
+    timeLeft,
+    setTimeLeft,
   );
 
   let resourceView = showResults ? resourceResultsView : resourceChoiceView;
@@ -207,7 +217,8 @@ function getDelayedBar(resource, group, delay, tokens) {
 }
 
 function getResourceChoices(props, setFromResources, setToResources, fromResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, 
-  tokensSpent, setTokensSpent, setCurrentResources, currentResources, payoffInvest, payoffCompete, resetTimer, setResetTimer, setSubmitDecisions, submitDecisions) {
+  tokensSpent, setTokensSpent, setCurrentResources, currentResources, payoffInvest, payoffCompete, resetTimer, setResetTimer, setSubmitDecisions, submitDecisions,
+  noteTime, setNoteTime, timeLeft, setTimeLeft) {
   return (
     <div>
       <TokenCounter tokens={totalTokens - tokensSpent} />
@@ -216,6 +227,9 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
         setSubmitDecisions={setSubmitDecisions}
         resetTimer={resetTimer}
         setResetTimer={setResetTimer}
+        noteTime={noteTime}
+        setNoteTime={setNoteTime}
+        setTimeLeft={setTimeLeft}
       />
       <ConfirmButtonTwo
         submit={submitDecisions}
@@ -223,6 +237,8 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
         resources={currentResources}
         clearSelected={() =>clearResources(setFromResources, setToResources, toResources, setTokensSpent)}
         loginCode={props.loginCode}
+        timeLeft = {timeLeft}
+        setNoteTime = {setNoteTime}
       />
       <VerticalPlayerGroup
         type={GROUP_ONE}
