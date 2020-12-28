@@ -75,18 +75,17 @@ io.on('connection', socket => {
                     console.log(player + " is possibly inactive.");
                     io.in(room.name).emit('check passivity', player);
 
-                    // io.on('active player', (activePlayer) => {
-                    //     // let it pass
-                    //     console.log(activePlayer + ' is active');
-                    // });
+                    socket.on('active player', (activePlayer) => {
+                        // let it pass
+                        console.log(activePlayer + ' is active');
+                    });
     
-                    // io.on('inactive player', (inactivePlayer) => {
-                    //     //make this player a bot
-                    //     console.log(inactivePlayer + ' is inactive');
-                    // });
+                    socket.on('inactive player', (inactivePlayer) => {
+                        //make this player a bot
+                        console.log(inactivePlayer + ' is inactive');
+                    });
                 }
             });
-            console.log(room.getTime(allIDs[0]));
             room.setGameOneTurnCount(room.gameOneTurnCount + 1);
             if (isGameOneDone(room)) {
                 let group = getWinnersAndLosers(room);
