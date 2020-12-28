@@ -27,6 +27,8 @@ const ENTER_LOBBY_WEBSOCKET = "enter lobby";
 const JOIN_LOBBY_WEBSOCKET = "join";
 const ROOM_FULL_WEBSOCKET = "room fill";
 const PEOPLE_IN_ROOM_WEBSOCKET = "num of people in the room";
+const PLAYER_TIME_WEBSOCKET = "player time";
+const TIME_IN_LOBBY_WEBSOCKET = "time in lobby";
 
 const ITALIC_FONT = "italic";
 const LOGGED_IN = true;
@@ -63,6 +65,9 @@ function StartTimer(props) {
       props.setLoggedIn(LOGGED_IN);
     }
 
+    console.log(props.code);
+    socket.emit(TIME_IN_LOBBY_WEBSOCKET, props.code);
+
     socket.on(JOIN_LOBBY_WEBSOCKET, () => {
       setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
     });
@@ -73,10 +78,15 @@ function StartTimer(props) {
       setWaitingOnPlayerCounter(MAX_ROOM_CAPACITY - numOfPlayers);
     });
 
+    socket.on(PLAYER_TIME_WEBSOCKET, (time) => {
+      console.log(time);
+    });
+
     return () => {
       socket.off(JOIN_LOBBY_WEBSOCKET);
       socket.off(ROOM_FULL_WEBSOCKET);
       socket.off(PEOPLE_IN_ROOM_WEBSOCKET);
+      socket.off(PLAYER_TIME_WEBSOCKET);
     };
   }, [code, setAllLoginCodes]);
 

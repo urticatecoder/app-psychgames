@@ -8,6 +8,8 @@ const NUM_PLAYERS = 6;
 const PRIMARY_COLOR = "primary";
 const SEND_DECISIONS_WEBSOCKET = "confirm choice for game 1";
 
+const NOTE_TIME = true;
+
 const styles = {
   confirmButton: {
     position: "absolute",
@@ -29,18 +31,12 @@ const styles = {
  * 
  * @author Eric Doppelt
  */
+
 function ConfirmButton(props) {
   const { classes } = props;
-
+  
   if (props.submit) {
-    sendDecisions(
-      props.selected,
-      props.clearSelected,
-      props.loginCode,
-      props.allLoginCodes,
-      props.timeLeft
-    );
-    props.clearSubmission();
+    sendDecisions(props);
   }
 
   return (
@@ -50,13 +46,7 @@ function ConfirmButton(props) {
       color={PRIMARY_COLOR}
       disabled = {props.disabled}
       onClick={() =>
-        sendDecisions(
-          props.selected,
-          props.clearSelected,
-          props.loginCode,
-          props.allLoginCodes,
-          props.timeLeft
-        )
+        props.setNoteTime(NOTE_TIME)
       }
     >
       {CONFIRM_CHOICES_TEXT}
@@ -64,12 +54,12 @@ function ConfirmButton(props) {
   );
 }
 
-function sendDecisions(selected, clearSelected, loginCode, allLoginCodes, timeLeft) {
-  console.log('time left');
-  console.log(timeLeft);
-  
-  socket.emit(SEND_DECISIONS_WEBSOCKET, loginCode, getSelectedIDs(selected, allLoginCodes, timeLeft));
-  clearSelected();
+function sendDecisions(props) {
+  console.log('SENDING DECISIONS');
+  console.log(props.timeLeft);
+  socket.emit(SEND_DECISIONS_WEBSOCKET, props.loginCode, getSelectedIDs(props.selected, props.allLoginCodes, props.timeLeft));
+  props.clearSelected();
+  props.clearSubmission();
 }
 
 function getSelectedIDs(selected, allIDs) {

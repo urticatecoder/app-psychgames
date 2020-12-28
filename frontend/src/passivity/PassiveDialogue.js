@@ -16,9 +16,9 @@ const YES = 'Yes';
 const YES_COLOR = 'primary';
 const NO = 'No';
 const NO_COLOR = 'secondary';
-const CHECK_PASSIVITY_WEBSOCKET = 'check passivity';
-const ACTIVE_PLAYER_WEBSOCKET = 'active player';
-const INACTIVE_PLAYER_WEBSOCKET = 'inactive player';
+const CHECK_PASSIVITY_WEBSOCKET = "check passivity";
+const ACTIVE_PLAYER_WEBSOCKET = "active player";
+const INACTIVE_PLAYER_WEBSOCKET = "inactive player";
 
 const OPEN_DIALOGUE = true;
 const CLOSE_DIALOGUE = false;
