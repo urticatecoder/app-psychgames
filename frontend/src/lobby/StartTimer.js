@@ -33,6 +33,12 @@ const TIME_IN_LOBBY_WEBSOCKET = "time in lobby";
 const ITALIC_FONT = "italic";
 const LOGGED_IN = true;
 
+const INITIAL_TIME_LEFT = 300 * 1000;
+const MILLISECOND_CONSTANST = 1000;
+
+const RESET = true;
+const DONT_RESET = false;
+
 const styles = {
   welcomeInstruction: {
     marginTop: "150px",
@@ -53,6 +59,8 @@ const styles = {
 function StartTimer(props) {
   const { classes } = props;
   const [waitingOnPlayerCounter, setWaitingOnPlayerCounter] = useState(MAX_ROOM_CAPACITY);
+  const [timeLeft, setTimeLeft] = useState(INITIAL_TIME_LEFT);
+  const [resetter, setResetter] = useState(DONT_RESET);
 
   const INSTRUCTIONS_MESSAGE = (counter) => `Please wait while ${counter} other players join in.`;
 
@@ -65,7 +73,6 @@ function StartTimer(props) {
       props.setLoggedIn(LOGGED_IN);
     }
 
-    console.log(props.code);
     socket.emit(TIME_IN_LOBBY_WEBSOCKET, props.code);
 
     socket.on(JOIN_LOBBY_WEBSOCKET, () => {
@@ -80,6 +87,9 @@ function StartTimer(props) {
 
     socket.on(PLAYER_TIME_WEBSOCKET, (time) => {
       console.log(time);
+      setTimeLeft(time * MILLISECOND_CONSTANST);
+      setResetter(RESET);
+      console.log(timeLeft);
     });
 
     return () => {
@@ -110,7 +120,7 @@ function StartTimer(props) {
 
       <Timer
         id={TIMER_ID}
-        initialTime={INITIAL_START_TIME}
+        initialTime={timeLeft}
         lastUnit={LAST_TIME_UNIT}
         direction={DIRECTION}
         timeToUpdate={TIMER_UPDATE}
@@ -121,8 +131,9 @@ function StartTimer(props) {
           },
         ]}
       >
-        {() => (
+        {({reset, setTime}) => (
           <React.Fragment>
+            {checkForReset(resetter, setResetter, setTime, timeLeft)}
             <Typography variant={Variants.NORMAL_TEXT}>
               <br />
               <Timer.Minutes /> {MINUTES}
@@ -135,6 +146,13 @@ function StartTimer(props) {
       </Timer>
     </div>
   );
+}
+
+function checkForReset(resetter, setResetter, setTime, timeLeft) {
+  if (resetter) {
+  setTime(timeLeft);
+  }
+  setResetter(DONT_RESET);
 }
 
 export default withStyles(styles)(StartTimer);
