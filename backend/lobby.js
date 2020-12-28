@@ -106,6 +106,7 @@ class Room {
     gameOneResults = []; // two groups for winners/losers, winners = gameOneResults[0], losers = gameOneResults[1]
     gameTwoPayoff = GameTwo.generateCompeteAndInvestPayoff();
     gameOneTurnCount = 0; // turns for game 1
+    allPlayerTimes = new Map();
     /**
      * @constructor
      * @param roomName {string}
@@ -115,6 +116,11 @@ class Room {
             throw 'Room name not defined';
         }
         this.roomName = roomName;
+        // getter method for time
+        this.getTime = function(prolific) { 
+            let time = this.allPlayerTimes.get(prolific);
+            return 300 - ((Date.now() - time) / 1000);
+        }
     }
 
     get name() {
@@ -146,6 +152,7 @@ class Room {
         }
         this.players.push(player);
         this.setPlayerLocation(player.prolificID, 50);
+        this.allPlayerTimes.set(player.prolificID, Date.now());
         // this.allPlayerLocations.set(player.prolificID, 0);
     }
 

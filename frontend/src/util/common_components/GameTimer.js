@@ -14,6 +14,8 @@ const SUBMIT_DECISIONS = true;
 const RESET_TIMER = false;
 const TIMER_MESSAGE = "The round ends in:";
 
+const STOP_NOTING_TIME = false;
+
 const styles = {
   timerInstruction: {
     marginTop: "50px",
@@ -53,12 +55,16 @@ function GameTimer(props) {
         checkpoints={[
           {
             time: TIME_OVER,
-            callback: () => props.setSubmitDecisions(SUBMIT_DECISIONS),
+            callback: () => handleTimeOver(props.setSubmitDecisions, props.setTimeLeft),
           },
         ]}
       >
-        {({ reset, start, pause }) => (
+
+        {({ reset, start, pause, getTime }) => (
+
           <div className={classes.timerMargin}>
+            {checkUpdateSeconds(props.noteTime, props.setNoteTime, props.setTimeLeft, props.setSubmitDecisions, getTime())}
+
             <React.Fragment>
               {checkForReset(
                 reset,
@@ -76,6 +82,22 @@ function GameTimer(props) {
       </Timer>
     </div>
   );
+}
+
+function checkUpdateSeconds(noteTime, setNoteTime, setTimeLeft, setSubmitDecisions, time) {
+  if (noteTime) {
+    console.log('UPDATING NOTING TIME');
+    console.log(noteTime);
+    console.log(time);
+    setNoteTime(STOP_NOTING_TIME);
+    setTimeLeft(time);
+    setSubmitDecisions(SUBMIT_DECISIONS);
+  }
+}
+
+function handleTimeOver(setSubmitDecisions, setTimeLeft) {
+  setTimeLeft(TIME_OVER);
+  setSubmitDecisions(SUBMIT_DECISIONS);
 }
 
 function checkForReset(reset, resetTimer, setResetTimer) {
