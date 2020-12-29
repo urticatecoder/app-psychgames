@@ -71,8 +71,7 @@ function AvatarSelector(props) {
       {PLAYER_OPTION_NUMBERS.map((player) => {
         let leftMargin = getDivX(player);
         let topMargin = getDivY(player);
-        console.log(leftMargin);
-        console.log(topMargin);
+
         return (
           <div style={{position: BUTTON_POSITION_TYPE, left: leftMargin, top: topMargin}}>
             <OptionButton

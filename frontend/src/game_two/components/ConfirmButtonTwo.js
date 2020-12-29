@@ -11,6 +11,7 @@ const COMPETE_INDEX = 2;
 
 const PRIMARY_COLOR = "primary";
 const SEND_DECISION_WEBSOCKET = "confirm choice for game 2";
+const NOTE_TIME = true;
 
 const styles = {
   confirmButton: {
@@ -37,8 +38,7 @@ function ConfirmButtonTwo(props) {
   const { classes } = props;
 
   if (props.submit) {
-    sendDecisions(props.resources, props.clearSelected, props.loginCode);
-    props.clearSubmission();
+    sendDecisions(props);
   }
 
   return (
@@ -46,18 +46,19 @@ function ConfirmButtonTwo(props) {
       className={classes.confirmButton}
       variant={Variants.CONTAINED}
       color={PRIMARY_COLOR}
-      onClick={() =>
-        sendDecisions(props.resources, props.clearSelected, props.loginCode)
-      }
+      onClick={() => props.setNoteTime(NOTE_TIME)}
     >
       {CONFIRM_CHOICES_TEXT}
     </Button>
   );
 }
 
-function sendDecisions(resources, clearSelected, loginCode) {
-  socket.emit(SEND_DECISION_WEBSOCKET, loginCode, resources[COMPETE_INDEX], resources[KEEP_INDEX], resources[INVEST_INDEX]);
-  clearSelected();
+function sendDecisions(props) {
+  console.log('SENDING DECISIONS');
+  console.log(props.timeLeft);
+  socket.emit(SEND_DECISION_WEBSOCKET, props.loginCode, props.resources[COMPETE_INDEX], props.resources[KEEP_INDEX], props.resources[INVEST_INDEX], props.timeLeft);
+  props.clearSelected();
+  props.clearSubmission();
 }
 
 export default withStyles(styles)(ConfirmButtonTwo);

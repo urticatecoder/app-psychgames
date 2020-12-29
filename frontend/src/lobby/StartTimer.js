@@ -27,9 +27,17 @@ const ENTER_LOBBY_WEBSOCKET = "enter lobby";
 const JOIN_LOBBY_WEBSOCKET = "join";
 const ROOM_FULL_WEBSOCKET = "room fill";
 const PEOPLE_IN_ROOM_WEBSOCKET = "num of people in the room";
+const PLAYER_TIME_WEBSOCKET = "player time";
+const TIME_IN_LOBBY_WEBSOCKET = "time in lobby";
 
 const ITALIC_FONT = "italic";
 const LOGGED_IN = true;
+
+const INITIAL_TIME_LEFT = 300 * 1000;
+const MILLISECOND_CONSTANST = 1000;
+
+const RESET = true;
+const DONT_RESET = false;
 
 const styles = {
   welcomeInstruction: {
@@ -51,8 +59,11 @@ const styles = {
 function StartTimer(props) {
   const { classes } = props;
   const [waitingOnPlayerCounter, setWaitingOnPlayerCounter] = useState(MAX_ROOM_CAPACITY);
+  const [timeLeft, setTimeLeft] = useState(INITIAL_TIME_LEFT);
+  const [resetter, setResetter] = useState(DONT_RESET);
+  const [counter, setCounter] = useState(MAX_ROOM_CAPACITY);
 
-  const INSTRUCTIONS_MESSAGE = (counter) => `Please wait while ${counter} other players join in.`;
+  const INSTRUCTIONS_MESSAGE = (counter) => `Please wait while 5 other players join in.`;
 
   let code = props.code;
   let setAllLoginCodes = props.setAllLoginCodes;
@@ -62,6 +73,8 @@ function StartTimer(props) {
       socket.emit(ENTER_LOBBY_WEBSOCKET, code);
       props.setLoggedIn(LOGGED_IN);
     }
+
+    socket.emit(TIME_IN_LOBBY_WEBSOCKET, props.code);
 
     socket.on(JOIN_LOBBY_WEBSOCKET, () => {
       setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
@@ -73,10 +86,18 @@ function StartTimer(props) {
       setWaitingOnPlayerCounter(MAX_ROOM_CAPACITY - numOfPlayers);
     });
 
+    socket.on(PLAYER_TIME_WEBSOCKET, (time) => {
+      console.log(time);
+      setTimeLeft(time * MILLISECOND_CONSTANST);
+      setResetter(RESET);
+      console.log(timeLeft);
+    });
+
     return () => {
       socket.off(JOIN_LOBBY_WEBSOCKET);
       socket.off(ROOM_FULL_WEBSOCKET);
       socket.off(PEOPLE_IN_ROOM_WEBSOCKET);
+      socket.off(PLAYER_TIME_WEBSOCKET);
     };
   }, [code, setAllLoginCodes]);
 
@@ -100,7 +121,7 @@ function StartTimer(props) {
 
       <Timer
         id={TIMER_ID}
-        initialTime={INITIAL_START_TIME}
+        initialTime={timeLeft}
         lastUnit={LAST_TIME_UNIT}
         direction={DIRECTION}
         timeToUpdate={TIMER_UPDATE}
@@ -111,8 +132,9 @@ function StartTimer(props) {
           },
         ]}
       >
-        {() => (
+        {({reset, setTime}) => (
           <React.Fragment>
+            {checkForReset(resetter, setResetter, setTime, timeLeft)}
             <Typography variant={Variants.NORMAL_TEXT}>
               <br />
               <Timer.Minutes /> {MINUTES}
@@ -125,6 +147,13 @@ function StartTimer(props) {
       </Timer>
     </div>
   );
+}
+
+function checkForReset(resetter, setResetter, setTime, timeLeft) {
+  if (resetter) {
+  setTime(timeLeft);
+  }
+  setResetter(DONT_RESET);
 }
 
 export default withStyles(styles)(StartTimer);
