@@ -1,31 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Typography } from "@material-ui/core";
+import { Typography, Box } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import "../util/common_stylings/FullScreenDiv.css";
 import axios from "axios";
 import { Variants } from "../util/common_constants/stylings/StylingsBundler";
+import Payout from "./Payout";
 
 const FULL_DIV = "fullDiv";
 
 const DEFAULT_CODE = "";
-const INSTRUCTIONS_MESSAGE = "Prolific Code: ";
-const PAYOUT_MESSAGE = "Final payout: $";
+const ITALIC_FONT = "italic";
 const THANK_YOU_MESSAGE = "Thank you for participating!";
-const DEFAULT_AMOUNT = "10.50";
 
-const PROLIFIC_CODE_ID = "prolificCode";
-
+const PAYOUT_MESSAGE = "Your receipt is shown below."
 const VERIFICATION_CODE_ROUTE = "/verification-code";
 
 const styles = {
   prolificText: {
-    marginTop: "140px",
+    marginTop: "80px",
   },
   payoutText: {
-    marginTop: "30px",
+    marginTop: "10px",
   },
   thankYouText: {
-    marginTop: "100px",
+    marginTop: "60px",
   },
 };
 
@@ -56,20 +54,20 @@ function ProlificScreen(props) {
     <div className={FULL_DIV}>
       <Typography
         className={classes.thankYouText}
-        variant={Variants.LARGEST_TEXT}
+        variant={Variants.LARGE_TEXT}
       >
         {THANK_YOU_MESSAGE}
       </Typography>
+
       <Typography
-        id={PROLIFIC_CODE_ID}
-        className={classes.prolificText}
+        className={classes.payoutText}
         variant={Variants.NORMAL_TEXT}
       >
-        {INSTRUCTIONS_MESSAGE + prolificCode}
+        <Box fontStyle={ITALIC_FONT}>
+        {PAYOUT_MESSAGE}
+        </Box>
       </Typography>
-      <Typography className={classes.payoutText} variant={Variants.NORMAL_TEXT}>
-        {PAYOUT_MESSAGE + DEFAULT_AMOUNT}
-      </Typography>
+      <Payout/>
     </div>
   );
 }
