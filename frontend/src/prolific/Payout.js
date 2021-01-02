@@ -12,10 +12,10 @@ const styles = {
   wrapperDiv: {
     position: "absolute",
     top: "25vh",
-    left: "25vw",
+    left: "30vw",
     backgroundColor: "#e0c760",
     height: "65vh",
-    width: "50vw",
+    width: "40vw",
     opacity: ".8",
     borderRadius: "20px",
   }

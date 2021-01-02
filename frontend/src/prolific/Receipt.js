@@ -27,24 +27,26 @@ const GAME_TWO = "Game Two"
 
 const TOKENS = ' Tokens '
 
+const AMMOUNT_DELAY = 500;
+
 const styles = {
   game: {
-    position: 'absolute',
-    left: '5vw',
+    position: 'relative',
+    textAlign: 'center',
   },
 
   description: {
     position: 'relative',
-    marginRight: '300px',
-    marginTop: '80px',
-    background: '#000000'
+    marginRight: '250px',
+    marginTop: '10px',
+    textAlign: 'right'
   },
 
   amount: {
     position: 'relative',
-    marginRight: '1vw',
+    marginRight: '8vw',
     marginTop: '-43px',
-    background: '#ffffff'
+    textAlign: 'right',
   },
 
   
@@ -73,46 +75,48 @@ function Receipt(props) {
   return (
       <div>
             {getGameOne('Winning Player:', 3.00, 1000, classes, 0)}
-            {getGameTwo(7, 5000, classes)}
-            {getGameTwoResource(5, 'Keep', 50, classes)}
+            {getGameTwo(7, 7000, classes)}
+            {getGameTwoResource(5, 'Keep', 2.5, 9000, classes)}
+            {getGameTwoResource(0, 'Invest', 0, 16000, classes)}
+            {getGameTwoResource(6, 'Compete', -3, 23000, classes)}
+
       </div>
   );
 }
 
 function getGameOne(text, amount, delay, classes) {
     return(
-        <FadeIn className={classes.gameOneFade} delay={delay}>
-            <Typography className={classes.game} variant={Variants.NORMAL_TEXT}>
+        <div className={classes.gameOneFade}>
+
+        <FadeIn delay={delay}>
+            <span>
+                <Typography className={classes.game} variant={Variants.NORMAL_TEXT}>
                 <Box fontStyle={ITALIC_FONT}>
                     {GAME_ONE}
                 </Box>
-            </Typography>
+                </Typography>
+            </span>
 
-            <div style={{position: 'relative', marginTop: GAME_ONE_HEIGHT_OFFSET}}>
-                <Grid
-                    container
-                    direction="row"
-                    justify="center"
-                    alignItems="center"
-                    >
+               
+            <div className={classes.description}>
+            <span>
+                 <Typography style={{fontSize: ITEM_FONT_SIZE}} variant={Variants.NORMAL_TEXT}>
+                    <Box fontStyle={ITALIC_FONT}>
+                        {text}
+                    </Box>
+                </Typography>
+            </span>
+            </div>
 
-                    <Grid item>
-                        <Typography className={classes.description} style={{marginTop: '80px', fontSize: ITEM_FONT_SIZE}} variant={Variants.NORMAL_TEXT}>
-                            <Box fontStyle={ITALIC_FONT}>
-                                {text}
-                            </Box>
-                        </Typography>
-                    </Grid>
-
-                    <Grid item>
-                        <Typography className={classes.amount} variant={Variants.NORMAL_TEXT} style={{marginTop: '80px', fontSize: ITEM_FONT_SIZE, color: getColor(amount)}}>
-                            {getSign(amount) + amount.toFixed(DECIMAL_PLACES)}
-                        </Typography>
-                    </Grid>
-
-                </Grid>
+            <div className={classes.amount}>
+            <span>
+                <Typography variant={Variants.NORMAL_TEXT} style={{fontSize: ITEM_FONT_SIZE, color: getColor(amount)}}>
+                    {getSign(amount) + amount.toFixed(DECIMAL_PLACES)}
+                </Typography>
+                </span>
             </div>
         </FadeIn>
+    </div>
     );
 }
 
@@ -128,9 +132,10 @@ function getGameTwo(turn, delay, classes) {
     )
 }
 
-function getGameTwoResource(tokens, resource, amount, classes) {
+function getGameTwoResource(tokens, resource, amount, delay, classes) {
     return(
-        <FadeIn>
+        <div>
+        <FadeIn delay={delay}>
             <div className={classes.description}>
                 <Typography style={{fontSize: ITEM_FONT_SIZE}} variant={Variants.NORMAL_TEXT}>
                     <Box fontStyle={ITALIC_FONT}>
@@ -138,13 +143,15 @@ function getGameTwoResource(tokens, resource, amount, classes) {
                     </Box>
                 </Typography>
             </div>
-
+        </FadeIn>
+        <FadeIn delay={delay + AMMOUNT_DELAY}>
             <div className={classes.amount}>
                 <Typography  style={{fontSize: ITEM_FONT_SIZE, color: getColor(amount)}} variant={Variants.NORMAL_TEXT}>
                     {getSign(amount) + amount.toFixed(DECIMAL_PLACES)}
                 </Typography>
             </div>
         </FadeIn>
+        </div>
     )
 }
 
