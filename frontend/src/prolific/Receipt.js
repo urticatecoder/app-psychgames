@@ -20,11 +20,25 @@ const ITEM_FONT_SIZE = 38;
 const DECIMAL_PLACES = 2;
 
 const GAME_ONE = "Game One"
-const GAME_TWO = "Game Two"
+const GAME_ONE_DELAY = 1000;
 
-const TOKENS = ' Tokens '
+const GAME_TWO_DELAY = 7000;
 
-const AMMOUNT_DELAY = 500;
+const TOKENS = ' Tokens ';
+
+const AMOUNT_DELAY = 500;
+
+const WON_GAME_ONE_TEXT = "Winning Player: ";
+const LOST_GAME_ONE_TEXT = "Losing Player: ";
+
+const KEEP = 'Kept';
+const KEEP_DELAY = 9000;
+
+const INVEST = 'Invest';
+const INVEST_DELAY = 16000;
+
+const COMPETE = 'Compete';
+const COMPETE_DELAY = 23000;
 
 const styles = {
   game: {
@@ -71,21 +85,21 @@ function Receipt(props) {
 
   return (
       <div>
-            {getGameOne('Winning Player:', 3.00, 1000, classes, 0)}
-            {getGameTwo(7, 7000, classes)}
-            {getGameTwoResource(5, 'Keep', 2.5, 9000, classes)}
-            {getGameTwoResource(0, 'Invest', 0, 16000, classes)}
-            {getGameTwoResource(6, 'Compete', -3, 23000, classes)}
+            {getGameOne(props.gameOneResult, props.gameOneAmount, classes)}
+            {getGameTwo(props.gameTwoTurn, classes)}
+            {getGameTwoResource(props.keepTokens, KEEP, props.keepAmount, KEEP_DELAY, classes)}
+            {getGameTwoResource(props.investTokens, INVEST, props.investAmount, INVEST_DELAY, classes)}
+            {getGameTwoResource(props.competeTokens, COMPETE, props.competeAmount, COMPETE_DELAY, classes)}
 
       </div>
   );
 }
 
-function getGameOne(text, amount, delay, classes) {
+function getGameOne(won, amount, classes) {
     return(
         <div className={classes.gameOneFade}>
 
-        <FadeIn delay={delay}>
+        <FadeIn delay={GAME_ONE_DELAY}>
             <span>
                 <Typography className={classes.game} variant={Variants.NORMAL_TEXT}>
                 <Box fontStyle={ITALIC_FONT}>
@@ -99,7 +113,7 @@ function getGameOne(text, amount, delay, classes) {
             <span>
                  <Typography style={{fontSize: ITEM_FONT_SIZE}} variant={Variants.NORMAL_TEXT}>
                     <Box fontStyle={ITALIC_FONT}>
-                        {text}
+                        {getGameOneResultText(won)}
                     </Box>
                 </Typography>
             </span>
@@ -117,9 +131,14 @@ function getGameOne(text, amount, delay, classes) {
     );
 }
 
-function getGameTwo(turn, delay, classes) {
+function getGameOneResultText(won) {
+    if (won) return WON_GAME_ONE_TEXT;
+    else return LOST_GAME_ONE_TEXT;
+}
+
+function getGameTwo(turn, classes) {
     return(
-        <FadeIn className={classes.gameTwoFade} delay={delay}>
+        <FadeIn className={classes.gameTwoFade} delay={GAME_TWO_DELAY}>
             <Typography className={classes.game} variant={Variants.NORMAL_TEXT}>
                 <Box fontStyle={ITALIC_FONT}>
                     {GAME_TWO_PREFIX + turn}
@@ -141,7 +160,7 @@ function getGameTwoResource(tokens, resource, amount, delay, classes) {
                 </Typography>
             </div>
         </FadeIn>
-        <FadeIn delay={delay + AMMOUNT_DELAY}>
+        <FadeIn delay={delay + AMOUNT_DELAY}>
             <div className={classes.amount}>
                 <Typography  style={{fontSize: ITEM_FONT_SIZE, color: getColor(amount)}} variant={Variants.NORMAL_TEXT}>
                     {getSign(amount) + amount.toFixed(DECIMAL_PLACES)}
@@ -158,23 +177,8 @@ function getResourceVerb(resource) {
     else return 'Invested:';
 }
 
-// function getTurnInfo(turn, delay, classes, pos) {
-   
-//     return(
-//         <div style={{position: 'relative', top: pos * HEIGHT_OFFSET + 'px'}}>
-//             <FadeIn delay={delay}>
-//             <Typography className={classes.description} variant={Variants.NORMAL_TEXT}>
-//                 <Box fontStyle={ITALIC_FONT}>
-//                     {GAME_TWO_PREFIX + turn}
-//                 </Box>
-//             </Typography>
-//             </FadeIn>
-//         </div>
-//     )
-// }
-
 function getSign(amount) {
-    if (amount > 0) return POSITIVE;
+    if (amount >= 0) return POSITIVE;
     else return NEUTRAL;
 }
 

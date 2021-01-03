@@ -54,9 +54,9 @@ function PayoutCount(props) {
   const [newPayout, setNewPayout] = useState(INITIAL_PAYOUT);
   const [textColor, setTextColor] = useState(BLACK);
 
-  const AFTER_GAME_ONE = (gameOne) ? GAME_ONE_BONUS : NO_GAME_ONE_BONUS;
-  const AFTER_KEEP = KEEP_TOKENS * KEEP_INCREASE + AFTER_GAME_ONE;
-  const AFTER_INVEST = INVEST_TOKENS * INVEST_INCREASE + AFTER_KEEP;
+  const AFTER_GAME_ONE = props.gameOneAmount;
+  const AFTER_KEEP = AFTER_GAME_ONE + props.keepAmount;
+  const AFTER_INVEST = AFTER_KEEP + props.investAmount;
   const AFTER_COMPETE = COMPETE_TOKENS * COMPETE_REDUCTION + AFTER_INVEST;
   
   useEffect(() => {
