@@ -17,8 +17,6 @@ const KEEP_PAUSE = 15000;
 
 const INVEST_PAUSE = 9000;
 
-const COMPETE_TOKENS = 6;
-const COMPETE_REDUCTION = -.50;
 const COMPETE_PAUSE = 21000;
 
 const BLACK = "#282d36";
@@ -27,6 +25,7 @@ const RED = "#fc3f3f";
 
 const FINAL_PAUSE = 27000;
 
+const BASE_PAYOUT = 0.00;
 
 const styles = {
   countUp: {
@@ -87,8 +86,9 @@ function PayoutCount(props) {
     setTimeout(() => {
         console.log('FINAL');
         setTextColor(GREEN);
-        setLastPayout(AFTER_COMPETE);
-        setNewPayout(AFTER_COMPETE);
+        var finalPayout = (AFTER_COMPETE < 0) ? BASE_PAYOUT : AFTER_COMPETE;
+        setLastPayout(finalPayout);
+        setNewPayout(finalPayout);
     }, FINAL_PAUSE);
 
 }, []);

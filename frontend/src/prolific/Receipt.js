@@ -51,28 +51,28 @@ const styles = {
 
   description: {
     position: 'relative',
-    marginRight: '13vw',
+    marginRight: '12vw',
     marginTop: '10px',
     textAlign: 'right'
   },
 
   amount: {
     position: 'relative',
-    marginRight: '4vw',
+    marginRight: '3vw',
     marginTop: '-39px',
     textAlign: 'right',
   },
 
   resourceDescription: {
     position: 'relative',
-    marginRight: '13vw',
+    marginRight: '12vw',
     marginTop: '13px',
     textAlign: 'right',
   },
 
   resourceAmount: {
     position: 'relative',
-    marginRight: '4vw',
+    marginRight: '3vw',
     marginTop: '-39px',
     textAlign: 'right',
   },
