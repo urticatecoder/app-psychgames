@@ -14,7 +14,7 @@ const styles = {
     top: "25vh",
     left: "30vw",
     backgroundColor: "#e0c760",
-    height: "65vh",
+    height: "64vh",
     width: "40vw",
     opacity: ".8",
     borderRadius: "20px",

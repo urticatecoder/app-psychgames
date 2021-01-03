@@ -31,7 +31,7 @@ const BLACK = "#282d36";
 const GREEN = "#27961d";
 const RED = "#fc3f3f";
 
-const FINAL_PAUSE = 35000;
+const FINAL_PAUSE = 30000;
 
 
 const styles = {

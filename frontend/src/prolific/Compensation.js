@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Box } from "@material-ui/core";
+import { Typography, Box, Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import "../util/common_stylings/FullScreenDiv.css";
-import axios from "axios";
 import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 import Payout from "./Payout";
-import ContinueButton from  '../util/common_components/ContinueButton';
 import ProlificDialogues from "./ProlificDialogues";
+
 const FULL_DIV = "fullDiv";
 
 const DEFAULT_CODE = "";
@@ -14,8 +13,18 @@ const ITALIC_FONT = "italic";
 const THANK_YOU_MESSAGE = "Thank you for participating!";
 
 const PAYOUT_MESSAGE = "Your receipt is shown below."
-const VERIFICATION_CODE_ROUTE = "/verification-code";
 const BUTTON_MESSAGE = 'Get Prolific Code';
+
+const BUTTON_COLOR = "secondary";
+const BUTTON_OPACITY = .85
+
+const DISABLE_BUTTON = true;
+const ENABLE_BUTTON = false;
+
+const OPEN_DIALOGUE = true;
+const CLOSE_DIALOGUE = false;
+
+const BUTTON_TIMEOUT = 31000;
 
 const styles = {
   prolificText: {
@@ -39,8 +48,14 @@ const styles = {
 function ProlificScreen(props) {
   const { classes } = props;
 
-  const [prolificCode, setProlificCode] = useState(DEFAULT_CODE);
+  const [disableButton, setDisableButton] = useState(DISABLE_BUTTON);
+  const [openDialogue, setOpenDialogue] = useState(CLOSE_DIALOGUE);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setDisableButton(ENABLE_BUTTON);
+    }, BUTTON_TIMEOUT);
+  });
 
   return (
     <div className={FULL_DIV}>
@@ -60,7 +75,16 @@ function ProlificScreen(props) {
         </Box>
       </Typography>
       <Payout/>
-      <ProlificDialogues loginCode={props.code}/>
+      <Button
+        disabled={disableButton}
+        variant={Variants.CONTAINED}
+        color={BUTTON_COLOR}
+        onClick={() => setOpenDialogue(OPEN_DIALOGUE)}
+        style={{height: '40px', positive: 'relative', marginTop: '68vh', opacity: BUTTON_OPACITY}}
+      >
+        {BUTTON_MESSAGE}
+      </Button>
+      <ProlificDialogues open={openDialogue} setOpen={setOpenDialogue} loginCode={props.code}/>
     </div>
   );
 }

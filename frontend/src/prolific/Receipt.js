@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Typography, Box, Grid } from "@material-ui/core";
+import React from "react";
+import { Typography, Box } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 import FadeIn from 'react-fade-in';
@@ -18,9 +18,6 @@ const NEUTRAL = " ";
 const ITEM_FONT_SIZE = 38;
 
 const DECIMAL_PLACES = 2;
-
-const GAME_ONE_HEIGHT_OFFSET = '20px';
-const GAME_TWO_HEIGHT_OFFSET = '60px';
 
 const GAME_ONE = "Game One"
 const GAME_TWO = "Game Two"

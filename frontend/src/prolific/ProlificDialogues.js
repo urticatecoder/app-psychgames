@@ -16,11 +16,10 @@ const VERIFICATION_CODE_ROUTE = "/verification-code";
 const INVALID_PLAYER = false;
 const VALID_PLAYER = true;
 
-const OPEN_DIALOGUE = true;
 const CLOSE_DIALOGUE = false;
 
 const VALID_PREFIX = "Your prolific code is as follows: ";
-const VALID_SUBMESSAGE = "Please return to Prolific and enter the following code to recieve the amount listed for your compensation. Note that this code IS case sensitive. Thanks again for participating!";
+const VALID_SUBMESSAGE = "Please return to Prolific and enter the following code to recieve the amount listed for your compensation. Note that this code is case sensitive. Thanks again for participating!";
 
 
 const INVALID_TITLE = "You did not complete the experiment, so you will not be compensated.";
@@ -28,7 +27,6 @@ const INVALID_SUBMESSAGE = "If you believe that this is a mistake, please reach 
 const OKAY = "Okay";
 const BUTTON_VARIANT = 'contained';
 const OKAY_COLOR = 'Yes';
-
 
 /**
  * Screen shown at the end of the game for users, telling them their total compensation and providing a code used to get paid on the Prolific site.
@@ -41,10 +39,7 @@ function ProlificDialogues(props) {
   const { classes } = props;
 
   const [prolificCode, setProlificCode] = useState(DEFAULT_CODE);
-  const [validPlayer, setValidPlayer] = useState(INVALID_PLAYER);
-
-  const [openValid, setOpenValid] = useState(CLOSE_DIALOGUE);
-  const [openInvalid, setOpenInvalid] = useState(CLOSE_DIALOGUE);
+  const [validPlayer, setValidPlayer] = useState(VALID_PLAYER);
 
   useEffect(() => {
     axios.get(VERIFICATION_CODE_ROUTE, {
@@ -57,51 +52,54 @@ function ProlificDialogues(props) {
           setValidPlayer(VALID_PLAYER);
         }
       });
+
     }, [props.code, prolificCode]);
 
-
     var currentDialogue;
-    if (validPlayer) currentDialogue = getValidDialogue(prolificCode, openValid, setOpenValid);
-    else currentDialogue = getInvalidDialogue(openInvalid, setOpenInvalid);
-    
-    return(
-      {currentDialogue}
-    );
+    if (validPlayer) currentDialogue = getValidDialogue(prolificCode, props.open, props.setOpen);
+    else currentDialogue = getInvalidDialogue(props.open, props.setOpen);
+    return(currentDialogue);
 }
 
-function getValidDialogue(prolificCode, openValid, setOpenValid) {
+function getValidDialogue(prolificCode, open, setOpen) {
   return(
+    <div>
     <Dialog
-      open={openValid}
+      open={open}
+      onClose={() => setOpen(CLOSE_DIALOGUE)}
     >
       <DialogTitle>{VALID_PREFIX + prolificCode}</DialogTitle>
       <DialogContent>
           <DialogContentText>{VALID_SUBMESSAGE}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setOpenValid(CLOSE_DIALOGUE)} variant={BUTTON_VARIANT} color={OKAY_COLOR}>
+        <Button onClick={() => setOpen(CLOSE_DIALOGUE)} variant={BUTTON_VARIANT} color={OKAY_COLOR}>
           {OKAY}
         </Button>
       </DialogActions>
     </Dialog>
+    </div>
   )
 }
 
-function getInvalidDialogue(openInvalid, setOpenInvalid) {
+function getInvalidDialogue(open, setOpen) {
   return(
+    <div>
     <Dialog
-      open={openInvalid}
+      open={open}
+      onClose={() => setOpen(CLOSE_DIALOGUE)}
     >
       <DialogTitle>{INVALID_TITLE}</DialogTitle>
       <DialogContent>
           <DialogContentText>{INVALID_SUBMESSAGE}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setOpenInvalid(CLOSE_DIALOGUE)} variant={BUTTON_VARIANT} color={OKAY_COLOR}>
+        <Button onClick={() => setOpen(CLOSE_DIALOGUE)} variant={BUTTON_VARIANT} color={OKAY_COLOR}>
           {OKAY}
         </Button>
       </DialogActions>
     </Dialog>
+    </div>
   )
 }
 
