@@ -31,7 +31,7 @@ const styles = {
     top: "25vh",
     left: "29vw",
     backgroundColor: "#e0c760",
-    height: "64vh",
+    height: "60vh",
     width: "42vw",
     opacity: ".8",
     borderRadius: "20px",

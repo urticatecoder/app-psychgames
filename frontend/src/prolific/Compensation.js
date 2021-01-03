@@ -80,7 +80,7 @@ function ProlificScreen(props) {
         variant={Variants.CONTAINED}
         color={BUTTON_COLOR}
         onClick={() => setOpenDialogue(OPEN_DIALOGUE)}
-        style={{height: '40px', positive: 'relative', marginTop: '68vh', opacity: BUTTON_OPACITY}}
+        style={{height: '50px', width: '250px', positive: 'relative', marginTop: '68vh', opacity: BUTTON_OPACITY}}
       >
         {BUTTON_MESSAGE}
       </Button>
