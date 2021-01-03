@@ -11,27 +11,21 @@ const NUM_DECIMALS = 2;
 const DECIMAL = ".";
 const PREFIX = "$";
 
-const NO_GAME_ONE_BONUS = 0.00;
-const GAME_ONE_BONUS = 3.00;
 const GAME_ONE_PAUSE = 2000;
 
-const KEEP_TOKENS = 5;
-const KEEP_INCREASE = .50;
-const KEEP_PAUSE = 9000;
+const KEEP_PAUSE = 15000;
 
-const INVEST_TOKENS = 0;
-const INVEST_INCREASE = .50;
-const INVEST_PAUSE = 16000;
+const INVEST_PAUSE = 9000;
 
 const COMPETE_TOKENS = 6;
 const COMPETE_REDUCTION = -.50;
-const COMPETE_PAUSE = 23000;
+const COMPETE_PAUSE = 21000;
 
 const BLACK = "#282d36";
 const GREEN = "#27961d";
 const RED = "#fc3f3f";
 
-const FINAL_PAUSE = 30000;
+const FINAL_PAUSE = 27000;
 
 
 const styles = {
@@ -55,9 +49,9 @@ function PayoutCount(props) {
   const [textColor, setTextColor] = useState(BLACK);
 
   const AFTER_GAME_ONE = props.gameOneAmount;
-  const AFTER_KEEP = AFTER_GAME_ONE + props.keepAmount;
-  const AFTER_INVEST = AFTER_KEEP + props.investAmount;
-  const AFTER_COMPETE = COMPETE_TOKENS * COMPETE_REDUCTION + AFTER_INVEST;
+  const AFTER_INVEST = AFTER_GAME_ONE + props.investAmount;
+  const AFTER_KEEP = AFTER_INVEST + props.keepAmount;
+  const AFTER_COMPETE = AFTER_KEEP + props.competeAmount;
   
   useEffect(() => {
 
@@ -68,23 +62,25 @@ function PayoutCount(props) {
     }, GAME_ONE_PAUSE);
 
     setTimeout(() => {
-        console.log('KEEP');
-        updateTextColor(AFTER_GAME_ONE, AFTER_KEEP, setTextColor);
-        setLastPayout(AFTER_GAME_ONE);
-        setNewPayout(AFTER_KEEP);
-    }, KEEP_PAUSE);
-
-    setTimeout(() => {
         console.log('INVEST');
-        updateTextColor(AFTER_KEEP, AFTER_INVEST, setTextColor);
-        setLastPayout(AFTER_KEEP);
+        updateTextColor(AFTER_GAME_ONE, AFTER_INVEST, setTextColor);
+        setLastPayout(AFTER_GAME_ONE);
         setNewPayout(AFTER_INVEST);
     }, INVEST_PAUSE);
 
+
+    setTimeout(() => {
+        console.log('KEEP');
+        updateTextColor(AFTER_INVEST, AFTER_KEEP, setTextColor);
+        setLastPayout(AFTER_INVEST);
+        setNewPayout(AFTER_KEEP);
+    }, KEEP_PAUSE);
+
+
     setTimeout(() => {
         console.log('COMPETE');
-        updateTextColor(AFTER_INVEST, AFTER_COMPETE, setTextColor);
-        setLastPayout(AFTER_INVEST);
+        updateTextColor(AFTER_KEEP, AFTER_COMPETE, setTextColor);
+        setLastPayout(AFTER_KEEP);
         setNewPayout(AFTER_COMPETE);
     }, COMPETE_PAUSE);
 

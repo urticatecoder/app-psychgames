@@ -12,10 +12,12 @@ const DEFAULT_KEEP_TOKENS = 2;
 const DEFAULT_KEEP_AMOUNT = 1;
 
 const DEFAULT_INVEST_TOKENS = 3;
-const DEFAULT_INVEST_AMOUNT = 1.5;
+const DEFAULT_INVEST_RATE = 1.5;
+const DEFAULT_INVEST_AMOUNT = 4.5;
 
-const DEFAULT_COMPETE_TOKENS = 6;
-const DEFAULT_COMPETE_AMOUNT = -3;
+const DEFAULT_COMPETE_TOKENS = 2;
+const DEFAULT_COMPETE_RATE = 2;
+const DEFAULT_COMPETE_AMOUNT = -4;
 
 const GET_RESULTS_SOCKET = 'get results';
 const RECIEVE_RESULTS_SOCKET = 'recieve results';
@@ -27,10 +29,10 @@ const styles = {
   wrapperDiv: {
     position: "absolute",
     top: "25vh",
-    left: "30vw",
+    left: "29vw",
     backgroundColor: "#e0c760",
     height: "64vh",
-    width: "40vw",
+    width: "42vw",
     opacity: ".8",
     borderRadius: "20px",
   }
@@ -50,22 +52,26 @@ function Payout(props) {
   const [keepTokens, setKeepTokens] = useState(DEFAULT_KEEP_TOKENS);
   const [keepAmount, setKeepAmount] = useState(DEFAULT_KEEP_AMOUNT);
   const [investTokens, setInvestTokens] = useState(DEFAULT_INVEST_TOKENS);
+  const [investRate, setInvestRate] = useState(DEFAULT_INVEST_RATE)
   const [investAmount, setInvestAmount]  = useState(DEFAULT_INVEST_AMOUNT);
   const [competeTokens, setCompeteTokens] = useState(DEFAULT_COMPETE_TOKENS);
+  const [competeRate, setCompeteRate] = useState(DEFAULT_COMPETE_RATE);
   const [competeAmount, setCompeteAmount] = useState(DEFAULT_COMPETE_AMOUNT);
 
   useEffect(() => {
     socket.emit(GET_RESULTS_SOCKET, props.code);
     
-    socket.on(RECIEVE_RESULTS_SOCKET, (gameOneResult, gameOneAmount, gameTwoTurn, keepTokens, keepAmount, investTokens, investAmount, competeTokens, competeAmount) => {
+    socket.on(RECIEVE_RESULTS_SOCKET, (gameOneResult, gameOneAmount, gameTwoTurn, keepTokens, keepAmount, investTokens, investRate, investAmount, competeTokens, competeRate, competeAmount) => {
         setGameOneResult(gameOneResult);
         setGameOneAmount(gameOneAmount);
         setGameTwoTurn(gameTwoTurn);
         setKeepTokens(keepTokens);
         setKeepAmount(keepAmount);
         setInvestTokens(investTokens);
+        setInvestRate(investRate);
         setInvestAmount(investAmount);
         setCompeteTokens(competeTokens);
+        setCompeteRate(competeRate);
         setCompeteAmount(competeAmount);
       });
   
@@ -90,8 +96,10 @@ function Payout(props) {
           keepTokens={keepTokens}
           keepAmount={keepAmount}
           investTokens={investTokens}
+          investRate={investRate}
           investAmount={investAmount}
           competeTokens={competeTokens}
+          competeRate={competeRate}
           competeAmount={competeAmount}
         />
     </div>

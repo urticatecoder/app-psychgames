@@ -24,7 +24,7 @@ const ENABLE_BUTTON = false;
 const OPEN_DIALOGUE = true;
 const CLOSE_DIALOGUE = false;
 
-const BUTTON_TIMEOUT = 31000;
+const BUTTON_TIMEOUT = 27000;
 
 const styles = {
   prolificText: {

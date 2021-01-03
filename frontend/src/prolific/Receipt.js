@@ -15,7 +15,8 @@ const RED = "#fc3f3f";
 const POSITIVE = "+";
 const NEUTRAL = " ";
 
-const ITEM_FONT_SIZE = 38;
+const ITEM_FONT_SIZE = 35;
+const RESOURCE_FONT_SIZE = 35;
 
 const DECIMAL_PLACES = 2;
 
@@ -31,36 +32,50 @@ const AMOUNT_DELAY = 500;
 const WON_GAME_ONE_TEXT = "Winning Player: ";
 const LOST_GAME_ONE_TEXT = "Losing Player: ";
 
+const INVEST = 'Invested';
+const INVEST_DELAY = 9000;
+
 const KEEP = 'Kept';
-const KEEP_DELAY = 9000;
+const KEEP_DELAY = 15000;
+const KEEP_RATE = 1;
 
-const INVEST = 'Invest';
-const INVEST_DELAY = 16000;
-
-const COMPETE = 'Compete';
-const COMPETE_DELAY = 23000;
+const COMPETE = 'Competed';
+const COMPETE_DELAY = 21000;
 
 const styles = {
   game: {
     position: 'relative',
-    textAlign: 'center',
+    textAlign: 'left',
+    marginLeft: '4vw',
   },
 
   description: {
     position: 'relative',
-    marginRight: '250px',
+    marginRight: '13vw',
     marginTop: '10px',
     textAlign: 'right'
   },
 
   amount: {
     position: 'relative',
-    marginRight: '8vw',
-    marginTop: '-43px',
+    marginRight: '4vw',
+    marginTop: '-39px',
     textAlign: 'right',
   },
 
-  
+  resourceDescription: {
+    position: 'relative',
+    marginRight: '13vw',
+    marginTop: '13px',
+    textAlign: 'right',
+  },
+
+  resourceAmount: {
+    position: 'relative',
+    marginRight: '4vw',
+    marginTop: '-39px',
+    textAlign: 'right',
+  },
 
   gameOneFade: {
     position: 'relative',
@@ -87,9 +102,9 @@ function Receipt(props) {
       <div>
             {getGameOne(props.gameOneResult, props.gameOneAmount, classes)}
             {getGameTwo(props.gameTwoTurn, classes)}
-            {getGameTwoResource(props.keepTokens, KEEP, props.keepAmount, KEEP_DELAY, classes)}
-            {getGameTwoResource(props.investTokens, INVEST, props.investAmount, INVEST_DELAY, classes)}
-            {getGameTwoResource(props.competeTokens, COMPETE, props.competeAmount, COMPETE_DELAY, classes)}
+            {getGameTwoResource(props.investTokens, INVEST, props.investRate, props.investAmount, INVEST_DELAY, classes)}
+            {getGameTwoResource(props.keepTokens, KEEP, KEEP_RATE, props.keepAmount, KEEP_DELAY, classes)}
+            {getGameTwoResource(props.competeTokens, COMPETE, props.competeRate, props.competeAmount, COMPETE_DELAY, classes)}
 
       </div>
   );
@@ -148,20 +163,20 @@ function getGameTwo(turn, classes) {
     )
 }
 
-function getGameTwoResource(tokens, resource, amount, delay, classes) {
+function getGameTwoResource(tokens, resource, rate, amount, delay, classes) {
     return(
         <div>
         <FadeIn delay={delay}>
-            <div className={classes.description}>
-                <Typography style={{fontSize: ITEM_FONT_SIZE}} variant={Variants.NORMAL_TEXT}>
+            <div className={classes.resourceDescription}>
+                <Typography style={{fontSize: RESOURCE_FONT_SIZE}} variant={Variants.NORMAL_TEXT}>
                     <Box fontStyle={ITALIC_FONT}>
-                        {tokens + TOKENS + getResourceVerb(resource)}
+                        {tokens + TOKENS + resource + getRate(rate)}
                     </Box>
                 </Typography>
             </div>
         </FadeIn>
         <FadeIn delay={delay + AMOUNT_DELAY}>
-            <div className={classes.amount}>
+            <div className={classes.resourceAmount}>
                 <Typography  style={{fontSize: ITEM_FONT_SIZE, color: getColor(amount)}} variant={Variants.NORMAL_TEXT}>
                     {getSign(amount) + amount.toFixed(DECIMAL_PLACES)}
                 </Typography>
@@ -171,10 +186,10 @@ function getGameTwoResource(tokens, resource, amount, delay, classes) {
     )
 }
 
-function getResourceVerb(resource) {
-    if (resource == 'keep' || resource == 'Keep') return 'Kept:';
-    else if (resource == 'compete' || resource == 'Compete') return 'Competed:';
-    else return 'Invested:';
+function getRate(rate) {
+    console.log(rate)
+    console.log('rate')
+    return ' @ ' + rate.toFixed(1) + 'x:';
 }
 
 function getSign(amount) {
