@@ -409,6 +409,14 @@ function isWinner(prolificID, room){
     return false;
 }
 
+function winningBonus(prolificID, room){
+    if(isWinner(prolificID, room)){
+        return 5; // 5 dollars for winning game 1
+    } else{
+        return 0;
+    }
+}
+
 
 module.exports = {
     getResultsByProlificId: getResultsByProlificId,
@@ -424,4 +432,5 @@ module.exports = {
     getDoublePairMap: getDoublePairMap,
     getTriplePairMap: getTriplePairMap,
     isWinner: isWinner,
+    winningBonus: winningBonus
 }
