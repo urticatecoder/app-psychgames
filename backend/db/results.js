@@ -398,6 +398,17 @@ function getWinnersAndLosers(room) {
     return [winners, losers];
 }
 
+function isWinner(prolificID, room){
+    let results = getWinnersAndLosers(room);
+    let winners = results[0];
+    for(var i = 0; i < winners.length; i++){
+        if(winners[i] === prolificID){
+            return true;
+        }
+    }
+    return false;
+}
+
 
 module.exports = {
     getResultsByProlificId: getResultsByProlificId,
@@ -411,5 +422,6 @@ module.exports = {
     checkPassiveness: checkPassiveness,
     getSinglePairMap: getSinglePairMap,
     getDoublePairMap: getDoublePairMap,
-    getTriplePairMap: getTriplePairMap
+    getTriplePairMap: getTriplePairMap,
+    isWinner: isWinner,
 }
