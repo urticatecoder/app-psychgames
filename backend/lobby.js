@@ -240,6 +240,11 @@ class Room {
         return this.gameTwoPayoff[idx];
     }
 
+    /**
+     * gets player allocation at specific turn number 
+     * @param {*} prolificID 
+     * @param {*} turnNum 
+     */
     getPlayerAllocationAtTurnNum(prolificID, turnNum) {
         let player = this.getPlayerWithID(prolificID);
         return player.getAllocationAtTurn(turnNum);
