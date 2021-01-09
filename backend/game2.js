@@ -98,6 +98,12 @@ function calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum) {
     return payment;
 }
 
+function getCompeteAtTurn(prolificID, room, turnNum){
+    let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
+    console.log(playerAllocation);
+    return playerAllocation.compete;
+}
+
 /**
  * @return {number[]} an array consists of 3 integers, representing the amount of tokens allocated for each category
  */
@@ -155,4 +161,5 @@ module.exports = {
     isGameTwoDone: isGameTwoDone,
     getRandomInt: getRandomInt,
     calculateFinalPaymentForAPlayer: calculateFinalPaymentForAPlayer,
+    getCompeteAtTurn: getCompeteAtTurn
 }

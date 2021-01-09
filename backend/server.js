@@ -9,6 +9,7 @@ const lobby = require("./lobby.js").LobbyInstance;
 
 // Set up mongoose connection
 let mongoose = require('mongoose');
+const game2 = require("./game2");
 
 /* use the test database if no environment variables named MONGODB_URI are passed in */
 let mongoDB_URI = process.env.MONGODB_URI || 'mongodb+srv://xipu:k5q1J0qhOrVb1F65@cluster0.jcnnf.azure.mongodb.net/psych_game?retryWrites=true&w=majority'
@@ -133,8 +134,10 @@ io.on('connection', socket => {
                 room.advanceToNextRound();
                 let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
                 let competePayoff = payoff[0], investPayoff = payoff[1];
-                //game 2 allocation
-                
+                //game 2 allocation and will need to put for loop to do for each player
+                //compete, keep, invest
+                let compete = game2.getCompeteAtTurn(prolificID, room, room.turnNum - 1);
+
                 io.in(room.name).emit('end current turn for game 2', competePayoff, investPayoff, allocation[0], allocation[1]);
             }
         }

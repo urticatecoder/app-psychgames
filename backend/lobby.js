@@ -232,7 +232,9 @@ class Room {
     }
 
     //get compete of player
-
+    getCompeteOfPlayer(){
+        
+    }
 
     //get invest of player
 
