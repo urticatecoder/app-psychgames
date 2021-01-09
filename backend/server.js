@@ -139,6 +139,26 @@ io.on('connection', socket => {
                 let winners = group[0];
                 let losers = group[1];
                 
+                losers.forEach((player) => {
+                    console.log(player);
+                    //game 1
+                    let gameOneResult = true;
+                    let gameOneBonus = player.gameOneBonus;
+                    //compete, keep, invest
+                    let compete = game2.getCompeteAtTurn(player, room, room.turnNum - 1);
+                    let keep = game2.getKeepAtTurn(player, room, room.turnNum - 1);
+                    let invest = game2.getInvestAtTurn(player, room, room.turnNum - 1);
+
+                    let competeRate = 0;
+                    let competeAmount = 0;
+                    let investRate = 0;
+                    let investAmount = 0;
+                    let keepAmount = 0;
+                    console.log(keep);
+                    console.log(invest);
+                    console.log(compete);
+                    io.in(room.name).emit('get results', gameOneResult, gameOneBonus, room.turnNum - 1, keep, keepAmount, invest, investRate, investAmount, compete, competeRate, competeAmount);
+                 });
                 socket.on('get results', () => {
                     losers.forEach((player) => {
                         console.log(player);
