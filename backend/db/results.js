@@ -398,6 +398,25 @@ function getWinnersAndLosers(room) {
     return [winners, losers];
 }
 
+function isWinner(prolificID, room){
+    let results = getWinnersAndLosers(room);
+    let winners = results[0];
+    for(var i = 0; i < winners.length; i++){
+        if(winners[i] === prolificID){
+            return true;
+        }
+    }
+    return false;
+}
+
+function winningBonus(prolificID, room){
+    if(isWinner(prolificID, room)){
+        return 5; // 5 dollars for winning game 1
+    } else{
+        return 0;
+    }
+}
+
 
 module.exports = {
     getResultsByProlificId: getResultsByProlificId,
@@ -411,5 +430,7 @@ module.exports = {
     checkPassiveness: checkPassiveness,
     getSinglePairMap: getSinglePairMap,
     getDoublePairMap: getDoublePairMap,
-    getTriplePairMap: getTriplePairMap
+    getTriplePairMap: getTriplePairMap,
+    isWinner: isWinner,
+    winningBonus: winningBonus
 }

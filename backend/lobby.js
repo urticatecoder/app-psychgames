@@ -212,7 +212,7 @@ class Room {
             winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
         });
         let winnerSum = GameTwoAllocation.sumAllocations(winnerAllocations);
-
+        console.log(GameTwoAllocation);
         // losers
         let loserIDs = this.gameOneResults[1];
         let loserAllocations = [];
@@ -240,6 +240,11 @@ class Room {
         return this.gameTwoPayoff[idx];
     }
 
+    /**
+     * gets player allocation at specific turn number 
+     * @param {*} prolificID 
+     * @param {*} turnNum 
+     */
     getPlayerAllocationAtTurnNum(prolificID, turnNum) {
         let player = this.getPlayerWithID(prolificID);
         return player.getAllocationAtTurn(turnNum);
@@ -284,7 +289,11 @@ class Room {
 class Player {
     choices = []; // stores an array of array to represent choices made by this player in game 1
     allocations = []; // stores an array of array to represent allocations of tokens made by this player in game 2
-
+    keepTotal = 0; // stores the total keep of game2 
+    investTotal = 0; // stores the total invest of game2 
+    competeTotal = 0; // stores the total compete of game2 
+    investRate = 0; // stores the total keep of game2 
+    competeRate = 0; // stores the total keep of game2 
     /**
      * @constructor
      * @param prolificID {string}
@@ -305,6 +314,30 @@ class Player {
             throw 'Parameter is not a Boolean type.';
         }
         this.isBot = isBot;
+    }
+
+    updateCompeteAmount(competeValue){
+        this.competeTotal = this.competeTotal + competeValue;
+    }
+
+    getCompeteAmount(){
+        return this.competeTotal;
+    }
+
+    updateKeepAmount(keepValue){
+        this.keepTotal = this.keepTotal + keepValue;
+    }
+
+    getKeepAmount(){
+        return this.keepTotal;
+    }
+
+    updateInvestAmount(investValue){
+        this.investTotal = this.investTotal + investValue;
+    }
+
+    getInvestAmount(){
+        return this.investTotal;
     }
 
     /**

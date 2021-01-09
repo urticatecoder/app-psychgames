@@ -9,6 +9,7 @@ const lobby = require("./lobby.js").LobbyInstance;
 
 // Set up mongoose connection
 let mongoose = require('mongoose');
+const game2 = require("./game2");
 
 /* use the test database if no environment variables named MONGODB_URI are passed in */
 let mongoDB_URI = process.env.MONGODB_URI || 'mongodb+srv://xipu:k5q1J0qhOrVb1F65@cluster0.jcnnf.azure.mongodb.net/psych_game?retryWrites=true&w=majority'
@@ -75,18 +76,17 @@ io.on('connection', socket => {
                     console.log(player + " is possibly inactive.");
                     io.in(room.name).emit('check passivity', player);
 
-                    // io.on('active player', (activePlayer) => {
-                    //     // let it pass
-                    //     console.log(activePlayer + ' is active');
-                    // });
+                    socket.on('active player', (activePlayer) => {
+                        // let it pass
+                        console.log(activePlayer + ' is active');
+                    });
     
-                    // io.on('inactive player', (inactivePlayer) => {
-                    //     //make this player a bot
-                    //     console.log(inactivePlayer + ' is inactive');
-                    // });
+                    socket.on('inactive player', (inactivePlayer) => {
+                        //make this player a bot
+                        console.log(inactivePlayer + ' is inactive');
+                    });
                 }
             });
-            console.log(room.getTime(allIDs[0]));
             room.setGameOneTurnCount(room.gameOneTurnCount + 1);
             if (isGameOneDone(room)) {
                 let group = getWinnersAndLosers(room);
@@ -122,6 +122,7 @@ io.on('connection', socket => {
                 bot.recordAllocationForGameTwo(botAllocation[0], botAllocation[1], botAllocation[2]); // compete, keep, invest
                 DB_API.saveAllocationToDB(bot.prolificID, botAllocation[1], botAllocation[2], botAllocation[0], payoff[1], payoff[0], room.turnNum, true);
                 room.addPlayerIDToConfirmedSet(bot.prolificID);
+                // console.log(room.getOthersAllocationAtTurnNum(playerInThisRoom.prolificID, room.turnNum + 1));
             }
         });
 
@@ -133,6 +134,80 @@ io.on('connection', socket => {
                 room.advanceToNextRound();
                 let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
                 let competePayoff = payoff[0], investPayoff = payoff[1];
+                //game 2 allocation and will need to put for loop to do for each player
+                let group = getWinnersAndLosers(room);
+                let winners = group[0];
+                let losers = group[1];
+                room.players.forEach((playerInRoom) => {
+                    console.log(playerInRoom);
+                    //game 1
+                    let gameOneResult = true;
+                    let gameOneBonus = playerInRoom.gameOneBonus;
+                    //compete, keep, invest
+                    let compete = game2.getCompeteAtTurn(playerInRoom.prolificID, room, room.turnNum - 1);
+                    let keep = game2.getKeepAtTurn(playerInRoom.prolificID, room, room.turnNum - 1);
+                    let invest = game2.getInvestAtTurn(playerInRoom.prolificID, room, room.turnNum - 1);
+                    let competeRate = playerInRoom.competeRate;
+                    let competeAmount = playerInRoom.getCompeteAmount();
+                    let investRate = playerInRoom.investRate;
+                    let investAmount = playerInRoom.getInvestAmount();
+                    let keepAmount = playerInRoom.getKeepAmount();
+
+                    // console.log(keep);
+                    // console.log(invest);
+                    // console.log(compete);
+                    io.in(room.name).emit('get results', gameOneResult, gameOneBonus, room.turnNum - 1, keep, keepAmount, invest, investRate, investAmount, compete, competeRate, competeAmount);
+                 });
+
+                socket.on('get results', () => {
+                    losers.forEach((player) => {
+                        console.log(player);
+                        //game 1
+                        let gameOneResult = true;
+                        let gameOneBonus = player.gameOneBonus;
+                        //compete, keep, invest
+                        let compete = game2.getCompeteAtTurn(player, room, room.turnNum - 1);
+                        let keep = game2.getKeepAtTurn(player, room, room.turnNum - 1);
+                        let invest = game2.getInvestAtTurn(player, room, room.turnNum - 1);
+                        let competeRate = 0;
+                        let competeAmount = player.competeAmount;
+                        let investRate = 0;
+                        let investAmount = player.investAmount;
+                        let keepAmount = player.keepAmount;
+
+                        console.log(room.getTeamAllocationAtCurrentTurn());
+                        // console.log(keep);
+                        // console.log(invest);
+                        // console.log(compete);
+                        io.in(room.name).emit('get results', gameOneResult, gameOneBonus, room.turnNum - 1, keep, keepAmount, invest, investRate, investAmount, compete, competeRate, competeAmount);
+                     });
+
+                     winners.forEach((player) => {
+                        
+
+                        //game 1
+                        let gameOneResult = true;
+                        let gameOneBonus = player.gameOneBonus;
+                        //compete, keep, invest
+                        let compete = game2.getCompeteAtTurn(player, room, room.turnNum - 1);
+                        let keep = game2.getKeepAtTurn(player, room, room.turnNum - 1);
+                        let invest = game2.getInvestAtTurn(player, room, room.turnNum - 1);
+
+                        let competeRate = 0;
+                        let competeAmount = 0;
+                        let investRate = 0;
+                        let investAmount = 0;
+                        let keepAmount = 0;
+
+                        console.log(room.getTeamAllocationAtCurrentTurn());
+                        // console.log(keep);
+                        // console.log(invest);
+                        // console.log(compete);
+                        io.in(room.name).emit('get results', gameOneResult, gameOneBonus, room.turnNum - 1, keep, keepAmount, invest, investRate, investAmount, compete, competeRate, competeAmount);
+                     });
+                });
+                
+                
                 io.in(room.name).emit('end current turn for game 2', competePayoff, investPayoff, allocation[0], allocation[1]);
             }
         }
