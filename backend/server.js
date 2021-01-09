@@ -121,6 +121,7 @@ io.on('connection', socket => {
                 bot.recordAllocationForGameTwo(botAllocation[0], botAllocation[1], botAllocation[2]); // compete, keep, invest
                 DB_API.saveAllocationToDB(bot.prolificID, botAllocation[1], botAllocation[2], botAllocation[0], payoff[1], payoff[0], room.turnNum, true);
                 room.addPlayerIDToConfirmedSet(bot.prolificID);
+                // console.log(room.getOthersAllocationAtTurnNum(playerInThisRoom.prolificID, room.turnNum + 1));
             }
         });
 
@@ -132,6 +133,8 @@ io.on('connection', socket => {
                 room.advanceToNextRound();
                 let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
                 let competePayoff = payoff[0], investPayoff = payoff[1];
+                //game 2 allocation
+                
                 io.in(room.name).emit('end current turn for game 2', competePayoff, investPayoff, allocation[0], allocation[1]);
             }
         }

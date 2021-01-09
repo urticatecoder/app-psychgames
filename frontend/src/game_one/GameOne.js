@@ -58,6 +58,7 @@ const DISABLE_PLAYERS = createPlayerArray(true);
 const ENABLE_PLAYERS = createPlayerArray(false);
 
 const INITIAL_TIME_LEFT = -1;
+const DONT_NOTE_TIME = false;
 
 const styles = {
   animatedColumns: {
@@ -106,6 +107,7 @@ function GameOne(props) {
   const [submitDecisions, setSubmitDecisions] = useState(DONT_SUBMIT_DECISIONS);
   const [disableButton, setDisableButton] = useState(DO_NOT_DISABLE_BUTTON);
   const [timeLeft, setTimeLeft] = useState(INITIAL_TIME_LEFT);
+  const [noteTime, setNoteTime] = useState(DONT_NOTE_TIME);
 
   useEffect(() => {
     socket.on(END_TURN_WEBSOCKET, (locations, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
@@ -184,7 +186,9 @@ function GameOne(props) {
         resetTimer={resetTimer}
         setResetTimer={setResetTimer}
         pauseTimer={pauseTimer}
-        setTimeLeft = {setTimeLeft}
+        noteTime={noteTime}
+        setNoteTime={setNoteTime}
+        setTimeLeft={setTimeLeft}
       />
 
       <ConfirmButton
@@ -196,6 +200,7 @@ function GameOne(props) {
         allLoginCodes={props.allLoginCodes}
         disabled={disableButton}
         timeLeft = {timeLeft}
+        setNoteTime = {setNoteTime}
       />
 
       <div className={classes.animatedColumns}>

@@ -119,7 +119,7 @@ class Room {
         // getter method for time
         this.getTime = function(prolific) { 
             let time = this.allPlayerTimes.get(prolific);
-            return 300 - ((Date.now() - time) / 1000);
+            return 60 - ((Date.now() - time) / 1000);
         }
     }
 
@@ -212,7 +212,7 @@ class Room {
             winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
         });
         let winnerSum = GameTwoAllocation.sumAllocations(winnerAllocations);
-
+        console.log(GameTwoAllocation);
         // losers
         let loserIDs = this.gameOneResults[1];
         let loserAllocations = [];
@@ -230,6 +230,13 @@ class Room {
     getCompeteAndInvestPayoffAtCurrentTurn() {
         return this.getCompeteAndInvestPayoffAtTurnNum(this.turnNum);
     }
+
+    //get compete of player
+
+
+    //get invest of player
+
+    //get keep of player
 
     /**
      * @param turnNum {number}
