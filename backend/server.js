@@ -135,9 +135,55 @@ io.on('connection', socket => {
                 let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
                 let competePayoff = payoff[0], investPayoff = payoff[1];
                 //game 2 allocation and will need to put for loop to do for each player
-                //compete, keep, invest
-                let compete = game2.getCompeteAtTurn(prolificID, room, room.turnNum - 1);
+                let group = getWinnersAndLosers(room);
+                let winners = group[0];
+                let losers = group[1];
+                
+                socket.on('get results', () => {
+                    losers.forEach((player) => {
+                        console.log(player);
+                        //game 1
+                        let gameOneResult = true;
+                        let gameOneBonus = player.gameOneBonus;
+                        //compete, keep, invest
+                        let compete = game2.getCompeteAtTurn(player, room, room.turnNum - 1);
+                        let keep = game2.getKeepAtTurn(player, room, room.turnNum - 1);
+                        let invest = game2.getInvestAtTurn(player, room, room.turnNum - 1);
 
+                        let competeRate = 0;
+                        let competeAmount = 0;
+                        let investRate = 0;
+                        let investAmount = 0;
+                        let keepAmount = 0;
+                        console.log(keep);
+                        console.log(invest);
+                        console.log(compete);
+                        io.in(room.name).emit('get results', gameOneResult, gameOneBonus, room.turnNum - 1, keep, keepAmount, invest, investRate, investAmount, compete, competeRate, competeAmount);
+                     });
+
+                     winners.forEach((player) => {
+                        console.log(player);
+                        //game 1
+                        let gameOneResult = true;
+                        let gameOneBonus = player.gameOneBonus;
+                        //compete, keep, invest
+                        let compete = game2.getCompeteAtTurn(player, room, room.turnNum - 1);
+                        let keep = game2.getKeepAtTurn(player, room, room.turnNum - 1);
+                        let invest = game2.getInvestAtTurn(player, room, room.turnNum - 1);
+
+                        let competeRate = 0;
+                        let competeAmount = 0;
+                        let investRate = 0;
+                        let investAmount = 0;
+                        let keepAmount = 0;
+                        console.log(keep);
+                        console.log(invest);
+                        console.log(compete);
+                        io.in(room.name).emit('get results', gameOneResult, gameOneBonus, room.turnNum - 1, keep, keepAmount, invest, investRate, investAmount, compete, competeRate, competeAmount);
+                     });
+                });
+                
+                
                 io.in(room.name).emit('end current turn for game 2', competePayoff, investPayoff, allocation[0], allocation[1]);
             }
         }

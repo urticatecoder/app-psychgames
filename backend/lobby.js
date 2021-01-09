@@ -231,15 +231,6 @@ class Room {
         return this.getCompeteAndInvestPayoffAtTurnNum(this.turnNum);
     }
 
-    //get compete of player
-    getCompeteOfPlayer(){
-        
-    }
-
-    //get invest of player
-
-    //get keep of player
-
     /**
      * @param turnNum {number}
      * @return {number[]} an array of two numbers. The first number is the compete payoff and the second number is the invest payoff

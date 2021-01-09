@@ -104,6 +104,18 @@ function getCompeteAtTurn(prolificID, room, turnNum){
     return playerAllocation.compete;
 }
 
+function getInvestAtTurn(prolificID, room, turnNum){
+    let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
+    console.log(playerAllocation);
+    return playerAllocation.invest;
+}
+
+function getKeepAtTurn(prolificID, room, turnNum){
+    let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
+    console.log(playerAllocation);
+    return playerAllocation.keep;
+}
+
 /**
  * @return {number[]} an array consists of 3 integers, representing the amount of tokens allocated for each category
  */
@@ -161,5 +173,7 @@ module.exports = {
     isGameTwoDone: isGameTwoDone,
     getRandomInt: getRandomInt,
     calculateFinalPaymentForAPlayer: calculateFinalPaymentForAPlayer,
-    getCompeteAtTurn: getCompeteAtTurn
+    getCompeteAtTurn: getCompeteAtTurn,
+    getInvestAtTurn: getInvestAtTurn,
+    getKeepAtTurn: getKeepAtTurn
 }
