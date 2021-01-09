@@ -138,6 +138,27 @@ io.on('connection', socket => {
                 let group = getWinnersAndLosers(room);
                 let winners = group[0];
                 let losers = group[1];
+                room.players.forEach((playerInRoom) => {
+                    console.log(playerInRoom);
+                    //game 1
+                    let gameOneResult = true;
+                    let gameOneBonus = playerInRoom.gameOneBonus;
+                    //compete, keep, invest
+                    let compete = game2.getCompeteAtTurn(playerInRoom.prolificID, room, room.turnNum - 1);
+                    let keep = game2.getKeepAtTurn(playerInRoom.prolificID, room, room.turnNum - 1);
+                    let invest = game2.getInvestAtTurn(playerInRoom.prolificID, room, room.turnNum - 1);
+                    let competeRate = playerInRoom.competeRate;
+                    let competeAmount = playerInRoom.getCompeteAmount();
+                    let investRate = playerInRoom.investRate;
+                    let investAmount = playerInRoom.getInvestAmount();
+                    let keepAmount = playerInRoom.getKeepAmount();
+
+                    // console.log(keep);
+                    // console.log(invest);
+                    // console.log(compete);
+                    io.in(room.name).emit('get results', gameOneResult, gameOneBonus, room.turnNum - 1, keep, keepAmount, invest, investRate, investAmount, compete, competeRate, competeAmount);
+                 });
+
                 socket.on('get results', () => {
                     losers.forEach((player) => {
                         console.log(player);
@@ -153,14 +174,17 @@ io.on('connection', socket => {
                         let investRate = 0;
                         let investAmount = player.investAmount;
                         let keepAmount = player.keepAmount;
-                        console.log(keep);
-                        console.log(invest);
-                        console.log(compete);
+
+                        console.log(room.getTeamAllocationAtCurrentTurn());
+                        // console.log(keep);
+                        // console.log(invest);
+                        // console.log(compete);
                         io.in(room.name).emit('get results', gameOneResult, gameOneBonus, room.turnNum - 1, keep, keepAmount, invest, investRate, investAmount, compete, competeRate, competeAmount);
                      });
 
                      winners.forEach((player) => {
-                        console.log(player);
+                        
+
                         //game 1
                         let gameOneResult = true;
                         let gameOneBonus = player.gameOneBonus;
@@ -174,9 +198,11 @@ io.on('connection', socket => {
                         let investRate = 0;
                         let investAmount = 0;
                         let keepAmount = 0;
-                        console.log(keep);
-                        console.log(invest);
-                        console.log(compete);
+
+                        console.log(room.getTeamAllocationAtCurrentTurn());
+                        // console.log(keep);
+                        // console.log(invest);
+                        // console.log(compete);
                         io.in(room.name).emit('get results', gameOneResult, gameOneBonus, room.turnNum - 1, keep, keepAmount, invest, investRate, investAmount, compete, competeRate, competeAmount);
                      });
                 });

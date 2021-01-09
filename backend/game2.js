@@ -102,21 +102,33 @@ function calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum) {
 function getCompeteAtTurn(prolificID, room, turnNum){
     let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
     console.log(playerAllocation);
-    prolificID.updateCompeteAmount(competeAmount);
+    room.players.forEach( (player) => {
+        if(player.prolificID === prolificID){
+            player.updateCompeteAmount(playerAllocation.compete);
+        }
+    });
     return playerAllocation.compete;
 }
 
 function getInvestAtTurn(prolificID, room, turnNum){
     let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
     console.log(playerAllocation);
-    prolificID.updateInvestAmount(prolificID.invest);
+    room.players.forEach( (player) => {
+        if(player.prolificID === prolificID){
+            player.updateInvestAmount(playerAllocation.invest);
+        }
+    });
     return playerAllocation.invest;
 }
 
 function getKeepAtTurn(prolificID, room, turnNum){
     let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
     console.log(playerAllocation);
-    prolificID.updateKeepAmount(prolificID.keep);
+    room.players.forEach( (player) => {
+        if(player.prolificID === prolificID){
+            player.updateKeepAmount(playerAllocation.keep);
+        }
+    });
     return playerAllocation.keep;
 }
 

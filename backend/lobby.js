@@ -320,7 +320,7 @@ class Player {
         this.competeTotal = this.competeTotal + competeValue;
     }
 
-    get competeAmount(){
+    getCompeteAmount(){
         return this.competeTotal;
     }
 
@@ -328,7 +328,7 @@ class Player {
         this.keepTotal = this.keepTotal + keepValue;
     }
 
-    get keepAmount(){
+    getKeepAmount(){
         return this.keepTotal;
     }
 
@@ -336,7 +336,7 @@ class Player {
         this.investTotal = this.investTotal + investValue;
     }
 
-    get investAmount(){
+    getInvestAmount(){
         return this.investTotal;
     }
 
