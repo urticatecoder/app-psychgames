@@ -12,6 +12,7 @@ class GameTwoAllocation {
     static POSSIBLE_PAYOFF = [0, 0.5, 1, 1.5, 2];
     static MAX_NUM_OF_TURNS = 5;
 
+
     constructor(compete, keep, invest) {
         this.compete = compete;
         this.keep = keep;
@@ -101,18 +102,21 @@ function calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum) {
 function getCompeteAtTurn(prolificID, room, turnNum){
     let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
     console.log(playerAllocation);
+    prolificID.updateCompeteAmount(competeAmount);
     return playerAllocation.compete;
 }
 
 function getInvestAtTurn(prolificID, room, turnNum){
     let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
     console.log(playerAllocation);
+    prolificID.updateInvestAmount(prolificID.invest);
     return playerAllocation.invest;
 }
 
 function getKeepAtTurn(prolificID, room, turnNum){
     let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
     console.log(playerAllocation);
+    prolificID.updateKeepAmount(prolificID.keep);
     return playerAllocation.keep;
 }
 
