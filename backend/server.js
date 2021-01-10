@@ -159,14 +159,9 @@ io.on('connection', socket => {
                         let compete = game2.getCompeteAtTurn(playerInRoom.prolificID, room, room.turnNum - 1);
                         let keep = game2.getKeepAtTurn(playerInRoom.prolificID, room, room.turnNum - 1);
                         let invest = game2.getInvestAtTurn(playerInRoom.prolificID, room, room.turnNum - 1);
-                        let competeAmount = playerInRoom.getCompeteAmount();
-                        let investAmount = playerInRoom.getInvestAmount();
                         let keepAmount = playerInRoom.getKeepAmount();
-    
-                        // console.log(keep);
-                        // console.log(invest);
-                        // console.log(compete);
-                        io.in(room.name).emit('get results', gameOneResult, gameOneBonus, room.turnNum - 1, keep, keepAmount, invest, investPayoff, investAmount, compete, competePayoff, competeAmount);
+
+                        io.in(room.name).emit('get results', gameOneResult, gameOneBonus, room.turnNum - 1, keep, keepAmount, invest, investPayoff, invest*investPayoff, compete, competePayoff, compete*competePayoff);
                      });
                 });
                 
