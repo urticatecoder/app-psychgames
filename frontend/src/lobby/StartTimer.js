@@ -41,10 +41,10 @@ const DONT_RESET = false;
 
 const styles = {
   welcomeInstruction: {
-    marginTop: "150px",
+    marginTop: "15vh",
   },
   timerInstruction: {
-    marginTop: "50px",
+    marginTop: "5vh",
   },
 };
 
