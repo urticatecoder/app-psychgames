@@ -19,20 +19,20 @@ const NO_CODE = false;
 
 const styles = {
     welcomeText: {
-        marginTop: '150px',
+        marginTop: '20vh',
     },
     welcomeInstruction: {
-        marginTop: '10px',
+        marginTop: '1vh',
     },
     loginInput: {
         fontSize: 50,
     },
     loginField: {
         width: '400px',
-        marginTop: '1%',
+        marginTop: '1vh',
     },
     submitButton: {
-        marginTop: '210px',
+        marginTop: '5vh',
         width: '200px',
         height: '50px',
     },

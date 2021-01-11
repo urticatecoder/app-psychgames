@@ -39,7 +39,7 @@ function ProlificDialogues(props) {
   const { classes } = props;
 
   const [prolificCode, setProlificCode] = useState(DEFAULT_CODE);
-  const [validPlayer, setValidPlayer] = useState(VALID_PLAYER);
+  const [validPlayer, setValidPlayer] = useState(INVALID_PLAYER);
 
   useEffect(() => {
     axios.get(VERIFICATION_CODE_ROUTE, {
