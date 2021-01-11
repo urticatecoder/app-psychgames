@@ -10,7 +10,7 @@
 class GameTwoAllocation {
     static TOKEN_VALUE = 0.5;
     static POSSIBLE_PAYOFF = [0, 0.5, 1, 1.5, 2];
-    static MAX_NUM_OF_TURNS = 5;
+    static MAX_NUM_OF_TURNS = 3;
 
 
     constructor(compete, keep, invest) {
