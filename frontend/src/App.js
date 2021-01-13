@@ -14,9 +14,12 @@ import AvatarSelector from "../src/avatar_selection/AvatarSelector";
 import PassiveAlert from './passivity/PassiveDialogue';
 import Compensation from "./prolific/Compensation";
 import GameOneIntro from "./game_one/intro/GameOneIntro";
+import RefreshChecker from "./util/common_functions/RefreshChecker";
 
-const TEST_CODE = 123;
-const TEST_CODES = [123, 456, 789, 12, 34, 56];
+const INITIAL_CODE = null;
+
+const TEST_CODE = INITIAL_CODE;
+const TEST_CODES = [TEST_CODE, 456, 789, 12, 34, 56];
 
 const NO_WINNERS = [];
 const NO_LOSERS = [];
@@ -57,9 +60,9 @@ function App() {
 
   return (
     <div className={CLASS_NAME}>
-
       <Router>
-      <PassiveAlert loginCode={loginCode}/>
+        <RefreshChecker loginCode={loginCode}/>
+        <PassiveAlert loginCode={loginCode}/>
 
         <Route
           path={LOGIN_ROUTE}
