@@ -4,13 +4,11 @@ import Timer from "react-compound-timer";
 import { Variants } from "../common_constants/stylings/StylingsBundler";
 import { withRouter } from "react-router-dom";
 
-const WAIT_TIME = 70 * 1000;
 const LAST_TIME_UNIT = "s";
 const TIME_DIRECTION = "backward";
 const TIME_OVER = 0;
 const TIMER_UPDATE = 10;
 
-const GAME_ONE_ROUTE = '/game-one';
 const COUNTDOWN = "Countdown!";
 
 const styles = {
@@ -43,7 +41,7 @@ function IntroTimer(props) {
   return (
     <div className={classes.timerInstruction}>
       <Timer
-        initialTime={WAIT_TIME}
+        initialTime={props.length}
         lastUnit={LAST_TIME_UNIT}
         direction={TIME_DIRECTION}
         timeToUpdate={TIMER_UPDATE}
@@ -78,7 +76,7 @@ function IntroTimer(props) {
 
 function moveToGame(props) {
     console.log(props);
-    props.history.push(GAME_ONE_ROUTE);
+    props.history.push(props.nextRoute);
 }
 
 export default withRouter(withStyles(styles)(IntroTimer));

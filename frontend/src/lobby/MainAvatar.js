@@ -6,7 +6,7 @@ import ContinueButton from "../util/common_components/ContinueButton";
 import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 import PlayerOptions from '../icons/components/PlayerOptions';
 
-const PLAYER_DESCRIPTION = "You are the following avatar:";
+const PLAYER_DESCRIPTION = "You are the following avatar!";
 const IMAGE_HEIGHT = 250;
 const IMAGE_WIDTH = 250;
 
@@ -16,7 +16,7 @@ const IMAGE = 'image';
 
 const styles = {
   playerDescription: {
-    marginTop: "200px",
+    marginTop: "30vh",
   },
   playerProfile: {
     marginTop: "70px",

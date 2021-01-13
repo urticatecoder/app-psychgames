@@ -16,7 +16,7 @@ const GAME_ONE_TUTORIAL_TEXT = "Game 1 Tutorial";
 const DEFAULT_ANIMATION_PAUSE = 1000;
 const BUTTON_MESSAGE = "See My Avatar";
 const FULL_DIV = "fullDiv";
-const TUTORIAL_BUFFER_LENGTH = 6500;
+const INTRO_LENGTH = 65999;
 
 /**
  * Component used to visualize the lobby where users wait to enter the game.
@@ -35,13 +35,14 @@ function GameOneIntro(props) {
   useEffect(() => {
     setTimeout(() => {
       setShowTutorial(HIDE_TUTORIAL);
-    }, DEFAULT_ANIMATION_PAUSE + GAME_ONE_TUTORIAL_LENGTH + TUTORIAL_BUFFER_LENGTH);
+    }, DEFAULT_ANIMATION_PAUSE + GAME_ONE_TUTORIAL_LENGTH + DEFAULT_ANIMATION_PAUSE);
   });
 
   return (
       <div className={FULL_DIV}>
         <IntroTimer
           message={TIMER_MESSAGE}
+          length={INTRO_LENGTH}
         />
         {display}
       </div>);

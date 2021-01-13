@@ -17,7 +17,7 @@ const PRIMARY_COLOR = "primary";
 
 const styles = {
   headerDiv: {
-    marginTop: "14vh",
+    marginTop: "17vh",
   },
   videoOuterDiv: {
     position: "relative",
@@ -74,39 +74,40 @@ function TutorialScreen(props) {
           playing={playVideo}
         />
       </div>
-      {getButton(props, classes, enableButton)}
+      {/* {REMOVED BUTTON FROM SCREEN, UNCOMMENT BELOW TO ADD} */}
+      {/* {getButton(props, classes, enableButton)} */}
       
     </div>
   );
 }
 
-function getButton(props, classes, enableButton) {
-  if (!props.showButton) return;
-  else return(
-    <div className={classes.buttonDiv}>
-        <Button
-          style={{height: '60px', width: '250px'}}
-          onClick={() => props.hideTutorial()}
-          disabled={!enableButton} 
-          variant={Variants.CONTAINED}
-          color={PRIMARY_COLOR}
-        >
-          {props.buttonMessage}
-        </Button>
-      </div>
+// function getButton(props, classes, enableButton) {
+//   if (!props.showButton) return;
+//   else return(
+//     <div className={classes.buttonDiv}>
+//         <Button
+//           style={{height: '60px', width: '250px'}}
+//           onClick={() => props.hideTutorial()}
+//           disabled={!enableButton} 
+//           variant={Variants.CONTAINED}
+//           color={PRIMARY_COLOR}
+//         >
+//           {props.buttonMessage}
+//         </Button>
+//       </div>
 
-    //   <Button
-    //   className={classes.confirmButton}
-    //   variant={Variants.CONTAINED}
-    //   color={PRIMARY_COLOR}
-    //   disabled = {props.disabled}
-    //   onClick={() =>
-    //     props.setNoteTime(NOTE_TIME)
-    //   }
-    // >
-    //   {CONFIRM_CHOICES_TEXT}
-    // </Button>
-  )
-}
+//     //   <Button
+//     //   className={classes.confirmButton}
+//     //   variant={Variants.CONTAINED}
+//     //   color={PRIMARY_COLOR}
+//     //   disabled = {props.disabled}
+//     //   onClick={() =>
+//     //     props.setNoteTime(NOTE_TIME)
+//     //   }
+//     // >
+//     //   {CONFIRM_CHOICES_TEXT}
+//     // </Button>
+//   )
+// }
 
 export default withStyles(styles)(TutorialScreen);

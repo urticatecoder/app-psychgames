@@ -33,7 +33,7 @@ const TIME_IN_LOBBY_WEBSOCKET = "time in lobby";
 const ITALIC_FONT = "italic";
 const LOGGED_IN = true;
 
-const INITIAL_TIME_LEFT = 300 * 1000;
+const INITIAL_TIME_LEFT = 60 * 1000;
 const MILLISECOND_CONSTANST = 1000;
 
 const RESET = true;
@@ -70,6 +70,8 @@ function StartTimer(props) {
 
   useEffect(() => {
     if (!props.loggedIn) {
+      console.log('enter lobby');
+      console.log(props.loggedIn);
       socket.emit(ENTER_LOBBY_WEBSOCKET, code);
       props.setLoggedIn(LOGGED_IN);
     }

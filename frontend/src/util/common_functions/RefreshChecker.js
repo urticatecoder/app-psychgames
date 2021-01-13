@@ -1,5 +1,6 @@
 import { useHistory, withRouter} from "react-router-dom";
-import React from "react";
+import React, {useEffect} from "react";
+import { Beforeunload } from 'react-beforeunload';
 
 const INITIAL_CODE = null;
 const HOME_ROUTE = '/';
@@ -10,11 +11,11 @@ const HOME_ROUTE = '/';
    * @author Eric Doppelt
    */
   function RefreshChecker(props) {
-    if (props.loginCode==null & props.history.location.pathname != HOME_ROUTE) {
-      props.history.push(HOME_ROUTE);
-    };
+    
+
     return <div></div>;
   }
   
+ 
   export default withRouter(RefreshChecker);
   
