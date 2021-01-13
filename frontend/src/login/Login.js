@@ -19,7 +19,7 @@ const NO_CODE = false;
 
 const styles = {
     welcomeText: {
-        marginTop: '20vh',
+        marginTop: '25vh',
     },
     welcomeInstruction: {
         marginTop: '1vh',

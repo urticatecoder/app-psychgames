@@ -12,8 +12,8 @@ import MainAvatar from "./lobby/MainAvatar";
 import TutorialScreen from "./tutorials/TutorialScreen";
 import AvatarSelector from "../src/avatar_selection/AvatarSelector";
 import PassiveAlert from './passivity/PassiveDialogue';
-import Prolific from './prolific/ProlificDialogues'
 import Compensation from "./prolific/Compensation";
+import GameOneIntro from "./game_one/intro/GameOneIntro";
 
 const TEST_CODE = 123;
 const TEST_CODES = [123, 456, 789, 12, 34, 56];
@@ -27,13 +27,7 @@ const CLASS_NAME = "App";
 
 const LOGIN_ROUTE = "/";
 const LOBBY_ROUTE = "/lobby";
-const PLAYER_ASSIGNMENT_ROUTE = "/player-assignment";
 const AVATAR_SELECTION_ROUTE = "/avatar-selection";
-
-const GAME_ONE_TUTORIAL_ROUTE = "/game-one-tutorial";
-const GAME_ONE_TUTORIAL_FILEPATH = "Tutorials/GameOne.mov";
-const GAME_ONE_TUTORIAL_LENGTH = 53000;
-const GAME_ONE_TUTORIAL_TEXT = "Game One Tutorial";
 
 const GAME_TWO_TUTORIAL_ROUTE = "/game-two-tutorial";
 const GAME_TWO_TUTORIAL_FILEPATH = "Tutorials/GameTwo.mov";
@@ -41,6 +35,7 @@ const GAME_TWO_TUTORIAL_LENGTH = 45000;
 const GAME_TWO_TUTORIAL_TEXT = "Game Two Tutorial";
 
 const GAME_ONE_ROUTE = "/game-one";
+const GAME_ONE_INTRO_ROUTE = "/game-one-intro";
 const GAME_TWO_ROUTE = "/game-two";
 
 const ADMIN_LOGIN_ROUTE = "/adminLogin";
@@ -91,25 +86,19 @@ function App() {
           render={() => <AvatarSelector selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex}/>}
         />
 
-        <Route 
-          path={PLAYER_ASSIGNMENT_ROUTE} 
-          render={() => <MainAvatar 
-          selectedIndex={selectedIndex} 
-          setSelectedIndex={setSelectedIndex}/>} 
-        />
+  
 
         <Route
-          path={GAME_ONE_TUTORIAL_ROUTE}
-          render={() => (
-            <TutorialScreen
-              URL={GAME_ONE_TUTORIAL_FILEPATH}
-              nextRoute={PLAYER_ASSIGNMENT_ROUTE}
-              initialPause={DEFAULT_ANIMATION_PAUSE}
-              videoLength={GAME_ONE_TUTORIAL_LENGTH}
-              text={GAME_ONE_TUTORIAL_TEXT}
+          path={GAME_ONE_INTRO_ROUTE}
+          render={() => 
+            <GameOneIntro
+              selectedIndex={selectedIndex} 
+              setSelectedIndex={setSelectedIndex}
             />
-          )}
+          }
         />
+        
+       
 
         <Route
           path={GAME_TWO_TUTORIAL_ROUTE}
