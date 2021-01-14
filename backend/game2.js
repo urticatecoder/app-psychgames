@@ -10,7 +10,7 @@
 class GameTwoAllocation {
     static TOKEN_VALUE = 0.5;
     static POSSIBLE_PAYOFF = [0, 0.5, 1, 1.5, 2];
-    static MAX_NUM_OF_TURNS = 5;
+    static MAX_NUM_OF_TURNS = 3;
 
 
     constructor(compete, keep, invest) {
@@ -100,35 +100,30 @@ function calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum) {
 }
 
 function getCompeteAtTurn(prolificID, room, turnNum){
-    let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
-    console.log(playerAllocation);
-    room.players.forEach( (player) => {
-        if(player.prolificID === prolificID){
-            player.updateCompeteAmount(playerAllocation.compete);
-        }
-    });
-    return playerAllocation.compete;
+    let group = room.getOthersAllocationAtTurnNum(prolificID, turnNum);
+    let teammates = group[0];
+    let competeAmount = 0;
+    for(var i = 0; i < teammates.length; i++){
+        competeAmount += teammates[i].compete;     
+    }   
+    console.log(competeAmount);
+    return competeAmount;
 }
 
 function getInvestAtTurn(prolificID, room, turnNum){
-    let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
-    console.log(playerAllocation);
-    room.players.forEach( (player) => {
-        if(player.prolificID === prolificID){
-            player.updateInvestAmount(playerAllocation.invest);
-        }
-    });
-    return playerAllocation.invest;
+    let group = room.getOthersAllocationAtTurnNum(prolificID, turnNum);
+    let teammates = group[0];
+    let investAmount = 0;
+    for(var i = 0; i < teammates.length; i++){
+        investAmount += teammates[i].invest;     
+    }   
+    console.log(investAmount);
+    return investAmount;
 }
 
 function getKeepAtTurn(prolificID, room, turnNum){
     let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
-    console.log(playerAllocation);
-    room.players.forEach( (player) => {
-        if(player.prolificID === prolificID){
-            player.updateKeepAmount(playerAllocation.keep);
-        }
-    });
+    console.log(playerAllocation.keep);
     return playerAllocation.keep;
 }
 

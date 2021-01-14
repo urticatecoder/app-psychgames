@@ -370,7 +370,7 @@ function isGameOneDone(room) {
             playerMax += 1;
         }
     }
-    return playerMax >= 3 || room.gameOneTurnCount >= 5;
+    return playerMax >= 3 || room.gameOneTurnCount >= 2;
 }
 /**
  * @param room {room object} the room the players are in 
