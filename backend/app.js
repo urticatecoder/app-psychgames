@@ -186,7 +186,7 @@ app.get("/validate", (req, res) => {
         this.resource.status(200).send({"error": `ProlificID ${prolificID} did not complete enough turns`});
     }
     else {
-        res.status(200).send({"success": `ProlificID ${prolificID} should be paid`, "code": 'test'});
+        res.status(200).send({"success": `ProlificID ${prolificID} should be paid`, "code": 'testcode'});
     }
 });
 
