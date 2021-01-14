@@ -40,8 +40,6 @@ const ADMIN_LOGIN_ROUTE = "/adminLogin";
 const ADMIN_PRIVATE_ROUTE = "/admin";
 const COMPENSATION_ROUTE = '/compensation';
 
-const SUMMARY_ROUTE = "/summary";
-
 const DEFAULT_SELECTION_INDEX = -1;
 const LOGGED_OUT = false;
 

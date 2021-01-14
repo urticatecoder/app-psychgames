@@ -64,7 +64,7 @@ const FULL_DIV = "fullDiv";
 const END_TURN_WEBSOCKET = "end current turn for game 2";
 const END_GAME_WEBSOCKET = "end game 2";
 
-const PROLIFIC_ROUTE = "/prolific";
+const COMPENSATION_ROUTE = "/compensation";
 
 const END_TURN_TEXT = "Results from Previous Turn:";
 const GROUP_BOX_WIDTH = "40vw";
@@ -131,7 +131,7 @@ function GameTwo(props) {
     });
 
     socket.on(END_GAME_WEBSOCKET, () => {
-      props.history.push(PROLIFIC_ROUTE);
+      props.history.push(COMPENSATION_ROUTE);
     });
 
     return () => {

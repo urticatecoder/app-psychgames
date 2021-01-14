@@ -11,7 +11,7 @@ const AVATAR_SELECTION_ROUTE = "/avatar-selection";
 const NOT_DISABLED = false;
 const DEFAULT_START_STATUS = false;
 const FULL_DIV = "fullDiv";
-const GAME_ONE_TUTORIAL_ROUTE = "/game-one-tutorial";
+const GAME_ONE_INTRO_ROUTE = "/game-one-intro";
 
 const styles = {
   avatarButton: {
@@ -54,7 +54,7 @@ function Lobby(props) {
       <div className={classes.gameButton}>
         <ContinueButton
           message={GAME_BUTTON_MESSAGE} 
-          route={GAME_ONE_TUTORIAL_ROUTE} 
+          route={GAME_ONE_INTRO_ROUTE} 
           disabled={!startStatus}
           height='60px' 
           width='300px'

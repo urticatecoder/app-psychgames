@@ -20,7 +20,7 @@ const DEFAULT_COMPETE_RATE = .5;
 const DEFAULT_COMPETE_AMOUNT = -6;
 
 const GET_RESULTS_SOCKET = 'get results';
-const RECIEVE_RESULTS_SOCKET = 'recieve results';
+const RECIEVE_RESULTS_SOCKET = 'send results';
 
 const styles = {
   countUp: {
