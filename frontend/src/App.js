@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route, Switch, useHistory } from "react-router-dom";
 import Lobby from "./lobby/Lobby";
 import Login from "./login/Login";
-import Summary from "./game_one/summary/Summary";
+import RefreshChecker from "./util/common_components/RefreshChecker";
 import GameOne from "./game_one/GameOne";
 import GameTwo from "./game_two/GameTwo";
 import AdminAuth from "./admin_page/AdminAuth";
@@ -14,8 +14,6 @@ import PassiveAlert from './passivity/PassiveDialogue';
 import Compensation from "./prolific/Compensation";
 import GameOneIntro from "./game_one/intro/GameOneIntro";
 import GameTwoIntro from "./game_two/intro/GameTwoIntro";
-
-import RefreshChecker from "./util/common_functions/RefreshChecker";
 
 const INITIAL_CODE = null;
 
@@ -55,11 +53,15 @@ function App() {
   const [selectedIndex, setSelectedIndex] = useState(DEFAULT_SELECTION_INDEX);
   const [loggedIn, setLoggedIn] = useState(LOGGED_OUT);
 
+ 
+  
   return (
     <div className={CLASS_NAME}>
+        
         <Router>
           <PassiveAlert loginCode={loginCode}/>
-          
+          <RefreshChecker loginCode={loginCode}/>
+
           <Route
             path={LOGIN_ROUTE}
             exact

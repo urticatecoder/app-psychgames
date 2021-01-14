@@ -17,7 +17,7 @@ const DEFAULT_ANIMATION_PAUSE = 1000;
 const BUTTON_MESSAGE = "See My Avatar";
 const FULL_DIV = "fullDiv";
 const INTRO_LENGTH = 65999;
-
+const GAME_ONE_ROUTE = '/game-one';
 /**
  * Component used to visualize the lobby where users wait to enter the game.
  * @param {*} props is used to tell the component the login code, which is provided to the StartTimer.
@@ -43,6 +43,7 @@ function GameOneIntro(props) {
         <IntroTimer
           message={TIMER_MESSAGE}
           length={INTRO_LENGTH}
+          nextRoute={GAME_ONE_ROUTE}
         />
         {display}
       </div>);

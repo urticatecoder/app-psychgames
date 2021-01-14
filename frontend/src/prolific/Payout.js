@@ -59,8 +59,10 @@ function Payout(props) {
   const [competeAmount, setCompeteAmount] = useState(DEFAULT_COMPETE_AMOUNT);
 
   useEffect(() => {
-    socket.emit(GET_RESULTS_SOCKET, props.code);
-    
+    if (props.code != null) {
+      socket.emit(GET_RESULTS_SOCKET, props.code);
+    }
+
     socket.on(RECIEVE_RESULTS_SOCKET, (gameOneResult, gameOneAmount, gameTwoTurn, keepTokens, keepAmount, investTokens, investRate, investAmount, competeTokens, competeRate, competeAmount) => {
         setGameOneResult(gameOneResult);
         setGameOneAmount(gameOneAmount);

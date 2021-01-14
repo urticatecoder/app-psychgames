@@ -69,14 +69,16 @@ function StartTimer(props) {
   let setAllLoginCodes = props.setAllLoginCodes;
 
   useEffect(() => {
-    if (!props.loggedIn) {
-      console.log('enter lobby');
-      console.log(props.loggedIn);
+    if (!props.loggedIn && props.code != null) {
+      console.log('ENTERING LOBBY SOCKET');
       socket.emit(ENTER_LOBBY_WEBSOCKET, code);
       props.setLoggedIn(LOGGED_IN);
     }
 
-    socket.emit(TIME_IN_LOBBY_WEBSOCKET, props.code);
+    if (props.code != null) {
+      console.log('LOBBY TIME SOCKET');
+      socket.emit(TIME_IN_LOBBY_WEBSOCKET, props.code);
+    }
 
     socket.on(JOIN_LOBBY_WEBSOCKET, () => {
       setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
