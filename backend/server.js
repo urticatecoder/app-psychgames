@@ -130,18 +130,22 @@ io.on('connection', socket => {
             if (Game2.isGameTwoDone(room)) {
                 io.in(room.name).emit('end game 2');
                 console.log(room.turnNum - 1);
+                
                 socket.on('get results', () => {
+                    let group = getWinnersAndLosers(room);
+                    let winnersGameOne = group[0];
+                    let losersGameOne = group[1];
                     room.players.forEach((playerInRoom) => {
                         console.log(playerInRoom);
                         let competePayoff = payoff[0], investPayoff = payoff[1];
                         //game 1
                         let gameOneResult = true;
-                        winners.forEach((winner) => {
+                        winnersGameOne.forEach((winner) => {
                             if(winner === prolificID){
                                 gameOneResult = true;
                             }
                         });
-                        losers.forEach((loser) => {
+                        losersGameOne.forEach((loser) => {
                             if(loser === prolificID){
                                 gameOneResult = false;
                             }
