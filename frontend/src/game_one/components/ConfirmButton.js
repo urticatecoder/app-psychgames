@@ -56,10 +56,11 @@ function ConfirmButton(props) {
 
 function sendDecisions(props) {
   console.log('SENDING DECISIONS');
-  console.log(props.timeLeft);
+  if (props.loginCode != null) {
   socket.emit(SEND_DECISIONS_WEBSOCKET, props.loginCode, getSelectedIDs(props.selected, props.allLoginCodes, props.timeLeft));
   props.clearSelected();
   props.clearSubmission();
+  }
 }
 
 function getSelectedIDs(selected, allIDs) {

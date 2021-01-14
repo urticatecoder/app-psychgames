@@ -33,7 +33,7 @@ const TIME_IN_LOBBY_WEBSOCKET = "time in lobby";
 const ITALIC_FONT = "italic";
 const LOGGED_IN = true;
 
-const INITIAL_TIME_LEFT = 300 * 1000;
+const INITIAL_TIME_LEFT = 60 * 1000;
 const MILLISECOND_CONSTANST = 1000;
 
 const RESET = true;
@@ -41,10 +41,10 @@ const DONT_RESET = false;
 
 const styles = {
   welcomeInstruction: {
-    marginTop: "150px",
+    marginTop: "15vh",
   },
   timerInstruction: {
-    marginTop: "50px",
+    marginTop: "5vh",
   },
 };
 
@@ -69,12 +69,16 @@ function StartTimer(props) {
   let setAllLoginCodes = props.setAllLoginCodes;
 
   useEffect(() => {
-    if (!props.loggedIn) {
+    if (!props.loggedIn && props.code != null) {
+      console.log('ENTERING LOBBY SOCKET');
       socket.emit(ENTER_LOBBY_WEBSOCKET, code);
       props.setLoggedIn(LOGGED_IN);
     }
 
-    socket.emit(TIME_IN_LOBBY_WEBSOCKET, props.code);
+    if (props.code != null) {
+      console.log('LOBBY TIME SOCKET');
+      socket.emit(TIME_IN_LOBBY_WEBSOCKET, props.code);
+    }
 
     socket.on(JOIN_LOBBY_WEBSOCKET, () => {
       setWaitingOnPlayerCounter((prevCount) => prevCount - 1);

@@ -11,7 +11,7 @@ import {Button} from "@material-ui/core";
 
 const DEFAULT_CODE = "INVALID";
 
-const VERIFICATION_CODE_ROUTE = "/verification-code";
+const VERIFICATION_CODE_ROUTE = "/validate";
 
 const INVALID_PLAYER = false;
 const VALID_PLAYER = true;
@@ -39,7 +39,7 @@ function ProlificDialogues(props) {
   const { classes } = props;
 
   const [prolificCode, setProlificCode] = useState(DEFAULT_CODE);
-  const [validPlayer, setValidPlayer] = useState(VALID_PLAYER);
+  const [validPlayer, setValidPlayer] = useState(INVALID_PLAYER);
 
   useEffect(() => {
     axios.get(VERIFICATION_CODE_ROUTE, {
