@@ -127,8 +127,12 @@ io.on('connection', socket => {
         });
 
         if (room.hasEveryoneConfirmedChoiceInThisRoom()) { // all 6 have confirmed choices
+            let allocation = room.getTeamAllocationAtCurrentTurn();
+            let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
+            let competePayoff = payoff[0], investPayoff = payoff[1];
             if (Game2.isGameTwoDone(room)) {
                 io.in(room.name).emit('end game 2');
+                io.in(room.name).emit('end current turn for game 2', competePayoff, investPayoff, allocation[0], allocation[1]);
                 console.log(room.turnNum - 1);
                 
                 socket.on('get results', () => {
