@@ -14,6 +14,7 @@ import PassiveAlert from './passivity/PassiveDialogue';
 import Compensation from "./prolific/Compensation";
 import GameOneIntro from "./game_one/intro/GameOneIntro";
 import GameTwoIntro from "./game_two/intro/GameTwoIntro";
+import WindowChecker from './util/common_components/WindowChecker';
 
 const INITIAL_CODE = null;
 
@@ -59,7 +60,8 @@ function App() {
         <Router>
           <PassiveAlert loginCode={loginCode}/>
           <RefreshChecker loginCode={loginCode}/>
-
+          <WindowChecker/>
+          
           <Route
             path={LOGIN_ROUTE}
             exact
