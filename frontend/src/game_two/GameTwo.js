@@ -64,7 +64,7 @@ const FULL_DIV = "fullDiv";
 const END_TURN_WEBSOCKET = "end current turn for game 2";
 const END_GAME_WEBSOCKET = "end game 2";
 
-const PROLIFIC_ROUTE = "/prolific";
+const COMPENSATION_ROUTE = "/compensation";
 
 const END_TURN_TEXT = "Results from Previous Turn:";
 const GROUP_BOX_WIDTH = "40vw";
@@ -117,7 +117,9 @@ function GameTwo(props) {
   const [noteTime, setNoteTime] = useState(DONT_NOTE_TIME);
 
   useEffect(() => {
+    
     socket.on(END_TURN_WEBSOCKET, (competePayoff, investPayoff, winnerResults, loserResults) => {
+      console.log('END GAME TWO TURN');
       setCompetePayoff(competePayoff);
       setInvestPayoff(investPayoff);
       setResetTimer(RESET_TIMER);
@@ -131,7 +133,10 @@ function GameTwo(props) {
     });
 
     socket.on(END_GAME_WEBSOCKET, () => {
-      props.history.push(PROLIFIC_ROUTE);
+      console.log('END GAME TWO');
+      setTimeout(() => {
+        props.history.push(COMPENSATION_ROUTE);
+      }, TIME_TO_SHOW_RESULTS);
     });
 
     return () => {

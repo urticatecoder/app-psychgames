@@ -10,7 +10,7 @@ import GameTimer from "../util/common_components/GameTimer";
 import getAlerts from './components/getAlerts';
 
 const FULL_DIV = "fullDiv";
-const SUMMARY_ROUTE = "/summary";
+const GAME_TWO_INTRO_ROUTE = "/game-two-intro";
 const MAX_HEIGHT = 100;
 const BOTTOM_OF_SCREEN = 100;
 const INITIAL_HEIGHT = 50;
@@ -420,7 +420,7 @@ function getPlayerIndex(loginCode, allLoginCodes) {
 }
 
 function moveToSummary(props) {
-  props.history.push(SUMMARY_ROUTE);
+  props.history.push(GAME_TWO_INTRO_ROUTE);
 }
 
 export default withRouter(withStyles(styles)(GameOne));
