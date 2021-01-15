@@ -130,31 +130,24 @@ io.on('connection', socket => {
             if (Game2.isGameTwoDone(room)) {
                 io.in(room.name).emit('end game 2');
                 console.log(room.turnNum - 1);
-                socket.on('get results', () => {
-                    room.players.forEach((playerInRoom) => {
-                        console.log(playerInRoom);
-                        let competePayoff = payoff[0], investPayoff = payoff[1];
-                        //game 1
-                        let gameOneResult = true;
-                        winners.forEach((winner) => {
-                            if(winner === prolificID){
-                                gameOneResult = true;
-                            }
-                        });
-                        losers.forEach((loser) => {
-                            if(loser === prolificID){
-                                gameOneResult = false;
-                            }
-                        });
-                        let payOutTurnNum = Math.floor(Math.random() * Math.floor(room.turnNum - 1) + 1);
-                        let gameOneBonus = playerInRoom.gameOneBonus;
-                        //compete, keep, invest
-                        let compete = game2.getCompeteAtTurn(playerInRoom.prolificID, room, payOutTurnNum);
-                        let keep = game2.getKeepAtTurn(playerInRoom.prolificID, room, payOutTurnNum);
-                        let invest = game2.getInvestAtTurn(playerInRoom.prolificID, room, payOutTurnNum);
-                        console.log('compete: ' +compete + ' invest: ' + invest + ' keep: ' + keep);
-                        io.in(room.name).emit('send results', gameOneResult, gameOneBonus, payOutTurnNum, keep, keep* 0.5, invest, investPayoff, invest*investPayoff*0.5, compete, competePayoff, -1*(compete*competePayoff*0.5));
-                     });
+                socket.on('get results', (playerInRoom) => {
+                    console.log("Results for: " + playerInRoom);
+                    let competePayoff = payoff[0], investPayoff = payoff[1];
+                    //game 1
+                    let gameOneResult = false;
+                    winners.forEach((winner) => {
+                        if(winner === prolificID){
+                            gameOneResult = true;
+                        }
+                    });
+                    let payOutTurnNum = Math.floor(Math.random() * Math.floor(room.turnNum - 1) + 1);
+                    let gameOneBonus = playerInRoom.gameOneBonus;
+                    //compete, keep, invest
+                    let compete = game2.getCompeteAtTurn(playerInRoom.prolificID, room, payOutTurnNum);
+                    let keep = game2.getKeepAtTurn(playerInRoom.prolificID, room, payOutTurnNum);
+                    let invest = game2.getInvestAtTurn(playerInRoom.prolificID, room, payOutTurnNum);
+                    console.log('compete: ' +compete + ' invest: ' + invest + ' keep: ' + keep);
+                    io.in(room.name).emit('send results', gameOneResult, gameOneBonus, payOutTurnNum, keep, keep* 0.5, invest, investPayoff, invest*investPayoff*0.5, compete, competePayoff, -1*(compete*competePayoff*0.5));    
                 });
             } else {
                 let allocation = room.getTeamAllocationAtCurrentTurn();

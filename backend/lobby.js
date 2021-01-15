@@ -362,6 +362,14 @@ class Player {
         return this.choices[turnNum];
     }
 
+    getGameOneChoiceCount(){
+        return this.choices.length;
+    }
+
+    getGameTwoChoiceCount(){
+        return this.allocations.length;
+    }
+
     /**
      * @param compete {number}
      * @param keep {number}
