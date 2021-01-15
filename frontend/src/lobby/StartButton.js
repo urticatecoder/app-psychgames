@@ -9,7 +9,7 @@ const BUTTON_ID = "timerButton";
 
 const PRIMARY_COLOR = "primary";
 const SECONDARY_COLOR = "secondary";
-const GAME_ONE_TUTORIAL_ROUTE = "/game-one-tutorial";
+const GAME_ONE_INTRO_ROUTE = "/game-one-intro";
 
 const styles = {
   startButton: {
@@ -36,7 +36,7 @@ function StartButton(props) {
         variant={Variants.CONTAINED}
         disabled={!props.startStatus}
         color={props.startStatus ? PRIMARY_COLOR : SECONDARY_COLOR}
-        onClick={() => props.history.push(GAME_ONE_TUTORIAL_ROUTE)}
+        onClick={() => props.history.push(GAME_ONE_INTRO_ROUTE)}
       >
         {BUTTON_MESSAGE}
       </Button>

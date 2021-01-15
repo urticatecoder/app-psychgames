@@ -1,7 +1,6 @@
 import React from "react";
 import PlayerGroup from "../../icons/components/PlayerGroup";
 import { Typography, withStyles } from "@material-ui/core";
-import "../../util/common_stylings/FullScreenDiv.css";
 import DelayedConfetti from "./DelayedConfetti";
 import ContinueButton from "../../util/common_components/ContinueButton";
 import { Variants } from "../../util/common_constants/stylings/StylingsBundler";
@@ -13,7 +12,6 @@ const WINNER_ID = "winnerText";
 const LOSER_ID = "loserText";
 const BUTTON_MESSAGE = "Continue to Game Two";
 const ALWAYS_ENABLED = false;
-const GAME_TWO_TUTORIAL_ROUTE = "game-two-tutorial"
 
 const styles = {
   winners: {
@@ -43,8 +41,9 @@ function Summary(props) {
   let winnerIndices = getAvatarIndices(props.winners, props.allLoginCodes);
   let loserIndices = getAvatarIndices(props.losers, props.allLoginCodes);
 
+
   return (
-    <div className={FULL_DIV}>
+    <div>
       <DelayedConfetti />
       {getGroup(
         classes.winners,
@@ -62,7 +61,8 @@ function Summary(props) {
         LOSER_ID,
         props.selectedIndex
       )}
-      <br />
+      {/* DISABLED BUTTON. TO ADD AGAIN, UNCOMMENT.}
+      {/* <br />
       <br />
       <br />
       <ContinueButton
@@ -72,7 +72,7 @@ function Summary(props) {
         message={BUTTON_MESSAGE}
         height='60px' 
         width='250px'
-      />
+      /> */}
     </div>
   );
 }
@@ -80,7 +80,7 @@ function Summary(props) {
 function getGroup(divClassName, groupClassName, headerText, playersShown, textID, selectedIndex) {
   return (
     <div className={divClassName}>
-      <Typography id={textID} variant={Variants.SMALL_TEXT}>
+      <Typography id={textID} variant={Variants.LARGE_TEXT}>
         {headerText}
       </Typography>
       <div className={groupClassName}>

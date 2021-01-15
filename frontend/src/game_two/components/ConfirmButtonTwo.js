@@ -54,11 +54,11 @@ function ConfirmButtonTwo(props) {
 }
 
 function sendDecisions(props) {
-  console.log('SENDING DECISIONS');
-  console.log(props.timeLeft);
+  if (props.loginCode != null) {
   socket.emit(SEND_DECISION_WEBSOCKET, props.loginCode, props.resources[COMPETE_INDEX], props.resources[KEEP_INDEX], props.resources[INVEST_INDEX], props.timeLeft);
   props.clearSelected();
   props.clearSubmission();
+  }
 }
 
 export default withStyles(styles)(ConfirmButtonTwo);
