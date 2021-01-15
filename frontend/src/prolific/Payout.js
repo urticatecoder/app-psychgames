@@ -22,6 +22,12 @@ const DEFAULT_COMPETE_AMOUNT = -6;
 const GET_RESULTS_SOCKET = 'get results';
 const RECIEVE_RESULTS_SOCKET = 'send results';
 
+const DID_NOT_RECIEVE_RESULTS = false;
+const RECIEVED_RESULTS = true;
+
+const DID_NOT_ASK_FOR_RESULTS = false;
+const ASKED_FOR_RESULTS = true;
+
 const styles = {
   countUp: {
       fontSize: 100,
@@ -57,13 +63,30 @@ function Payout(props) {
   const [competeTokens, setCompeteTokens] = useState(DEFAULT_COMPETE_TOKENS);
   const [competeRate, setCompeteRate] = useState(DEFAULT_COMPETE_RATE);
   const [competeAmount, setCompeteAmount] = useState(DEFAULT_COMPETE_AMOUNT);
+  const [recievedResults, setRecievedResults] = useState(DID_NOT_RECIEVE_RESULTS);
+
+  const [askedForResults, setAskedForResults] = useState(DID_NOT_ASK_FOR_RESULTS);
 
   useEffect(() => {
-    if (props.code != null) {
+    if (props.code != null && !askedForResults) {
+      console.log('ASKED FOR RESULTS');
+      setAskedForResults(ASKED_FOR_RESULTS);
       socket.emit(GET_RESULTS_SOCKET, props.code);
     }
 
     socket.on(RECIEVE_RESULTS_SOCKET, (gameOneResult, gameOneAmount, gameTwoTurn, keepTokens, keepAmount, investTokens, investRate, investAmount, competeTokens, competeRate, competeAmount) => {
+        console.log('RESULTS');
+        console.log(gameOneResult);
+        console.log(gameOneAmount);
+        console.log(gameTwoTurn);
+        console.log(keepTokens);
+        console.log(keepAmount);
+        console.log(investTokens);
+        console.log(investRate);
+        console.log(investAmount);
+        console.log(competeTokens);
+        console.log(competeRate);
+        console.log(competeAmount);
         setGameOneResult(gameOneResult);
         setGameOneAmount(gameOneAmount);
         setGameTwoTurn(gameTwoTurn);
@@ -75,6 +98,7 @@ function Payout(props) {
         setCompeteTokens(competeTokens);
         setCompeteRate(competeRate);
         setCompeteAmount(competeAmount);
+        setRecievedResults(RECIEVED_RESULTS);
       });
   
       return () => {
@@ -90,6 +114,7 @@ function Payout(props) {
           keepAmount={keepAmount}
           investAmount={investAmount}
           competeAmount={competeAmount}
+          recievedResults={recievedResults}
         />
         <Receipt
           gameOneResult={gameOneResult}

@@ -187,8 +187,6 @@ function getGameTwoResource(tokens, resource, rate, amount, delay, classes) {
 }
 
 function getRate(rate) {
-    console.log(rate)
-    console.log('rate')
     return ' @ ' + rate.toFixed(1) + 'x:';
 }
 

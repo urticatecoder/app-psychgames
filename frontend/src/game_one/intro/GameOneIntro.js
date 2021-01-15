@@ -42,7 +42,7 @@ function GameOneIntro(props) {
       <div className={FULL_DIV}>
         <IntroTimer
           message={TIMER_MESSAGE}
-          length={1000}
+          length={2000}
           nextRoute={GAME_ONE_ROUTE}
         />
         {display}
