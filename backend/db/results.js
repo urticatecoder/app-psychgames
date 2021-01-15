@@ -389,7 +389,7 @@ function getWinnersAndLosers(room) {
     });
 
     for(let tempPlayer of allLocations.keys()) {
-        if(allLocations.get(tempPlayer) >= highScores[2]){
+        if(allLocations.get(tempPlayer) >= highScores[2] && winners.length <= 3){
             winners.push(tempPlayer);
         } else{
             losers.push(tempPlayer);
