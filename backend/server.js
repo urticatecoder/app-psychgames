@@ -139,13 +139,16 @@ io.on('connection', socket => {
                     let competePayoff = payoff[0], investPayoff = payoff[1];
                     //game 1
                     let gameOneResult = false;
+                    let group = getWinnersAndLosers(room);
+                    let winners = group[0];
+                    let gameOneBonus = 0; 
                     winners.forEach((winner) => {
                         if(winner === prolificID){
                             gameOneResult = true;
+                            gameOneBonus = 5; // 5 dollars to win game 1
                         }
                     });
                     let payOutTurnNum = Math.floor(Math.random() * Math.floor(room.turnNum - 1) + 1);
-                    let gameOneBonus = playerInRoom.gameOneBonus;
                     //compete, keep, invest
                     let compete = game2.getCompeteAtTurn(playerInRoom.prolificID, room, payOutTurnNum);
                     let keep = game2.getKeepAtTurn(playerInRoom.prolificID, room, payOutTurnNum);
