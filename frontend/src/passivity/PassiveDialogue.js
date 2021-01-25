@@ -82,10 +82,11 @@ function exitGame(webSocket, loginCode, setOpen, setResponded, props) {
 }
 
 function emitSocket(webSocket, loginCode, setOpen, setResponded) {
-    console.log(webSocket);
+    if (loginCode != null) {
     socket.emit(webSocket, loginCode);
     setOpen(CLOSE_DIALOGUE);
     setResponded(RESPONDED);
+    }
 }
 
 export default withRouter(withStyles(styles)(PassiveAlert));

@@ -370,7 +370,7 @@ function isGameOneDone(room) {
             playerMax += 1;
         }
     }
-    return playerMax >= 3 || room.gameOneTurnCount >= 5;
+    return playerMax >= 3 || room.gameOneTurnCount >= 2;
 }
 /**
  * @param room {room object} the room the players are in 
@@ -387,15 +387,34 @@ function getWinnersAndLosers(room) {
     highScores.sort(function(a, b) {
         return b - a;
     });
-    
+
     for(let tempPlayer of allLocations.keys()) {
-        if(allLocations.get(tempPlayer) >= highScores[2]){
+        if(allLocations.get(tempPlayer) >= highScores[2] && winners.length <= 3){
             winners.push(tempPlayer);
         } else{
             losers.push(tempPlayer);
         }
     }
     return [winners, losers];
+}
+
+function isWinner(prolificID, room){
+    let results = getWinnersAndLosers(room);
+    let winners = results[0];
+    for(var i = 0; i < winners.length; i++){
+        if(winners[i] === prolificID){
+            return true;
+        }
+    }
+    return false;
+}
+
+function winningBonus(prolificID, room){
+    if(isWinner(prolificID, room)){
+        return 5; // 5 dollars for winning game 1
+    } else{
+        return 0;
+    }
 }
 
 
@@ -411,5 +430,7 @@ module.exports = {
     checkPassiveness: checkPassiveness,
     getSinglePairMap: getSinglePairMap,
     getDoublePairMap: getDoublePairMap,
-    getTriplePairMap: getTriplePairMap
+    getTriplePairMap: getTriplePairMap,
+    isWinner: isWinner,
+    winningBonus: winningBonus
 }

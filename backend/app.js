@@ -164,6 +164,32 @@ app.get("/game1-results", (req, res) => {
     }
 });
 
+/**
+ * This route will validate if the player played enough turns of the game to be paid out
+ */
+app.get("/validate", (req, res) => {
+    let prolificID = req.query.loginCode;
+    let room = lobby.getRoomPlayerIsIn(prolificID);
+    let gameOneTurns = 0;
+    let gameTwoTurns = 0;
+    room.players.forEach( (player) => {
+        if(player.prolificID === prolificID){
+            gameOneTurns = player.getGameOneChoiceCount();
+            gameTwoTurns = player.getGameTwoChoiceCount();
+        }
+    });
+
+    if (room === undefined) {
+        res.status(200).send({"error": `ProlificID ${prolificID} not found.`});
+    } 
+    else if(gameOneTurns < 2 && gameTwoTurns < 2){
+        this.resource.status(200).send({"error": `ProlificID ${prolificID} did not complete enough turns`});
+    }
+    else {
+        res.status(200).send({"success": `ProlificID ${prolificID} should be paid`, "code": 'testcode'});
+    }
+});
+
 app.get("/", (req, res) => {
     res.status(200).send("Hello World!");
 });

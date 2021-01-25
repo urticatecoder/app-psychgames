@@ -10,7 +10,8 @@
 class GameTwoAllocation {
     static TOKEN_VALUE = 0.5;
     static POSSIBLE_PAYOFF = [0, 0.5, 1, 1.5, 2];
-    static MAX_NUM_OF_TURNS = 2;
+    static MAX_NUM_OF_TURNS = 3;
+
 
     constructor(compete, keep, invest) {
         this.compete = compete;
@@ -98,6 +99,34 @@ function calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum) {
     return payment;
 }
 
+function getCompeteAtTurn(prolificID, room, turnNum){
+    let group = room.getOthersAllocationAtTurnNum(prolificID, turnNum);
+    let teammates = group[0];
+    let competeAmount = 0;
+    for(var i = 0; i < teammates.length; i++){
+        competeAmount += teammates[i].compete;     
+    }   
+    console.log(competeAmount);
+    return competeAmount;
+}
+
+function getInvestAtTurn(prolificID, room, turnNum){
+    let group = room.getOthersAllocationAtTurnNum(prolificID, turnNum);
+    let teammates = group[0];
+    let investAmount = 0;
+    for(var i = 0; i < teammates.length; i++){
+        investAmount += teammates[i].invest;     
+    }   
+    console.log(investAmount);
+    return investAmount;
+}
+
+function getKeepAtTurn(prolificID, room, turnNum){
+    let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
+    console.log(playerAllocation.keep);
+    return playerAllocation.keep;
+}
+
 /**
  * @return {number[]} an array consists of 3 integers, representing the amount of tokens allocated for each category
  */
@@ -155,4 +184,7 @@ module.exports = {
     isGameTwoDone: isGameTwoDone,
     getRandomInt: getRandomInt,
     calculateFinalPaymentForAPlayer: calculateFinalPaymentForAPlayer,
+    getCompeteAtTurn: getCompeteAtTurn,
+    getInvestAtTurn: getInvestAtTurn,
+    getKeepAtTurn: getKeepAtTurn
 }
