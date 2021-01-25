@@ -15,6 +15,8 @@ import Compensation from "./prolific/Compensation";
 import GameOneIntro from "./game_one/intro/GameOneIntro";
 import GameTwoIntro from "./game_two/intro/GameTwoIntro";
 import WindowChecker from './util/common_components/WindowChecker';
+import Warnings from "./util/common_components/Warnings";
+import { Button, withStyles } from "@material-ui/core";
 
 const INITIAL_CODE = null;
 
@@ -61,7 +63,7 @@ function App() {
           <PassiveAlert loginCode={loginCode}/>
           <RefreshChecker loginCode={loginCode}/>
           <WindowChecker/>
-          
+          <Warnings/>
           <Route
             path={LOGIN_ROUTE}
             exact

@@ -71,6 +71,7 @@ function Payout(props) {
     if (props.code != null && !askedForResults) {
       console.log('ASKED FOR RESULTS');
       setAskedForResults(ASKED_FOR_RESULTS);
+      console.log(props.code);
       socket.emit(GET_RESULTS_SOCKET, props.code);
     }
 

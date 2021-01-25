@@ -3,6 +3,10 @@ import { Typography, withStyles } from "@material-ui/core";
 import Timer from "react-compound-timer";
 import { Variants } from "../common_constants/stylings/StylingsBundler";
 import { withRouter } from "react-router-dom";
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 
 const LAST_TIME_UNIT = "s";
 const TIME_DIRECTION = "backward";
