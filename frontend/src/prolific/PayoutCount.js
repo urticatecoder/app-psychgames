@@ -27,6 +27,9 @@ const FINAL_PAUSE = 27000;
 
 const BASE_PAYOUT = 0.00;
 
+const READIED_DELAYS = true;
+const HAVENT_READIED_DELAYS = false;
+
 const styles = {
   countUp: {
       fontSize: 100,
@@ -41,57 +44,80 @@ const styles = {
 function PayoutCount(props) {
   const { classes } = props;
 
-  const [gameOne, setGameOne] = useState(WON_GAME_ONE);
-
   const [lastPayout, setLastPayout] = useState(INITIAL_PAYOUT);
   const [newPayout, setNewPayout] = useState(INITIAL_PAYOUT);
   const [textColor, setTextColor] = useState(BLACK);
+  
+  const [readiedDelays, setReadiedDelay] = useState(HAVENT_READIED_DELAYS);
 
-  const AFTER_GAME_ONE = props.gameOneAmount;
-  const AFTER_INVEST = AFTER_GAME_ONE + props.investAmount;
-  const AFTER_KEEP = AFTER_INVEST + props.keepAmount;
-  const AFTER_COMPETE = AFTER_KEEP + props.competeAmount;
   
   useEffect(() => {
 
-    setTimeout(() => {
-        console.log('GAME ONE');
-        updateTextColor(lastPayout, AFTER_GAME_ONE, setTextColor);
-        setNewPayout(AFTER_GAME_ONE);
-    }, GAME_ONE_PAUSE);
+    if (props.recievedResults && !readiedDelays) {
 
-    setTimeout(() => {
-        console.log('INVEST');
-        updateTextColor(AFTER_GAME_ONE, AFTER_INVEST, setTextColor);
-        setLastPayout(AFTER_GAME_ONE);
-        setNewPayout(AFTER_INVEST);
-    }, INVEST_PAUSE);
+        console.log('DATA IM WORKING WITH');
+        console.log(props.gameOneAmount);
+        console.log(props.investAmount);
+        console.log(props.keepAmount);
+        console.log(props.competeAmount);
+        
+        const AFTER_GAME_ONE = props.gameOneAmount;
+        const AFTER_INVEST = AFTER_GAME_ONE + props.investAmount;
+        const AFTER_KEEP = AFTER_INVEST + props.keepAmount;
+        const AFTER_COMPETE = AFTER_KEEP + props.competeAmount;
+        console.log('HIYA');
+        console.log('AFTER GAME ONE');
+        console.log(AFTER_GAME_ONE);
+
+        setTimeout(() => {
+            console.log('GAME ONE');
+            updateTextColor(lastPayout, AFTER_GAME_ONE, setTextColor);
+            setNewPayout(AFTER_GAME_ONE);
+        }, GAME_ONE_PAUSE);
+
+        console.log('AFTER INVEST');
+        console.log(AFTER_INVEST);
+        console.log(props.investAmount);
+        setTimeout(() => {
+            console.log('INVEST');
+            updateTextColor(AFTER_GAME_ONE, AFTER_INVEST, setTextColor);
+            setLastPayout(AFTER_GAME_ONE);
+            setNewPayout(AFTER_INVEST);
+        }, INVEST_PAUSE);
 
 
-    setTimeout(() => {
-        console.log('KEEP');
-        updateTextColor(AFTER_INVEST, AFTER_KEEP, setTextColor);
-        setLastPayout(AFTER_INVEST);
-        setNewPayout(AFTER_KEEP);
-    }, KEEP_PAUSE);
+        console.log('AFTER KEEP');
+        console.log(AFTER_KEEP);
+        console.log(props.keepAmount);
+        setTimeout(() => {
+            console.log('KEEP');
+            updateTextColor(AFTER_INVEST, AFTER_KEEP, setTextColor);
+            setLastPayout(AFTER_INVEST);
+            setNewPayout(AFTER_KEEP);
+        }, KEEP_PAUSE);
 
+        console.log('AFTER COMPETE');
+        console.log(AFTER_COMPETE);
+        console.log(props.competeAmount);
+        setTimeout(() => {
+            console.log('COMPETE');
+            updateTextColor(AFTER_KEEP, AFTER_COMPETE, setTextColor);
+            setLastPayout(AFTER_KEEP);
+            setNewPayout(AFTER_COMPETE);
+        }, COMPETE_PAUSE);
 
-    setTimeout(() => {
-        console.log('COMPETE');
-        updateTextColor(AFTER_KEEP, AFTER_COMPETE, setTextColor);
-        setLastPayout(AFTER_KEEP);
-        setNewPayout(AFTER_COMPETE);
-    }, COMPETE_PAUSE);
+        
+        setTimeout(() => {
+            console.log('FINAL');
+            setTextColor(GREEN);
+            var finalPayout = (AFTER_COMPETE < 0) ? BASE_PAYOUT : AFTER_COMPETE;
+            setLastPayout(finalPayout);
+            setNewPayout(finalPayout);
+        }, FINAL_PAUSE);
 
-    setTimeout(() => {
-        console.log('FINAL');
-        setTextColor(GREEN);
-        var finalPayout = (AFTER_COMPETE < 0) ? BASE_PAYOUT : AFTER_COMPETE;
-        setLastPayout(finalPayout);
-        setNewPayout(finalPayout);
-    }, FINAL_PAUSE);
-
-}, []);
+        setReadiedDelay(READIED_DELAYS);
+        }
+    });
 
   return (
         <CountUp

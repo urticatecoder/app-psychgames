@@ -6,6 +6,13 @@ const styles = {
     confetti: {
         top: '0%',
         left: '50%',
+    },
+    wrapperDiv: {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      overflowY: 'hidden',
+      top: '0vh',
     }
 }
 
@@ -41,7 +48,9 @@ const CONFIG = {
       }, WAIT_FOR_CONFETTI);
 
       return(
-        <Confetti className={classes.confetti} active={ confetti } config={ CONFIG }/>
+        <div className={classes.wrapperDiv}>
+          <Confetti className={classes.confetti} active={ confetti } config={ CONFIG }/>
+        </div>
       )
   }
 

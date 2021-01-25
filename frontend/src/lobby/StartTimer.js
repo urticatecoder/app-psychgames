@@ -4,6 +4,7 @@ import { Typography, Box } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import socket from "../socketClient";
 import { Variants } from "../util/common_constants/stylings/StylingsBundler";
+import {withRouter} from 'react-router-dom';
 
 const INITIAL_START_TIME = 1 * 6000;
 
@@ -22,6 +23,7 @@ const TEXT_ID = "timerText";
 const DIV_ID = "timerDiv";
 
 const MAX_ROOM_CAPACITY = 6;
+const GAME_ONE_ROUTE = '/game-one';
 
 const ENTER_LOBBY_WEBSOCKET = "enter lobby";
 const JOIN_LOBBY_WEBSOCKET = "join";
@@ -30,21 +32,26 @@ const PEOPLE_IN_ROOM_WEBSOCKET = "num of people in the room";
 const PLAYER_TIME_WEBSOCKET = "player time";
 const TIME_IN_LOBBY_WEBSOCKET = "time in lobby";
 
+const GAME_ONE_INTRO_ROUTE = '/game-one-intro';
+
 const ITALIC_FONT = "italic";
 const LOGGED_IN = true;
 
-const INITIAL_TIME_LEFT = 300 * 1000;
-const MILLISECOND_CONSTANST = 1000;
+const INITIAL_TIME_LEFT = 60 * 1000;
+const MILLISECOND_CONSTANT = 1000;
 
 const RESET = true;
 const DONT_RESET = false;
 
+const RECIEVED_TIME = true;
+const HAVE_NOT_RECIEVED_TIME = false;
+
 const styles = {
   welcomeInstruction: {
-    marginTop: "150px",
+    marginTop: "15vh",
   },
   timerInstruction: {
-    marginTop: "50px",
+    marginTop: "5vh",
   },
 };
 
@@ -63,32 +70,45 @@ function StartTimer(props) {
   const [resetter, setResetter] = useState(DONT_RESET);
   const [counter, setCounter] = useState(MAX_ROOM_CAPACITY);
 
-  const INSTRUCTIONS_MESSAGE = (counter) => `Please wait while 5 other players join in.`;
+  const [receivedTime, setReceivedTime] = useState(HAVE_NOT_RECIEVED_TIME);
+
+  const INSTRUCTIONS_MESSAGE = (counter) => `Please wait while other players join in.`;
 
   let code = props.code;
   let setAllLoginCodes = props.setAllLoginCodes;
 
   useEffect(() => {
-    if (!props.loggedIn) {
+    if (!props.loggedIn && props.code != null) {
+      console.log('ENTERING LOBBY SOCKET');
       socket.emit(ENTER_LOBBY_WEBSOCKET, code);
       props.setLoggedIn(LOGGED_IN);
     }
 
-    socket.emit(TIME_IN_LOBBY_WEBSOCKET, props.code);
+    if (props.code != null) {
+      console.log('LOBBY TIME SOCKET');
+      socket.emit(TIME_IN_LOBBY_WEBSOCKET, props.code);
+    }
 
     socket.on(JOIN_LOBBY_WEBSOCKET, () => {
       setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
     });
+
     socket.on(ROOM_FULL_WEBSOCKET, (msg) => {
       setAllLoginCodes(msg);
     });
+
     socket.on(PEOPLE_IN_ROOM_WEBSOCKET, (numOfPlayers) => {
       setWaitingOnPlayerCounter(MAX_ROOM_CAPACITY - numOfPlayers);
     });
 
     socket.on(PLAYER_TIME_WEBSOCKET, (time) => {
-      console.log(time);
-      setTimeLeft(time * MILLISECOND_CONSTANST);
+      if (!receivedTime) {
+        setReceivedTime(RECIEVED_TIME);
+        setTimeout(() => {
+          props.history.push(GAME_ONE_INTRO_ROUTE);
+        }, time * MILLISECOND_CONSTANT);
+      }
+      setTimeLeft(time * MILLISECOND_CONSTANT);
       setResetter(RESET);
       console.log(timeLeft);
     });
@@ -125,12 +145,6 @@ function StartTimer(props) {
         lastUnit={LAST_TIME_UNIT}
         direction={DIRECTION}
         timeToUpdate={TIMER_UPDATE}
-        checkpoints={[
-          {
-            time: STOP_TIMER,
-            callback: () => props.setStartStatus(START_GAME),
-          },
-        ]}
       >
         {({reset, setTime}) => (
           <React.Fragment>
@@ -156,4 +170,4 @@ function checkForReset(resetter, setResetter, setTime, timeLeft) {
   setResetter(DONT_RESET);
 }
 
-export default withStyles(styles)(StartTimer);
+export default withRouter(withStyles(styles)(StartTimer));
