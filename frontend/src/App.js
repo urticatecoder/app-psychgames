@@ -6,15 +6,14 @@ import Login from "./login/Login";
 import Summary from "./game_one/summary/Summary";
 import GameOne from "./game_one/GameOne";
 import GameTwo from "./game_two/GameTwo";
-import ProlificScreen from "./prolific/ProlificScreen";
 import AdminAuth from "./admin_page/AdminAuth";
 import PrivateRoute from "./admin_page/PrivateRoute";
 import MainAvatar from "./lobby/MainAvatar";
 import TutorialScreen from "./tutorials/TutorialScreen";
 import AvatarSelector from "../src/avatar_selection/AvatarSelector";
 import PassiveAlert from './passivity/PassiveDialogue';
-import zIndex from "@material-ui/core/styles/zIndex";
-import { Typography } from "@material-ui/core";
+import Prolific from './prolific/ProlificDialogues'
+import Compensation from "./prolific/Compensation";
 
 const TEST_CODE = 123;
 const TEST_CODES = [123, 456, 789, 12, 34, 56];
@@ -46,9 +45,9 @@ const GAME_TWO_ROUTE = "/game-two";
 
 const ADMIN_LOGIN_ROUTE = "/adminLogin";
 const ADMIN_PRIVATE_ROUTE = "/admin";
+const COMPENSATION_ROUTE = '/compensation';
 
 const SUMMARY_ROUTE = "/summary";
-const PROLIFIC_ROUTE = "/prolific";
 
 const DEFAULT_SELECTION_INDEX = -1;
 const LOGGED_OUT = false;
@@ -162,8 +161,8 @@ function App() {
         />
 
         <Route
-          path={PROLIFIC_ROUTE}
-          render={() => <ProlificScreen code={loginCode} />}
+          path={COMPENSATION_ROUTE}
+          render={() => <Compensation code={loginCode} />}
         />
 
         <Route
