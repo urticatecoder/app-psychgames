@@ -10,6 +10,8 @@ const BUTTON_MESSAGE = 'Enter Code';
 const BUTTON_ID = 'loginButton';
 const EMPTY_STRING = '';
 const INVALID_CODE = true;
+const SHOW = true;
+const HIDE = false;
 
 const styles = ({
     loginButton: {
@@ -51,7 +53,11 @@ function handleLogin(props) {
         console.log(res)
         let isValid = res.data.isValid;
         console.log(isValid)
-        if (isValid) props.history.push("/lobby");
+        if (isValid) {
+            // CHANGE IF YOU WANT THE RULES TO AUTOMATICALLY SHOW.
+            props.setShowWarnings(HIDE);
+            props.history.push("/lobby");
+        }
         else props.setInvalidCode(INVALID_CODE);
     });
     

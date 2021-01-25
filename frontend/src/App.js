@@ -30,6 +30,8 @@ const DEFAULT_ANIMATION_PAUSE = 1000;
 
 const CLASS_NAME = "App";
 
+const HIDE = false;
+
 const LOGIN_ROUTE = "/";
 const LOBBY_ROUTE = "/lobby";
 const AVATAR_SELECTION_ROUTE = "/avatar-selection";
@@ -53,9 +55,8 @@ function App() {
   const [losers, setLosers] = useState(NO_LOSERS);
   const [selectedIndex, setSelectedIndex] = useState(DEFAULT_SELECTION_INDEX);
   const [loggedIn, setLoggedIn] = useState(LOGGED_OUT);
+  const [showWarnings, setShowWarnings] = useState(HIDE);
 
- 
-  
   return (
     <div className={CLASS_NAME}>
         
@@ -63,11 +64,12 @@ function App() {
           <PassiveAlert loginCode={loginCode}/>
           <RefreshChecker loginCode={loginCode}/>
           <WindowChecker/>
-          <Warnings/>
+          <Warnings showWarnings={showWarnings} setShowWarnings={setShowWarnings}/>
+
           <Route
             path={LOGIN_ROUTE}
             exact
-            render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}
+            render={() => <Login code={loginCode} setLoginCode={setLoginCode} setShowWarnings={setShowWarnings}/>}
           />
 
           <Route

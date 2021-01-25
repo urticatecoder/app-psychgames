@@ -56,14 +56,13 @@ const styles = {
    */
   function Warnings(props) {
 
-    const [showWarnings, setShowWarnings] = useState(!SHOW);
     const {classes} = props;
     
     
-    if (showWarnings) {
+    if (props.showWarnings) {
         return(
             <Dialog
-            open={showWarnings}
+            open={props.showWarnings}
             >
             <DialogTitle>{DIALOG_TITLE}</DialogTitle>
             <DialogContent>
@@ -75,7 +74,7 @@ const styles = {
             </DialogContent>
             <DialogActions>
                 <Button
-                    onClick={() => setShowWarnings(HIDE)} 
+                    onClick={() => props.setShowWarnings(HIDE)} 
                     variant={BUTTON_VARIANT} 
                     color={OKAY_COLOR}
                 >
@@ -91,7 +90,7 @@ const styles = {
                 <Button
                     variant={BUTTON_VARIANT} 
                     color={OKAY_COLOR}
-                    onClick={() => setShowWarnings(SHOW)}
+                    onClick={() => props.setShowWarnings(SHOW)}
                 >
                     {RULES}
                 </Button>
