@@ -120,6 +120,12 @@ function GameTwo(props) {
     
     socket.on(END_TURN_WEBSOCKET, (competePayoff, investPayoff, winnerResults, loserResults) => {
       console.log('END GAME TWO TURN');
+
+      console.log('winner results');
+      console.log(winnerResults);
+      console.log('loser results');
+      console.log(loserResults);
+
       setCompetePayoff(competePayoff);
       setInvestPayoff(investPayoff);
       setResetTimer(RESET_TIMER);
@@ -248,13 +254,13 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
       <VerticalPlayerGroup
         type={GROUP_ONE}
         allLoginCodes={props.allLoginCodes}
-        players={props.losers}
+        players={props.winners}
         selectedIndex={props.selectedIndex}
       />
       <VerticalPlayerGroup
         type={GROUP_TWO}
         allLoginCodes={props.allLoginCodes}
-        players={props.winners}
+        players={props.losers}
         selectedIndex={props.selectedIndex}
       />
       {getResourceButton(ResourceNames.KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
