@@ -212,7 +212,8 @@ class Room {
             winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
         });
         let winnerSum = GameTwoAllocation.sumAllocations(winnerAllocations);
-        console.log(GameTwoAllocation);
+        console.log('compete keep invest');
+        console.log('winner sum: ' +  winnerSum.allocationAsArray);
         // losers
         let loserIDs = this.gameOneResults[1];
         let loserAllocations = [];
@@ -220,7 +221,7 @@ class Room {
             loserAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
         });
         let loserSum = GameTwoAllocation.sumAllocations(loserAllocations);
-
+        console.log('loser sum: ' + loserSum.allocationAsArray);
         return [winnerSum.allocationAsArray, loserSum.allocationAsArray];
     }
 
