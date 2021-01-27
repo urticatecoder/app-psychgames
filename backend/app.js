@@ -178,7 +178,6 @@ app.get("/validate", (req, res) => {
             gameTwoTurns = player.getGameTwoChoiceCount();
         }
     });
-
     if (room === undefined) {
         res.status(200).send({"error": `ProlificID ${prolificID} not found.`});
     } 
