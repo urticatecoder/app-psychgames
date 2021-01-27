@@ -172,18 +172,18 @@ app.get("/validate", (req, res) => {
     let room = lobby.getRoomPlayerIsIn(prolificID);
     let gameOneTurns = 0;
     let gameTwoTurns = 0;
-    room.players.forEach( (player) => {
-        if(player.prolificID === prolificID){
-            gameOneTurns = player.getGameOneChoiceCount();
-            gameTwoTurns = player.getGameTwoChoiceCount();
-        }
-    });
+    // room.players.forEach( (player) => {
+    //     if(player.prolificID === prolificID){
+    //         gameOneTurns = player.getGameOneChoiceCount();
+    //         gameTwoTurns = player.getGameTwoChoiceCount();
+    //     }
+    // });
     if (room === undefined) {
         res.status(200).send({"error": `ProlificID ${prolificID} not found.`});
     } 
-    else if(gameOneTurns < 2 && gameTwoTurns < 2){
-        this.resource.status(200).send({"error": `ProlificID ${prolificID} did not complete enough turns`});
-    }
+    // else if(gameOneTurns < 2 && gameTwoTurns < 2){
+    //     this.resource.status(200).send({"error": `ProlificID ${prolificID} did not complete enough turns`});
+    // }
     else {
         res.status(200).send({"success": `ProlificID ${prolificID} should be paid`, "code": 'testcode'});
     }
