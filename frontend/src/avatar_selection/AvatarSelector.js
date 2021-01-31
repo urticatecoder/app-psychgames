@@ -6,7 +6,9 @@ import ContinueButton from '../util/common_components/ContinueButton';
 import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 
 const FULL_DIV = "fullDiv";
-const PLAYER_OPTION_NUMBERS = Array.from(Array(25).keys());
+const PLAYER_OPTION_NUMBERS = Array.from(Array(24).keys());
+console.log('hiya');
+console.log(PLAYER_OPTION_NUMBERS);
 const NUMBER_OPTIONS = 25;
 const SELECTED = true;
 const NOT_SELECTED = false;
@@ -78,6 +80,8 @@ function AvatarSelector(props) {
               player={player}
               selected={selectedPlayers[player]}
               onSelect={() => selectPlayer(player, setSelectedPlayers, props.setSelectedIndex)}
+              windowWidth={props.windowWidth}
+              windowHeight={props.windowHeight}
             />
           </div>
             )
