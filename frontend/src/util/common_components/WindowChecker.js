@@ -5,7 +5,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 const MIN_WIDTH = 900;
-const MIN_HEIGHT = 700;
+const MIN_HEIGHT = 650;
 
 const VALID = true;
 const INVALID = false;
