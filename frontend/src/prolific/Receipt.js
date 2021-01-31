@@ -187,7 +187,7 @@ function getGameTwoResource(tokens, resource, rate, amount, delay, classes) {
 }
 
 function getRate(rate) {
-    return ' @ ' + rate.toFixed(1) + 'x:';
+    return ' @ ' + rate.toFixed(2) + 'x:';
 }
 
 function getSign(amount) {

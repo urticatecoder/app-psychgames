@@ -72,6 +72,10 @@ const GROUP_BOX_WIDTH = "40vw";
 const INITIAL_TIME_LEFT = -1;
 const DONT_NOTE_TIME = false;
 
+const KEEP_BACKEND_INDEX = 2;
+const INVEST_BACKEND_INDEX = 1;
+const COMPETE_BACKEND_INDEX = 0;
+
 const styles = {
   groupOne: {
     position: "absolute",
@@ -120,13 +124,21 @@ function GameTwo(props) {
     
     socket.on(END_TURN_WEBSOCKET, (competePayoff, investPayoff, winnerResults, loserResults) => {
       console.log('END GAME TWO TURN');
+
+      console.log('winner results');
+      let convertedWinnerResults = convertBackendData(winnerResults);
+      console.log(convertedWinnerResults);
+      console.log('loser results');
+      let convertedLoserResults = convertBackendData(loserResults);
+      console.log(convertedLoserResults);
+
       setCompetePayoff(competePayoff);
       setInvestPayoff(investPayoff);
       setResetTimer(RESET_TIMER);
       setCurrentResources(INITIAL_RESOURCE_DISTRIBUTION);
       setShowResults(SHOW_RESULTS);
-      setGroupOneResults(winnerResults);
-      setGroupTwoResults(loserResults);
+      setGroupOneResults(convertedWinnerResults);
+      setGroupTwoResults(convertedLoserResults);
       setTimeout(() => {
         setShowResults(DO_NOT_SHOW_RESULTS);
       }, TIME_TO_SHOW_RESULTS);
@@ -248,13 +260,13 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
       <VerticalPlayerGroup
         type={GROUP_ONE}
         allLoginCodes={props.allLoginCodes}
-        players={props.losers}
+        players={props.winners}
         selectedIndex={props.selectedIndex}
       />
       <VerticalPlayerGroup
         type={GROUP_TWO}
         allLoginCodes={props.allLoginCodes}
-        players={props.winners}
+        players={props.losers}
         selectedIndex={props.selectedIndex}
       />
       {getResourceButton(ResourceNames.KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
@@ -339,6 +351,10 @@ function updateResource(resourceIndex, setFromResources, setToResources, origina
   setTokensSpent(addTokenOffset + tokensSpent);
   setFromResources(fromResources);
   setToResources(toResources);
+}
+
+function convertBackendData(array) {
+  return array.reverse();
 }
 
 export default withRouter(withStyles(styles)(GameTwo));

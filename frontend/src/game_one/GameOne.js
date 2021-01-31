@@ -157,6 +157,10 @@ function GameOne(props) {
     );
 
     socket.on(END_GAME_WEBSOCKET, (winners, losers, doubleBonuses, tripleBonuses) => {
+      console.log('winners');
+      console.log(winners);
+      console.log('losers');
+      console.log(losers);
       props.setWinners(winners);
       props.setLosers(losers);
       let finalPause = (doubleBonuses + tripleBonuses + NORMAL_ANIMATION_OFFSET) * PAUSE_BETWEEN_ANIMATIONS
