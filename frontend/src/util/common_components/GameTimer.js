@@ -12,26 +12,29 @@ const TIMER_UPDATE = 10;
 const SUBMIT_DECISIONS = true;
 
 const RESET_TIMER = false;
-const TIMER_MESSAGE = "The round ends in:";
-
+const TIMER_MESSAGE_P1 = "The round";
+const TIMER_MESSAGE_P2 = "ends in:"
 const STOP_NOTING_TIME = false;
+
+const LARGE_WIDTH_THRESHOLD = 1550;
+const MEDIUM_WIDTH_THRESHOLD = 1150;
 
 const styles = {
   timerInstruction: {
     marginTop: "50px",
     position: "absolute",
-    top: "22vh",
+    top: "25vh",
+    marginTop: '55px',
     left: "5vw",
     backgroundColor: "#349eeb",
-    height: "35vh",
-    width: "15vw",
+    height: "200px",
     opacity: ".8",
     borderRadius: "20px",
     alignItems: "center",
     verticalAlign: "middle",
   },
   timerMargin: {
-    marginTop: "11vh",
+    marginTop: "20px",
   },
 };
 
@@ -44,9 +47,11 @@ const styles = {
  */
 function GameTimer(props) {
   const { classes } = props;
+  let margin = getMarginLeft(props.windowWidth);
+  let width = getWidth(props.windowWidth);
 
   return (
-    <div className={classes.timerInstruction}>
+    <div style={{marginLeft: margin, width: width}} className={classes.timerInstruction}>
       <Timer
         initialTime={TURN_TIME}
         lastUnit={LAST_TIME_UNIT}
@@ -72,7 +77,9 @@ function GameTimer(props) {
                 props.setResetTimer
               )}
               {checkForPause(props.pauseTimer, pause, start)}
-              {TIMER_MESSAGE}
+              <Typography style={{fontSize: '25px'}} variant={Variants.LARGEST_TEXT}>
+              {TIMER_MESSAGE_P1} <br/> {TIMER_MESSAGE_P2}
+              </Typography>
               <Typography variant={Variants.LARGEST_TEXT}>
                 <Timer.Seconds />
               </Typography>
@@ -82,6 +89,19 @@ function GameTimer(props) {
       </Timer>
     </div>
   );
+}
+
+
+function getWidth(windowWidth) {
+  if (windowWidth >= LARGE_WIDTH_THRESHOLD) return '200px';
+  else if (windowWidth >= MEDIUM_WIDTH_THRESHOLD) return '180px';
+  else return '160px';
+}
+
+function getMarginLeft(windowWidth) {
+  if (windowWidth >= LARGE_WIDTH_THRESHOLD) return '5vw';
+  else if (windowWidth >= MEDIUM_WIDTH_THRESHOLD) return '2.5vw';
+  else return '0px';
 }
 
 function checkUpdateSeconds(noteTime, setNoteTime, setTimeLeft, setSubmitDecisions, time) {

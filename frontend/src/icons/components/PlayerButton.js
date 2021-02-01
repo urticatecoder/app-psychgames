@@ -11,10 +11,14 @@ const TRIPLE_BONUS = "#0010f5";
 const BORDER_RADIUS = 30;
 const IMAGE = 'image';
 const NAME = 'name';
+const LABEL = 'label';
 
-const IMAGE_HEIGHT = '85vh';
-const IMAGE_WIDTH = '85vw';
+const LARGE_WIDTH_THRESHOLD = 1275;
+const MEDIUM_WIDTH_THRESHOLD = 1075;
 
+const LARGE_SIZE = '85';
+const MEDIUM_SIZE = '75';
+const SMALL_SIZE = '65';
 
 /**
  * Component that wraps around a player image and allows it to be clicked in Game One.
@@ -31,24 +35,39 @@ function PlayerButton(props) {
       style={{ backgroundColor: background, borderRadius: BORDER_RADIUS }}
       onClick={() => handleSelect(props.disabled, props.onSelect)}
     >
-      {getImage(props.player, props.selectedIndex)}
+      {getImage(props.player, props.selectedIndex, props.windowWidth)}
     </div>
   );
 }
 
-function getImage(playerNumber, selectedIndex) {
-  if (playerNumber > 0) return PlayerImages[playerNumber];
-  else {
+function getImage(playerNumber, selectedIndex, windowWidth) {
+  if (playerNumber > 0) {
+    return (
+      <GameImage
+        image={PlayerImages[IMAGE + playerNumber]}
+        id={PlayerImages[NAME + playerNumber]}
+        alt={PlayerImages[LABEL + playerNumber]}
+        width={getSize(windowWidth)}
+        height={getSize(windowWidth)}
+      />
+    );
+  } else {
     return (
       <GameImage
         image={PlayerOptions[IMAGE + selectedIndex]}
         id={PlayerOptions[NAME + selectedIndex]}
-        alt={PlayerOptions[NAME + selectedIndex]}
-        width={IMAGE_HEIGHT}
-        height={IMAGE_WIDTH}
+        alt={PlayerOptions[LABEL + selectedIndex]}
+        width={getSize(windowWidth)}
+        height={getSize(windowWidth)}
       />
     );
   }
+}
+
+function getSize(windowWidth) {
+  if (windowWidth >= LARGE_WIDTH_THRESHOLD) return LARGE_SIZE;
+  else if (windowWidth >= MEDIUM_WIDTH_THRESHOLD) return MEDIUM_SIZE;
+  else return SMALL_SIZE;
 }
 
 function handleSelect(disabled, onSelect) {

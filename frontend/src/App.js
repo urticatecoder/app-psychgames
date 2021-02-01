@@ -158,6 +158,8 @@ function App() {
                 loginCode={loginCode}
                 allLoginCodes={allLoginCodes}
                 selectedIndex={selectedIndex}
+                windowWidth={windowWidth}
+                windowHeight={windowHeight}
               />
             )}
           />
