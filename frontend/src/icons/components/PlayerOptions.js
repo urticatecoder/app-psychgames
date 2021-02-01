@@ -1,5 +1,3 @@
-import React from "react";
-
 import BeigeTriangle from '../images/shapes/beige-triangle.png';
 import BlackArrows from "../images/shapes/black-arrows.png";
 import BlackEye from "../images/shapes/black-eye.png";
@@ -24,10 +22,6 @@ import Solar from "../images/shapes/solar.png";
 import Trapezoid from "../images/shapes/trapezoid.png";
 import UpArrows from "../images/shapes/up-arrows.png";
 import YellowCrosshair from "../images/shapes/yellow-crosshair.png";
-
-
-const IMAGE_HEIGHT = "50";
-const IMAGE_WIDTH = "50";
 
 const BEIGE_TRIANGLE_ID = "beige-triangle";
 const BLACK_ARROWS_ID = "black-arrows";
