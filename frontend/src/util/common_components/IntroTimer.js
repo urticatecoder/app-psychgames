@@ -21,8 +21,8 @@ const styles = {
     position: "absolute",
     left: "2vw",
     backgroundColor: "#d16dbf",
-    height: "190px",
-    width: "15vw",
+    height: "150px",
+    width: "160px",
     borderRadius: "20px",
     alignItems: "center",
     verticalAlign: "middle",
@@ -61,13 +61,13 @@ function IntroTimer(props) {
           <div className={classes.timerMargin}>
 
             <React.Fragment>
-            <Typography style={{fontSize: '25px'}} variant={Variants.LARGE_TEXT}>
+            <Typography style={{fontSize: '22px'}} variant={Variants.LARGE_TEXT}>
                 {props.message}
             </Typography>
-              <Typography style={{fontSize: '80px'}} variant={Variants.LARGEST_TEXT}>
+              <Typography style={{fontSize: '55px'}} variant={Variants.LARGEST_TEXT}>
                 <Timer.Seconds />
               </Typography>
-            <Typography style={{fontSize: '25px'}} variant={Variants.LARGE_TEXT}>
+            <Typography style={{fontSize: '22px'}} variant={Variants.LARGE_TEXT}>
                 {COUNTDOWN}
             </Typography>
             </React.Fragment>
