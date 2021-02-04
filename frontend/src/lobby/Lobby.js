@@ -6,12 +6,10 @@ import "../util/common_stylings/FullScreenDiv.css";
 import ContinueButton from "../util/common_components/ContinueButton";
 
 const AVATAR_BUTTON_MESSAGE = "Choose Avatar";
-const GAME_BUTTON_MESSAGE = "Begin Game One";
 const AVATAR_SELECTION_ROUTE = "/avatar-selection";
 const NOT_DISABLED = false;
 const DEFAULT_START_STATUS = false;
 const FULL_DIV = "fullDiv";
-const GAME_ONE_INTRO_ROUTE = "/game-one-intro";
 
 const styles = {
   avatarButton: {

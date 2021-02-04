@@ -37,7 +37,7 @@ const INVEST_DELAY = 9000;
 
 const KEEP = 'Kept';
 const KEEP_DELAY = 15000;
-const KEEP_RATE = 1;
+const KEEP_RATE = .50;
 
 const COMPETE = 'Competed';
 const COMPETE_DELAY = 21000;

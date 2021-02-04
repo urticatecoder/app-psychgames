@@ -119,7 +119,7 @@ class Room {
         // getter method for time
         this.getTime = function(prolific) { 
             let time = this.allPlayerTimes.get(prolific);
-            return 5 - ((Date.now() - time) / 1000);
+            return 60 - ((Date.now() - time) / 1000);
         }
     }
 
