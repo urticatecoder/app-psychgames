@@ -46,45 +46,45 @@ const styles = {
   game: {
     position: 'relative',
     textAlign: 'left',
-    marginLeft: '4vw',
+    marginLeft: '75px',
   },
 
   description: {
     position: 'relative',
-    marginRight: '12vw',
-    marginTop: '10px',
+    marginRight: '180px',
+    marginTop: '13px',
     textAlign: 'right'
   },
 
   amount: {
     position: 'relative',
-    marginRight: '3vw',
+    marginRight: '50px',
     marginTop: '-39px',
     textAlign: 'right',
   },
 
   resourceDescription: {
     position: 'relative',
-    marginRight: '12vw',
-    marginTop: '13px',
+    marginRight: '180px',
+    marginTop: '15px',
     textAlign: 'right',
   },
 
   resourceAmount: {
     position: 'relative',
-    marginRight: '3vw',
+    marginRight: '50px',
     marginTop: '-39px',
     textAlign: 'right',
   },
 
   gameOneFade: {
     position: 'relative',
-    marginTop: '1vh',
+    marginTop: '10pxs',
   },
 
   gameTwoFade: {
     position: 'relative',
-    marginTop: '3vh',
+    marginTop: '20px',
   }
 };
 

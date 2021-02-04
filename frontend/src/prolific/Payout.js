@@ -33,12 +33,10 @@ const styles = {
       fontSize: 100,
   },
   wrapperDiv: {
-    position: "absolute",
-    top: "25vh",
-    left: "29vw",
+    position: "relative",
     backgroundColor: "#e0c760",
-    height: "60vh",
-    width: "42vw",
+    height: "500px",
+    width: "720px",
     opacity: ".8",
     borderRadius: "20px",
   }
@@ -108,8 +106,11 @@ function Payout(props) {
 
   }, [props]);
 
+  let margin = getMarginLeft(props.windowWidth);
+  let marginTop = getMarginTop(props.windowHeight);
+
   return (
-    <div className={classes.wrapperDiv}>
+    <div className={classes.wrapperDiv} style={{marginLeft: margin, top: marginTop}}>
         <PayoutCount
           gameOneAmount={gameOneAmount}
           keepAmount={keepAmount}
@@ -133,5 +134,15 @@ function Payout(props) {
     </div>
   );
 }
+
+function getMarginLeft(windowWidth) {
+  return (windowWidth - 720) / 2;
+}
+
+function getMarginTop(windowHeight) {
+  if (windowHeight >= 825) return "5vh";
+  else return "30px";
+}
+
 
 export default withStyles(styles)(Payout);

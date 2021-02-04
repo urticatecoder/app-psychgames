@@ -148,7 +148,7 @@ function App() {
 
           <Route
             path={COMPENSATION_ROUTE}
-            render={() => <Compensation code={loginCode} />}
+            render={() => <Compensation code={loginCode} windowHeight={windowHeight} windowWidth={windowWidth} />}
           />
 
           <Route
