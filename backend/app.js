@@ -180,7 +180,13 @@ app.get("/validate", (req, res) => {
         console.log(player);
         console.log('game 1: ' + gameOneTurns + ' game 2: ' + gameTwoTurns);
     });
-    res.status(200).send({"success": `ProlificID ${prolificID} should be paid`, "code": 'testcode'});
+    if(gameOneTurns >= 2 && gameTwoTurns >= 2){
+        res.status(200).send({"success": `ProlificID ${prolificID} should be paid`, "code": 'testcode'});
+    }
+    else {
+        res.status(200).send({"false": `ProlificID ${prolificID} should not be paid`, "code": 'testcode'});
+    }
+    
     // if (room === undefined) {
     //     res.status(200).send({"error": `ProlificID ${prolificID} not found.`});
     // } 
