@@ -172,21 +172,24 @@ app.get("/validate", (req, res) => {
     let room = lobby.getRoomPlayerIsIn(prolificID);
     let gameOneTurns = 0;
     let gameTwoTurns = 0;
-    // room.players.forEach( (player) => {
-    //     if(player.prolificID === prolificID){
-    //         gameOneTurns = player.getGameOneChoiceCount();
-    //         gameTwoTurns = player.getGameTwoChoiceCount();
-    //     }
-    // });
-    if (room === undefined) {
-        res.status(200).send({"error": `ProlificID ${prolificID} not found.`});
-    } 
-    // else if(gameOneTurns < 2 && gameTwoTurns < 2){
-    //     this.resource.status(200).send({"error": `ProlificID ${prolificID} did not complete enough turns`});
+    room.players.forEach( (player) => {
+        if(player.prolificID === prolificID){
+            gameOneTurns = player.getGameOneChoiceCount();
+            gameTwoTurns = player.getGameTwoChoiceCount();
+        }
+        console.log(player);
+        console.log('game 1: ' + gameOneTurns + ' game 2: ' + gameTwoTurns);
+    });
+    res.status(200).send({"success": `ProlificID ${prolificID} should be paid`, "code": 'testcode'});
+    // if (room === undefined) {
+    //     res.status(200).send({"error": `ProlificID ${prolificID} not found.`});
+    // } 
+    // // else if(gameOneTurns < 2 && gameTwoTurns < 2){
+    // //     this.resource.status(200).send({"error": `ProlificID ${prolificID} did not complete enough turns`});
+    // // }
+    // else {
+    //     res.status(200).send({"success": `ProlificID ${prolificID} should be paid`, "code": 'testcode'});
     // }
-    else {
-        res.status(200).send({"success": `ProlificID ${prolificID} should be paid`, "code": 'testcode'});
-    }
 });
 
 app.get("/", (req, res) => {
