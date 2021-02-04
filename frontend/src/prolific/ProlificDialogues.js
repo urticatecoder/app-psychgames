@@ -46,8 +46,10 @@ function ProlificDialogues(props) {
         params: {
           loginCode: props.code,
         }
-      }).then((res, valid) => {
-        if (valid) {
+      }).then((res) => {
+        console.log('RESPONSE FROM HTTP');
+        console.log(res);
+        if (res.data.success == 'true') {
           setProlificCode(res.data.code);
           setValidPlayer(VALID_PLAYER);
         }
