@@ -181,7 +181,7 @@ app.get("/validate", (req, res) => {
         console.log('game 1: ' + gameOneTurns + ' game 2: ' + gameTwoTurns);
     });
     if(gameOneTurns >= 2 && gameTwoTurns >= 2){
-        res.status(200).send({"success": `ProlificID ${prolificID} should be paid`, "code": 'testcode'});
+        res.status(200).send({"true": `ProlificID ${prolificID} should be paid`, "code": 'testcode'});
     }
     else {
         res.status(200).send({"false": `ProlificID ${prolificID} should not be paid`, "code": 'testcode'});
