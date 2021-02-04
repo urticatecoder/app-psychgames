@@ -1,19 +1,24 @@
-import { withStyles } from '@material-ui/core';
+import { Typography, withStyles } from '@material-ui/core';
 import React from 'react';
 import Token from './money-bag.png'
+import Variants from "../../util/common_constants/stylings/Variants";
 
-const IMAGE_HEIGHT = '45vh'
-const IMAGE_WIDTH = '45vh'
-const TOKEN_ALT = 'Token Counter'
+const IMAGE_HEIGHT = '45vh';
+const IMAGE_WIDTH = '45vh';
+const TOKEN_ALT = 'Token Counter';
 
-const TOKENS_LABEL = "Tokens Left: "
+const TOKENS_LABEL = "Tokens Left: ";
+const LARGE_WINDOW = 1300;
+const LARGE_FONT = '20px';
+const SMALL_FONT = '17px';
+
 const styles = ({
     fullDiv: {
       position: 'absolute',
-      top: '9vh',
-      left: '53.5vw',
+      top: '25px',
+      left: '62vw',
       backgroundColor: '#a83297',
-      height: '10vh',
+      height: '85px',
       width: '15vw',
       opacity: '.8',
       borderRadius: '20px',
@@ -26,7 +31,7 @@ const styles = ({
     },
     tokenText: {
       position: 'relative',
-      top: '1.5vh',
+      top: '1vh',
       alignItems: 'center',
       verticalAlign: 'middle',
     }
@@ -49,10 +54,18 @@ function TokenCounter(props) {
           {getTokenIcon()}
         </div>
         <div className={classes.tokenText}>
-          {TOKENS_LABEL + props.tokens}
+          <Typography style={{fontSize: getFontSize(props.windowWidth)}} variant={Variants.LARGE_TEXT}>
+            {TOKENS_LABEL + props.tokens}
+          </Typography>
         </div>
       </div>
     )
+}
+
+// FIXME: duplicated code with resource resutls
+function getFontSize(windowWidth) {
+  if (windowWidth >= LARGE_WINDOW) return LARGE_FONT;
+  else return SMALL_FONT;
 }
 
 function getTokenIcon() {

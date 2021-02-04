@@ -4,16 +4,23 @@ import { withStyles } from "@material-ui/core/styles";
 import getMarginLeft from "../../util/common_functions/getResourceMarginLeft";
 import getBackgroundColor from "../../util/common_functions/getResourceBackgroundColor";
 
-const LABEL = "Label";
 const REMOVE_TOKEN_LABEL = "-1 Token";
+
+const LARGE_WINDOW = 1300;
+const LARGE_SIZE = 60;
+const SMALL_SIZE = 40;
+const LARGE_DIV = '100px';
+const SMALL_DIV = '90px';
+
+const IMAGE = 'Image';
+const LABEL ='Label';
+const ID = 'ID';
 
 const styles = {
   buttonFormatting: {
     position: "absolute",
     top: "68vh",
     borderRadius: 40,
-    height: "110px",
-    width: "110px",
   },
   innerDiv: {
     position: "relative",
@@ -28,7 +35,6 @@ const styles = {
     marginTop: "30px",
     borderRadius: 20,
     height: "30px",
-    width: "110px",
     backgroundColor: "#ff645c",
   },
   reduceTextDiv: {
@@ -48,25 +54,49 @@ function ResourceButton(props) {
   const { classes } = props;
   let background = getBackgroundColor(props.resource);
   let marginL = getMarginLeft(props.resource);
+  let divSize = getDivSize(props.windowWidth);
+  let size = getSize(props.windowWidth);
 
   return (
     <div
       className={classes.buttonFormatting}
-      style={{ backgroundColor: background, left: marginL }}
+      style={{ backgroundColor: background, left: marginL, height: divSize, width: divSize}}
     >
       <div className={classes.innerDiv}>
         <div onClick={() => props.addToken()}>
-          {ResourceImages[props.resource]}
+          {getImage(props.resource, props.windowWidth)}
           <div className={classes.textDiv}>
             {ResourceImages[props.resource + LABEL]}
           </div>
         </div>
-        <div className={classes.reduceDiv} onClick={() => props.removeToken()}>
+        <div className={classes.reduceDiv} style={{width: divSize}} onClick={() => props.removeToken()}>
           <div className={classes.reduceTextDiv}>{REMOVE_TOKEN_LABEL}</div>
         </div>
       </div>
     </div>
   );
+}
+
+function getImage(resource, windowWidth) {
+  let size = getSize(windowWidth);
+  return(
+    <img
+      src={ResourceImages[resource + IMAGE]}
+      id={ResourceImages[resource + ID]}
+      alt={ResourceImages[resource + LABEL]}
+      width={size}
+      height={size}
+    />
+  );
+}
+
+function getDivSize(windowWidth) {
+  if (windowWidth >= LARGE_WINDOW) return LARGE_DIV;
+  else return SMALL_DIV;
+}
+function getSize(windowWidth) {
+  if (windowWidth >= LARGE_WINDOW) return LARGE_SIZE;
+  else return SMALL_SIZE;
 }
 
 export default withStyles(styles)(ResourceButton);

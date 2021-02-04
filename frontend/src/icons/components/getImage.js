@@ -9,8 +9,17 @@ const IMAGE_HEIGHT = '85vh';
 const IMAGE_WIDTH = '85vw';
 
 function getImage(playerNumber, selectedIndex) {
-    if (playerNumber > 0) return PlayerImages[playerNumber];
-    else {
+    if (playerNumber > 0) {
+      return (
+        <GameImage
+          image={PlayerImages[IMAGE + playerNumber]}
+          id={PlayerImages[NAME + playerNumber]}
+          alt={PlayerImages[NAME + playerNumber]}
+          width={IMAGE_HEIGHT}
+          height={IMAGE_WIDTH}
+        />
+      );
+    } else {
       return (
         <GameImage
           image={PlayerOptions[IMAGE + selectedIndex]}

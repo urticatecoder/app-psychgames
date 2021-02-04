@@ -3,7 +3,7 @@ import { Button, withStyles } from "@material-ui/core";
 import socket from "../../socketClient";
 import { Variants } from "../../util/common_constants/stylings/StylingsBundler";
 
-const CONFIRM_CHOICES_TEXT = "Confirm Decision!";
+const CONFIRM_CHOICES_TEXT = "Confirm!";
 
 const KEEP_INDEX = 0;
 const INVEST_INDEX = 1;
@@ -13,14 +13,17 @@ const PRIMARY_COLOR = "primary";
 const SEND_DECISION_WEBSOCKET = "confirm choice for game 2";
 const NOTE_TIME = true;
 
+const LARGE_WIDTH_THRESHOLD = 1550;
+const MEDIUM_WIDTH_THRESHOLD = 1150;
+
 const styles = {
   confirmButton: {
     position: "absolute",
-    top: "68vh",
+    top: "25vh",
+    marginTop: '280px',
     left: "5vw",
-    height: "5vh",
-    width: "15vw",
-    opacity: ".9",
+    height: "40px",
+    opacity: ".8",
     borderRadius: "8px",
     alignItems: "center",
     fontSize: "15px",
@@ -36,6 +39,8 @@ const styles = {
  */
 function ConfirmButtonTwo(props) {
   const { classes } = props;
+  let margin = getMarginLeft(props.windowWidth);
+  let width = getWidth(props.windowWidth);
 
   if (props.submit) {
     sendDecisions(props);
@@ -44,6 +49,7 @@ function ConfirmButtonTwo(props) {
   return (
     <Button
       className={classes.confirmButton}
+      style={{marginLeft: margin, width: width}}
       variant={Variants.CONTAINED}
       color={PRIMARY_COLOR}
       onClick={() => props.setNoteTime(NOTE_TIME)}
@@ -51,6 +57,18 @@ function ConfirmButtonTwo(props) {
       {CONFIRM_CHOICES_TEXT}
     </Button>
   );
+}
+
+function getWidth(windowWidth) {
+  if (windowWidth >= LARGE_WIDTH_THRESHOLD) return '200px';
+  else if (windowWidth >= MEDIUM_WIDTH_THRESHOLD) return '180px';
+  else return '160px';
+}
+
+function getMarginLeft(windowWidth) {
+  if (windowWidth >= LARGE_WIDTH_THRESHOLD) return '5vw';
+  else if (windowWidth >= MEDIUM_WIDTH_THRESHOLD) return '2.5vw';
+  else return '0px';
 }
 
 function sendDecisions(props) {

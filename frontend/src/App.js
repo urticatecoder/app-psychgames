@@ -140,6 +140,8 @@ function App() {
                 losers={losers}
                 allLoginCodes={allLoginCodes}
                 selectedIndex={selectedIndex}
+                windowWidth={windowWidth}
+                windowHeight={windowHeight}
               />
             )}
           />
