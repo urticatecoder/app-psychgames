@@ -162,6 +162,8 @@ io.on('connection', socket => {
                 room.advanceToNextRound();
                 let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
                 let competePayoff = payoff[0], investPayoff = payoff[1];
+                console.log( 'winners: ' + allocation[0]);
+                console.log('losers' + allocation[1]);
                 // for testing purposes
                 // let payOutTurnNum = Math.floor(Math.random() * Math.floor(room.turnNum - 1) + 1);
                 // console.log(payOutTurnNum);
