@@ -18,12 +18,12 @@ const VERTICAL_HEIGHT = "vh";
 const IN_LINE = "inline-block";
 
 const GROUP_ONE = 1;
-const GROUP_ONE_OFFSET = 0;
-const GROUP_TWO_OFFSET = 50;
 
 const KEEP_OFFSET = 10;
 const INVEST_OFFSET = 21.75;
 const COMPETE_OFFSET = 33.5;
+
+const GROUP_BOX_PERCENT = .40;
 
 const styles = {
   outerDiv: {
@@ -42,13 +42,13 @@ const styles = {
     position: "relative",
     marginTop: "30px",
     borderRadius: 20,
-    height: "3vh",
-    width: "11vh",
+    height: "25px",
+    width: "100px",
     backgroundColor: "#ff645c",
   },
   reduceTextDiv: {
     position: "relative",
-    top: ".5vh",
+    top: "3px",
   },
 };
 
@@ -62,7 +62,6 @@ const styles = {
 function DelayedBar(props) {
   const { classes } = props;
   const [toHeight, setToHeight] = useState(INITIAL_HEIGHT);
-
   const spring = useSpring({
     from: {
       height: INITIAL_HEIGHT_FROM,
@@ -80,7 +79,7 @@ function DelayedBar(props) {
   }, props.delay);
 
   let background = getBackgroundColor(props.resource);
-  let marginL = getMarginL(props.resource, props.group) + VERTICAL_WIDTH;
+  let marginL = getMarginL(props.resource, props.group, props.windowWidth) + 'px';
 
   return (
     <div className={classes.outerDiv}>
@@ -110,16 +109,22 @@ function scaleHeight(tokens) {
   return tokens * HEIGHT_SCALAR;
 }
 
-function getMarginL(resource, group) {
-  let offset = group === GROUP_ONE ? GROUP_ONE_OFFSET : GROUP_TWO_OFFSET;
+function getMarginL(resource, group, windowWidth) {
+  let offset = (group === GROUP_ONE) ? .05 * windowWidth : .55 * windowWidth;
+  console.log('offset');
+  console.log(offset);
+  let groupBoxWidth = windowWidth * GROUP_BOX_PERCENT;
+  let groupMargin = groupBoxWidth - 300;
+  let individualMargin = groupMargin / 3;
+  let halfMargin = individualMargin / 2;
 
   switch (resource) {
     case KEEP:
-      return offset + KEEP_OFFSET;
+      return offset + halfMargin;
     case INVEST:
-      return offset + INVEST_OFFSET;
+      return offset + halfMargin + 100 + individualMargin;
     case COMPETE:
-      return offset + COMPETE_OFFSET;
+      return offset + halfMargin + 2 * (100 + individualMargin);
     default:
       return offset;
   }

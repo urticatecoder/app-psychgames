@@ -60,6 +60,20 @@ const ENABLE_PLAYERS = createPlayerArray(false);
 const INITIAL_TIME_LEFT = -1;
 const DONT_NOTE_TIME = false;
 
+const LARGE_SPACING_WIDTH = 1350;
+const LARGE_SPACING = 10;
+
+const MEDIUM_SPACING_WIDTH = 1275;
+const MEDIUM_SPACING = 9;
+
+const SMALL_SPACING_WIDTH = 1150;
+const SMALL_SPACING = 7;
+
+const SMALLER_SPACING_WIDTH = 950;
+const SMALLER_SPACING = 6;
+
+const SMALLEST_SPACING = 5;
+
 const styles = {
   animatedColumns: {
     position: "absolute",
@@ -193,6 +207,7 @@ function GameOne(props) {
         noteTime={noteTime}
         setNoteTime={setNoteTime}
         setTimeLeft={setTimeLeft}
+        windowWidth={props.windowWidth}
       />
 
       <ConfirmButton
@@ -205,6 +220,7 @@ function GameOne(props) {
         disabled={disableButton}
         timeLeft = {timeLeft}
         setNoteTime = {setNoteTime}
+        windowWidth={props.windowWidth}
       />
 
       <div className={classes.animatedColumns}>
@@ -213,7 +229,7 @@ function GameOne(props) {
           container
           direction={GRID_DIRECTION}
           justify={GRID_JUSTIFICATION}
-          spacing={10}
+          spacing={getSpacing(props.windowWidth)}
           style={{ height: {ANIMATED_COLUMNS_HEIGHT} }}
         >
           {PLAYERS.map((player) => {
@@ -230,7 +246,8 @@ function GameOne(props) {
               doubles,
               triples,
               disabledPlayers,
-              props.selectedIndex
+              props.selectedIndex,
+              props.windowWidth
             );
           })}
         </Grid>
@@ -250,6 +267,14 @@ function handleDisablePlayers(animationPause, setDisabledPlayers) {
   }, animationPause);
 }
 
+function getSpacing(windowWidth) {
+  if (windowWidth >= LARGE_SPACING_WIDTH) return LARGE_SPACING;
+  else if (windowWidth >= MEDIUM_SPACING_WIDTH) return MEDIUM_SPACING;
+  else if (windowWidth >= SMALL_SPACING_WIDTH) return SMALL_SPACING;
+  else if (windowWidth >= SMALLER_SPACING_WIDTH) return SMALLER_SPACING;
+  return SMALLEST_SPACING;
+}
+
 function handleGameTimer(animationPause, setResetTimer, setPauseTimer) {
   setResetTimer(RESET_TIMER);
   setPauseTimer(PAUSE_TIMER);
@@ -265,7 +290,7 @@ function handleSubmitButton(animationPause, setDisableButton) {
   }, animationPause);
 }
 
-function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID, doubles, triples, disabledPlayers, selectedIndex) {
+function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID, doubles, triples, disabledPlayers, selectedIndex, windowWidth) {
   return (
     <Grid item>
       <PlayerColumn
@@ -288,6 +313,7 @@ function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooM
         player={playerNumber}
         disabled={disabledPlayers[playerNumber]}
         selectedIndex={selectedIndex}
+        windowWidth={windowWidth}
       />
     </Grid>
   );

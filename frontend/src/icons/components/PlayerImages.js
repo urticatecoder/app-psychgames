@@ -30,37 +30,20 @@ const TRIANGLE_LABEL = "Triangle";
  * @author Eric Doppelt
  */
 
-function getPlayer(image, id) {
-  return (
-    <GameImage
-      image={image}
-      id={id}
-      width={IMAGE_WIDTH}
-      height={IMAGE_HEIGHT}
-    />
-  );
-}
-
-const PLAYER_ONE = getPlayer(Triangle, TRIANGLE_ID);
-const PLAYER_TWO = getPlayer(Cross, CROSS_ID);
-const PLAYER_THREE = getPlayer(Arrow, ARROW_ID);
-const PLAYER_FOUR = getPlayer(Headset, HEADSET_ID);
-const PLAYER_FIVE = getPlayer(Leaves, LEAVES_ID);
-
 const PlayerInfo = {
-  1: PLAYER_ONE,
+  image1: Triangle,
   name1: TRIANGLE_ID,
   label1: TRIANGLE_LABEL,
-  2: PLAYER_TWO,
+  image2: Cross,
   name2: CROSS_ID,
   label2: CROSS_LABEL,
-  3: PLAYER_THREE,
+  image3: Arrow,
   name3: ARROW_ID,
   label3: ARROW_LABEL,
-  4: PLAYER_FOUR,
+  image4: Headset,
   name4: HEADSET_ID,
   label4: HEADSET_LABEL,
-  5: PLAYER_FIVE,
+  image5: Leaves,
   name5: LEAVES_ID,
   label5: LEAVES_LABEL,
 };

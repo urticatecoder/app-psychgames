@@ -61,18 +61,6 @@ function Summary(props) {
         LOSER_ID,
         props.selectedIndex
       )}
-      {/* DISABLED BUTTON. TO ADD AGAIN, UNCOMMENT.}
-      {/* <br />
-      <br />
-      <br />
-      <ContinueButton
-        className={classes.continueButton}
-        route={GAME_TWO_TUTORIAL_ROUTE}
-        disabled={ALWAYS_ENABLED}
-        message={BUTTON_MESSAGE}
-        height='60px' 
-        width='250px'
-      /> */}
     </div>
   );
 }

@@ -17,7 +17,7 @@ const PRIMARY_COLOR = "primary";
 
 const styles = {
   headerDiv: {
-    marginTop: "17vh",
+    marginTop: "135px",
   },
   videoOuterDiv: {
     position: "relative",
@@ -27,6 +27,7 @@ const styles = {
     padding: "6vh 6vw 6vh 6vw",
     borderRadius: "20px",
     width: "54vw",
+    height: '50vh',
   },
   buttonDiv: {
     position: "relative",
@@ -43,7 +44,6 @@ const styles = {
  */
 function TutorialScreen(props) {
   const [playVideo, setPlayVideo] = useState(PAUSE_VIDEO);
-  const [enableButton, setEnableButton] = useState(DISABLE_BUTTON);
 
   setTimeout(() => {
     console.log('play');
@@ -52,7 +52,6 @@ function TutorialScreen(props) {
 
   setTimeout(() => {
     console.log('pause');
-    setEnableButton(ENABLE_BUTTON);
     setPlayVideo(PAUSE_VIDEO);
   }, props.initialPause + props.videoLength);
 
@@ -74,40 +73,8 @@ function TutorialScreen(props) {
           playing={playVideo}
         />
       </div>
-      {/* {REMOVED BUTTON FROM SCREEN, UNCOMMENT BELOW TO ADD} */}
-      {/* {getButton(props, classes, enableButton)} */}
-      
     </div>
   );
 }
-
-// function getButton(props, classes, enableButton) {
-//   if (!props.showButton) return;
-//   else return(
-//     <div className={classes.buttonDiv}>
-//         <Button
-//           style={{height: '60px', width: '250px'}}
-//           onClick={() => props.hideTutorial()}
-//           disabled={!enableButton} 
-//           variant={Variants.CONTAINED}
-//           color={PRIMARY_COLOR}
-//         >
-//           {props.buttonMessage}
-//         </Button>
-//       </div>
-
-//     //   <Button
-//     //   className={classes.confirmButton}
-//     //   variant={Variants.CONTAINED}
-//     //   color={PRIMARY_COLOR}
-//     //   disabled = {props.disabled}
-//     //   onClick={() =>
-//     //     props.setNoteTime(NOTE_TIME)
-//     //   }
-//     // >
-//     //   {CONFIRM_CHOICES_TEXT}
-//     // </Button>
-//   )
-// }
 
 export default withStyles(styles)(TutorialScreen);

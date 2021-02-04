@@ -72,10 +72,6 @@ const GROUP_BOX_WIDTH = "40vw";
 const INITIAL_TIME_LEFT = -1;
 const DONT_NOTE_TIME = false;
 
-const KEEP_BACKEND_INDEX = 2;
-const INVEST_BACKEND_INDEX = 1;
-const COMPETE_BACKEND_INDEX = 0;
-
 const styles = {
   groupOne: {
     position: "absolute",
@@ -113,7 +109,7 @@ function GameTwo(props) {
   const [submitDecisions, setSubmitDecisions] = useState(DO_NOT_SUBMIT_DECISIONS);
   const [payoffCompete, setCompetePayoff] = useState(INITIAL_COMPETE_PAYOFF);
   const [payoffInvest, setInvestPayoff] = useState(INITIAL_INVEST_PAYOFF);
-  const [showResults, setShowResults] = useState(DO_NOT_SHOW_RESULTS);
+  const [showResults, setShowResults] = useState(SHOW_RESULTS);
   const [groupOneResults, setGroupOneResults] = useState(INITIAL_RESOURCE_DISTRIBUTION);
   const [groupTwoResults, setGroupTwoResults] = useState(INITIAL_RESOURCE_DISTRIBUTION);
 
@@ -159,7 +155,7 @@ function GameTwo(props) {
 
   const { classes } = props;
 
-  let resourceResultsView = getResourceResults(classes, groupOneResults, groupTwoResults);
+  let resourceResultsView = getResourceResults(classes, groupOneResults, groupTwoResults, props.windowWidth);
   
   let resourceChoiceView = getResourceChoices(
     props,
@@ -196,7 +192,7 @@ function GameTwo(props) {
   );
 }
 
-function getResourceResults(classes, groupOneResults, groupTwoResults) {
+function getResourceResults(classes, groupOneResults, groupTwoResults, windowWidth) {
   return (
     <div>
       <div className={classes.resultsText}>
@@ -204,13 +200,13 @@ function getResourceResults(classes, groupOneResults, groupTwoResults) {
           {END_TURN_TEXT}
         </Typography>
       </div>
-      {getDelayedBar(ResourceNames.KEEP, GROUP_ONE, RESULTS_DELAY_KEEP, groupOneResults[KEEP_INDEX])}
-      {getDelayedBar(ResourceNames.INVEST, GROUP_ONE, RESULTS_DELAY_INVEST, groupOneResults[INVEST_INDEX])}
-      {getDelayedBar(ResourceNames.COMPETE, GROUP_ONE, RESULTS_DELAY_COMPETE, groupOneResults[COMPETE_INDEX])}
+      {getDelayedBar(ResourceNames.KEEP, GROUP_ONE, RESULTS_DELAY_KEEP, groupOneResults[KEEP_INDEX], windowWidth)}
+      {getDelayedBar(ResourceNames.INVEST, GROUP_ONE, RESULTS_DELAY_INVEST, groupOneResults[INVEST_INDEX], windowWidth)}
+      {getDelayedBar(ResourceNames.COMPETE, GROUP_ONE, RESULTS_DELAY_COMPETE, groupOneResults[COMPETE_INDEX], windowWidth)}
 
-      {getDelayedBar(ResourceNames.KEEP, GROUP_TWO, RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_KEEP, groupTwoResults[KEEP_INDEX])}
-      {getDelayedBar(ResourceNames.INVEST, GROUP_TWO, RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_INVEST, groupTwoResults[INVEST_INDEX])}
-      {getDelayedBar(ResourceNames.COMPETE, GROUP_TWO, RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_COMPETE, groupTwoResults[COMPETE_INDEX])}
+      {getDelayedBar(ResourceNames.KEEP, GROUP_TWO, RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_KEEP, groupTwoResults[KEEP_INDEX], windowWidth)}
+      {getDelayedBar(ResourceNames.INVEST, GROUP_TWO, RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_INVEST, groupTwoResults[INVEST_INDEX], windowWidth)}
+      {getDelayedBar(ResourceNames.COMPETE, GROUP_TWO, RESULTS_DELAY_GROUP_TWO + RESULTS_DELAY_COMPETE, groupTwoResults[COMPETE_INDEX], windowWidth)}
 
       <div className={classes.groupOne}>
         <GroupBox groupNumber={GROUP_ONE_TEXT} width={GROUP_BOX_WIDTH} />
@@ -222,13 +218,14 @@ function getResourceResults(classes, groupOneResults, groupTwoResults) {
   );
 }
 
-function getDelayedBar(resource, group, delay, tokens) {
+function getDelayedBar(resource, group, delay, tokens, windowWidth) {
   return(
     <DelayedBar
         resource={resource}
         group={group}
         delay={delay}
         tokens={tokens}
+        windowWidth={windowWidth}
       />
   )
 }
@@ -238,8 +235,8 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
   noteTime, setNoteTime, timeLeft, setTimeLeft) {
   return (
     <div>
-      <TokenCounter tokens={totalTokens - tokensSpent} />
-      <PayoutOdds investOdds={payoffInvest} competeOdds={payoffCompete} />
+      <TokenCounter tokens={totalTokens - tokensSpent} windowHeight={props.windowHeight} windowWidth={props.windowWidth}/>
+      <PayoutOdds investOdds={payoffInvest} competeOdds={payoffCompete} windowHeight={props.windowHeight} windowWidth={props.windowWidth}/>
       <GameTimer
         setSubmitDecisions={setSubmitDecisions}
         resetTimer={resetTimer}
@@ -247,6 +244,8 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
         noteTime={noteTime}
         setNoteTime={setNoteTime}
         setTimeLeft={setTimeLeft}
+        windowWidth={props.windowWidth}
+        windowHeight={props.windowHeight}
       />
       <ConfirmButtonTwo
         submit={submitDecisions}
@@ -256,25 +255,31 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
         loginCode={props.loginCode}
         timeLeft = {timeLeft}
         setNoteTime = {setNoteTime}
+        windowWidth={props.windowWidth}
+        windowHeight={props.windowHeight}
       />
       <VerticalPlayerGroup
         type={GROUP_ONE}
         allLoginCodes={props.allLoginCodes}
         players={props.winners}
         selectedIndex={props.selectedIndex}
+        windowHeight={props.windowHeight}
+        windowWidth={props.windowWidth}
       />
       <VerticalPlayerGroup
         type={GROUP_TWO}
         allLoginCodes={props.allLoginCodes}
         players={props.losers}
         selectedIndex={props.selectedIndex}
+        windowHeight={props.windowHeight}
+        windowWidth={props.windowWidth}
       />
       {getResourceButton(ResourceNames.KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
-        setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}
+        setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources, props.windowWidth)}
       {getResourceButton(ResourceNames.INVEST, INVEST_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
-        setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}
+        setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources, props.windowWidth)}
       {getResourceButton(ResourceNames.COMPETE, COMPETE_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
-        setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)}
+        setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources, props.windowWidth)}
 
       {getResourceBar(ResourceNames.KEEP, KEEP_INDEX, fromResources, toResources)}
       {getResourceBar(ResourceNames.INVEST, INVEST_INDEX, fromResources, toResources)}
@@ -295,7 +300,7 @@ function scaleHeight(resourceTokens, totalTokens) {
 }
 
 function getResourceButton(resource, resourceIndex, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
-  setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources) {
+  setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources, windowWidth) {
   return (
     <ResourceButton
       resource={resource}
@@ -307,6 +312,7 @@ function getResourceButton(resource, resourceIndex, setFromResources, setToResou
         updateResource(resourceIndex, setFromResources, setToResources, toResources, totalTokens, DECREASING, setNotEnoughTokens,
           setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources)
       }
+      windowWidth={windowWidth}
     />
   );
 }

@@ -13,6 +13,8 @@ const LEAVE_MESSAGE = "If you leave, you won't be compensated."
   function RefreshChecker(props) {
 
     window.onbeforeunload = function () {return LEAVE_MESSAGE;}
+    // DELETE THIS WHEN READY
+    return null;
     if (props.loginCode == null && props.location.pathname != HOME_ROUTE) return <Redirect to={HOME_ROUTE}/>
     return null;
   }

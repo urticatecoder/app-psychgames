@@ -8,7 +8,6 @@ import ProlificDialogues from "./ProlificDialogues";
 
 const FULL_DIV = "fullDiv";
 
-const DEFAULT_CODE = "";
 const ITALIC_FONT = "italic";
 const THANK_YOU_MESSAGE = "Thank you for participating!";
 
@@ -27,14 +26,11 @@ const CLOSE_DIALOGUE = false;
 const BUTTON_TIMEOUT = 27000;
 
 const styles = {
-  prolificText: {
-    marginTop: "80px",
-  },
   payoutText: {
     marginTop: "10px",
   },
   thankYouText: {
-    marginTop: "60px",
+    marginTop: "10vh",
   },
 };
 
@@ -51,6 +47,10 @@ function ProlificScreen(props) {
   const [disableButton, setDisableButton] = useState(DISABLE_BUTTON);
   const [openDialogue, setOpenDialogue] = useState(CLOSE_DIALOGUE);
 
+  let margin = getMarginTop(props.windowHeight);
+  let marginSmaller = getMarginSmaller(props.windowHeight);
+  let marginButton = getMarginButton(props.windowHeight);
+
   useEffect(() => {
     setTimeout(() => {
       setDisableButton(ENABLE_BUTTON);
@@ -61,6 +61,7 @@ function ProlificScreen(props) {
     <div className={FULL_DIV}>
       <Typography
         className={classes.thankYouText}
+        style={{marginTop: margin}}
         variant={Variants.LARGE_TEXT}
       >
         {THANK_YOU_MESSAGE}
@@ -68,25 +69,42 @@ function ProlificScreen(props) {
 
       <Typography
         className={classes.payoutText}
+        style={{marginTop: marginSmaller}}
         variant={Variants.NORMAL_TEXT}
       >
         <Box fontStyle={ITALIC_FONT}>
         {PAYOUT_MESSAGE}
         </Box>
       </Typography>
-      <Payout code={props.code}/>
+      <Payout style={{}} windowWidth={props.windowWidth} windowHeight={props.windowHeight} code={props.code}/>
       <Button
         disabled={disableButton}
         variant={Variants.CONTAINED}
         color={BUTTON_COLOR}
         onClick={() => setOpenDialogue(OPEN_DIALOGUE)}
-        style={{height: '50px', width: '250px', positive: 'relative', marginTop: '68vh', opacity: BUTTON_OPACITY}}
+        style={{height: '50px', width: '250px', marginTop: marginButton, positive: 'relative', opacity: BUTTON_OPACITY}}
       >
         {BUTTON_MESSAGE}
       </Button>
       <ProlificDialogues open={openDialogue} setOpen={setOpenDialogue} code={props.code}/>
     </div>
   );
+}
+
+function getMarginTop(windowHeight) {
+  if (windowHeight >= 915) return "10vh";
+  else return "5vh";
+}
+
+function getMarginSmaller(windowHeight) {
+  if (windowHeight >= 915) return "10px";
+  else return "5px";
+}
+
+function getMarginButton(windowHeight) {
+  if (windowHeight >= 850) return "100px";
+  else if (windowHeight >= 825) return "70px";
+  else return "60px";
 }
 
 export default withStyles(styles)(ProlificScreen);

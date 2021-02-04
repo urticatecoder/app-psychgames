@@ -26,9 +26,15 @@ const DIALOG_CONTENT = "Please expand your window to be at least " + MIN_WIDTH +
 
     useEffect(() => {
         updateValidity(setValidWindow);
+        props.setWindowWidth(window.innerWidth);
+        props.setWindowHeight(window.innerHeight);
     });
 
-    window.onresize = () => updateValidity(setValidWindow);
+    window.onresize = () => {
+        updateValidity(setValidWindow);
+        props.setWindowWidth(window.innerWidth);
+        props.setWindowHeight(window.innerHeight);
+    }
     
     return(
         <Dialog

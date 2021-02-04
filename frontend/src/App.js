@@ -48,6 +48,9 @@ const COMPENSATION_ROUTE = '/compensation';
 const DEFAULT_SELECTION_INDEX = -1;
 const LOGGED_OUT = false;
 
+const INITIAL_WINDOW_WIDTH = window.innerWidth;
+const INITIAL_WINDOW_HEIGHT = window.innerHeight;
+
 function App() {
   const [loginCode, setLoginCode] = useState(TEST_CODE);
   const [allLoginCodes, setAllLoginCodes] = useState(TEST_CODES);
@@ -56,6 +59,8 @@ function App() {
   const [selectedIndex, setSelectedIndex] = useState(DEFAULT_SELECTION_INDEX);
   const [loggedIn, setLoggedIn] = useState(LOGGED_OUT);
   const [showWarnings, setShowWarnings] = useState(HIDE);
+  const [windowWidth, setWindowWidth] = useState(INITIAL_WINDOW_WIDTH);
+  const [windowHeight, setWindowHeight] = useState(INITIAL_WINDOW_HEIGHT);
 
   return (
     <div className={CLASS_NAME}>
@@ -63,7 +68,7 @@ function App() {
         <Router>
           <PassiveAlert loginCode={loginCode}/>
           <RefreshChecker loginCode={loginCode}/>
-          <WindowChecker/>
+          <WindowChecker setWindowWidth={setWindowWidth} setWindowHeight={setWindowHeight}/>
           <Warnings showWarnings={showWarnings} setShowWarnings={setShowWarnings}/>
 
           <Route
@@ -88,7 +93,7 @@ function App() {
           <Route
             path={AVATAR_SELECTION_ROUTE}
             exact
-            render={() => <AvatarSelector selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex}/>}
+            render={() => <AvatarSelector selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} windowWidth={windowWidth} windowHeight={windowHeight}/>}
           />
 
     
@@ -135,13 +140,15 @@ function App() {
                 losers={losers}
                 allLoginCodes={allLoginCodes}
                 selectedIndex={selectedIndex}
+                windowWidth={windowWidth}
+                windowHeight={windowHeight}
               />
             )}
           />
 
           <Route
             path={COMPENSATION_ROUTE}
-            render={() => <Compensation code={loginCode} />}
+            render={() => <Compensation code={loginCode} windowHeight={windowHeight} windowWidth={windowWidth} />}
           />
 
           <Route
@@ -153,6 +160,8 @@ function App() {
                 loginCode={loginCode}
                 allLoginCodes={allLoginCodes}
                 selectedIndex={selectedIndex}
+                windowWidth={windowWidth}
+                windowHeight={windowHeight}
               />
             )}
           />

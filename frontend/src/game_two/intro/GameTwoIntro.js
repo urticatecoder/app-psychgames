@@ -45,7 +45,8 @@ function GameTwoIntro(props) {
       <div className={FULL_DIV}>
         <IntroTimer
           message={TIMER_MESSAGE}
-          length={3000}
+          // length={TIMER_LENGTH}
+          length={1000}
           nextRoute={GAME_TWO_ROUTE}
         />
         {display}
@@ -75,31 +76,5 @@ function getTutorial() {
         />
     );
 }
-
-{/* <Route
-            path={SUMMARY_ROUTE}
-            render={() => (
-              <Summary
-                winners={winners}
-                selectedIndex={selectedIndex}
-                losers={losers}
-                allLoginCodes={allLoginCodes}
-                selectedIndex={selectedIndex}
-              />
-            )}
-          />
-          
-          <Route
-            path={GAME_TWO_TUTORIAL_ROUTE}
-            render={() => (
-              <TutorialScreen
-                URL={GAME_TWO_TUTORIAL_FILEPATH}
-                nextRoute={GAME_TWO_ROUTE}
-                initialPause={DEFAULT_ANIMATION_PAUSE}
-                videoLength={GAME_TWO_TUTORIAL_LENGTH}
-                text={GAME_TWO_TUTORIAL_TEXT}
-              />
-            )}
-          /> */}
 
 export default (GameTwoIntro);

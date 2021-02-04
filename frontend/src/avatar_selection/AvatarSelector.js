@@ -6,7 +6,9 @@ import ContinueButton from '../util/common_components/ContinueButton';
 import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 
 const FULL_DIV = "fullDiv";
-const PLAYER_OPTION_NUMBERS = Array.from(Array(25).keys());
+const PLAYER_OPTION_NUMBERS = Array.from(Array(24).keys());
+console.log('hiya');
+console.log(PLAYER_OPTION_NUMBERS);
 const NUMBER_OPTIONS = 25;
 const SELECTED = true;
 const NOT_SELECTED = false;
@@ -28,6 +30,8 @@ const DISABLED = false;
 const AVATAR_SELECTION_MESSAGE = "Please choose your avatar from the options below."
 const ITALIC_FONT = "italic";
 
+const LARGE_TEXT_THRESHOLD = 1325;
+const MEDIUM_TEXT_THRESHOLD = 1076;
 
 const styles = {
   instructionText: {
@@ -35,10 +39,8 @@ const styles = {
     opacity: .9
   },
   confirmButton: {
-    position: "absolute",
-    bottom: "8vh",
-    left: "44.5vw",
-    opacity: .9
+    marginTop: "68vh",
+    marginBottom: '5vh',
   },
 };
 
@@ -59,7 +61,7 @@ function AvatarSelector(props) {
       <div>
         <Typography
           className={classes.instructionText}
-          variant={Variants.LARGE_TEXT}
+          variant={getVariant(props.windowWidth)}
         >
           <Box fontStyle={ITALIC_FONT}>
             {AVATAR_SELECTION_MESSAGE}
@@ -67,7 +69,7 @@ function AvatarSelector(props) {
         </Typography>
       </div>
 
-
+      <div>
       {PLAYER_OPTION_NUMBERS.map((player) => {
         let leftMargin = getDivX(player);
         let topMargin = getDivY(player);
@@ -78,10 +80,13 @@ function AvatarSelector(props) {
               player={player}
               selected={selectedPlayers[player]}
               onSelect={() => selectPlayer(player, setSelectedPlayers, props.setSelectedIndex)}
+              windowWidth={props.windowWidth}
+              windowHeight={props.windowHeight}
             />
           </div>
             )
       })}
+      </div>
 
       <div className = {classes.confirmButton}>
         <ContinueButton
@@ -95,6 +100,14 @@ function AvatarSelector(props) {
     </div>
     
   );
+}
+
+function getVariant(windowWidth) {
+  if (windowWidth >= LARGE_TEXT_THRESHOLD) {
+    return Variants.LARGE_TEXT;
+  } else if (windowWidth >= MEDIUM_TEXT_THRESHOLD) {
+    return Variants.NORMAL_TEXT;
+  } else return Variants.SMALL_TEXT;
 }
 
 function selectPlayer(index, setSelectedPlayers, setSelectedIndex) {
