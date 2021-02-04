@@ -109,7 +109,7 @@ function GameTwo(props) {
   const [submitDecisions, setSubmitDecisions] = useState(DO_NOT_SUBMIT_DECISIONS);
   const [payoffCompete, setCompetePayoff] = useState(INITIAL_COMPETE_PAYOFF);
   const [payoffInvest, setInvestPayoff] = useState(INITIAL_INVEST_PAYOFF);
-  const [showResults, setShowResults] = useState(SHOW_RESULTS);
+  const [showResults, setShowResults] = useState(DO_NOT_SHOW_RESULTS);
   const [groupOneResults, setGroupOneResults] = useState(INITIAL_RESOURCE_DISTRIBUTION);
   const [groupTwoResults, setGroupTwoResults] = useState(INITIAL_RESOURCE_DISTRIBUTION);
 
