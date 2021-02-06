@@ -442,6 +442,7 @@ module.exports = {
                 // the current room is full, we have to use a new room
                 io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
                 lobby.allocateNewRoom();
+                console.log("The room is filled with users");
             }
         });
     }

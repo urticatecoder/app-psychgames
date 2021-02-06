@@ -23,13 +23,13 @@ db.once('open', function () {
 
 io.on('connection', socket => {
     console.log('New client connected');
-
-    if (process.env.START_MODE === 'bots_auto_join') {
-        require('./lobby.js').LobbyBotSocketListener(io, socket);
-    } else {
-        require('./lobby.js').LobbyDefaultSocketListener(io, socket);
-    }
-
+    //          for Bots 
+    // if (process.env.START_MODE === 'bots_auto_join') {
+    //     require('./lobby.js').LobbyBotSocketListener(io, socket);
+    // } else {
+    //     require('./lobby.js').LobbyDefaultSocketListener(io, socket);
+    // }
+    require('./lobby.js').LobbyDefaultSocketListener(io, socket);
     socket.on('time in lobby', (prolificID) => {
         prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
@@ -60,8 +60,9 @@ io.on('connection', socket => {
                 room.addPlayerIDToConfirmedSet(bot.prolificID);
             }
         });
+        let timeStart = room.getTime(prolificID);
         // if everyone has confirmed or timer has reached 0
-        if (room.hasEveryoneConfirmedChoiceInThisRoom() || zeroTime) { // all 6 have confirmed choices
+        if (room.hasEveryoneConfirmedChoiceInThisRoom() || zeroTime || ((room.getTime(prolificID) - timeStart) >= 30)) { // all 6 have confirmed choices
             //emit list of lists of prolificIDs and int of how much to move up of triple bonuses
             let allTripleBonus = calculateAllTripleBonuses(allIDs, room);
             //emit list of lists of prolificIDs and int of how much to move up of double bonuses
