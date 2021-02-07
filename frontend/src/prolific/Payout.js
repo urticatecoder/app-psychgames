@@ -73,18 +73,6 @@ function Payout(props) {
     }
 
     socket.on(RECIEVE_RESULTS_SOCKET, (gameOneResult, gameOneAmount, gameTwoTurn, keepTokens, keepAmount, investTokens, investRate, investAmount, competeTokens, competeRate, competeAmount) => {
-        console.log('RESULTS');
-        console.log(gameOneResult);
-        console.log(gameOneAmount);
-        console.log(gameTwoTurn);
-        console.log(keepTokens);
-        console.log(keepAmount);
-        console.log(investTokens);
-        console.log(investRate);
-        console.log(investAmount);
-        console.log(competeTokens);
-        console.log(competeRate);
-        console.log(competeAmount);
         setGameOneResult(gameOneResult);
         setGameOneAmount(gameOneAmount);
         setGameTwoTurn(gameTwoTurn);

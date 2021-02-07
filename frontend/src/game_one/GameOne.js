@@ -8,6 +8,7 @@ import { withRouter } from "react-router-dom";
 import GroupBox from "./components/GroupBox";
 import GameTimer from "../util/common_components/GameTimer";
 import getAlerts from './components/getAlerts';
+import BonusShower from './components/BonusShower';
 
 const FULL_DIV = "fullDiv";
 const GAME_TWO_INTRO_ROUTE = "/game-two-intro";
@@ -74,6 +75,12 @@ const SMALLER_SPACING = 6;
 
 const SMALLEST_SPACING = 5;
 
+const DOUBLE_BONUS = 'double';
+const TRIPLE_BONUS = 'triple';
+
+const OPEN = true;
+const CLOSED = false;
+
 const styles = {
   animatedColumns: {
     position: "absolute",
@@ -123,6 +130,9 @@ function GameOne(props) {
   const [timeLeft, setTimeLeft] = useState(INITIAL_TIME_LEFT);
   const [noteTime, setNoteTime] = useState(DONT_NOTE_TIME);
 
+  const [bonusType, setBonusType] = useState(DOUBLE_BONUS);
+  const [openBonusShower, setOpenBonusShower] = useState(CLOSED);
+
   useEffect(() => {
     socket.on(END_TURN_WEBSOCKET, (locations, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
         handleTripleBonuses(
@@ -133,7 +143,9 @@ function GameOne(props) {
           setEndHeights,
           currentHeight,
           setCurrentHeight,
-          setTriples
+          setTriples,
+          setBonusType,
+          setOpenBonusShower
         );
       
         let tripleBonusPause = tripleBonuses.length * PAUSE_BETWEEN_ANIMATIONS;
@@ -148,12 +160,15 @@ function GameOne(props) {
           currentHeight,
           setCurrentHeight,
           setDoubles,
-          tripleBonuses.length
+          tripleBonuses.length,
+          setBonusType, 
+          setOpenBonusShower
         );
 
         let allBonusPause = (tripleBonuses.length + doubleBonuses.length) * PAUSE_BETWEEN_ANIMATIONS;
         clearBonusArray(setDoubles, allBonusPause);
-
+        setTimeout(() => setOpenBonusShower(CLOSED), allBonusPause);
+        
         updateHeightsDelayed(
           currentHeight,
           scaleHeights(locations),
@@ -198,7 +213,7 @@ function GameOne(props) {
         tooManySelects,
         setTooManySelects
       )}
-
+      <BonusShower bonus='double' open={false} windowWidth={props.windowWidth}/>
       <GameTimer
         setSubmitDecisions={setSubmitDecisions}
         resetTimer={resetTimer}
@@ -319,7 +334,7 @@ function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooM
   );
 }
 
-function handleTripleBonuses(tripleArray, tripleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, setTriples) {
+function handleTripleBonuses(tripleArray, tripleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, setTriples, setBonusType, setOpenBonusShower) {
   let oldHeights = originalHeights.slice(0);
   for (let i = 0; i < tripleArray.length; i++) {
     let loginCodes = tripleArray[i];
@@ -331,7 +346,7 @@ function handleTripleBonuses(tripleArray, tripleIncrease, allLoginCodes, setOldH
     newHeights[firstIndex] += scaledBonus;
     newHeights[secondIndex] += scaledBonus;
     newHeights[thirdIndex] += scaledBonus;
-    updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, i * PAUSE_BETWEEN_ANIMATIONS);
+    updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, i * PAUSE_BETWEEN_ANIMATIONS, TRIPLE_BONUS, setBonusType, setOpenBonusShower);
     markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, i * PAUSE_BETWEEN_ANIMATIONS);
     oldHeights = newHeights;
   }
@@ -341,7 +356,7 @@ function markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, dela
   updateBonusArray([firstIndex, secondIndex, thirdIndex], setTriples, delay);
 }
 
-function handleDoubleBonuses(doubleArray, doubleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, setDoubles, animationOffset) {
+function handleDoubleBonuses(doubleArray, doubleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, setDoubles, animationOffset, setBonusType, setOpenBonusShower) {
   let oldHeights = originalHeights.slice(0);
   for (let i = 0; i < doubleArray.length; i++) {
     let loginCodes = doubleArray[i];
@@ -351,7 +366,7 @@ function handleDoubleBonuses(doubleArray, doubleIncrease, allLoginCodes, setOldH
     let scaledBonus = scaleBonus(doubleIncrease);
     newHeights[firstIndex] += scaledBonus;
     newHeights[secondIndex] += scaledBonus;
-    updateHeightsDelayed(oldHeights,newHeights, setOldHeights, setNewHeights, setCurrentHeight, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS);
+    updateHeightsDelayed(oldHeights,newHeights, setOldHeights, setNewHeights, setCurrentHeight, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS, DOUBLE_BONUS, setBonusType, setOpenBonusShower);
     markDoubleDelayed(firstIndex, secondIndex, setDoubles, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS);
     oldHeights = newHeights;
   }
@@ -361,9 +376,13 @@ function markDoubleDelayed(firstIndex, secondIndex, setDoubles, delay) {
   updateBonusArray([firstIndex, secondIndex], setDoubles, delay);
 }
 
-function updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, delay) {
+function updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, delay, bonusType, setBonusType, setOpenBonusShower) {
   setCurrentHeight(newHeights);
-  setTimeout(() => updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights), delay);
+  setTimeout(() => {
+    updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights);
+    setBonusType(bonusType);
+    setOpenBonusShower(OPEN);
+  }, delay);
 }
 
 function updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights) {
