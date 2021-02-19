@@ -15,7 +15,7 @@ import { DateRangePicker } from "react-dates";
 import ContinueButton from "../util/common_components/ContinueButton";
 
 class Admin extends React.Component {
-  constructor(props) {
+  constructor(props)  {
     super(props);
     this.gameOneDataLink = React.createRef();
     this.gameTwoDataLink = React.createRef();
