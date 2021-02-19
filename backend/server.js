@@ -30,6 +30,7 @@ io.on('connection', socket => {
     //     require('./lobby.js').LobbyDefaultSocketListener(io, socket);
     // }
     require('./lobby.js').LobbyDefaultSocketListener(io, socket);
+    
     socket.on('time in lobby', (prolificID) => {
         prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
