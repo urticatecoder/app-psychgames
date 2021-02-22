@@ -437,6 +437,13 @@ module.exports = {
             socket.prolificID = prolificID;
             socket.to(roomName).emit('join', socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
             socket.emit('num of people in the room', lobby.getNumOfPlayersInRoom(roomName)); // only to self
+            
+            // if lobby timer runs out, add bots ---> HAS NOT BEEN TESTED but should work
+            socket.on("lobby time end", () => {
+                for(let i = lobby.getNumOfPlayersInRoom(roomName); i <= Lobby.MAX_CAPACITY_PER_ROOM; i++){
+                    lobby.addBotPlayers();
+                }
+            });
 
             if (lobby.getNumOfPlayersInRoom(roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
