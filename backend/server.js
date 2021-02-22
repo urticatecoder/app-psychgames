@@ -29,7 +29,7 @@ io.on('connection', socket => {
     // } else {
     //     require('./lobby.js').LobbyDefaultSocketListener(io, socket);
     // }
-    require('./lobby.js').LobbyDefaultSocketListener(io, socket);
+    require('./lobby.js').LobbyBotSocketListener(io, socket);
     
     socket.on('time in lobby', (prolificID) => {
         prolificID = prolificID.toString();
