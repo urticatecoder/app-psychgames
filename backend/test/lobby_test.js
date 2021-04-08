@@ -8,8 +8,8 @@ describe('Test Lobby class functionality', () => {
         const lobby = new Lobby();
         expect(lobby.currRoomID).to.equal(1);
         expect(lobby.currRoom.name).to.equal('room 1');
-        expect(lobby.rooms[0]).to.equal(lobby.currRoom);
-        expect(lobby.rooms.length).to.equal(1);
+        expect(lobby.rooms.get(Array.from(lobby.rooms.keys())[0])).to.equal(lobby.currRoom);
+        expect(lobby.rooms.size).to.equal(1);
         done();
     });
     it('Lobby class can allocate new rooms correctly', (done) => {

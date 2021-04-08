@@ -474,6 +474,9 @@ module.exports = {
                 }
             });
 
+            // console.log('prolificID '+prolificID+' socketID '+socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
+            // console.log('num of people in the room '+lobby.getNumOfPlayersInRoom(roomName)); // only to self
+            
             if (lobby.getNumOfPlayersInRoom(roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
                 io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
