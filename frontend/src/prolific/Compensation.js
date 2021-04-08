@@ -51,6 +51,9 @@ function ProlificScreen(props) {
   let marginSmaller = getMarginSmaller(props.windowHeight);
   let marginButton = getMarginButton(props.windowHeight);
 
+  let mainFontSize = getMainFontSize(props.windowHeight);
+  let secondFontSize = getSecondFontSize(props.windowHeight);
+
   useEffect(() => {
     setTimeout(() => {
       setDisableButton(ENABLE_BUTTON);
@@ -61,16 +64,16 @@ function ProlificScreen(props) {
     <div className={FULL_DIV}>
       <Typography
         className={classes.thankYouText}
-        style={{marginTop: margin}}
         variant={Variants.LARGE_TEXT}
+        style={{marginTop: margin, fontSize: mainFontSize}}
       >
         {THANK_YOU_MESSAGE}
       </Typography>
 
       <Typography
         className={classes.payoutText}
-        style={{marginTop: marginSmaller}}
         variant={Variants.NORMAL_TEXT}
+        style={{marginTop: marginSmaller, fontSize: secondFontSize}}
       >
         <Box fontStyle={ITALIC_FONT}>
         {PAYOUT_MESSAGE}
@@ -93,7 +96,8 @@ function ProlificScreen(props) {
 
 function getMarginTop(windowHeight) {
   if (windowHeight >= 915) return "10vh";
-  else return "5vh";
+  else if (windowHeight >= 860) return "8vh";
+  else return "4vh";
 }
 
 function getMarginSmaller(windowHeight) {
@@ -104,7 +108,19 @@ function getMarginSmaller(windowHeight) {
 function getMarginButton(windowHeight) {
   if (windowHeight >= 850) return "100px";
   else if (windowHeight >= 825) return "70px";
-  else return "60px";
+  else if (windowHeight >= 690) return "60px";
+  else if (windowHeight >= 670) return "50px";
+  else return "35px";
+}
+
+function getMainFontSize(windowHeight) {
+  if (windowHeight >= 800) return 60;
+  else return 50;
+}
+
+function getSecondFontSize(windowHeight) {
+  if (windowHeight >= 800) return 40;
+  else return 35;
 }
 
 export default withStyles(styles)(ProlificScreen);

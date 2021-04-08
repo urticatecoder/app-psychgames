@@ -15,7 +15,7 @@ const MEDIUM_WIDTH_THRESHOLD = 1150;
 const styles = {
   confirmButton: {
     position: "absolute",
-    top: "25vh",
+    top: "30vh",
     marginTop: '280px',
     left: "5vw",
     height: "40px",

@@ -35,7 +35,6 @@ const styles = {
   wrapperDiv: {
     position: "relative",
     backgroundColor: "#e0c760",
-    height: "500px",
     width: "720px",
     opacity: ".8",
     borderRadius: "20px",
@@ -74,18 +73,6 @@ function Payout(props) {
     }
 
     socket.on(RECIEVE_RESULTS_SOCKET, (gameOneResult, gameOneAmount, gameTwoTurn, keepTokens, keepAmount, investTokens, investRate, investAmount, competeTokens, competeRate, competeAmount) => {
-        console.log('RESULTS');
-        console.log(gameOneResult);
-        console.log(gameOneAmount);
-        console.log(gameTwoTurn);
-        console.log(keepTokens);
-        console.log(keepAmount);
-        console.log(investTokens);
-        console.log(investRate);
-        console.log(investAmount);
-        console.log(competeTokens);
-        console.log(competeRate);
-        console.log(competeAmount);
         setGameOneResult(gameOneResult);
         setGameOneAmount(gameOneAmount);
         setGameTwoTurn(gameTwoTurn);
@@ -108,15 +95,17 @@ function Payout(props) {
 
   let margin = getMarginLeft(props.windowWidth);
   let marginTop = getMarginTop(props.windowHeight);
+  let height = getReceiptHeight(props.windowHeight);
 
   return (
-    <div className={classes.wrapperDiv} style={{marginLeft: margin, top: marginTop}}>
+    <div className={classes.wrapperDiv} style={{marginLeft: margin, top: marginTop, height: height}}>
         <PayoutCount
           gameOneAmount={gameOneAmount}
           keepAmount={keepAmount}
           investAmount={investAmount}
           competeAmount={competeAmount}
           recievedResults={recievedResults}
+          windowHeight={props.windowHeight}
         />
         <Receipt
           gameOneResult={gameOneResult}
@@ -130,6 +119,7 @@ function Payout(props) {
           competeTokens={competeTokens}
           competeRate={competeRate}
           competeAmount={competeAmount}
+          windowHeight={props.windowHeight}
         />
     </div>
   );
@@ -141,7 +131,14 @@ function getMarginLeft(windowWidth) {
 
 function getMarginTop(windowHeight) {
   if (windowHeight >= 825) return "5vh";
-  else return "30px";
+  else if (windowHeight >= 690) return "30px";
+  else return "15px";
+}
+
+function getReceiptHeight(windowHeight) {
+  if (windowHeight >= 775) return "500px";
+  else return "420px";
+
 }
 
 

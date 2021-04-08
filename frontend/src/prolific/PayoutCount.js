@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { withStyles } from "@material-ui/core";
+import { withStyles, Typography } from "@material-ui/core";
 import CountUp from 'react-countup';
 import FadeIn from 'react-fade-in';
 
@@ -47,9 +47,8 @@ function PayoutCount(props) {
   const [lastPayout, setLastPayout] = useState(INITIAL_PAYOUT);
   const [newPayout, setNewPayout] = useState(INITIAL_PAYOUT);
   const [textColor, setTextColor] = useState(BLACK);
-  
-  const [readiedDelays, setReadiedDelay] = useState(HAVENT_READIED_DELAYS);
 
+  const [readiedDelays, setReadiedDelay] = useState(HAVENT_READIED_DELAYS);
   
   useEffect(() => {
 
@@ -119,7 +118,9 @@ function PayoutCount(props) {
         }
     });
 
+
   return (
+      <div>
         <CountUp
             start={lastPayout}
             end={newPayout}
@@ -129,11 +130,10 @@ function PayoutCount(props) {
             prefix={PREFIX}
             >
             {({countUpRef}) => (
-                <div>
-                <span className={classes.countUp} style={{color: textColor}} ref={countUpRef} />                
-                </div>
+                <span className={classes.countUp} style={{color: textColor}} ref={countUpRef} />          
             )}
         </CountUp>
+    </div>
   );
 }
 

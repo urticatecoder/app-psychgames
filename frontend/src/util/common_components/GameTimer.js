@@ -23,7 +23,7 @@ const styles = {
   timerInstruction: {
     marginTop: "50px",
     position: "absolute",
-    top: "25vh",
+    top: "30vh",
     marginTop: '55px',
     left: "5vw",
     backgroundColor: "#349eeb",
