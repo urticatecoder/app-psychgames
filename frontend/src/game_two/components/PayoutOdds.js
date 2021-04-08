@@ -5,8 +5,11 @@ import Variants from "../../util/common_constants/stylings/Variants";
 const INVEST_ODDS_LABEL = "Invest Odds: ";
 const COMPETE_ODDS_LABEL = "Compete Odds: ";
 const LARGE_WINDOW = 1300;
+const MEDIUM_WINDOW = 1050;
 const LARGE_FONT = '20px';
-const SMALL_FONT = '17px';
+const LARGE_MEDIUM_FONT = '18px';
+const MEDIUM_FONT = '17px';
+const SMALL_FONT = '16px';
 
 const styles = {
   fullDiv: {
@@ -23,13 +26,11 @@ const styles = {
   },
   investText: {
     position: "relative",
-    top: "2.5vh",
     alignItems: "center",
     verticalAlign: "middle",
   },
   competeText: {
     position: "relative",
-    top: "3vh",
     alignItems: "center",
     verticalAlign: "middle",
   },
@@ -45,12 +46,15 @@ const styles = {
 function PayoutOdds(props) {
   const { classes } = props;
   let font = getFontSize(props.windowWidth);
+  let marginTop = getMarginTop(props.windowWidth);
+  let secondMarginTop = getSecondMarginTop(props.windowWidth);
+
   return (
     <div className={classes.fullDiv}>
-      <Typography className={classes.investText} style={{fontSize: font}} variant={Variants.LARGE_TEXT}>
+      <Typography className={classes.investText} style={{fontSize: font, top: marginTop}} variant={Variants.LARGE_TEXT}>
         {INVEST_ODDS_LABEL + props.investOdds}
       </Typography>
-      <Typography className={classes.competeText} style={{fontSize: font}} variant={Variants.LARGE_TEXT}>
+      <Typography className={classes.competeText} style={{fontSize: font, marginTop: secondMarginTop}} variant={Variants.LARGE_TEXT}>
         {COMPETE_ODDS_LABEL + props.competeOdds}
       </Typography>
     </div>
@@ -60,8 +64,28 @@ function PayoutOdds(props) {
 // FIXME: duplicated code with resource resutls
 function getFontSize(windowWidth) {
   if (windowWidth >= LARGE_WINDOW) return LARGE_FONT;
-  else return SMALL_FONT;
+  else if (windowWidth >= 1200) return LARGE_MEDIUM_FONT;
+  else if (windowWidth >= MEDIUM_WINDOW) return MEDIUM_FONT;
+  else if (windowWidth >= 1000) return SMALL_FONT;
+  else return '15px';
 }
+
+function getMarginTop(windowWidth) {
+  if (windowWidth >= LARGE_WINDOW) return '17px';
+  else if (windowWidth >= 1200) return '18px';
+  else if (windowWidth >= MEDIUM_WINDOW) return '21px';
+  else if (windowWidth >= 1000) return '19px';
+  else return '22.5px';
+}
+
+function getSecondMarginTop(windowWidth) {
+  if (windowWidth >= LARGE_WINDOW) return '21px';
+  else if (windowWidth >= 1200) return '23px';
+  else if (windowWidth >= MEDIUM_WINDOW) return '25px';
+  else if (windowWidth >= 1000) return '30px';
+  else return '27.5px';
+}
+
 
 
 export default withStyles(styles)(PayoutOdds);
