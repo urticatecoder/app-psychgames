@@ -62,7 +62,7 @@ function BonusShower(props) {
             {bonusText}
             <br/>
             {BONUS}
-        </MovingComponent>
+            </MovingComponent>
         </div>
         </div>
     );
