@@ -13,8 +13,8 @@ const DB_API = require('./db/db_api');
  */
 class Lobby {
     currRoomID = 0; // used as part of a room's name
-    rooms = [];
     currRoom; // new players who enter the lobby will join this room
+    rooms = new Map(); // stores a mapping of room name to room instance
     playerToRoom = new Map(); // stores a mapping of a player's id to the room instance he is in
     roomToPlayer = new Map(); // stores a mapping of a room instance to an array of players who are in this room
     static MAX_CAPACITY_PER_ROOM = 6;
@@ -27,12 +27,16 @@ class Lobby {
     allocateNewRoom() {
         this.currRoomID++;
         this.currRoom = new Room(`room ${this.currRoomID}`);
-        this.rooms.push(this.currRoom);
+        this.rooms.set(this.currRoom.name, this.currRoom);
         this.roomToPlayer.set(this.currRoom.name, []);
     }
 
     getRoomPlayerIsIn(prolificID) {
         return this.playerToRoom.get(prolificID);
+    }
+
+    getRoomByRoomName(roomName){
+        return this.rooms.get(roomName)
     }
 
     getAllPlayersInRoomWithName(roomName) {
@@ -65,6 +69,31 @@ class Lobby {
         return this.currRoom.name;
     }
 
+    addBotPlayersToRoom(roomName){
+        let numPlayers = this.getNumOfPlayersInRoom(roomName);
+        if (numPlayers<Lobby.MAX_CAPACITY_PER_ROOM){
+            let botProlificID = 'bot' + this.botID;
+            let bot = new Player(botProlificID);
+            this.botID++;
+            bot.setIsBot(true);
+            const room = this.getRoomByRoomName(roomName);
+            room.addPlayer(bot);
+            this.playerToRoom.set(botProlificID, room);
+            this.roomToPlayer.get(roomName).push(bot);
+        }
+        return roomName;
+    }
+
+    fillInBotPlayers(io, roomName){
+        let numPlayers = this.getNumOfPlayersInRoom(roomName);
+        for (let i = numPlayers; i<Lobby.MAX_CAPACITY_PER_ROOM; i++){
+            this.addBotPlayersToRoom(roomName);
+        }
+        io.in(roomName).emit('room fill', this.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
+        this.allocateNewRoom();
+        console.log("The room is filled with users");
+    }
+
     /**
      * @deprecated use getNumOfPeopleInRoom(roomName) instead
      * @param serverSocket
@@ -82,8 +111,8 @@ class Lobby {
 
     reset() {
         this.currRoomID = 0;
-        this.rooms = [];
         this.currRoom = undefined;
+        this.rooms.clear();
         this.playerToRoom.clear();
         this.roomToPlayer.clear();
         this.botID = 0;
@@ -443,6 +472,8 @@ module.exports = {
                 io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
                 lobby.allocateNewRoom();
                 console.log("The room is filled with users");
+            }else{
+                setTimeout(lobby.fillInBotPlayers.bind(lobby), 60000, io, roomName);
             }
         });
     }
