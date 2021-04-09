@@ -29,8 +29,9 @@ io.on('connection', socket => {
     // } else {
     //     require('./lobby.js').LobbyDefaultSocketListener(io, socket);
     // }
-    require('./lobby.js').LobbyBotSocketListener(io, socket);
+    require('./lobby.js').LobbyDefaultSocketListener(io, socket);
     
+    // TODO: move to lobby socket listener code
     socket.on('time in lobby', (prolificID) => {
         prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);

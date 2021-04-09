@@ -468,22 +468,25 @@ module.exports = {
             socket.emit('num of people in the room', lobby.getNumOfPlayersInRoom(roomName)); // only to self
             
             // if lobby timer runs out, add bots ---> HAS NOT BEEN TESTED but should work
-            socket.on("lobby time end", () => {
-                for(let i = lobby.getNumOfPlayersInRoom(roomName); i <= Lobby.MAX_CAPACITY_PER_ROOM; i++){
-                    lobby.addBotPlayers();
-                }
-            });
+            // socket.on("lobby time end", () => {
+            //     for(let i = lobby.getNumOfPlayersInRoom(roomName); i <= Lobby.MAX_CAPACITY_PER_ROOM; i++){
+            //         lobby.addBotPlayers();
+            //     }
+            // });
 
             // console.log('prolificID '+prolificID+' socketID '+socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
             // console.log('num of people in the room '+lobby.getNumOfPlayersInRoom(roomName)); // only to self
-            
-            if (lobby.getNumOfPlayersInRoom(roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
+            const numPlayers = lobby.getNumOfPlayersInRoom(roomName);
+
+            if (numPlayers >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
                 io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
                 lobby.allocateNewRoom();
                 console.log("The room is filled with users");
             }else{
-                setTimeout(lobby.fillInBotPlayers.bind(lobby), 60000, io, roomName);
+                if(numPlayers==1){
+                    setTimeout(lobby.fillInBotPlayers.bind(lobby), 60000, io, roomName);
+                } 
             }
         });
     }
