@@ -90,8 +90,9 @@ class Lobby {
             this.addBotPlayersToRoom(roomName);
         }
         io.in(roomName).emit('room fill', this.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
-        this.allocateNewRoom();
+        DB_API.saveExperimentSession(lobby.getAllPlayersIDsInRoomWithName(roomName));
         console.log("The room is filled with users");
+        this.allocateNewRoom();
     }
 
     /**
@@ -481,11 +482,12 @@ module.exports = {
             if (numPlayers >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
                 io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
+                DB_API.saveExperimentSession(lobby.getAllPlayersIDsInRoomWithName(roomName));
                 lobby.allocateNewRoom();
                 console.log("The room is filled with users");
             }else{
                 if(numPlayers==1){
-                    setTimeout(lobby.fillInBotPlayers.bind(lobby), 60000, io, roomName);
+                    setTimeout(lobby.fillInBotPlayers.bind(lobby), 20000, io, roomName);
                 } 
             }
         });
