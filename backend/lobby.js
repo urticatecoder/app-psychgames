@@ -1,6 +1,7 @@
 const GameTwoAllocation = require('./game2.js').GameTwoAllocation;
 const GameTwo = require('./game2.js');
 const DB_API = require('./db/db_api');
+const ROOM_WAIT_TIME_MILLISECONDS = 20000;
 
 /**
  * @author Xi Pu
@@ -86,12 +87,17 @@ class Lobby {
 
     fillInBotPlayers(io, roomName){
         let numPlayers = this.getNumOfPlayersInRoom(roomName);
+        console.log("Time's up. The room already has "+numPlayers+" players.");
         for (let i = numPlayers; i<Lobby.MAX_CAPACITY_PER_ROOM; i++){
             this.addBotPlayersToRoom(roomName);
         }
-        io.in(roomName).emit('room fill', this.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
-        this.allocateNewRoom();
+        
+        const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName)
+        io.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
+        DB_API.saveExperimentSession(playerIDs);
+        playerIDs.forEach((playerID)=>{console.log(playerID);})
         console.log("The room is filled with users");
+        this.allocateNewRoom();
     }
 
     /**
@@ -135,6 +141,7 @@ class Room {
     gameOneResults = []; // two groups for winners/losers, winners = gameOneResults[0], losers = gameOneResults[1]
     gameTwoPayoff = GameTwo.generateCompeteAndInvestPayoff();
     gameOneTurnCount = 0; // turns for game 1
+    roomCreationTime = null;
     allPlayerTimes = new Map();
     /**
      * @constructor
@@ -147,8 +154,7 @@ class Room {
         this.roomName = roomName;
         // getter method for time
         this.getTime = function(prolific) { 
-            let time = this.allPlayerTimes.get(prolific);
-            return 60 - ((Date.now() - time) / 1000);
+            return (ROOM_WAIT_TIME_MILLISECONDS - ((Date.now() - this.roomCreationTime))) / 1000;
         }
     }
 
@@ -162,6 +168,14 @@ class Room {
 
     setPlayerLocation(prolificID, newLocation) {
         this.allPlayerLocations.set(prolificID, newLocation);
+    }
+
+    get roomCreationTime(){
+        return this.roomCreationTime;
+    }
+
+    setRoomCreationTime(creationTime){
+        this.roomCreationTime = creationTime;
     }
 
     get GameOneTurnCount(){
@@ -182,6 +196,9 @@ class Room {
         this.players.push(player);
         this.setPlayerLocation(player.prolificID, 50);
         this.allPlayerTimes.set(player.prolificID, Date.now());
+        if(this.roomCreationTime==null){
+            this.setRoomCreationTime(Date.now());
+        }
         // this.allPlayerLocations.set(player.prolificID, 0);
     }
 
@@ -451,8 +468,10 @@ module.exports = {
 
             if (lobby.getNumOfPlayersInRoom(roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
-                io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
-                DB_API.saveExperimentSession(lobby.getAllPlayersIDsInRoomWithName(roomName));
+                const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName);
+                io.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
+                DB_API.saveExperimentSession(playerIDs);
+                playerIDs.forEach((playerID)=>{console.log(playerID);})
                 lobby.allocateNewRoom();
             }
         });
@@ -480,12 +499,15 @@ module.exports = {
 
             if (numPlayers >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
-                io.in(roomName).emit('room fill', lobby.getAllPlayersIDsInRoomWithName(roomName)); // to everyone in the room, including self
+                const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName);
+                io.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
+                DB_API.saveExperimentSession(playerIDs);
+                playerIDs.forEach((playerID)=>{console.log(playerID);})
                 lobby.allocateNewRoom();
                 console.log("The room is filled with users");
             }else{
                 if(numPlayers==1){
-                    setTimeout(lobby.fillInBotPlayers.bind(lobby), 60000, io, roomName);
+                    setTimeout(lobby.fillInBotPlayers.bind(lobby), 20000, io, roomName);
                 } 
             }
         });
