@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import StartTimer from "./StartTimer";
-import StartButton from "./StartButton";
 import "../util/common_stylings/FullScreenDiv.css";
 import ContinueButton from "../util/common_components/ContinueButton";
 
