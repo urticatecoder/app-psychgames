@@ -44,10 +44,10 @@ io.on('connection', socket => {
 
     socket.on('confirm choice for game 1', (prolificID, choices, zeroTime) => {
         // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
-        console.log(choices);
         prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
+        console.log("Recording choice for player "+player.prolificID);
         DB_API.saveChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
         player.recordChoices(choices);
         room.addPlayerIDToConfirmedSet(prolificID);
