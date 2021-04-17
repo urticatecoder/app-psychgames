@@ -186,15 +186,11 @@ function GameOne(props) {
 
         handleDisablePlayers(allMovementPause, setDisabledPlayers);
         handleGameTimer(allMovementPause, setResetTimer, setPauseTimer);
-        handleSubmitButton(allMovementPause, setDisableButton);
+        pauseSubmitButton(allMovementPause, setDisableButton);
       }
     );
 
     socket.on(END_GAME_WEBSOCKET, (winners, losers, doubleBonuses, tripleBonuses) => {
-      console.log('winners');
-      console.log(winners);
-      console.log('losers');
-      console.log(losers);
       props.setWinners(winners);
       props.setLosers(losers);
       let finalPause = (doubleBonuses + tripleBonuses + NORMAL_ANIMATION_OFFSET) * PAUSE_BETWEEN_ANIMATIONS
@@ -238,6 +234,7 @@ function GameOne(props) {
         loginCode={props.loginCode}
         allLoginCodes={props.allLoginCodes}
         disabled={disableButton}
+        disableButton={() => setDisableButton(DISABLE_BUTTON)}
         timeLeft = {timeLeft}
         setNoteTime = {setNoteTime}
         windowWidth={props.windowWidth}
@@ -303,7 +300,7 @@ function handleGameTimer(animationPause, setResetTimer, setPauseTimer) {
   }, animationPause);
 }
 
-function handleSubmitButton(animationPause, setDisableButton) {
+function pauseSubmitButton(animationPause, setDisableButton) {
   setDisableButton(DISABLE_BUTTON);
   setTimeout(() => {
     setDisableButton(DO_NOT_DISABLE_BUTTON);
@@ -362,10 +359,6 @@ function markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, dela
 }
 
 function handleDoubleBonuses(doubleArray, doubleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, setDoubles, animationOffset, setBonusType, setOpenBonusShower) {
-  console.log('handling double bonuses');
-  console.log(setBonusType);
-
-
   let oldHeights = originalHeights.slice(0);
   for (let i = 0; i < doubleArray.length; i++) {
     let loginCodes = doubleArray[i];
@@ -386,8 +379,6 @@ function markDoubleDelayed(firstIndex, secondIndex, setDoubles, delay) {
 }
 
 function updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, delay, bonusType, setBonusType, setOpenBonusShower, openBonus) {
-  console.log('updateHeightsDelay');
-  console.log(setBonusType);setCurrentHeight(newHeights);
   setTimeout(() => {
     updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights);
     setBonusType(bonusType);

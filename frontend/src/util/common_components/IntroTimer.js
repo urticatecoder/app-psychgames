@@ -79,7 +79,6 @@ function IntroTimer(props) {
 }
 
 function moveToGame(props) {
-    console.log(props);
     props.history.push(props.nextRoute);
 }
 

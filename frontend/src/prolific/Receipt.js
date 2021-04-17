@@ -155,8 +155,6 @@ function getGameOneResultText(won) {
 
 function getGameTwo(turn, classes, windowHeight) {
     let margin = getGameTwoMargin(windowHeight);
-    console.log('MARRRRR');
-    console.log(margin);
     return(
         <FadeIn className={classes.gameTwoFade} delay={GAME_TWO_DELAY}>
             <Typography className={classes.game} style={{marginTop: margin}} variant={Variants.NORMAL_TEXT}>

@@ -119,15 +119,8 @@ function GameTwo(props) {
   useEffect(() => {
     
     socket.on(END_TURN_WEBSOCKET, (competePayoff, investPayoff, winnerResults, loserResults) => {
-      console.log('END GAME TWO TURN');
-
-      console.log('winner results');
       let convertedWinnerResults = convertBackendData(winnerResults);
-      console.log(convertedWinnerResults);
-      console.log('loser results');
       let convertedLoserResults = convertBackendData(loserResults);
-      console.log(convertedLoserResults);
-
       setCompetePayoff(competePayoff);
       setInvestPayoff(investPayoff);
       setResetTimer(RESET_TIMER);
@@ -141,7 +134,6 @@ function GameTwo(props) {
     });
 
     socket.on(END_GAME_WEBSOCKET, () => {
-      console.log('END GAME TWO');
       setTimeout(() => {
         props.history.push(COMPENSATION_ROUTE);
       }, TIME_TO_SHOW_RESULTS);

@@ -7,8 +7,6 @@ import { Variants } from "../util/common_constants/stylings/StylingsBundler";
 
 const FULL_DIV = "fullDiv";
 const PLAYER_OPTION_NUMBERS = Array.from(Array(24).keys());
-console.log('hiya');
-console.log(PLAYER_OPTION_NUMBERS);
 const NUMBER_OPTIONS = 25;
 const SELECTED = true;
 const NOT_SELECTED = false;

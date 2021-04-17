@@ -48,15 +48,6 @@ function Lobby(props) {
           width='300px'
         />
       </div>
-      {/* <div className={classes.gameButton}>
-        <ContinueButton
-          message={GAME_BUTTON_MESSAGE} 
-          route={GAME_ONE_INTRO_ROUTE} 
-          disabled={!startStatus}
-          height='60px' 
-          width='300px'
-        />
-      </div> */}
     </div>
   );
 }

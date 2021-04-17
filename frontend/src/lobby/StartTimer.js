@@ -79,13 +79,11 @@ function StartTimer(props) {
 
   useEffect(() => {
     if (!props.loggedIn && props.code != null) {
-      console.log('ENTERING LOBBY SOCKET');
       socket.emit(ENTER_LOBBY_WEBSOCKET, code);
       props.setLoggedIn(LOGGED_IN);
     }
 
     if (props.code != null) {
-      console.log('LOBBY TIME SOCKET');
       socket.emit(TIME_IN_LOBBY_WEBSOCKET, props.code);
     }
 
@@ -110,7 +108,6 @@ function StartTimer(props) {
       }
       setTimeLeft(time * MILLISECOND_CONSTANT);
       setResetter(RESET);
-      console.log(timeLeft);
     });
 
     return () => {
