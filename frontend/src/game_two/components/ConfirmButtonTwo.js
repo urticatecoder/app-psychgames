@@ -52,11 +52,17 @@ function ConfirmButtonTwo(props) {
       style={{marginLeft: margin, width: width}}
       variant={Variants.CONTAINED}
       color={PRIMARY_COLOR}
-      onClick={() => props.setNoteTime(NOTE_TIME)}
+      disabled={props.disabled}
+      onClick={() => handleSubmission(props.disableButton, props.setNoteTime)}
     >
       {CONFIRM_CHOICES_TEXT}
     </Button>
   );
+}
+
+function handleSubmission(disableButton, setNoteTime) {
+  disableButton();
+  setNoteTime(NOTE_TIME);
 }
 
 function getWidth(windowWidth) {

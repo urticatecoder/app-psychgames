@@ -69,6 +69,9 @@ const COMPENSATION_ROUTE = "/compensation";
 const END_TURN_TEXT = "Results from Previous Turn:";
 const GROUP_BOX_WIDTH = "40vw";
 
+const DISABLE_BUTTON = true;
+const DO_NOT_DISABLE_BUTTON = false;
+
 const INITIAL_TIME_LEFT = -1;
 const DONT_NOTE_TIME = false;
 
@@ -115,6 +118,9 @@ function GameTwo(props) {
 
   const [timeLeft, setTimeLeft] = useState(INITIAL_TIME_LEFT);
   const [noteTime, setNoteTime] = useState(DONT_NOTE_TIME);
+  
+  const [disableButton, setDisableButton] = useState(DO_NOT_DISABLE_BUTTON);
+
 
   useEffect(() => {
     
@@ -129,6 +135,7 @@ function GameTwo(props) {
       setGroupOneResults(convertedWinnerResults);
       setGroupTwoResults(convertedLoserResults);
       setTimeout(() => {
+        setDisableButton(DO_NOT_DISABLE_BUTTON);
         setShowResults(DO_NOT_SHOW_RESULTS);
       }, TIME_TO_SHOW_RESULTS);
     });
@@ -172,6 +179,8 @@ function GameTwo(props) {
     setNoteTime,
     timeLeft,
     setTimeLeft,
+    disableButton, 
+    setDisableButton
   );
 
   let resourceView = showResults ? resourceResultsView : resourceChoiceView;
@@ -224,7 +233,7 @@ function getDelayedBar(resource, group, delay, tokens, windowWidth) {
 
 function getResourceChoices(props, setFromResources, setToResources, fromResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, 
   tokensSpent, setTokensSpent, setCurrentResources, currentResources, payoffInvest, payoffCompete, resetTimer, setResetTimer, setSubmitDecisions, submitDecisions,
-  noteTime, setNoteTime, timeLeft, setTimeLeft) {
+  noteTime, setNoteTime, timeLeft, setTimeLeft, disableButton, setDisableButton) {
   return (
     <div>
       <TokenCounter tokens={totalTokens - tokensSpent} windowHeight={props.windowHeight} windowWidth={props.windowWidth}/>
@@ -245,6 +254,8 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
         resources={currentResources}
         clearSelected={() =>clearResources(setFromResources, setToResources, toResources, setTokensSpent)}
         loginCode={props.loginCode}
+        disabled={disableButton}
+        disableButton={() => setDisableButton(DISABLE_BUTTON)}
         timeLeft = {timeLeft}
         setNoteTime = {setNoteTime}
         windowWidth={props.windowWidth}
