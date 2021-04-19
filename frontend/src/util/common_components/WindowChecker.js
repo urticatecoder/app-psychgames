@@ -20,7 +20,6 @@ const DIALOG_CONTENT = "Please expand your window to be at least " + MIN_WIDTH +
    * @author Eric Doppelt
    */
   function WindowChecker(props) {
-    console.log('window');
 
     const [validWindow, setValidWindow] = useState(VALID);
 

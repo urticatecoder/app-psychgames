@@ -43,16 +43,12 @@ function LoginButton(props) {
 }
 
 function handleLogin(props) {
-    console.log('called')
-    console.log(props.code)
     axios.get('/login-code', {
         params: {
             loginCode: props.code
         }
     }).then(function (res) {
-        console.log(res)
         let isValid = res.data.isValid;
-        console.log(isValid)
         if (isValid) {
             // CHANGE IF YOU WANT THE RULES TO AUTOMATICALLY SHOW.
             props.setShowWarnings(HIDE);

@@ -46,18 +46,14 @@ function TutorialScreen(props) {
   const [playVideo, setPlayVideo] = useState(PAUSE_VIDEO);
 
   setTimeout(() => {
-    console.log('play');
     setPlayVideo(PLAY_VIDEO);
   }, props.initialPause);
 
   setTimeout(() => {
-    console.log('pause');
     setPlayVideo(PAUSE_VIDEO);
   }, props.initialPause + props.videoLength);
 
   const { classes } = props;
-
-  console.log(playVideo)
   return (
     <div>
       <div className={classes.headerDiv}>

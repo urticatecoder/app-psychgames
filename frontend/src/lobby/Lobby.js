@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import StartTimer from "./StartTimer";
-import StartButton from "./StartButton";
 import "../util/common_stylings/FullScreenDiv.css";
 import ContinueButton from "../util/common_components/ContinueButton";
 
@@ -39,6 +38,7 @@ function Lobby(props) {
         setAllLoginCodes={props.setAllLoginCodes}
         loggedIn={props.loggedIn}
         setLoggedIn={props.setLoggedIn}
+        setBackendIndex = {props.setBackendIndex}
       />
       <div className={classes.avatarButton}>
         <ContinueButton
@@ -49,15 +49,6 @@ function Lobby(props) {
           width='300px'
         />
       </div>
-      {/* <div className={classes.gameButton}>
-        <ContinueButton
-          message={GAME_BUTTON_MESSAGE} 
-          route={GAME_ONE_INTRO_ROUTE} 
-          disabled={!startStatus}
-          height='60px' 
-          width='300px'
-        />
-      </div> */}
     </div>
   );
 }

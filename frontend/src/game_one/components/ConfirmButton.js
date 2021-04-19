@@ -8,6 +8,7 @@ const NUM_PLAYERS = 6;
 const PRIMARY_COLOR = "primary";
 const SEND_DECISIONS_WEBSOCKET = "confirm choice for game 1";
 
+const DISABLED = true;
 const NOTE_TIME = true;
 const LARGE_WIDTH_THRESHOLD = 1550;
 const MEDIUM_WIDTH_THRESHOLD = 1150;
@@ -50,13 +51,16 @@ function ConfirmButton(props) {
       variant={Variants.CONTAINED}
       color={PRIMARY_COLOR}
       disabled = {props.disabled}
-      onClick={() =>
-        props.setNoteTime(NOTE_TIME)
-      }
+      onClick={() => handleSubmission(props.disableButton, props.setNoteTime)}
     >
       {CONFIRM_CHOICES_TEXT}
     </Button>
   );
+}
+
+function handleSubmission(disableButton, setNoteTime) {
+  disableButton();
+  setNoteTime(NOTE_TIME);
 }
 
 function getWidth(windowWidth) {
@@ -72,9 +76,13 @@ function getMarginLeft(windowWidth) {
 }
 
 function sendDecisions(props) {
-  console.log('SENDING DECISIONS');
   if (props.loginCode != null) {
-  socket.emit(SEND_DECISIONS_WEBSOCKET, props.loginCode, getSelectedIDs(props.selected, props.allLoginCodes, props.timeLeft));
+    console.log("game 1 choice IDs");
+    console.log(props.selected)
+    console.log(props.allLoginCodes)
+    console.log(props.timeLeft)
+    console.log(getSelectedIDs(props.selected, props.allLoginCodes, props.timeLeft));
+  socket.emit(SEND_DECISIONS_WEBSOCKET, props.loginCode, getSelectedIDs(props.selected, props.allLoginCodes), props.timeLeft);
   props.clearSelected();
   props.clearSubmission();
   }

@@ -135,7 +135,9 @@ function GameOne(props) {
   const [openBonusShower, setOpenBonusShower] = useState(CLOSED);
 
   useEffect(() => {
-    socket.on(END_TURN_WEBSOCKET, (locations, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
+    socket.on(END_TURN_WEBSOCKET, (heights, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
+      reIndexHeights(heights, props.backendIndex);
+      console.log(heights);
         handleTripleBonuses(
           tripleBonuses,
           tripleIncrease,
@@ -172,7 +174,7 @@ function GameOne(props) {
         
         updateHeightsDelayed(
           currentHeight,
-          scaleHeights(locations),
+          scaleHeights(heights),
           setStartHeights,
           setEndHeights,
           setCurrentHeight,
@@ -186,15 +188,11 @@ function GameOne(props) {
 
         handleDisablePlayers(allMovementPause, setDisabledPlayers);
         handleGameTimer(allMovementPause, setResetTimer, setPauseTimer);
-        handleSubmitButton(allMovementPause, setDisableButton);
+        pauseSubmitButton(allMovementPause, setDisableButton);
       }
     );
 
     socket.on(END_GAME_WEBSOCKET, (winners, losers, doubleBonuses, tripleBonuses) => {
-      console.log('winners');
-      console.log(winners);
-      console.log('losers');
-      console.log(losers);
       props.setWinners(winners);
       props.setLosers(losers);
       let finalPause = (doubleBonuses + tripleBonuses + NORMAL_ANIMATION_OFFSET) * PAUSE_BETWEEN_ANIMATIONS
@@ -238,6 +236,7 @@ function GameOne(props) {
         loginCode={props.loginCode}
         allLoginCodes={props.allLoginCodes}
         disabled={disableButton}
+        disableButton={() => setDisableButton(DISABLE_BUTTON)}
         timeLeft = {timeLeft}
         setNoteTime = {setNoteTime}
         windowWidth={props.windowWidth}
@@ -303,7 +302,7 @@ function handleGameTimer(animationPause, setResetTimer, setPauseTimer) {
   }, animationPause);
 }
 
-function handleSubmitButton(animationPause, setDisableButton) {
+function pauseSubmitButton(animationPause, setDisableButton) {
   setDisableButton(DISABLE_BUTTON);
   setTimeout(() => {
     setDisableButton(DO_NOT_DISABLE_BUTTON);
@@ -362,10 +361,6 @@ function markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, dela
 }
 
 function handleDoubleBonuses(doubleArray, doubleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, setDoubles, animationOffset, setBonusType, setOpenBonusShower) {
-  console.log('handling double bonuses');
-  console.log(setBonusType);
-
-
   let oldHeights = originalHeights.slice(0);
   for (let i = 0; i < doubleArray.length; i++) {
     let loginCodes = doubleArray[i];
@@ -386,8 +381,6 @@ function markDoubleDelayed(firstIndex, secondIndex, setDoubles, delay) {
 }
 
 function updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeights, setCurrentHeight, delay, bonusType, setBonusType, setOpenBonusShower, openBonus) {
-  console.log('updateHeightsDelay');
-  console.log(setBonusType);setCurrentHeight(newHeights);
   setTimeout(() => {
     updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights);
     setBonusType(bonusType);
@@ -396,8 +389,21 @@ function updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeigh
 }
 
 function updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights) {
+  console.log('updating heights');
+  console.log(oldHeights);
+  console.log(newHeights);
   setOldHeights(oldHeights);
   setNewHeights(newHeights);
+}
+
+function reIndexHeights(heights, backendIndex) {
+  console.log('reindexing');
+  console.log(heights);
+  console.log(backendIndex);
+  let myHeight = heights[backendIndex];
+  console.log(myHeight);
+  heights.splice(backendIndex, 1);
+  heights.unshift(myHeight);
 }
 
 function clearBonusArray(setBonus, delay) {
@@ -436,7 +442,7 @@ function createPlayerArray(height) {
 }
 
 function selectPlayer(player, selected, setSelected, setSelectedSelf, setTooManySelections, playerIDs, myID) {
-  if (playerIDs[player] === myID) {
+  if (playerIDs[player] == myID || player == 0) {
     setSelectedSelf(SELECTED_SELF);
     return;
   }

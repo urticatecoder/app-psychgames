@@ -106,9 +106,6 @@ function getMarginLeft(windowWidth) {
 
 function checkUpdateSeconds(noteTime, setNoteTime, setTimeLeft, setSubmitDecisions, time) {
   if (noteTime) {
-    console.log('UPDATING NOTING TIME');
-    console.log(noteTime);
-    console.log(time);
     setNoteTime(STOP_NOTING_TIME);
     setTimeLeft(time);
     setSubmitDecisions(SUBMIT_DECISIONS);

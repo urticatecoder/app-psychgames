@@ -9,8 +9,8 @@ const HIDE_TUTORIAL = false;
 const SHOW_BUTTON = true;
 
 const TIMER_MESSAGE = "Game One";
-
-const GAME_ONE_TUTORIAL_FILEPATH = "Tutorials/GameOne.mov";
+const NO_PAUSE = 0;
+const GAME_ONE_TUTORIAL_FILEPATH = "Tutorials/GameOne.mp4";
 const GAME_ONE_TUTORIAL_LENGTH = 53000;
 const GAME_ONE_TUTORIAL_TEXT = "Game 1 Tutorial";
 const DEFAULT_ANIMATION_PAUSE = 1000;
@@ -65,7 +65,7 @@ function getTutorial(setShowTutorial) {
             URL={GAME_ONE_TUTORIAL_FILEPATH}
             showButton={SHOW_BUTTON}
             hideTutorial={() => setShowTutorial(HIDE_TUTORIAL)}
-            initialPause={DEFAULT_ANIMATION_PAUSE}
+            initialPause={NO_PAUSE}
             videoLength={GAME_ONE_TUTORIAL_LENGTH}
             text={GAME_ONE_TUTORIAL_TEXT}
             buttonMessage={BUTTON_MESSAGE}

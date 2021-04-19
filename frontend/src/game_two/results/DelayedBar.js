@@ -111,8 +111,6 @@ function scaleHeight(tokens) {
 
 function getMarginL(resource, group, windowWidth) {
   let offset = (group === GROUP_ONE) ? .05 * windowWidth : .55 * windowWidth;
-  console.log('offset');
-  console.log(offset);
   let groupBoxWidth = windowWidth * GROUP_BOX_PERCENT;
   let groupMargin = groupBoxWidth - 300;
   let individualMargin = groupMargin / 3;

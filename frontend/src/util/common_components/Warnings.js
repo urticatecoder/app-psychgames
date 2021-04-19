@@ -84,7 +84,6 @@ const styles = {
             </Dialog>
         )
     } else {
-        console.log('HI');
         return(
             <div className={classes.button}>
                 <Button

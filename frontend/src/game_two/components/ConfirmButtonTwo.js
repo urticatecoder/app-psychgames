@@ -19,7 +19,7 @@ const MEDIUM_WIDTH_THRESHOLD = 1150;
 const styles = {
   confirmButton: {
     position: "absolute",
-    top: "25vh",
+    top: "30vh",
     marginTop: '280px',
     left: "5vw",
     height: "40px",
@@ -52,11 +52,17 @@ function ConfirmButtonTwo(props) {
       style={{marginLeft: margin, width: width}}
       variant={Variants.CONTAINED}
       color={PRIMARY_COLOR}
-      onClick={() => props.setNoteTime(NOTE_TIME)}
+      disabled={props.disabled}
+      onClick={() => handleSubmission(props.disableButton, props.setNoteTime)}
     >
       {CONFIRM_CHOICES_TEXT}
     </Button>
   );
+}
+
+function handleSubmission(disableButton, setNoteTime) {
+  disableButton();
+  setNoteTime(NOTE_TIME);
 }
 
 function getWidth(windowWidth) {
@@ -73,13 +79,6 @@ function getMarginLeft(windowWidth) {
 
 function sendDecisions(props) {
   if (props.loginCode != null) {
-  console.log('resources');
-  console.log('compete');
-  console.log(props.resources[COMPETE_INDEX]);
-  console.log('keep');
-  console.log(props.resources[KEEP_INDEX]);
-  console.log('invest');
-  console.log(props.resources[INVEST_INDEX]);
   socket.emit(SEND_DECISION_WEBSOCKET, props.loginCode, props.resources[COMPETE_INDEX], props.resources[KEEP_INDEX], props.resources[INVEST_INDEX], props.timeLeft);
   props.clearSelected();
   props.clearSubmission();
