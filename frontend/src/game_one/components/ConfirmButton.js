@@ -82,7 +82,7 @@ function sendDecisions(props) {
     console.log(props.allLoginCodes)
     console.log(props.timeLeft)
     console.log(getSelectedIDs(props.selected, props.allLoginCodes, props.timeLeft));
-  socket.emit(SEND_DECISIONS_WEBSOCKET, props.loginCode, getSelectedIDs(props.selected, props.allLoginCodes, props.timeLeft));
+  socket.emit(SEND_DECISIONS_WEBSOCKET, props.loginCode, getSelectedIDs(props.selected, props.allLoginCodes), props.timeLeft);
   props.clearSelected();
   props.clearSubmission();
   }
