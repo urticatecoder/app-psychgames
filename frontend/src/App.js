@@ -49,9 +49,12 @@ const LOGGED_OUT = false;
 const INITIAL_WINDOW_WIDTH = window.innerWidth;
 const INITIAL_WINDOW_HEIGHT = window.innerHeight;
 
+const INITIAL_BACKEND_INDEX = -1;
+
 function App() {
   const [loginCode, setLoginCode] = useState(INITIAL_CODE);
   const [allLoginCodes, setAllLoginCodes] = useState(INITIAL_CODES);
+  const [backendIndex, setBackendIndex] = useState(INITIAL_BACKEND_INDEX);
   const [winners, setWinners] = useState(NO_WINNERS);
   const [losers, setLosers] = useState(NO_LOSERS);
   const [selectedIndex, setSelectedIndex] = useState(DEFAULT_SELECTION_INDEX);
@@ -84,6 +87,7 @@ function App() {
                 setAllLoginCodes={setAllLoginCodes}
                 loggedIn = {loggedIn}
                 setLoggedIn = {setLoggedIn}
+                setBackendIndex = {setBackendIndex}
               />
             )}
           />
@@ -93,8 +97,6 @@ function App() {
             exact
             render={() => <AvatarSelector selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} windowWidth={windowWidth} windowHeight={windowHeight}/>}
           />
-
-    
 
           <Route
             path={GAME_ONE_INTRO_ROUTE}
@@ -160,6 +162,7 @@ function App() {
                 selectedIndex={selectedIndex}
                 windowWidth={windowWidth}
                 windowHeight={windowHeight}
+                backendIndex={backendIndex}
               />
             )}
           />

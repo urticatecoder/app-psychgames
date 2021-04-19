@@ -91,8 +91,10 @@ function StartTimer(props) {
       setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
     });
 
-    socket.on(ROOM_FULL_WEBSOCKET, (msg) => {
-      setAllLoginCodes(msg);
+    socket.on(ROOM_FULL_WEBSOCKET, (allPlayers) => {
+      console.log('ROOM FULL SOCKET')
+      reIndexPlayers(code, allPlayers, props.setBackendIndex);
+      setAllLoginCodes(allPlayers);
     });
 
     socket.on(PEOPLE_IN_ROOM_WEBSOCKET, (numOfPlayers) => {
@@ -158,6 +160,17 @@ function StartTimer(props) {
       </Timer>
     </div>
   );
+}
+
+function reIndexPlayers(myLoginCode, allLoginCodes, setBackendIndex) {
+  console.log('original codes');
+  console.log(allLoginCodes);
+  let myIndex = allLoginCodes.indexOf(myLoginCode);
+  setBackendIndex(myIndex);
+  allLoginCodes.splice(myIndex, 1);
+  allLoginCodes.unshift(myLoginCode);
+  console.log('new codes');
+  console.log(allLoginCodes)
 }
 
 function checkForReset(resetter, setResetter, setTime, timeLeft) {

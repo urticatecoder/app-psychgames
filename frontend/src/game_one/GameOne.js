@@ -135,7 +135,9 @@ function GameOne(props) {
   const [openBonusShower, setOpenBonusShower] = useState(CLOSED);
 
   useEffect(() => {
-    socket.on(END_TURN_WEBSOCKET, (locations, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
+    socket.on(END_TURN_WEBSOCKET, (heights, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
+      reIndexHeights(heights, props.backendIndex);
+      console.log(heights);
         handleTripleBonuses(
           tripleBonuses,
           tripleIncrease,
@@ -172,7 +174,7 @@ function GameOne(props) {
         
         updateHeightsDelayed(
           currentHeight,
-          scaleHeights(locations),
+          scaleHeights(heights),
           setStartHeights,
           setEndHeights,
           setCurrentHeight,
@@ -387,8 +389,21 @@ function updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeigh
 }
 
 function updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights) {
+  console.log('updating heights');
+  console.log(oldHeights);
+  console.log(newHeights);
   setOldHeights(oldHeights);
   setNewHeights(newHeights);
+}
+
+function reIndexHeights(heights, backendIndex) {
+  console.log('reindexing');
+  console.log(heights);
+  console.log(backendIndex);
+  let myHeight = heights[backendIndex];
+  console.log(myHeight);
+  heights.splice(backendIndex, 1);
+  heights.unshift(myHeight);
 }
 
 function clearBonusArray(setBonus, delay) {
@@ -427,7 +442,7 @@ function createPlayerArray(height) {
 }
 
 function selectPlayer(player, selected, setSelected, setSelectedSelf, setTooManySelections, playerIDs, myID) {
-  if (playerIDs[player] === myID) {
+  if (playerIDs[player] == myID || player == 0) {
     setSelectedSelf(SELECTED_SELF);
     return;
   }

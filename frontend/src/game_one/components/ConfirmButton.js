@@ -77,6 +77,11 @@ function getMarginLeft(windowWidth) {
 
 function sendDecisions(props) {
   if (props.loginCode != null) {
+    console.log("game 1 choice IDs");
+    console.log(props.selected)
+    console.log(props.allLoginCodes)
+    console.log(props.timeLeft)
+    console.log(getSelectedIDs(props.selected, props.allLoginCodes, props.timeLeft));
   socket.emit(SEND_DECISIONS_WEBSOCKET, props.loginCode, getSelectedIDs(props.selected, props.allLoginCodes, props.timeLeft));
   props.clearSelected();
   props.clearSubmission();
