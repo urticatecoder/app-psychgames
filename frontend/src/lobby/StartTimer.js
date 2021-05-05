@@ -93,6 +93,7 @@ function StartTimer(props) {
 
     socket.on(ROOM_FULL_WEBSOCKET, (allPlayers) => {
       console.log('ROOM FULL SOCKET');
+      console.log(allPlayers);
       reIndexPlayers(code, allPlayers, props.setBackendIndex);
       setAllLoginCodes(allPlayers);
     });
