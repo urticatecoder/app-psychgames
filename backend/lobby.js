@@ -217,13 +217,13 @@ class Room {
     }
 
     hasEveryoneConfirmedChoiceInThisRoom() {
-        console.log(this.playersWithChoiceConfirmed);
+        let result = true;
         this.players.forEach((p)=>{
             if(!p.isBot && !this.playersWithChoiceConfirmed.has(p.prolificID)){
-                return false;
+                result = false;
             }
         });
-        return true;
+        return result;
     }
 
     hasPlayerWithIDConfirmedChoice(prolificID) {
@@ -401,8 +401,8 @@ class Player {
         if (!(choice instanceof Array)) {
             throw 'Parameter is not an Array.';
         }
-        console.log("Recording choice for player "+this.prolificID);
-        console.log(choice);
+        // console.log("Recording choice for player "+this.prolificID);
+        // console.log(choice);
         this.choices.push(choice);
     }
 
@@ -411,13 +411,13 @@ class Player {
      * @return {string[]}
      */
     getChoiceAtTurn(turnNum) {
-        console.log("Choices of player "+this.prolificID +" in turn "+turnNum);
+        // console.log("Choices of player "+this.prolificID +" in turn "+turnNum);
+        // console.log(this.choices)
         turnNum = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
-        console.log(this.choices)
         if (turnNum >= this.choices.length) {
-            console.log(this.prolificID)
-            console.log("turnNum: "+turnNum);
-            console.log("choices.length: "+this.choices.length);
+            // console.log(this.prolificID)
+            // console.log("turnNum: "+turnNum);
+            // console.log("choices.length: "+this.choices.length);
             throw 'Array index out of bound.';
         }
         return this.choices[turnNum];
