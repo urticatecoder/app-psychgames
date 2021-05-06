@@ -316,10 +316,10 @@ function calculateAllTripleBonuses(prolificIDArray, room) {
  * @returns firstPlayerChosen, secondPlayerChosen, triple in order to determine if Triple Bonus  
  **/
 function isTripleBonus(choicesProlific, allChoices, triple, playerProlific) {
-    // console.log("allChoices = ");
-    // console.log(allChoices);
-    // console.log("choicesProlific = ");
-    // console.log(choicesProlific);
+    console.log("allChoices = ");
+    console.log(allChoices);
+    console.log("choicesProlific = ");
+    console.log(choicesProlific);
     let firstPlayerChosen = choicesProlific[0];
     let secondPlayerChosen = choicesProlific[1];
     let firstPlayerChoices = allChoices.get(firstPlayerChosen);

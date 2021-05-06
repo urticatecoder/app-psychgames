@@ -93,7 +93,8 @@ class Lobby {
         }
         
         const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName)
-        io.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
+        io.sockets.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
+        // io.sockets.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
         DB_API.saveExperimentSession(playerIDs);
         console.log("fillInBotPlayers: roomName="+roomName);
         console.log("fillInBotPlayers: playerIDs="+playerIDs);
@@ -483,7 +484,7 @@ module.exports = {
             if (lobby.getNumOfPlayersInRoom(roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
                 const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName);
-                io.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
+                io.sockets.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
                 DB_API.saveExperimentSession(playerIDs);
                 playerIDs.forEach((playerID)=>{console.log(playerID);})
                 lobby.allocateNewRoom();
@@ -494,8 +495,9 @@ module.exports = {
         socket.on("enter lobby", (prolificID) => {
             prolificID = prolificID.toString();
             let roomName = lobby.findRoomForPlayerToJoin(prolificID);
-            socket.join(roomName);
-            socket.roomName = roomName;
+            socket.join(roomName,function(){
+                console.log(socket.id + " now in rooms ", socket.rooms);
+                socket.roomName = roomName;
             socket.prolificID = prolificID;
             socket.to(roomName).emit('join', socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
             socket.emit('num of people in the room', lobby.getNumOfPlayersInRoom(roomName)); // only to self
@@ -514,7 +516,7 @@ module.exports = {
             if (numPlayers >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
                 const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName);
-                io.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
+                io.sockets.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
                 DB_API.saveExperimentSession(playerIDs);
                 playerIDs.forEach((playerID)=>{console.log(playerID);})
                 lobby.allocateNewRoom();
@@ -525,6 +527,8 @@ module.exports = {
                     setTimeout(lobby.fillInBotPlayers.bind(lobby), 20000, io, roomName);
                 } 
             }
+            });
+            
         });
     }
 };
