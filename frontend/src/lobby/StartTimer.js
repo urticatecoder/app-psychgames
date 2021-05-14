@@ -88,11 +88,13 @@ function StartTimer(props) {
     }
 
     socket.on(JOIN_LOBBY_WEBSOCKET, () => {
+      console.log('JOIN LOBBY WEBSOCKET');
       setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
     });
 
     socket.on(ROOM_FULL_WEBSOCKET, (allPlayers) => {
       console.log('ROOM FULL SOCKET');
+      console.log(allPlayers);
       reIndexPlayers(code, allPlayers, props.setBackendIndex);
       setAllLoginCodes(allPlayers);
     });
@@ -114,7 +116,7 @@ function StartTimer(props) {
 
     return () => {
       socket.off(JOIN_LOBBY_WEBSOCKET);
-      socket.off(ROOM_FULL_WEBSOCKET);
+      // socket.off(ROOM_FULL_WEBSOCKET);
       socket.off(PEOPLE_IN_ROOM_WEBSOCKET);
       socket.off(PLAYER_TIME_WEBSOCKET);
     };

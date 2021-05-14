@@ -93,9 +93,11 @@ class Lobby {
         }
         
         const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName)
-        io.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
+        io.sockets.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
+        // io.sockets.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
         DB_API.saveExperimentSession(playerIDs);
-        playerIDs.forEach((playerID)=>{console.log(playerID);})
+        console.log("fillInBotPlayers: roomName="+roomName);
+        console.log("fillInBotPlayers: playerIDs="+playerIDs);
         console.log("The room is filled with users");
         this.allocateNewRoom();
     }
@@ -152,7 +154,7 @@ class Room {
             throw 'Room name not defined';
         }
         this.roomName = roomName;
-        // getter method for time
+        // getter method for a room's remaining lobby wait time in seconds
         this.getTime = function(prolific) { 
             return (ROOM_WAIT_TIME_MILLISECONDS - ((Date.now() - this.roomCreationTime))) / 1000;
         }
@@ -216,7 +218,13 @@ class Room {
     }
 
     hasEveryoneConfirmedChoiceInThisRoom() {
-        return this.playersWithChoiceConfirmed.size === Lobby.MAX_CAPACITY_PER_ROOM;
+        let result = true;
+        this.players.forEach((p)=>{
+            if(!p.isBot && !this.playersWithChoiceConfirmed.has(p.prolificID)){
+                result = false;
+            }
+        });
+        return result;
     }
 
     hasPlayerWithIDConfirmedChoice(prolificID) {
@@ -394,6 +402,8 @@ class Player {
         if (!(choice instanceof Array)) {
             throw 'Parameter is not an Array.';
         }
+        // console.log("Recording choice for player "+this.prolificID);
+        // console.log(choice);
         this.choices.push(choice);
     }
 
@@ -402,8 +412,13 @@ class Player {
      * @return {string[]}
      */
     getChoiceAtTurn(turnNum) {
+        // console.log("Choices of player "+this.prolificID +" in turn "+turnNum);
+        // console.log(this.choices)
         turnNum = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
         if (turnNum >= this.choices.length) {
+            // console.log(this.prolificID)
+            // console.log("turnNum: "+turnNum);
+            // console.log("choices.length: "+this.choices.length);
             throw 'Array index out of bound.';
         }
         return this.choices[turnNum];
@@ -469,7 +484,7 @@ module.exports = {
             if (lobby.getNumOfPlayersInRoom(roomName) >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
                 const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName);
-                io.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
+                io.sockets.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
                 DB_API.saveExperimentSession(playerIDs);
                 playerIDs.forEach((playerID)=>{console.log(playerID);})
                 lobby.allocateNewRoom();
@@ -480,8 +495,9 @@ module.exports = {
         socket.on("enter lobby", (prolificID) => {
             prolificID = prolificID.toString();
             let roomName = lobby.findRoomForPlayerToJoin(prolificID);
-            socket.join(roomName);
-            socket.roomName = roomName;
+            socket.join(roomName,function(){
+                console.log(socket.id + " now in rooms ", socket.rooms);
+                socket.roomName = roomName;
             socket.prolificID = prolificID;
             socket.to(roomName).emit('join', socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
             socket.emit('num of people in the room', lobby.getNumOfPlayersInRoom(roomName)); // only to self
@@ -500,16 +516,19 @@ module.exports = {
             if (numPlayers >= Lobby.MAX_CAPACITY_PER_ROOM) {
                 // the current room is full, we have to use a new room
                 const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName);
-                io.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
+                io.sockets.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
                 DB_API.saveExperimentSession(playerIDs);
                 playerIDs.forEach((playerID)=>{console.log(playerID);})
                 lobby.allocateNewRoom();
                 console.log("The room is filled with users");
             }else{
                 if(numPlayers==1){
+                    console.log("setting timeout");
                     setTimeout(lobby.fillInBotPlayers.bind(lobby), 20000, io, roomName);
                 } 
             }
+            });
+            
         });
     }
 };

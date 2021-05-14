@@ -47,24 +47,30 @@ io.on('connection', socket => {
         prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
-        console.log("Recording choice for player "+player.prolificID);
         DB_API.saveChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
         player.recordChoices(choices);
         room.addPlayerIDToConfirmedSet(prolificID);
-        // let all bots select their choices
-        let allIDs = lobby.getAllPlayersIDsInRoomWithName(room.roomName)
-        room.players.forEach((playerInThisRoom) => {
-            if (playerInThisRoom.isBot) {
-                let bot = playerInThisRoom;
-                let botChoices = BOT.determineBotChoice(bot.prolificID, allIDs);
-                DB_API.saveChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
-                bot.recordChoices(botChoices);
-                room.addPlayerIDToConfirmedSet(bot.prolificID);
-            }
-        });
-        let timeStart = room.getTime(prolificID);
+
         // if everyone has confirmed or timer has reached 0
-        if (room.hasEveryoneConfirmedChoiceInThisRoom() || zeroTime || ((room.getTime(prolificID) - timeStart) >= 30)) { // all 6 have confirmed choices
+        // let timeStart = room.getTime(prolificID);
+        // const computeBonus = room.hasEveryoneConfirmedChoiceInThisRoom() || zeroTime || ((room.getTime(prolificID) - timeStart) >= 30);
+        const computeBonus = room.hasEveryoneConfirmedChoiceInThisRoom() || zeroTime<=0;
+        if (computeBonus) { // all 6 have confirmed choices
+            // console.log("hasEveryoneConfirmedChoiceInThisRoom: "+room.hasEveryoneConfirmedChoiceInThisRoom())
+            // console.log(zeroTime)
+            // console.log((room.getTime(prolificID) - timeStart))
+            console.log("computing bonuses");
+            // let all bots select their choices
+            let allIDs = lobby.getAllPlayersIDsInRoomWithName(room.roomName)
+            room.players.forEach((playerInThisRoom) => {
+                if (playerInThisRoom.isBot) {
+                    let bot = playerInThisRoom;
+                    let botChoices = BOT.determineBotChoice(bot.prolificID, allIDs);
+                    DB_API.saveChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
+                    bot.recordChoices(botChoices);
+                    room.addPlayerIDToConfirmedSet(bot.prolificID);
+                }
+            });
             //emit list of lists of prolificIDs and int of how much to move up of triple bonuses
             let allTripleBonus = calculateAllTripleBonuses(allIDs, room);
             //emit list of lists of prolificIDs and int of how much to move up of double bonuses
