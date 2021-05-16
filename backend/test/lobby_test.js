@@ -155,15 +155,18 @@ describe('Test Room class functionality', () => {
     });
     it('hasEveryoneConfirmedChoiceInThisRoom works', (done) => {
         const room = new Room('room 0');
-        let IDs = ['123', '456', '789', 'abc', 'efg'];
+        let IDs = ['123', '456', '789', 'abc'];
         IDs.forEach((id) => {
-           room.addPlayerIDToConfirmedSet(id);
+            const player = new Player(id);
+            room.addPlayer(player);
+            room.addPlayerIDToConfirmedSet(id);
         });
+        expect(room.hasEveryoneConfirmedChoiceInThisRoom()).to.equal(true);
+        const player = new Player('xyz');
+        room.addPlayer(player);
         expect(room.hasEveryoneConfirmedChoiceInThisRoom()).to.equal(false);
         room.addPlayerIDToConfirmedSet('xyz');
         expect(room.hasEveryoneConfirmedChoiceInThisRoom()).to.equal(true);
-        room.addPlayerIDToConfirmedSet('def');
-        expect(room.hasEveryoneConfirmedChoiceInThisRoom()).to.equal(false);
         done();
     });
     it('getEveryoneChoice works', (done) => {
