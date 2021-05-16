@@ -298,11 +298,10 @@ function calculateAllTripleBonuses(prolificIDArray, room) {
         let playerProlific = prolificIDArray[i];
         let choicesProlific = allChoices.get(playerProlific);
         let tempTripleBonus = [];
-        let triple = false;
         if (choicesProlific.length == 2) {
             const firstPlayerChosen = choicesProlific[0];
             const secondPlayerChosen = choicesProlific[1];
-            if (isTripleBonus(choicesProlific, allChoices, triple, playerProlific)) {
+            if (isTripleBonus(choicesProlific, allChoices, playerProlific)) {
                 placeIntoTripleBonus(allTripleBonuses, playerProlific, firstPlayerChosen, secondPlayerChosen, tempTripleBonus);
             }
         }
@@ -312,33 +311,31 @@ function calculateAllTripleBonuses(prolificIDArray, room) {
 /**
  * @param choicesProlific {string array} of IDs a player chose
  * @param allChoices {map} of all choices of players
- * @param triple {boolean} if triple bonus
  * @param playerProlific {string} ID
  * @returns firstPlayerChosen, secondPlayerChosen, triple in order to determine if Triple Bonus  
  **/
-function isTripleBonus(choicesProlific, allChoices, triple, playerProlific) {
-    console.log("allChoices = ");
-    console.log(allChoices);
-    console.log("choicesProlific = ");
-    console.log(choicesProlific);
+function isTripleBonus(choicesProlific, allChoices, playerProlific) {
+    // console.log("isTripleBonus: allChoices = ");
+    // console.log(allChoices);
+    // console.log("choicesProlific = ");
+    // console.log(choicesProlific);
     let firstPlayerChosen = choicesProlific[0];
     let secondPlayerChosen = choicesProlific[1];
     let firstPlayerChoices = allChoices.get(firstPlayerChosen);
     let secondPlayerChoices = allChoices.get(secondPlayerChosen);
     if (firstPlayerChoices.length == 2 && secondPlayerChoices.length == 2) {
-        triple = true;
         for (var k = 0; k < 2; k++) {
             if (firstPlayerChoices[k] != playerProlific && firstPlayerChoices[k] != secondPlayerChosen) {
-                triple = false;
-                break;
+                return false;
             }
             if (secondPlayerChoices[k] != playerProlific && secondPlayerChoices[k] != firstPlayerChosen) {
-                triple = false;
-                break;
+                return false;
             }
         }
+    } else {
+        return false;
     }
-    return { firstPlayerChosen, secondPlayerChosen, triple };
+    return true;
 }
 /**
  * @param allTripleBonuses {string array} of players who selected each other for triple bonus
