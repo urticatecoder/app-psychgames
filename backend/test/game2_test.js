@@ -33,7 +33,7 @@ describe('Test game 2 backend logic', () => {
     it('isGameTwoDone works', (done) => {
         let room = new Room('room 1');
         room.advanceToGameTwo();
-        for(let i = 1; i <= Game2.GameTwoAllocation.MAX_NUM_OF_TURNS - 1; i++){
+        for (let i = 1; i <= Game2.GameTwoAllocation.GAME_TWO_MAX_ROUND_NUM - 1; i++) {
             room.advanceToNextRound();
         }
         expect(Game2.isGameTwoDone(room)).to.equal(false);
