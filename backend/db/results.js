@@ -11,6 +11,9 @@ const choice = require('./models/choice.js');
 const lobby = require('../lobby.js').LobbyInstance;
 var passive = new Map();
 
+const GAME_ONE_MAX_ROUND_NUM = 5;
+const GAME_ONE_MIN_WINNER_NUM = 1;
+
 /**
  * @param prolificIDArray {string array} in the format of prolific IDs e.g. "['testID1', 'testID2']"
  * @param room {room object} the room the players are in 
@@ -371,7 +374,7 @@ function isGameOneDone(room) {
             playerMax += 1;
         }
     }
-    return playerMax >= 1 || room.gameOneTurnCount >= 10;
+    return playerMax >= GAME_ONE_MIN_WINNER_NUM || room.gameOneTurnCount >= GAME_ONE_MAX_ROUND_NUM;
 }
 /**
  * @param room {room object} the room the players are in 
