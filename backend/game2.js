@@ -10,7 +10,7 @@
 class GameTwoAllocation {
     static TOKEN_VALUE = 0.5;
     static POSSIBLE_PAYOFF = [0, 0.5, 1, 1.5, 2];
-    static MAX_NUM_OF_TURNS = 3;
+    static GAME_TWO_MAX_ROUND_NUM = 5;
 
 
     constructor(compete, keep, invest) {
@@ -63,7 +63,7 @@ class GameTwoAllocation {
 }
 
 function calculateFinalPaymentForAPlayer(prolificID, lobby) {
-    let turnNum = getRandomInt(GameTwoAllocation.MAX_NUM_OF_TURNS - 1) + 1; // select a random turn num to calculate final payment
+    let turnNum = getRandomInt(GameTwoAllocation.GAME_TWO_MAX_ROUND_NUM - 1) + 1; // select a random turn num to calculate final payment
     let room = lobby.getRoomPlayerIsIn(prolificID);
     return calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum);
 }
@@ -99,29 +99,29 @@ function calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum) {
     return payment;
 }
 
-function getCompeteAtTurn(prolificID, room, turnNum){
+function getCompeteAtTurn(prolificID, room, turnNum) {
     let group = room.getOthersAllocationAtTurnNum(prolificID, turnNum);
     let teammates = group[0];
     let competeAmount = 0;
-    for(var i = 0; i < teammates.length; i++){
-        competeAmount += teammates[i].compete;     
-    }   
+    for (var i = 0; i < teammates.length; i++) {
+        competeAmount += teammates[i].compete;
+    }
     console.log(competeAmount);
     return competeAmount;
 }
 
-function getInvestAtTurn(prolificID, room, turnNum){
+function getInvestAtTurn(prolificID, room, turnNum) {
     let group = room.getOthersAllocationAtTurnNum(prolificID, turnNum);
     let teammates = group[0];
     let investAmount = 0;
-    for(var i = 0; i < teammates.length; i++){
-        investAmount += teammates[i].invest;     
-    }   
+    for (var i = 0; i < teammates.length; i++) {
+        investAmount += teammates[i].invest;
+    }
     console.log(investAmount);
     return investAmount;
 }
 
-function getKeepAtTurn(prolificID, room, turnNum){
+function getKeepAtTurn(prolificID, room, turnNum) {
     let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
     console.log(playerAllocation.keep);
     return playerAllocation.keep;
@@ -173,7 +173,7 @@ function shuffleArray(array) {
 }
 
 function isGameTwoDone(room) {
-    return room.turnNum >= GameTwoAllocation.MAX_NUM_OF_TURNS;
+    return room.turnNum >= GameTwoAllocation.GAME_TWO_MAX_ROUND_NUM;
 }
 
 module.exports = {
