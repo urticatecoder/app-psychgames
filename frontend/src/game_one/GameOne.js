@@ -109,10 +109,9 @@ const styles = {
  */
 function GameOne(props) {
   const [startHeights, setStartHeights] = useState(createPlayerArray(BOTTOM_OF_SCREEN));
-
   let initialHeights = createPlayerArray(scaleHeight(INITIAL_HEIGHT));
-
   const [endHeights, setEndHeights] = useState(initialHeights);
+  const [currentHeight, setCurrentHeight] = useState(initialHeights);
 
   let initialSelections = createPlayerArray(NOT_SELECTED);
   const [selected, setSelected] = useState(initialSelections);
@@ -133,17 +132,19 @@ function GameOne(props) {
   const [bonusType, setBonusType] = useState(DOUBLE_BONUS);
   const [openBonusShower, setOpenBonusShower] = useState(CLOSED);
 
+
   useEffect(() => {
     socket.on(END_TURN_WEBSOCKET, (heights, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
       reIndexHeights(heights, props.backendIndex);
-
+      console.log('TURN OVER')
+      console.log('current height: ' + currentHeight)
       let posAfterTriple = handleTripleBonuses(
           tripleBonuses,
           tripleIncrease,
           props.allLoginCodes,
           setStartHeights,
           setEndHeights,
-          endHeights,
+          currentHeight,
           setTriples,
           setBonusType,
           setOpenBonusShower
@@ -169,9 +170,10 @@ function GameOne(props) {
         clearBonusArray(setDoubles, allBonusPause);
         setTimeout(() => setOpenBonusShower(CLOSED), allBonusPause);
         
+        let scaledNewHeights = scaleHeights(heights)
         updateHeightsDelayed(
           posAfterDouble,
-          scaleHeights(heights),
+          scaledNewHeights,
           setStartHeights,
           setEndHeights,
           allBonusPause,
@@ -185,6 +187,7 @@ function GameOne(props) {
         handleDisablePlayers(allMovementPause, setDisabledPlayers);
         handleGameTimer(allMovementPause, setResetTimer, setPauseTimer);
         pauseSubmitButton(allMovementPause, setDisableButton);
+        setCurrentHeight(scaledNewHeights);
       }
     );
 
@@ -200,7 +203,7 @@ function GameOne(props) {
       socket.off(END_TURN_WEBSOCKET);
       socket.off(END_GAME_WEBSOCKET);
     };
-  }, [props]);
+  }, [currentHeight, props]);
 
   const { classes } = props;
 
@@ -393,11 +396,9 @@ function updateHeightsDelayed(oldHeights, newHeights, setOldHeights, setNewHeigh
 }
 
 function updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights) {
-  console.log('updating heights');
-  console.log(oldHeights);
-  console.log(newHeights);
   setOldHeights(oldHeights);
   setNewHeights(newHeights);
+  console.log(setNewHeights);
 }
 
 function reIndexHeights(heights, backendIndex) {
