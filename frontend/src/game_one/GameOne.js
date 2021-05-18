@@ -361,6 +361,8 @@ function markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, dela
 }
 
 function handleDoubleBonuses(doubleArray, doubleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setCurrentHeight, setDoubles, animationOffset, setBonusType, setOpenBonusShower) {
+  console.log('original heights');
+  console.log(originalHeights);
   let oldHeights = originalHeights.slice(0);
   for (let i = 0; i < doubleArray.length; i++) {
     let loginCodes = doubleArray[i];

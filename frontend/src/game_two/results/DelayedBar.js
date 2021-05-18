@@ -117,11 +117,11 @@ function getMarginL(resource, group, windowWidth) {
   let halfMargin = individualMargin / 2;
 
   switch (resource) {
-    case KEEP:
-      return offset + halfMargin;
-    case INVEST:
-      return offset + halfMargin + 100 + individualMargin;
     case COMPETE:
+      return offset + halfMargin;
+    case KEEP:
+      return offset + halfMargin + 100 + individualMargin;
+    case INVEST:
       return offset + halfMargin + 2 * (100 + individualMargin);
     default:
       return offset;

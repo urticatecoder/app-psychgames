@@ -5,9 +5,9 @@ import { Variants } from "../../util/common_constants/stylings/StylingsBundler";
 
 const CONFIRM_CHOICES_TEXT = "Confirm!";
 
-const KEEP_INDEX = 0;
-const INVEST_INDEX = 1;
-const COMPETE_INDEX = 2;
+const COMPETE_INDEX = 0;
+const KEEP_INDEX = 1;
+const INVEST_INDEX = 2;
 
 const PRIMARY_COLOR = "primary";
 const SEND_DECISION_WEBSOCKET = "confirm choice for game 2";
@@ -79,6 +79,11 @@ function getMarginLeft(windowWidth) {
 
 function sendDecisions(props) {
   if (props.loginCode != null) {
+  console.log('sending decisions');
+  console.log(props.resources);
+  console.log(props.resources[COMPETE_INDEX]);
+  console.log(props.resources[KEEP_INDEX]);
+  console.log(props.resources[INVEST_INDEX]);
   socket.emit(SEND_DECISION_WEBSOCKET, props.loginCode, props.resources[COMPETE_INDEX], props.resources[KEEP_INDEX], props.resources[INVEST_INDEX], props.timeLeft);
   props.clearSelected();
   props.clearSubmission();
