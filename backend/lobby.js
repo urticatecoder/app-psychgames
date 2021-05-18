@@ -94,7 +94,6 @@ class Lobby {
 
         const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName)
         io.sockets.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
-        // io.sockets.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
         DB_API.saveExperimentSession(playerIDs);
         console.log("fillInBotPlayers: roomName=" + roomName);
         console.log("fillInBotPlayers: playerIDs=" + playerIDs);
