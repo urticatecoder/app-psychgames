@@ -8,15 +8,14 @@ import GameOne from "./game_one/GameOne";
 import GameTwo from "./game_two/GameTwo";
 import AdminAuth from "./admin_page/AdminAuth";
 import PrivateRoute from "./admin_page/PrivateRoute";
-import TutorialScreen from "./tutorials/TutorialScreen";
 import AvatarSelector from "../src/avatar_selection/AvatarSelector";
 import PassiveAlert from './passivity/PassiveDialogue';
 import Compensation from "./prolific/Compensation";
 import GameOneIntro from "./game_one/intro/GameOneIntro";
 import GameTwoIntro from "./game_two/intro/GameTwoIntro";
 import WindowChecker from './util/common_components/WindowChecker';
+import BrowserChecker from './util/common_components/BrowserChecker';
 import Warnings from "./util/common_components/Warnings";
-import { Button, withStyles } from "@material-ui/core";
 
 const INITIAL_CODE = null;
 const INITIAL_CODES = [null, null, null, null, null, null];
@@ -70,6 +69,7 @@ function App() {
           <PassiveAlert loginCode={loginCode}/>
           <RefreshChecker loginCode={loginCode}/>
           <WindowChecker setWindowWidth={setWindowWidth} setWindowHeight={setWindowHeight}/>
+          <BrowserChecker/>
           <Warnings showWarnings={showWarnings} setShowWarnings={setShowWarnings}/>
 
           <Route

@@ -11,6 +11,9 @@ const choice = require('./models/choice.js');
 const lobby = require('../lobby.js').LobbyInstance;
 var passive = new Map();
 
+const GAME_ONE_MAX_ROUND_NUM = 5;
+const GAME_ONE_MIN_WINNER_NUM = 1;
+
 /**
  * @param prolificIDArray {string array} in the format of prolific IDs e.g. "['testID1', 'testID2']"
  * @param room {room object} the room the players are in 
@@ -30,12 +33,12 @@ function getResultsByProlificId(prolificIDArray, room) {
     }
     let zeroSumRoundResults = zeroSumResults(roundResults, prolificIDArray, room);
     let newResults = [];
-    for(var i = 0; i < zeroSumRoundResults.length; i++){
+    for (var i = 0; i < zeroSumRoundResults.length; i++) {
         newResults.push(zeroSumRoundResults[i] + initialLocations[i]);
         let playerProlific = prolificIDArray[i];
-        if(newResults[i] < 0){
+        if (newResults[i] < 0) {
             room.setPlayerLocation(playerProlific, 0);
-        } else{
+        } else {
             room.setPlayerLocation(playerProlific, newResults[i]);
         }
     }
@@ -48,39 +51,39 @@ function getResultsByProlificId(prolificIDArray, room) {
  * @param room {room object} the room the players are in 
  * @returns count {int} location for player to move
  */
-function getResults(playerProlific, prolificIDArray, room){
+function getResults(playerProlific, prolificIDArray, room) {
     let singlePair = getSinglePairMap(prolificIDArray, room);
     let doublePair = getDoublePairMap(prolificIDArray, room);
     let triplePair = getTriplePairMap(prolificIDArray, room);
 
     var count = 0;
-    count += singlePair.get(playerProlific)*4;
-    count += doublePair.get(playerProlific)*8;
-    count += triplePair.get(playerProlific)*15;
+    count += singlePair.get(playerProlific) * 4;
+    count += doublePair.get(playerProlific) * 8;
+    count += triplePair.get(playerProlific) * 15;
     return count;
-} 
+}
 
 /**
  * @param playerProlific {string} ID of player
  * @param room {room object} the room the players are in 
  * @returns playerProlific if player has been passive
  */
-function checkPassiveness(playerProlific, room){
+function checkPassiveness(playerProlific, room) {
     let allChoices = room.getEveryoneChoiceAtCurrentTurn();
     let choice = allChoices.get(playerProlific);
-    if(choice[0] == null){
-        if(passive.has(playerProlific)){
+    if (choice[0] == null) {
+        if (passive.has(playerProlific)) {
             passive.set(playerProlific, passive.get(playerProlific) + 1);
         }
-        else{
+        else {
             passive.set(playerProlific, 1);
         }
     }
-    else{
+    else {
         passive.set(playerProlific, 0);
     }
 
-    if(passive.get(playerProlific) >= 3){
+    if (passive.get(playerProlific) >= 3) {
         return playerProlific
     }
     return null;
@@ -89,15 +92,15 @@ function checkPassiveness(playerProlific, room){
 /**
  * @param all
  */
-function zeroSumResults(allResults, prolificIDArray, room){
+function zeroSumResults(allResults, prolificIDArray, room) {
     var average = 0;
-    for(var i = 0; i < allResults.length; i++){
+    for (var i = 0; i < allResults.length; i++) {
         average += allResults[i];
     }
-    average = average/allResults.length;
+    average = average / allResults.length;
 
     var newResults = [];
-    for(var i = 0; i < allResults.length; i++){
+    for (var i = 0; i < allResults.length; i++) {
         let playerProlific = prolificIDArray[i];
         let newLocation = allResults[i] - average;
         newResults.push(newLocation);
@@ -110,7 +113,7 @@ function zeroSumResults(allResults, prolificIDArray, room){
  * @param room {room object} the room the players are in 
  * @returns singleMap of single bonuses every player has
  */
-function getSinglePairMap(prolificIDArray, room){
+function getSinglePairMap(prolificIDArray, room) {
     let doubleAndTripleCount;
     let allChoices = room.getEveryoneChoiceAtCurrentTurn();
     var singleMap = new Map();
@@ -118,11 +121,11 @@ function getSinglePairMap(prolificIDArray, room){
         singleMap.set(prolificIDArray[i], 0);
     }
     doubleAndTripleCount = getDoubleAndTripleCount(prolificIDArray, room);
-    
-    for(var i = 0; i < prolificIDArray.length; i++){
+
+    for (var i = 0; i < prolificIDArray.length; i++) {
         let playerProlific = prolificIDArray[i];
         let playerProlificChoices = allChoices.get(playerProlific);
-        for(var k = 0; k < playerProlificChoices.length; k++){
+        for (var k = 0; k < playerProlificChoices.length; k++) {
             let playerChosen = playerProlificChoices[k];
             singleMap.set(playerChosen, singleMap.get(playerChosen) + 1);
         }
@@ -132,14 +135,14 @@ function getSinglePairMap(prolificIDArray, room){
     for (var i = 0; i < prolificIDArray.length; i++) {
         let tempPlayer = prolificIDArray[i];
         let tempCount = doubleAndTripleCount.get(tempPlayer);
-        if(tripleMap.get(tempPlayer) !== 0){
+        if (tripleMap.get(tempPlayer) !== 0) {
             singleMap.set(tempPlayer, singleMap.get(tempPlayer) - tempCount + 1);
         }
-        else{
+        else {
             singleMap.set(tempPlayer, singleMap.get(tempPlayer) - tempCount);
         }
     }
-    
+
     return singleMap;
 }
 
@@ -177,9 +180,9 @@ function getDoubleAndTripleCount(prolificIDArray, room) {
  * @param room {room object} the room the players are in 
  * @returns tripleMap of double bonuses every player has
  */
-function getDoublePairMap(prolificIDArray, room){
+function getDoublePairMap(prolificIDArray, room) {
     var doubleMap = new Map();
-    for(var i = 0; i < prolificIDArray.length; i++){
+    for (var i = 0; i < prolificIDArray.length; i++) {
         doubleMap.set(prolificIDArray[i], 0);
     }
     // let doublePairs = calculateAllDoubleBonuses(prolificIDArray, room);
@@ -191,9 +194,9 @@ function getDoublePairMap(prolificIDArray, room){
     let doubleAndTriple = getDoubleAndTripleCount(prolificIDArray, room);
     let triple = getTriplePairMap(prolificIDArray, room);
     // put double and triple counts into double map
-    for(var i = 0; i < prolificIDArray.length; i++){
+    for (var i = 0; i < prolificIDArray.length; i++) {
         let tempPlayer = prolificIDArray[i];
-        doubleMap.set(tempPlayer, doubleAndTriple.get(tempPlayer) - 3*triple.get(tempPlayer));
+        doubleMap.set(tempPlayer, doubleAndTriple.get(tempPlayer) - 3 * triple.get(tempPlayer));
     }
     return doubleMap;
 }
@@ -203,9 +206,9 @@ function getDoublePairMap(prolificIDArray, room){
  * @param room {room object} the room the players are in 
  * @returns tripleMap of triple bonuses every player has
  */
-function getTriplePairMap(prolificIDArray, room){
+function getTriplePairMap(prolificIDArray, room) {
     var tripleMap = new Map();
-    for(var i = 0; i < prolificIDArray.length; i++){
+    for (var i = 0; i < prolificIDArray.length; i++) {
         tripleMap.set(prolificIDArray[i], 0);
     }
     let triplePairs = calculateAllTripleBonuses(prolificIDArray, room);
@@ -253,12 +256,12 @@ function calculateAllDoubleBonuses(prolificIDArray, room) {
         let choicesProlific = allChoices.get(playerProlific);
         let double = true;
         let triple = false;
-        if(choicesProlific == 2){
+        if (choicesProlific == 2) {
             let firstPlayerChosen;
             let secondPlayerChosen;
             ({ firstPlayerChosen, secondPlayerChosen, triple } = isTripleBonus(choicesProlific, allChoices, triple, playerProlific));
         }
-        if(!triple){
+        if (!triple) {
             for (var j = 0; j < choicesProlific.length; j++) {
                 double = true;
                 let playerChosen = choicesProlific[j];
@@ -272,13 +275,13 @@ function calculateAllDoubleBonuses(prolificIDArray, room) {
                 }
                 //place into double bonus list if not already in it
                 for (var idx = 0; idx < allDoubleBonuses.length; idx++) {
-                    if(allDoubleBonuses[idx][0] == playerProlific || allDoubleBonuses[idx][1] ==playerProlific){
-                        if(allDoubleBonuses[idx][1] == playerChosen || allDoubleBonuses[idx][0] ==playerChosen){
+                    if (allDoubleBonuses[idx][0] == playerProlific || allDoubleBonuses[idx][1] == playerProlific) {
+                        if (allDoubleBonuses[idx][1] == playerChosen || allDoubleBonuses[idx][0] == playerChosen) {
                             double = false;
                         }
                     }
                 }
-                if(double && tempDoubleBonus.length != 0){
+                if (double && tempDoubleBonus.length != 0) {
                     allDoubleBonuses.push(tempDoubleBonus);
                 }
             }
@@ -298,12 +301,12 @@ function calculateAllTripleBonuses(prolificIDArray, room) {
         let playerProlific = prolificIDArray[i];
         let choicesProlific = allChoices.get(playerProlific);
         let tempTripleBonus = [];
-        let triple = false;
         if (choicesProlific.length == 2) {
-            let firstPlayerChosen;
-            let secondPlayerChosen;
-            ({ firstPlayerChosen, secondPlayerChosen, triple } = isTripleBonus(choicesProlific, allChoices, triple, playerProlific));
-            placeIntoTripleBonus(triple, allTripleBonuses, playerProlific, firstPlayerChosen, secondPlayerChosen, tempTripleBonus);
+            const firstPlayerChosen = choicesProlific[0];
+            const secondPlayerChosen = choicesProlific[1];
+            if (isTripleBonus(choicesProlific, allChoices, playerProlific)) {
+                placeIntoTripleBonus(allTripleBonuses, playerProlific, firstPlayerChosen, secondPlayerChosen, tempTripleBonus);
+            }
         }
     }
     return allTripleBonuses;
@@ -311,55 +314,52 @@ function calculateAllTripleBonuses(prolificIDArray, room) {
 /**
  * @param choicesProlific {string array} of IDs a player chose
  * @param allChoices {map} of all choices of players
- * @param triple {boolean} if triple bonus
  * @param playerProlific {string} ID
  * @returns firstPlayerChosen, secondPlayerChosen, triple in order to determine if Triple Bonus  
  **/
-function isTripleBonus(choicesProlific, allChoices, triple, playerProlific) {
-    console.log("allChoices = ");
-    console.log(allChoices);
-    console.log("choicesProlific = ");
-    console.log(choicesProlific);
+function isTripleBonus(choicesProlific, allChoices, playerProlific) {
+    // console.log("isTripleBonus: allChoices = ");
+    // console.log(allChoices);
+    // console.log("choicesProlific = ");
+    // console.log(choicesProlific);
     let firstPlayerChosen = choicesProlific[0];
     let secondPlayerChosen = choicesProlific[1];
     let firstPlayerChoices = allChoices.get(firstPlayerChosen);
     let secondPlayerChoices = allChoices.get(secondPlayerChosen);
     if (firstPlayerChoices.length == 2 && secondPlayerChoices.length == 2) {
-        triple = true;
         for (var k = 0; k < 2; k++) {
             if (firstPlayerChoices[k] != playerProlific && firstPlayerChoices[k] != secondPlayerChosen) {
-                triple = false;
+                return false;
             }
             if (secondPlayerChoices[k] != playerProlific && secondPlayerChoices[k] != firstPlayerChosen) {
-                triple = false;
+                return false;
             }
         }
+    } else {
+        return false;
     }
-    return { firstPlayerChosen, secondPlayerChosen, triple };
+    return true;
 }
 /**
- * @param triple {boolean} if triple bonus
  * @param allTripleBonuses {string array} of players who selected each other for triple bonus
  * @param playerProlific {string} ID
  * @param firstPlayerChosen {string}
  * @param secondPlayerChosen {string}
  * @param tempTripleBonus {string array} of players who have triple bonuses so far
  **/
-function placeIntoTripleBonus(triple, allTripleBonuses, playerProlific, firstPlayerChosen, secondPlayerChosen, tempTripleBonus) {
-    if (triple) {
-        let duplicate = false;
-        for (var j = 0; j < allTripleBonuses.length; j++) {
-            if (allTripleBonuses[j].includes(playerProlific) || allTripleBonuses[j].includes(firstPlayerChosen
-                || allTripleBonuses[j].includes(secondPlayerChosen))) {
-                duplicate = true;
-            }
+function placeIntoTripleBonus(allTripleBonuses, playerProlific, firstPlayerChosen, secondPlayerChosen, tempTripleBonus) {
+    let duplicate = false;
+    for (var j = 0; j < allTripleBonuses.length; j++) {
+        if (allTripleBonuses[j].includes(playerProlific) || allTripleBonuses[j].includes(firstPlayerChosen
+            || allTripleBonuses[j].includes(secondPlayerChosen))) {
+            duplicate = true;
         }
-        if (!duplicate) {
-            tempTripleBonus.push(playerProlific);
-            tempTripleBonus.push(firstPlayerChosen);
-            tempTripleBonus.push(secondPlayerChosen);
-            allTripleBonuses.push(tempTripleBonus);
-        }
+    }
+    if (!duplicate) {
+        tempTripleBonus.push(playerProlific);
+        tempTripleBonus.push(firstPlayerChosen);
+        tempTripleBonus.push(secondPlayerChosen);
+        allTripleBonuses.push(tempTripleBonus);
     }
 }
 /**
@@ -374,7 +374,7 @@ function isGameOneDone(room) {
             playerMax += 1;
         }
     }
-    return playerMax >= 3 || room.gameOneTurnCount >= 2;
+    return playerMax >= GAME_ONE_MIN_WINNER_NUM || room.gameOneTurnCount >= GAME_ONE_MAX_ROUND_NUM;
 }
 /**
  * @param room {room object} the room the players are in 
@@ -388,35 +388,35 @@ function getWinnersAndLosers(room) {
     for (let tempPlayer of allLocations.keys()) {
         highScores.push(allLocations.get(tempPlayer));
     }
-    highScores.sort(function(a, b) {
+    highScores.sort(function (a, b) {
         return b - a;
     });
 
-    for(let tempPlayer of allLocations.keys()) {
-        if(allLocations.get(tempPlayer) >= highScores[2] && winners.length < 3){
+    for (let tempPlayer of allLocations.keys()) {
+        if (allLocations.get(tempPlayer) >= highScores[2] && winners.length < 3) {
             winners.push(tempPlayer);
-        } else{
+        } else {
             losers.push(tempPlayer);
         }
     }
     return [winners, losers];
 }
 
-function isWinner(prolificID, room){
+function isWinner(prolificID, room) {
     let results = getWinnersAndLosers(room);
     let winners = results[0];
-    for(var i = 0; i < winners.length; i++){
-        if(winners[i] === prolificID){
+    for (var i = 0; i < winners.length; i++) {
+        if (winners[i] === prolificID) {
             return true;
         }
     }
     return false;
 }
 
-function winningBonus(prolificID, room){
-    if(isWinner(prolificID, room)){
+function winningBonus(prolificID, room) {
+    if (isWinner(prolificID, room)) {
         return 5; // 5 dollars for winning game 1
-    } else{
+    } else {
         return 0;
     }
 }

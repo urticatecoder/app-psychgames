@@ -23,9 +23,10 @@ const GROUP_TWO = 2;
 const GROUP_ONE_TEXT = "One";
 const GROUP_TWO_TEXT = "Two";
 
-const KEEP_INDEX = 0;
-const INVEST_INDEX = 1;
-const COMPETE_INDEX = 2;
+
+const COMPETE_INDEX = 0;
+const KEEP_INDEX = 1;
+const INVEST_INDEX = 2;
 
 const INITIAL_RESOURCE_DISTRIBUTION = [0, 0, 0];
 const RESOURCE_INCREMENTER = 1;
@@ -53,9 +54,9 @@ const SHOW_RESULTS = true;
 
 const TIME_TO_SHOW_RESULTS = 7000;
 
-const RESULTS_DELAY_KEEP = 1000;
-const RESULTS_DELAY_INVEST = 2000;
-const RESULTS_DELAY_COMPETE = 3000;
+const RESULTS_DELAY_COMPETE = 1000;
+const RESULTS_DELAY_KEEP = 2000;
+const RESULTS_DELAY_INVEST = 3000;
 const RESULTS_DELAY_GROUP_TWO = 3000;
 
 const INITIAL_TOKENS = 10;
@@ -125,15 +126,19 @@ function GameTwo(props) {
   useEffect(() => {
     
     socket.on(END_TURN_WEBSOCKET, (competePayoff, investPayoff, winnerResults, loserResults) => {
-      let convertedWinnerResults = convertBackendData(winnerResults);
-      let convertedLoserResults = convertBackendData(loserResults);
+      console.log('[compete, keep, invest]');
+      console.log('winner');
+      console.log(winnerResults);
+      console.log('loser');
+      console.log(loserResults);
+      
       setCompetePayoff(competePayoff);
       setInvestPayoff(investPayoff);
       setResetTimer(RESET_TIMER);
       setCurrentResources(INITIAL_RESOURCE_DISTRIBUTION);
       setShowResults(SHOW_RESULTS);
-      setGroupOneResults(convertedWinnerResults);
-      setGroupTwoResults(convertedLoserResults);
+      setGroupOneResults(winnerResults);
+      setGroupTwoResults(loserResults);
       setTimeout(() => {
         setDisableButton(DO_NOT_DISABLE_BUTTON);
         setShowResults(DO_NOT_SHOW_RESULTS);
@@ -360,10 +365,6 @@ function updateResource(resourceIndex, setFromResources, setToResources, origina
   setTokensSpent(addTokenOffset + tokensSpent);
   setFromResources(fromResources);
   setToResources(toResources);
-}
-
-function convertBackendData(array) {
-  return array.reverse();
 }
 
 export default withRouter(withStyles(styles)(GameTwo));

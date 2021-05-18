@@ -2,8 +2,8 @@ const assert = require('assert');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
-calculateResults, checkPassiveness, zeroSumResults, getSinglePairMap,
- getDoublePairMap, getTriplePairMap, isGameOneDone, getWinnersAndLosers} = require('../db/results.js');
+    calculateResults, checkPassiveness, zeroSumResults, getSinglePairMap,
+    getDoublePairMap, getTriplePairMap, isGameOneDone, getWinnersAndLosers } = require('../db/results.js');
 
 
 describe('Location sending and calculation', () => {
@@ -19,7 +19,7 @@ describe('Location sending and calculation', () => {
         // console.log(room);
         let results = getResultsByProlificId(testID, room)
         // console.log(results);
-        for(var i = 0; i < results.length; i++ ){
+        for (var i = 0; i < results.length; i++) {
             assert(results[i] !== 0);
         }
         done();
@@ -36,7 +36,7 @@ describe('Location sending and calculation', () => {
         // console.log(room);
         let results = getResultsByProlificId(testID, room)
         // console.log(results);
-        for(var i = 0; i < results.length; i++ ){
+        for (var i = 0; i < results.length; i++) {
             assert(results[i] === 50);
         }
         done();
@@ -53,7 +53,7 @@ describe('Location sending and calculation', () => {
     //     room.getPlayerWithID('test_id1').recordChoices(choicesOne);
     //     room.getPlayerWithID('test_id3').recordChoices(choicesThree);
     //     room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
-    
+
     //     const count = getResultsByProlificId(testID, room);
     //     console.log(count);
     //     for(var i =0; i <count.length; i++){
@@ -75,7 +75,7 @@ describe('Location sending and calculation', () => {
     //     room.getPlayerWithID('test_id1').recordChoices(choicesOne);
     //     room.getPlayerWithID('test_id3').recordChoices(choicesThree);
     //     room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
-    
+
     //     const count = getResultsByProlificId(testID, room);
     //     // console.log(count);
     //     assert(count[0] == 1.333333333333333 && count[1] == 5.333333333333333);
@@ -167,7 +167,7 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
 
         let doubleBonuses = calculateAllDoubleBonuses(testID, room);
-        assert (doubleBonuses.length == 2);
+        assert(doubleBonuses.length == 2);
         done();
     });
 
@@ -324,7 +324,7 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
         let result = checkPassiveness('test_id2', room);
-    
+
         assert(null === result);
         done();
     })
@@ -341,7 +341,7 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
         let result;
-        for(var i = 0; i < 4; i++){
+        for (var i = 0; i < 4; i++) {
             result = checkPassiveness('test_id2', room);
         }
         assert(result === 'test_id2');
@@ -354,7 +354,7 @@ describe('Location sending and calculation', () => {
         room.addPlayer(new Player('test_id1'));
         room.addPlayer(new Player('test_id2'));
         room.addPlayer(new Player('test_id3'));
-        let ans = [4,4,4];
+        let ans = [4, 4, 4];
         let result = zeroSumResults(ans, testID, room);
         assert(result[0] === 0);
         assert(result[1] === 0);
@@ -367,7 +367,7 @@ describe('Location sending and calculation', () => {
         room.addPlayer(new Player('test_id1'));
         room.addPlayer(new Player('test_id2'));
         room.addPlayer(new Player('test_id3'));
-        let ans = [8,16,12];
+        let ans = [8, 16, 12];
         let result = zeroSumResults(ans, testID, room);
         assert(result[0] === -4);
         assert(result[1] === 4);
@@ -380,7 +380,7 @@ describe('Location sending and calculation', () => {
         room.addPlayer(new Player('test_id1'));
         room.addPlayer(new Player('test_id2'));
         room.addPlayer(new Player('test_id3'));
-        let ans = [8,16,12,0,0,0];
+        let ans = [8, 16, 12, 0, 0, 0];
         let result = zeroSumResults(ans, testID, room);
         assert(result[0] === 2);
         assert(result[1] === 10);
@@ -396,7 +396,7 @@ describe('Location sending and calculation', () => {
         room.addPlayer(new Player('test_id1'));
         room.addPlayer(new Player('test_id2'));
         room.addPlayer(new Player('test_id3'));
-        let ans = [19,15,4,15,0,4];
+        let ans = [19, 15, 4, 15, 0, 4];
         let result = zeroSumResults(ans, testID, room);
         assert(result[0] === 9.5);
         assert(result[1] === 5.5);
@@ -412,7 +412,7 @@ describe('Location sending and calculation', () => {
         room.addPlayer(new Player('test_id1'));
         room.addPlayer(new Player('test_id2'));
         room.addPlayer(new Player('test_id3'));
-        let ans = [0,12,8];
+        let ans = [0, 12, 8];
         let result = zeroSumResults(ans, testID, room);
         assert(result[0] === -6.666666666666667);
         assert(result[1] === 5.333333333333333);
@@ -472,7 +472,7 @@ describe('Location sending and calculation', () => {
         let single = getSinglePairMap(testID, room);
         let double = getDoublePairMap(testID, room);
         let triple = getTriplePairMap(testID, room);
-        for(var i = 0; i < testID.length; i++){
+        for (var i = 0; i < testID.length; i++) {
             let player = testID[i];
             assert(single.get(player) === 0);
             assert(double.get(player) === 0);
@@ -495,7 +495,7 @@ describe('Location sending and calculation', () => {
         let single = getSinglePairMap(testID, room);
         let double = getDoublePairMap(testID, room);
         let triple = getTriplePairMap(testID, room);
-        for(var i = 0; i < testID.length; i++){
+        for (var i = 0; i < testID.length; i++) {
             let player = testID[i];
             assert(single.get(player) === 1);
             assert(double.get(player) === 0);
@@ -513,17 +513,19 @@ describe('Location sending and calculation', () => {
         room.addPlayer(new Player('test_id2'));
         room.addPlayer(new Player('test_id3'));
         room.getPlayerWithID('test_id1').recordChoices(choicesOne);
-        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         let single = getSinglePairMap(testID, room);
         let double = getDoublePairMap(testID, room);
         let triple = getTriplePairMap(testID, room);
-        for(var i = 0; i < testID.length; i++){
+        console.log("triple:");
+        console.log(triple);
+        for (var i = 0; i < testID.length; i++) {
             let player = testID[i];
             assert(single.get(player) === 0);
             assert(triple.get(player) === 0);
         }
-        assert(double.get(testID[0])  === 2);
+        assert(double.get(testID[0]) === 2);
         assert(double.get(testID[1]) === 1 && double.get(testID[2]) === 1);
         done();
     });
@@ -542,7 +544,7 @@ describe('Location sending and calculation', () => {
         let single = getSinglePairMap(testID, room);
         let double = getDoublePairMap(testID, room);
         let triple = getTriplePairMap(testID, room);
-        for(var i = 0; i < testID.length; i++){
+        for (var i = 0; i < testID.length; i++) {
             let player = testID[i];
             assert(single.get(player) === 0);
             assert(double.get(player) === 0);
@@ -574,7 +576,7 @@ describe('Location sending and calculation', () => {
         let single = getSinglePairMap(testID, room);
         let double = getDoublePairMap(testID, room);
         let triple = getTriplePairMap(testID, room);
-        for(var i = 0; i < testID.length; i++){
+        for (var i = 0; i < testID.length; i++) {
             let player = testID[i];
             assert(single.get(player) === 0);
             assert(double.get(player) === 0);
@@ -597,7 +599,7 @@ describe('Location sending and calculation', () => {
         let single = getSinglePairMap(testID, room);
         let double = getDoublePairMap(testID, room);
         let triple = getTriplePairMap(testID, room);
-        for(var i = 0; i < testID.length; i++){
+        for (var i = 0; i < testID.length; i++) {
             let player = testID[i];
             assert(triple.get(player) === 0);
         }
@@ -630,7 +632,7 @@ describe('Location sending and calculation', () => {
         let single = getSinglePairMap(testID, room);
         let double = getDoublePairMap(testID, room);
         let triple = getTriplePairMap(testID, room);
-        for(var i = 0; i < testID.length; i++){
+        for (var i = 0; i < testID.length; i++) {
             let player = testID[i];
             assert(triple.get(player) === 0);
         }
@@ -700,5 +702,5 @@ describe('Location sending and calculation', () => {
         console.log(group[1]);
         done();
     });
-    
+
 })
