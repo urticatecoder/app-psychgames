@@ -3,7 +3,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
 const BOT = require("./db/bot");
-const {getResultsByProlificId, isGameOneDone, getWinnersAndLosers, calculateAllTripleBonuses, calculateAllDoubleBonuses, checkPassiveness} = require("./db/results");
+const { getResultsByProlificId, isGameOneDone, getWinnersAndLosers, calculateAllTripleBonuses, calculateAllDoubleBonuses, checkPassiveness } = require("./db/results");
 const Game2 = require('./game2');
 const lobby = require("./lobby.js").LobbyInstance;
 
@@ -13,7 +13,7 @@ const game2 = require("./game2");
 
 /* use the test database if no environment variables named MONGODB_URI are passed in */
 let mongoDB_URI = process.env.MONGODB_URI || 'mongodb+srv://xipu:k5q1J0qhOrVb1F65@cluster0.jcnnf.azure.mongodb.net/psych_game?retryWrites=true&w=majority'
-mongoose.connect(mongoDB_URI, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(mongoDB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', function () {
@@ -30,12 +30,12 @@ io.on('connection', socket => {
     //     require('./lobby.js').LobbyDefaultSocketListener(io, socket);
     // }
     require('./lobby.js').LobbyDefaultSocketListener(io, socket);
-    
+
     // TODO: move to lobby socket listener code
     socket.on('time in lobby', (prolificID) => {
         prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
-        if(prolificID != null){
+        if (prolificID != null) {
             let time = room.getTime(prolificID);
             console.log(prolificID + ' time is' + time);
             io.in(room.name).emit('player time', time);
@@ -44,17 +44,19 @@ io.on('connection', socket => {
 
     socket.on('confirm choice for game 1', (prolificID, choices, zeroTime) => {
         // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
+        // TODO: receive experimentID from frontend
+        let experimentID = lobby.rooms.entries().next().value[0];
         prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
-        DB_API.saveChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
+        DB_API.saveChoiceToDB(experimentID, prolificID, choices, room.turnNum, player.isBot);
         player.recordChoices(choices);
         room.addPlayerIDToConfirmedSet(prolificID);
 
         // if everyone has confirmed or timer has reached 0
         // let timeStart = room.getTime(prolificID);
         // const computeBonus = room.hasEveryoneConfirmedChoiceInThisRoom() || zeroTime || ((room.getTime(prolificID) - timeStart) >= 30);
-        const computeBonus = room.hasEveryoneConfirmedChoiceInThisRoom() || zeroTime<=0;
+        const computeBonus = room.hasEveryoneConfirmedChoiceInThisRoom() || zeroTime <= 0;
         if (computeBonus) { // all 6 have confirmed choices
             // console.log("hasEveryoneConfirmedChoiceInThisRoom: "+room.hasEveryoneConfirmedChoiceInThisRoom())
             // console.log(zeroTime)
@@ -66,7 +68,7 @@ io.on('connection', socket => {
                 if (playerInThisRoom.isBot) {
                     let bot = playerInThisRoom;
                     let botChoices = BOT.determineBotChoice(bot.prolificID, allIDs);
-                    DB_API.saveChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
+                    DB_API.saveChoiceToDB(experimentID, bot.prolificID, botChoices, room.turnNum, true);
                     bot.recordChoices(botChoices);
                     room.addPlayerIDToConfirmedSet(bot.prolificID);
                 }
@@ -81,7 +83,7 @@ io.on('connection', socket => {
             allIDs.forEach(prolific => {
                 console.log(prolific);
                 let player = checkPassiveness(prolific, room);
-                if(player != null){
+                if (player != null) {
                     console.log(player + " is possibly inactive.");
                     io.in(room.name).emit('check passivity', player);
 
@@ -89,7 +91,7 @@ io.on('connection', socket => {
                         // let it pass
                         console.log(activePlayer + ' is active');
                     });
-    
+
                     socket.on('inactive player', (inactivePlayer) => {
                         //make this player a bot
                         console.log(inactivePlayer + ' is inactive');
@@ -143,7 +145,7 @@ io.on('connection', socket => {
                 let competePayoff = payoff[0], investPayoff = payoff[1];
                 io.in(room.name).emit('end current turn for game 2', competePayoff, investPayoff, allocation[0], allocation[1]);
                 io.in(room.name).emit('end game 2');
-                
+
                 socket.on('get results', (playerInRoom) => {
                     console.log("Results for: " + playerInRoom);
                     let competePayoff = payoff[0], investPayoff = payoff[1];
@@ -151,9 +153,9 @@ io.on('connection', socket => {
                     let gameOneResult = false;
                     let group = getWinnersAndLosers(room);
                     let winners = group[0];
-                    let gameOneBonus = 0; 
+                    let gameOneBonus = 0;
                     winners.forEach((winner) => {
-                        if(winner === prolificID){
+                        if (winner === prolificID) {
                             gameOneResult = true;
                             gameOneBonus = 5; // 5 dollars to win game 1
                         }
@@ -163,15 +165,15 @@ io.on('connection', socket => {
                     let compete = game2.getCompeteAtTurn(playerInRoom, room, payOutTurnNum);
                     let keep = game2.getKeepAtTurn(playerInRoom, room, payOutTurnNum);
                     let invest = game2.getInvestAtTurn(playerInRoom, room, payOutTurnNum);
-                    console.log('compete: ' +compete + ' invest: ' + invest + ' keep: ' + keep);
-                    io.in(room.name).emit('send results', gameOneResult, gameOneBonus, payOutTurnNum + 1, keep, keep* 0.5, invest, investPayoff*0.5, invest*investPayoff*0.5, compete, competePayoff*0.5, -1*(compete*competePayoff*0.5));    
+                    console.log('compete: ' + compete + ' invest: ' + invest + ' keep: ' + keep);
+                    io.in(room.name).emit('send results', gameOneResult, gameOneBonus, payOutTurnNum + 1, keep, keep * 0.5, invest, investPayoff * 0.5, invest * investPayoff * 0.5, compete, competePayoff * 0.5, -1 * (compete * competePayoff * 0.5));
                 });
             } else {
                 let allocation = room.getTeamAllocationAtCurrentTurn();
                 room.advanceToNextRound();
                 let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
                 let competePayoff = payoff[0], investPayoff = payoff[1];
-                console.log( 'winners: ' + allocation[0]);
+                console.log('winners: ' + allocation[0]);
                 console.log('losers' + allocation[1]);
                 // for testing purposes
                 // let payOutTurnNum = Math.floor(Math.random() * Math.floor(room.turnNum - 1) + 1);
