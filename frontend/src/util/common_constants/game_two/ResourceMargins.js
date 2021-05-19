@@ -5,9 +5,9 @@
  */
 
 const ResourceMargins = {
-  KEEP: "45vw",
-  INVEST: "57vw",
-  COMPETE: "69vw",
+  COMPETE: "45vw",
+  KEEP: "57vw",
+  INVEST: "69vw",
   DEFAULT: "0vw",
 };
 
