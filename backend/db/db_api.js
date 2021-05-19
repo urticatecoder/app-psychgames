@@ -17,7 +17,8 @@ function saveExperimentSession(playerIDs) {
     playerIDs.forEach((id) => {
         experiment.players.push({ prolificID: id });
     });
-    return experiment.save();
+    experiment.save();
+    return experiment._id;
 }
 
 /**
