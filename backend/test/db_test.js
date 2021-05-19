@@ -1,7 +1,8 @@
 const expect = require('chai').expect;
 const DB_API = require('../db/db_api.js');
 const mongoose = require('mongoose');
-const {ExperimentModel} = require("../db/models/experiment");
+const ObjectID = require("bson-objectid");
+const { ExperimentModel } = require("../db/models/experiment");
 
 describe('Test database query API', () => {
     before(function (done) {
@@ -21,17 +22,17 @@ describe('Test database query API', () => {
     });
     it('save experiment schema', (done) => {
         const testIDs = ['123', '234', '345'];
-        DB_API.saveExperimentSession(testIDs).then((experiment) => {
+        DB_API.saveExperimentSession(ObjectID(), testIDs).then((experiment) => {
             let experimentID = experiment._id;
-            return ExperimentModel.findOne({_id: experimentID}).then((result) => {
+            return ExperimentModel.findById(experimentID).then((result) => {
                 expect(experiment.toString()).to.equal(result.toString());
                 done();
             });
         }).catch(err => done(err));
     });
     it('save choice schema', (done) => {
-        DB_API.saveExperimentSession(['111', '222', '333']).then(() => {
-            return DB_API.saveChoiceToDB('111', ['222', '333'], 1, false).then((result) => {
+        DB_API.saveExperimentSession(ObjectID(), ['111', '222', '333']).then((experiment) => {
+            return DB_API.saveChoiceToDB(experiment._id, '111', ['222', '333'], 1, false).then((result) => {
                 let savedChoice = result.players[0].choice[0];
                 expect(savedChoice.selectedPlayerID).to.deep.equal(['222', '333']);
                 expect(savedChoice.turnNum).to.equal(1);
@@ -41,7 +42,7 @@ describe('Test database query API', () => {
         }).catch(err => done(err));
     });
     it('save allocation schema', (done) => {
-        DB_API.saveExperimentSession(['aaa', 'bbb', 'ccc']).then(() => {
+        DB_API.saveExperimentSession(ObjectID(), ['aaa', 'bbb', 'ccc']).then((experiment) => {
             return DB_API.saveAllocationToDB('aaa', 3, 4, 3, 0.5, 1, 1, false).then((result) => {
                 let savedAllocation = result.players[0].allocation[0];
                 expect(savedAllocation.keepToken).to.equal(3);
