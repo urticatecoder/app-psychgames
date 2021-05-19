@@ -44,10 +44,12 @@ io.on('connection', socket => {
 
     socket.on('confirm choice for game 1', (prolificID, choices, zeroTime) => {
         // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
+        // TODO: receive experimentID from frontend
+        let experimentID = lobby.rooms.entries().next().value[0];
         prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
-        DB_API.saveChoiceToDB(prolificID, choices, room.turnNum, player.isBot);
+        DB_API.saveChoiceToDB(experimentID, prolificID, choices, room.turnNum, player.isBot);
         player.recordChoices(choices);
         room.addPlayerIDToConfirmedSet(prolificID);
 
@@ -66,7 +68,7 @@ io.on('connection', socket => {
                 if (playerInThisRoom.isBot) {
                     let bot = playerInThisRoom;
                     let botChoices = BOT.determineBotChoice(bot.prolificID, allIDs);
-                    DB_API.saveChoiceToDB(bot.prolificID, botChoices, room.turnNum, true);
+                    DB_API.saveChoiceToDB(experimentID, bot.prolificID, botChoices, room.turnNum, true);
                     bot.recordChoices(botChoices);
                     room.addPlayerIDToConfirmedSet(bot.prolificID);
                 }

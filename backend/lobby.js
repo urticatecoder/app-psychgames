@@ -1,6 +1,7 @@
 const GameTwoAllocation = require('./game2.js').GameTwoAllocation;
 const GameTwo = require('./game2.js');
 const DB_API = require('./db/db_api');
+const ObjectID = require("bson-objectid");
 const ROOM_WAIT_TIME_MILLISECONDS = 20000;
 
 /**
@@ -13,7 +14,6 @@ const ROOM_WAIT_TIME_MILLISECONDS = 20000;
  * const lobby = require("./lobby.js").LobbyInstance;
  */
 class Lobby {
-    currRoomID = 0; // used as part of a room's name
     currRoom; // new players who enter the lobby will join this room
     rooms = new Map(); // stores a mapping of room name to room instance
     playerToRoom = new Map(); // stores a mapping of a player's id to the room instance he is in
@@ -26,8 +26,7 @@ class Lobby {
     }
 
     allocateNewRoom() {
-        this.currRoomID++;
-        this.currRoom = new Room(`room ${this.currRoomID}`);
+        this.currRoom = new Room(ObjectID());
         this.rooms.set(this.currRoom.name, this.currRoom);
         this.roomToPlayer.set(this.currRoom.name, []);
     }
@@ -86,9 +85,11 @@ class Lobby {
     }
 
     handleRoomFill(io, roomName) {
-        const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName)
-        io.sockets.in(roomName).emit('room fill', playerIDs); // to everyone in the room, including self
-        DB_API.saveExperimentSession(playerIDs);
+        const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName);
+        // const parameters = { experimentID: roomName, playerIDs: playerIDs };
+        const parameters = playerIDs;
+        io.sockets.in(roomName).emit('room fill', parameters); // to everyone in the room, including self
+        DB_API.saveExperimentSession(roomName, playerIDs);
         console.log("The room is filled with users");
         console.log("roomName=" + roomName);
         console.log("playerIDs=" + playerIDs);
@@ -121,7 +122,6 @@ class Lobby {
     }
 
     reset() {
-        this.currRoomID = 0;
         this.currRoom = undefined;
         this.rooms.clear();
         this.playerToRoom.clear();

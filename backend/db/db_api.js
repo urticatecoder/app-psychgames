@@ -11,13 +11,15 @@ const ExperimentModel = require('./models/experiment.js').ExperimentModel;
  * @param playerIDs {string[]}
  * @return {Promise<*>}
  */
-function saveExperimentSession(playerIDs) {
+function saveExperimentSession(experimentID, playerIDs) {
     let experiment = new ExperimentModel();
+    experiment._id = experimentID;
     experiment.players = [];
     playerIDs.forEach((id) => {
         experiment.players.push({ prolificID: id });
     });
     experiment.save();
+    console.log("New experiment " + experiment._id);
     return experiment._id;
 }
 
@@ -28,20 +30,38 @@ function saveExperimentSession(playerIDs) {
  * @param madeByBot {boolean} is this choice made by a bot
  * @return {Promise|PromiseLike<*>|Promise<*>}
  */
-function saveChoiceToDB(prolificID, selectedPlayerIDs, turnNum, madeByBot) {
-    return ExperimentModel.findOne({ "players.prolificID": prolificID }).then((experiment) => {
-        experiment.players.forEach((player) => {
-            if (player.prolificID === prolificID) {
-                player.choice.push({
-                    prolificID: prolificID,
-                    selectedPlayerID: selectedPlayerIDs,
-                    turnNum: turnNum,
-                    madeByBot: madeByBot
-                });
-            }
+function saveChoiceToDB(experimentID, prolificID, selectedPlayerIDs, turnNum, madeByBot) {
+    if (experimentID == undefined) {
+        return ExperimentModel.findOne({ "players.prolificID": prolificID }).then((experiment) => {
+            experiment.players.forEach((player) => {
+                if (player.prolificID === prolificID) {
+                    player.choice.push({
+                        prolificID: prolificID,
+                        selectedPlayerID: selectedPlayerIDs,
+                        turnNum: turnNum,
+                        madeByBot: madeByBot
+                    });
+                }
+            });
+            return experiment.save();
         });
-        return experiment.save();
-    });
+    } else {
+        console.log("Saving user choices for experiment " + experimentID);
+        return ExperimentModel.findById(experimentID).then((experiment) => {
+            experiment.players.forEach((player) => {
+                if (player.prolificID === prolificID) {
+                    player.choice.push({
+                        prolificID: prolificID,
+                        selectedPlayerID: selectedPlayerIDs,
+                        turnNum: turnNum,
+                        madeByBot: madeByBot
+                    });
+                }
+            });
+            return experiment.save();
+        });
+    }
+
 }
 
 /**
@@ -98,7 +118,7 @@ async function getLatestEntry() {
 
 async function getOldestEntry() {
     try {
-        return await ExperimentModel.findOne().sort({ date: 1 })[0];
+        return await ExperimentModel.find().sort({ date: 1 })[0];
     } catch (e) {
         console.log(e);
     }
