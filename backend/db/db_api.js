@@ -18,9 +18,8 @@ function saveExperimentSession(experimentID, playerIDs) {
     playerIDs.forEach((id) => {
         experiment.players.push({ prolificID: id });
     });
-    experiment.save();
     console.log("New experiment " + experiment._id);
-    return experiment._id;
+    return experiment.save();
 }
 
 /**

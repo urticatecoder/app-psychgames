@@ -45,7 +45,7 @@ describe('Socket connection', function () {
         });
         registerCallback(clients, 'join', (msg) => {
             // console.log(msg);
-            expect(msg).to.match(/.+ has joined room 1/);
+            expect(msg).to.match(/.+ has joined .+/);
         });
         registerCallback(clients, 'num of people in the room', (num) => {
             // console.log(num);
