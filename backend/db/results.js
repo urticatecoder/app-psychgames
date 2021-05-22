@@ -69,7 +69,7 @@ function getResults(playerProlific, prolificIDArray, room) {
  * @returns playerProlific if player has been passive
  */
 function isPlayerPassive(playerProlific, room) {
-    if (!room.hasPlayerWithIDConfirmedChoice(playerProlific)) {
+    if (!room.hasPlayerWithIDConfirmed(playerProlific)) {
         if (passive.has(playerProlific)) {
             passive.set(playerProlific, passive.get(playerProlific) + 1);
         }

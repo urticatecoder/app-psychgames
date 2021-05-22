@@ -52,14 +52,13 @@ io.on('connection', socket => {
         player.setIsBot(false);
         DB_API.saveChoiceToDB(experimentID, prolificID, choices, room.turnNum, player.isBot);
         player.recordChoices(choices);
-        room.addPlayerIDToConfirmedSet(prolificID);
 
         // if everyone has confirmed or timer has reached 0
         // let timeStart = room.getTime(prolificID);
-        // const computeBonus = room.hasEveryoneConfirmedChoiceInThisRoom() || zeroTime || ((room.getTime(prolificID) - timeStart) >= 30);
-        const computeBonus = room.hasEveryoneConfirmedChoiceInThisRoom() || zeroTime <= 0;
+        // const computeBonus = room.hasEveryoneConfirmed() || zeroTime || ((room.getTime(prolificID) - timeStart) >= 30);
+        const computeBonus = room.hasEveryoneConfirmed() || zeroTime <= 0;
         if (computeBonus) { // all 6 have confirmed choices
-            // console.log("hasEveryoneConfirmedChoiceInThisRoom: "+room.hasEveryoneConfirmedChoiceInThisRoom())
+            // console.log("hasEveryoneConfirmed: "+room.hasEveryoneConfirmed())
             // console.log(zeroTime)
             // console.log((room.getTime(prolificID) - timeStart))
             console.log("Computing bonuses");
@@ -70,7 +69,6 @@ io.on('connection', socket => {
                     let botChoices = BOT.determineBotChoice(currPlayer.prolificID, allIDs);
                     DB_API.saveChoiceToDB(experimentID, currPlayer.prolificID, botChoices, room.turnNum, true);
                     currPlayer.recordChoices(botChoices);
-                    room.addPlayerIDToConfirmedSet(currPlayer.prolificID);
                 } else {
                     if (isPlayerPassive(currPlayer.prolificID, room)) {
                         // make bot choices for inactive players
@@ -125,7 +123,6 @@ io.on('connection', socket => {
         player.recordAllocationForGameTwo(competeToken, keepToken, investToken);
         let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn();
         DB_API.saveAllocationToDB(prolificID, keepToken, investToken, competeToken, payoff[1], payoff[0], room.turnNum, player.isBot);
-        room.addPlayerIDToConfirmedSet(prolificID);
 
         // let all bots select their choices
         room.players.forEach((playerInThisRoom) => {
@@ -134,12 +131,11 @@ io.on('connection', socket => {
                 let botAllocation = Game2.generateBotAllocation();
                 bot.recordAllocationForGameTwo(botAllocation[0], botAllocation[1], botAllocation[2]); // compete, keep, invest
                 DB_API.saveAllocationToDB(bot.prolificID, botAllocation[1], botAllocation[2], botAllocation[0], payoff[1], payoff[0], room.turnNum, true);
-                room.addPlayerIDToConfirmedSet(bot.prolificID);
                 // console.log(room.getOthersAllocationAtTurnNum(playerInThisRoom.prolificID, room.turnNum + 1));
             }
         });
 
-        if (room.hasEveryoneConfirmedChoiceInThisRoom()) { // all 6 have confirmed choices
+        if (room.hasEveryoneConfirmed()) { // all 6 have confirmed choices
             console.log(room.turnNum - 1);
             if (Game2.isGameTwoDone(room)) {
                 let allocation = room.getTeamAllocationAtCurrentTurn();
