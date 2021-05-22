@@ -124,19 +124,18 @@ io.on('connection', socket => {
         let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn();
         DB_API.saveAllocationToDB(prolificID, keepToken, investToken, competeToken, payoff[1], payoff[0], room.turnNum, player.isBot);
 
-        // let all bots select their choices
-        room.players.forEach((playerInThisRoom) => {
-            if (playerInThisRoom.isBot && playerInThisRoom.prolificID !== prolificID) {
-                let bot = playerInThisRoom;
-                let botAllocation = Game2.generateBotAllocation();
-                bot.recordAllocationForGameTwo(botAllocation[0], botAllocation[1], botAllocation[2]); // compete, keep, invest
-                DB_API.saveAllocationToDB(bot.prolificID, botAllocation[1], botAllocation[2], botAllocation[0], payoff[1], payoff[0], room.turnNum, true);
-                // console.log(room.getOthersAllocationAtTurnNum(playerInThisRoom.prolificID, room.turnNum + 1));
-            }
-        });
-
-        if (room.hasEveryoneConfirmed()) { // all 6 have confirmed choices
+        if (room.hasEveryoneConfirmed()) { // all players have confirmed choices
             console.log(room.turnNum - 1);
+            // let all bots select their choices
+            room.players.forEach((playerInThisRoom) => {
+                if (playerInThisRoom.isBot && playerInThisRoom.prolificID !== prolificID) {
+                    let bot = playerInThisRoom;
+                    let botAllocation = Game2.generateBotAllocation();
+                    bot.recordAllocationForGameTwo(botAllocation[0], botAllocation[1], botAllocation[2]); // compete, keep, invest
+                    DB_API.saveAllocationToDB(bot.prolificID, botAllocation[1], botAllocation[2], botAllocation[0], payoff[1], payoff[0], room.turnNum, true);
+                    // console.log(room.getOthersAllocationAtTurnNum(playerInThisRoom.prolificID, room.turnNum + 1));
+                }
+            });
             if (Game2.isGameTwoDone(room)) {
                 let allocation = room.getTeamAllocationAtCurrentTurn();
                 let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
