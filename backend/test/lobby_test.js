@@ -97,7 +97,7 @@ describe('Test Player class functionality', () => {
         player.recordChoices(['123']);
         expect(player.getChoiceAtTurn(1)).to.deep.equal(['123', '456']);
         expect(player.getChoiceAtTurn(2)).to.deep.equal(['123']);
-        expect(() => player.getChoiceAtTurn(3)).to.throw(/^Array index out of bound.$/);
+        expect(() => player.getChoiceAtTurn(3)).to.throw(/^Player has not confirmed choice for this turn.$/);
         done();
     });
 });
@@ -129,42 +129,30 @@ describe('Test Room class functionality', () => {
         expect(room.canFindPlayerWithID('111')).to.equal(false);
         done();
     });
-    it('addPlayerIDToConfirmedSet works', (done) => {
-        const room = new Room('room 0');
-        room.addPlayerIDToConfirmedSet('123');
-        room.addPlayerIDToConfirmedSet('456');
-        room.addPlayerIDToConfirmedSet('789');
-        expect(room.playersWithChoiceConfirmed).to.deep.equal(new Set(['123', '456', '789']));
-        room.addPlayerIDToConfirmedSet('123');
-        expect(room.playersWithChoiceConfirmed).to.deep.equal(new Set(['123', '456', '789']));
-        done();
-    });
     it('advanceToNextRound works', (done) => {
         const room = new Room('room 0');
-        room.addPlayerIDToConfirmedSet('123');
-        room.addPlayerIDToConfirmedSet('456');
-        room.addPlayerIDToConfirmedSet('789');
-        expect(room.playersWithChoiceConfirmed.size).to.equal(3);
         expect(room.turnNum).to.equal(1);
         room.advanceToNextRound();
         expect(room.turnNum).to.equal(2);
-        expect(room.playersWithChoiceConfirmed.size).to.equal(0);
         done();
     });
-    it('hasEveryoneConfirmedChoiceInThisRoom works', (done) => {
+    it('hasEveryoneConfirmed works', (done) => {
         const room = new Room('room 0');
         let IDs = ['123', '456', '789', 'abc'];
         IDs.forEach((id) => {
             const player = new Player(id);
             room.addPlayer(player);
-            room.addPlayerIDToConfirmedSet(id);
         });
-        expect(room.hasEveryoneConfirmedChoiceInThisRoom()).to.equal(true);
-        const player = new Player('xyz');
+        expect(room.hasEveryoneConfirmed()).to.equal(false);
+        room.players.forEach((player) => {
+            player.recordChoices([]);
+        });
+        expect(room.hasEveryoneConfirmed()).to.equal(true);
+        let player = new Player('xyz');
         room.addPlayer(player);
-        expect(room.hasEveryoneConfirmedChoiceInThisRoom()).to.equal(false);
-        room.addPlayerIDToConfirmedSet('xyz');
-        expect(room.hasEveryoneConfirmedChoiceInThisRoom()).to.equal(true);
+        expect(room.hasEveryoneConfirmed()).to.equal(false);
+        player.recordChoices([]);
+        expect(room.hasEveryoneConfirmed()).to.equal(true);
         done();
     });
     it('getEveryoneChoice works', (done) => {
