@@ -4,6 +4,11 @@ const DB_API = require('./db/db_api');
 const ObjectID = require("bson-objectid");
 const ROOM_WAIT_TIME_MILLISECONDS = 20000;
 
+const GameNum = {
+    GAMEONE: 1,
+    GAMETWO: 2,
+}
+
 /**
  * @author Xi Pu
  * Class representing lobby. It contains all the data to support features like putting players into groups of 6
@@ -139,9 +144,9 @@ class Lobby {
  * @see Lobby.allocateNewRoom
  */
 class Room {
+    gameNum = GameNum.GAMEONE;
     turnNum = 1; // the current turn number in this room starting at 1
     players = []; // holds player objects who are in this room
-    playersWithChoiceConfirmed = new Set(); // holds prolificID of players who have confirmed their choices at the current turn
     allPlayerLocations = new Map();
     gameOneResults = []; // two groups for winners/losers, winners = gameOneResults[0], losers = gameOneResults[1]
     gameTwoPayoff = GameTwo.generateCompeteAndInvestPayoff();
@@ -209,29 +214,29 @@ class Room {
 
     advanceToNextRound() {
         this.turnNum++;
-        this.playersWithChoiceConfirmed.clear();
     }
 
     advanceToGameTwo() {
+        this.gameNum = GameNum.GAMETWO;
         this.turnNum = 0;
     }
 
-    addPlayerIDToConfirmedSet(prolificID) {
-        this.playersWithChoiceConfirmed.add(prolificID);
-    }
-
-    hasEveryoneConfirmedChoiceInThisRoom() {
-        let result = true;
+    hasEveryoneConfirmed() {
+        let result = true
         this.players.forEach((p) => {
-            if (!p.isBot && !this.playersWithChoiceConfirmed.has(p.prolificID)) {
+            if (!p.isBot && !p.hasConfirmedAtTurn(this.gameNum, this.turnNum)) {
                 result = false;
             }
         });
         return result;
     }
 
-    hasPlayerWithIDConfirmedChoice(prolificID) {
-        return this.playersWithChoiceConfirmed.has(prolificID);
+    hasPlayerWithIDConfirmed(prolificID) {
+        if (!this.canFindPlayerWithID(prolificID)) {
+            throw 'Player not found in room.'
+        }
+        let player = this.getPlayerWithID(prolificID);
+        return player.isBot || player.hasConfirmedAtTurn(this.gameNum, this.turnNum);
     }
 
     canFindPlayerWithID(prolificID) {
@@ -399,7 +404,7 @@ class Player {
     }
 
     /**
-     * @param choice {string[]} an array of selected players' IDs in game 1
+     * @param {string[]} choice an array of selected players' IDs in game 1
      */
     recordChoices(choice) {
         if (!(choice instanceof Array)) {
@@ -411,20 +416,32 @@ class Player {
     }
 
     /**
-     * @param turnNum {number}
+     * @param {integer} turnNum 
+     * @returns true if player has confirmed game 1 choice for the specified turn
+     */
+    hasConfirmedAtTurn(gameNum, turnNum) {
+        // console.log("turnNum = " + turnNum)
+        if (gameNum == GameNum.GAMEONE) {
+            // console.log("Game 1 choice count = " + this.getGameOneChoiceCount());
+            return this.getGameOneChoiceCount() >= turnNum;
+        } else {
+            // console.log("Game 2 choice count = " + this.getGameTwoChoiceCount());
+            return this.getGameTwoChoiceCount() >= turnNum;
+        }
+
+    }
+
+    /**
+     * @param {integer} turnNum
      * @return {string[]}
      */
     getChoiceAtTurn(turnNum) {
         // console.log("Getting choices of player " + this.prolificID + " in turn " + turnNum);
         // console.log(this.choices)
-        turnNum = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
-        if (turnNum >= this.choices.length) {
-            // console.log(this.prolificID)
-            // console.log("turnNum: "+turnNum);
-            // console.log("choices.length: "+this.choices.length);
-            throw 'Array index out of bound.';
+        if (!this.hasConfirmedAtTurn(GameNum.GAMEONE, turnNum)) {
+            throw 'Player has not confirmed choice for this turn.';
         }
-        return this.choices[turnNum];
+        return this.choices[turnNum - 1];
     }
 
     getGameOneChoiceCount() {
@@ -465,6 +482,7 @@ class Player {
 const lobby = new Lobby(); // this is the global lobby instance that will be exported for other modules to get access to
 
 module.exports = {
+    GameNum,
     Lobby,
     Room,
     Player,
