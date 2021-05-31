@@ -2,7 +2,8 @@ const expect = require('chai').expect;
 const clientIO = require('socket.io-client');
 const serverIO = require('socket.io').listen(3001);
 const lobby = require('../lobby.js').LobbyInstance;
-const Lobby = require('../lobby.js').Lobby;
+const FrontendEventMessage = require("../frontend_event_message.js").FrontendEventMessage;
+const BackendEventMessage = require("../backend_event_message").BackendEventMessage;
 
 describe('Socket connection', function () {
     let socketURL = 'http://localhost:3001';
@@ -17,7 +18,7 @@ describe('Socket connection', function () {
 
     function emitEnterLobbyEvents(clients, prolificIDs) {
         clients.forEach((client, i) => {
-            client.emit('enter lobby', prolificIDs[i]);
+            client.emit(FrontendEventMessage.ENTER_LOBBY, prolificIDs[i]);
         });
     }
 
@@ -28,7 +29,7 @@ describe('Socket connection', function () {
     }
 
     beforeEach(function (done) {
-        serverIO.sockets.on('connection', function (socket) {
+        serverIO.sockets.on(FrontendEventMessage.CONNECTION, function (socket) {
             require('../lobby.js').LobbyDefaultSocketListener(serverIO, socket);
         });
         done();
@@ -38,16 +39,16 @@ describe('Socket connection', function () {
         let clients = createClients(6);
         let IDs = ['123', '456', '789', 'abc', 'def', '000'];
         let timesCalled = 0;
-        registerCallback(clients, 'room fill', (res) => {
+        registerCallback(clients, BackendEventMessage.ROOM_FILL, (res) => {
             timesCalled++;
             // console.log(res);
             expect(res).to.have.members(IDs);
         });
-        registerCallback(clients, 'join', (msg) => {
+        registerCallback(clients, BackendEventMessage.PLAYER_JOIN_ROOM, (msg) => {
             // console.log(msg);
             expect(msg).to.match(/.+ has joined .+/);
         });
-        registerCallback(clients, 'num of people in the room', (num) => {
+        registerCallback(clients, BackendEventMessage.NUM_PLAYER_IN_ROOM, (num) => {
             // console.log(num);
             expect(num).to.lessThan(7);
         });
@@ -64,18 +65,18 @@ describe('Socket connection', function () {
     it('enter lobby, room fill, join emitted correctly for two rooms', function (done) {
         let clients = createClients(6);
         emitEnterLobbyEvents(clients, ['123', '456', '789', 'abc', 'def', '000']);
-        registerCallback(clients, 'room fill', (msg) => {
+        registerCallback(clients, BackendEventMessage.ROOM_FILL, (msg) => {
             expect(msg).to.equal('room 1 is filled up.');
         });
-        registerCallback(clients, 'join', (msg) => {
+        registerCallback(clients, BackendEventMessage.PLAYER_JOIN_ROOM, (msg) => {
             expect(msg).to.match(/.+ has joined room 1/);
         });
         let clientsInSecondRoom = createClients(6);
         emitEnterLobbyEvents(clientsInSecondRoom, ['1234', '4567', '7891', '1111', '2222', '0000']);
-        registerCallback(clientsInSecondRoom, 'room fill', (msg) => {
+        registerCallback(clientsInSecondRoom, BackendEventMessage.ROOM_FILL, (msg) => {
             expect(msg).to.equal('room 2 is filled up.');
         });
-        registerCallback(clientsInSecondRoom, 'join', (msg) => {
+        registerCallback(clientsInSecondRoom, BackendEventMessage.PLAYER_JOIN_ROOM, (msg) => {
             expect(msg).to.match(/.+ has joined room 2/);
         });
         setTimeout(() => {
