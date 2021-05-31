@@ -11,6 +11,11 @@ const GameNum = {
     GAMETWO: 2,
 }
 
+const GameNum = {
+    GAMEONE: 1,
+    GAMETWO: 2,
+}
+
 /**
  * @author Xi Pu
  * Class representing lobby. It contains all the data to support features like putting players into groups of 6
