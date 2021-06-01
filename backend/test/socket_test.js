@@ -39,17 +39,15 @@ describe('Socket connection', function () {
         let clients = createClients(6);
         let IDs = ['123', '456', '789', 'abc', 'def', '000'];
         let timesCalled = 0;
-        registerCallback(clients, BackendEventMessage.ROOM_FILL, (res) => {
+        registerCallback(clients, BackendEventMessage.ROOM_FILL, (experimentID, players) => {
             timesCalled++;
-            // console.log(res);
-            expect(res).to.have.members(IDs);
+            expect(players).to.have.members(IDs);
         });
         registerCallback(clients, BackendEventMessage.PLAYER_JOIN_ROOM, (msg) => {
-            // console.log(msg);
             expect(msg).to.match(/.+ has joined .+/);
         });
         registerCallback(clients, BackendEventMessage.NUM_PLAYER_IN_ROOM, (num) => {
-            // console.log(num);
+            // TODO: update test to accommodate updated parameters
             expect(num).to.lessThan(7);
         });
         emitEnterLobbyEvents(clients, IDs);
@@ -59,7 +57,7 @@ describe('Socket connection', function () {
             expect(timesCalled).to.equal(6);
             closeClientConnections(clients);
             done();
-        }, 250);
+        }, 1000);
     });
 
     it('enter lobby, room fill, join emitted correctly for two rooms', function (done) {
