@@ -50,6 +50,8 @@ const INITIAL_WINDOW_HEIGHT = window.innerHeight;
 
 const INITIAL_BACKEND_INDEX = -1;
 
+const DEFAULT_EXPERIMENT_ID = -1;
+
 function App() {
   const [loginCode, setLoginCode] = useState(INITIAL_CODE);
   const [allLoginCodes, setAllLoginCodes] = useState(INITIAL_CODES);
@@ -61,6 +63,7 @@ function App() {
   const [showWarnings, setShowWarnings] = useState(HIDE);
   const [windowWidth, setWindowWidth] = useState(INITIAL_WINDOW_WIDTH);
   const [windowHeight, setWindowHeight] = useState(INITIAL_WINDOW_HEIGHT);
+  const [experimentID, setExperimentID] = useState(DEFAULT_EXPERIMENT_ID)
 
   return (
     <div className={CLASS_NAME}>
@@ -88,6 +91,7 @@ function App() {
                 loggedIn = {loggedIn}
                 setLoggedIn = {setLoggedIn}
                 setBackendIndex = {setBackendIndex}
+                setExperimentID = {setExperimentID}
               />
             )}
           />
@@ -142,6 +146,7 @@ function App() {
                 selectedIndex={selectedIndex}
                 windowWidth={windowWidth}
                 windowHeight={windowHeight}
+                experimentID={experimentID}
               />
             )}
           />
@@ -163,6 +168,7 @@ function App() {
                 windowWidth={windowWidth}
                 windowHeight={windowHeight}
                 backendIndex={backendIndex}
+                experimentID={experimentID}
               />
             )}
           />
