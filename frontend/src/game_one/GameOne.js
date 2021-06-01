@@ -239,6 +239,7 @@ function GameOne(props) {
         timeLeft = {timeLeft}
         setNoteTime = {setNoteTime}
         windowWidth={props.windowWidth}
+        experimentID = {props.experimentID}
       />
 
       <div className={classes.animatedColumns}>

@@ -3,6 +3,8 @@ const GameTwo = require('./game2.js');
 const DB_API = require('./db/db_api');
 const ObjectID = require("bson-objectid");
 const ROOM_WAIT_TIME_MILLISECONDS = 20000;
+const FrontendEventMessage = require("./frontend_event_message.js").FrontendEventMessage;
+const BackendEventMessage = require("./backend_event_message.js").BackendEventMessage;
 
 const GameNum = {
     GAMEONE: 1,
@@ -32,8 +34,12 @@ class Lobby {
 
     allocateNewRoom() {
         this.currRoom = new Room(ObjectID());
-        this.rooms.set(this.currRoom.name, this.currRoom);
-        this.roomToPlayer.set(this.currRoom.name, []);
+        this.rooms.set(this.currRoom.name.toString(), this.currRoom);
+        this.roomToPlayer.set(this.currRoom.name.toString(), []);
+    }
+
+    printRoomsMap() {
+        this.rooms.forEach((value, key) => { console.log(`m[${key}] = ${value.name}`); });
     }
 
     getRoomPlayerIsIn(prolificID) {
@@ -41,15 +47,15 @@ class Lobby {
     }
 
     getRoomByRoomName(roomName) {
-        return this.rooms.get(roomName)
+        return this.rooms.get(roomName.toString());
     }
 
     getAllPlayersInRoomWithName(roomName) {
-        return this.roomToPlayer.get(roomName);
+        return this.roomToPlayer.get(roomName.toString());
     }
 
     getAllPlayersIDsInRoomWithName(roomName) {
-        return this.getAllPlayersInRoomWithName(roomName).map(player => player.prolificID);
+        return this.getAllPlayersInRoomWithName(roomName.toString()).map(player => player.prolificID);
     }
 
     findRoomForPlayerToJoin(prolificID) {
@@ -59,7 +65,7 @@ class Lobby {
         let player = new Player(prolificID);
         this.currRoom.addPlayer(player);
         this.playerToRoom.set(prolificID, this.currRoom);
-        this.roomToPlayer.get(this.currRoom.name).push(player);
+        this.roomToPlayer.get(this.currRoom.name.toString()).push(player);
         return this.currRoom.name;
     }
 
@@ -70,11 +76,12 @@ class Lobby {
         bot.setIsBot(true);
         this.currRoom.addPlayer(bot);
         this.playerToRoom.set(botProlificID, this.currRoom);
-        this.roomToPlayer.get(this.currRoom.name).push(bot);
+        this.roomToPlayer.get(this.currRoom.name.toString()).push(bot);
         return this.currRoom.name;
     }
 
     addBotPlayersToRoom(roomName) {
+        roomName = roomName.toString();
         let numPlayers = this.getNumOfPlayersInRoom(roomName);
         if (numPlayers < Lobby.MAX_CAPACITY_PER_ROOM) {
             let botProlificID = 'bot' + this.botID;
@@ -90,10 +97,10 @@ class Lobby {
     }
 
     handleRoomFill(io, roomName) {
+        roomName = roomName.toString();
         const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName);
-        // const parameters = { experimentID: roomName, playerIDs: playerIDs };
-        const parameters = playerIDs;
-        io.sockets.in(roomName).emit('room fill', parameters); // to everyone in the room, including self
+        const parameters = { experimentID: roomName, playerIDs: playerIDs };
+        io.sockets.in(roomName).emit(BackendEventMessage.ROOM_FILL, roomName, playerIDs); // to everyone in the room, including self
         DB_API.saveExperimentSession(roomName, playerIDs);
         console.log("The room is filled with users");
         console.log("roomName=" + roomName);
@@ -103,6 +110,7 @@ class Lobby {
 
 
     fillInBotPlayers(io, roomName) {
+        roomName = roomName.toString();
         let numPlayers = this.getNumOfPlayersInRoom(roomName);
         console.log("Time's up. The room already has " + numPlayers + " players.");
         for (let i = numPlayers; i < Lobby.MAX_CAPACITY_PER_ROOM; i++) {
@@ -123,6 +131,7 @@ class Lobby {
 
     // need to refactor this method later
     getNumOfPlayersInRoom(roomName) {
+        roomName = roomName.toString();
         return this.roomToPlayer.get(roomName).length;
     }
 
@@ -163,7 +172,7 @@ class Room {
         }
         this.roomName = roomName;
         // getter method for a room's remaining lobby wait time in seconds
-        this.getTime = function (prolific) {
+        this.getTime = function () {
             return (ROOM_WAIT_TIME_MILLISECONDS - ((Date.now() - this.roomCreationTime))) / 1000;
         }
     }
@@ -488,14 +497,15 @@ module.exports = {
     Player,
     LobbyInstance: lobby,
     LobbyBotSocketListener: function (io, socket) {
-        socket.on("enter lobby", (prolificID) => {
+        socket.on(FrontendEventMessage.ENTER_LOBBY, (prolificID) => {
             prolificID = prolificID.toString();
             let roomName = lobby.findRoomForPlayerToJoin(prolificID);
             socket.join(roomName);
             socket.roomName = roomName;
             socket.prolificID = prolificID;
-            socket.to(roomName).emit('join', socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
-            socket.emit('num of people in the room', lobby.getNumOfPlayersInRoom(roomName)); // only to self
+            socket.to(roomName).emit(BackendEventMessage.PLAYER_JOIN_ROOM, socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
+            let num = lobby.getNumOfPlayersInRoom(roomName)
+            socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, roomName, num); // only to self
 
             // add 5 bot players once a player joins the lobby
             for (let i = 1; i <= 5; i++) {
@@ -509,34 +519,25 @@ module.exports = {
         });
     },
     LobbyDefaultSocketListener: function (io, socket) {
-        socket.on("enter lobby", (prolificID) => {
+        socket.on(FrontendEventMessage.ENTER_LOBBY, (prolificID) => {
             prolificID = prolificID.toString();
             let roomName = lobby.findRoomForPlayerToJoin(prolificID);
             socket.join(roomName, function () {
                 // console.log(socket.id + " now in rooms ", socket.rooms);
                 socket.roomName = roomName;
                 socket.prolificID = prolificID;
-                socket.to(roomName).emit('join', socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
-                socket.emit('num of people in the room', lobby.getNumOfPlayersInRoom(roomName)); // only to self
+                socket.to(roomName).emit(BackendEventMessage.PLAYER_JOIN_ROOM, socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
+                socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, lobby.getNumOfPlayersInRoom(roomName)); // only to self
+                // TODO: replace above line with updated logic below
+                // socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, roomName, lobby.getNumOfPlayersInRoom(roomName)); // only to self
 
-                // if lobby timer runs out, add bots ---> HAS NOT BEEN TESTED but should work
-                // socket.on("lobby time end", () => {
-                //     for(let i = lobby.getNumOfPlayersInRoom(roomName); i <= Lobby.MAX_CAPACITY_PER_ROOM; i++){
-                //         lobby.addBotPlayers();
-                //     }
-                // });
-
-                // console.log('prolificID '+prolificID+' socketID '+socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
-                // console.log('num of people in the room '+lobby.getNumOfPlayersInRoom(roomName)); // only to self
                 const numPlayers = lobby.getNumOfPlayersInRoom(roomName);
-
                 if (numPlayers >= Lobby.MAX_CAPACITY_PER_ROOM) {
                     // the current room is full, we have to use a new room
                     lobby.handleRoomFill(io, roomName);
                 } else {
                     if (numPlayers == 1) {
-                        console.log("setting timeout");
-                        setTimeout(lobby.fillInBotPlayers.bind(lobby), 20000, io, roomName);
+                        setTimeout(lobby.fillInBotPlayers.bind(lobby), ROOM_WAIT_TIME_MILLISECONDS, io, roomName);
                     }
                 }
             });
