@@ -185,7 +185,7 @@ function GameTwo(props) {
     timeLeft,
     setTimeLeft,
     disableButton, 
-    setDisableButton
+    setDisableButton,
   );
 
   let resourceView = showResults ? resourceResultsView : resourceChoiceView;
@@ -265,6 +265,7 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
         setNoteTime = {setNoteTime}
         windowWidth={props.windowWidth}
         windowHeight={props.windowHeight}
+        experimentID={props.experimentID}
       />
       <VerticalPlayerGroup
         type={GROUP_ONE}

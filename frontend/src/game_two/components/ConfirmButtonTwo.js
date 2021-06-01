@@ -79,14 +79,9 @@ function getMarginLeft(windowWidth) {
 
 function sendDecisions(props) {
   if (props.loginCode != null) {
-  console.log('sending decisions');
-  console.log(props.resources);
-  console.log(props.resources[COMPETE_INDEX]);
-  console.log(props.resources[KEEP_INDEX]);
-  console.log(props.resources[INVEST_INDEX]);
-  socket.emit(SEND_DECISION_WEBSOCKET, props.loginCode, props.resources[COMPETE_INDEX], props.resources[KEEP_INDEX], props.resources[INVEST_INDEX], props.timeLeft);
-  props.clearSelected();
-  props.clearSubmission();
+    socket.emit(SEND_DECISION_WEBSOCKET, props.experimentID, props.loginCode, props.resources[COMPETE_INDEX], props.resources[KEEP_INDEX], props.resources[INVEST_INDEX], props.timeLeft);
+    props.clearSelected();
+    props.clearSubmission();
   }
 }
 

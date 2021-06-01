@@ -14,8 +14,8 @@ describe('Test Lobby class functionality', () => {
         const lobby = new Lobby();
         lobby.allocateNewRoom();
         expect(lobby.rooms.size).to.equal(2);
-        expect(lobby.roomToPlayer.has(lobby.currRoom.name)).to.equal(true);
-        expect(lobby.roomToPlayer.get(lobby.currRoom.name)).to.deep.equal([]);
+        expect(lobby.roomToPlayer.has(lobby.currRoom.name.toString())).to.equal(true);
+        expect(lobby.roomToPlayer.get(lobby.currRoom.name.toString())).to.deep.equal([]);
         done();
     });
     it('Lobby class holds the correct data after calling findRoomForPlayerToJoin', (done) => {
@@ -24,12 +24,12 @@ describe('Test Lobby class functionality', () => {
         let roomName = lobby.findRoomForPlayerToJoin(testID);
         expect(lobby.playerToRoom.has(testID)).to.equal(true);
         expect(lobby.playerToRoom.get(testID)).to.deep.equal(lobby.currRoom);
-        expect(lobby.roomToPlayer.get(lobby.currRoom.name)).to.deep.equal([new Player(testID)]);
+        expect(lobby.roomToPlayer.get(lobby.currRoom.name.toString())).to.deep.equal([new Player(testID)]);
         let testID2 = '1234';
         lobby.findRoomForPlayerToJoin(testID2);
         expect(lobby.playerToRoom.has(testID2)).to.equal(true);
         expect(lobby.playerToRoom.get(testID2)).to.deep.equal(lobby.currRoom);
-        expect(lobby.roomToPlayer.get(lobby.currRoom.name)).to.deep.equal([new Player(testID), new Player(testID2)]);
+        expect(lobby.roomToPlayer.get(lobby.currRoom.name.toString())).to.deep.equal([new Player(testID), new Player(testID2)]);
         done();
     });
     it('getAllPlayersInRoomWithName & getRoomPlayerIsIn return the correct result', (done) => {
@@ -45,8 +45,8 @@ describe('Test Lobby class functionality', () => {
         let roomMapIterator = lobby.rooms.entries();
         let firstRoomName = roomMapIterator.next().value[0];
         expect(lobby.getAllPlayersInRoomWithName(firstRoomName)).to.deep.equal(expectedPlayers);
-        expect(lobby.getRoomPlayerIsIn('789').name).to.equal(firstRoomName);
-        expect(lobby.getRoomPlayerIsIn('abc').name).to.equal(firstRoomName);
+        expect(lobby.getRoomPlayerIsIn('789').name.toString()).to.equal(firstRoomName);
+        expect(lobby.getRoomPlayerIsIn('abc').name.toString()).to.equal(firstRoomName);
         lobby.allocateNewRoom();
         testIDs = ['1', '2', '3'];
         testIDs.forEach((id) => {
@@ -58,8 +58,8 @@ describe('Test Lobby class functionality', () => {
         });
         let secondRoomName = roomMapIterator.next().value[0];
         expect(lobby.getAllPlayersInRoomWithName(secondRoomName)).to.deep.equal(expectedPlayers);
-        expect(lobby.getRoomPlayerIsIn('2').name).to.equal(secondRoomName);
-        expect(lobby.getRoomPlayerIsIn('abc').name).to.equal(firstRoomName);
+        expect(lobby.getRoomPlayerIsIn('2').name.toString()).to.equal(secondRoomName);
+        expect(lobby.getRoomPlayerIsIn('abc').name.toString()).to.equal(firstRoomName);
         done();
     });
 });

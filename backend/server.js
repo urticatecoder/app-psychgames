@@ -6,6 +6,8 @@ const BOT = require("./db/bot");
 const { getResultsByProlificId, isGameOneDone, getWinnersAndLosers, calculateAllTripleBonuses, calculateAllDoubleBonuses, isPlayerPassive } = require("./db/results");
 const Game2 = require('./game2');
 const lobby = require("./lobby.js").LobbyInstance;
+const FrontendEventMessage = require("./frontend_event_message.js").FrontendEventMessage;
+const BackendEventMessage = require("./backend_event_message.js").BackendEventMessage;
 
 // Set up mongoose connection
 let mongoose = require('mongoose');
@@ -21,7 +23,7 @@ db.once('open', function () {
 });
 
 
-io.on('connection', socket => {
+io.on(FrontendEventMessage.CONNECTION, socket => {
     console.log('New client connected');
     //          for Bots 
     // if (process.env.START_MODE === 'bots_auto_join') {
@@ -32,20 +34,19 @@ io.on('connection', socket => {
     require('./lobby.js').LobbyDefaultSocketListener(io, socket);
 
     // TODO: move to lobby socket listener code
-    socket.on('time in lobby', (prolificID) => {
-        prolificID = prolificID.toString();
-        let room = lobby.getRoomPlayerIsIn(prolificID);
-        if (prolificID != null) {
-            let time = room.getTime(prolificID);
-            console.log(prolificID + ' time is' + time);
-            io.in(room.name).emit('player time', time);
+    socket.on(FrontendEventMessage.TIME_IN_LOBBY, (experimentID) => {
+        let room = lobby.getRoomPlayerIsIn(experimentID);
+        // TODO: Replace the line above with updated version below
+        // let room = lobby.getRoomByRoomName(experimentID);
+        if (room != null) {
+            let time = room.getTime();
+            console.log(experimentID + ' time is' + time);
+            io.in(room.name).emit(BackendEventMessage.PLAYER_TIME, time);
         }
     });
 
-    socket.on('confirm choice for game 1', (prolificID, choices, zeroTime) => {
+    socket.on(FrontendEventMessage.CONFIRM_GAME_ONE, (experimentID, prolificID, choices, zeroTime) => {
         // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
-        // TODO: receive experimentID from frontend
-        let experimentID = lobby.rooms.entries().next().value[0];
         prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
@@ -73,20 +74,20 @@ io.on('connection', socket => {
                     if (isPlayerPassive(currPlayer.prolificID, room)) {
                         // make bot choices for inactive players
                         console.log(currPlayer.prolificID + " is possibly inactive.");
-                        io.in(room.name).emit('check passivity', currPlayer.prolificID);
+                        io.in(room.name).emit(BackendEventMessage.CHECK_PASSIVITY, currPlayer.prolificID);
                         let botChoices = BOT.determineBotChoice(currPlayer.prolificID, allIDs);
                         DB_API.saveChoiceToDB(experimentID, currPlayer.prolificID, botChoices, room.turnNum, true);
                         currPlayer.recordChoices(botChoices);
 
-                        socket.on('active player', (playerProlific) => {
+                        socket.on(FrontendEventMessage.ACTIVE_PLAYER, (experimentID, playerProlific) => {
                             // let it pass
-                            console.log(playerProlific + ' is active');
+                            console.log(playerProlific + ' in room ' + experimentID + ' is active');
                         });
 
-                        socket.on('inactive player', (playerProlific) => {
+                        socket.on(FrontendEventMessage.INACTIVE_PLAYER, (experimentID, playerProlific) => {
                             //make this player a bot
                             player.setIsBot(true);
-                            console.log(playerProlific + ' is inactive');
+                            console.log(playerProlific + ' in room ' + experimentID + ' is inactive');
                         });
                     }
                 }
@@ -102,10 +103,10 @@ io.on('connection', socket => {
             if (isGameOneDone(room)) {
                 let group = getWinnersAndLosers(room);
                 room.setGameOneResults(group);
-                io.in(room.name).emit('end game 1', group[0], group[1], allDoubleBonus.length, allTripleBonus.length);
+                io.in(room.name).emit(BackendEventMessage.END_GAME_ONE, group[0], group[1], allDoubleBonus.length, allTripleBonus.length);
                 room.advanceToGameTwo();
             }
-            io.in(room.name).emit('location for game 1', resultForAllPlayers, allTripleBonus, 25,
+            io.in(room.name).emit(BackendEventMessage.GAME_ONE_ROUND_RESULT, resultForAllPlayers, allTripleBonus, 25,
                 allDoubleBonus, 15);
             room.advanceToNextRound();
         } else {
@@ -113,10 +114,10 @@ io.on('connection', socket => {
         }
     });
 
-    socket.on('confirm choice for game 2', (prolificID, competeToken, keepToken, investToken) => {
+    socket.on(FrontendEventMessage.CONFIRM_GAME_TWO, (experimentID, prolificID, competeToken, keepToken, investToken) => {
         prolificID = prolificID.toString();
-        console.log("Game 2 decision received: ", prolificID, competeToken, keepToken, investToken);
-        let room = lobby.getRoomPlayerIsIn(prolificID);
+        console.log("Game 2 decision received: ", experimentID, prolificID, competeToken, keepToken, investToken);
+        let room = lobby.getRoomByRoomName(experimentID);
         let player = room.getPlayerWithID(prolificID);
         player.setIsBot(false);
 
@@ -140,10 +141,10 @@ io.on('connection', socket => {
                 let allocation = room.getTeamAllocationAtCurrentTurn();
                 let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
                 let competePayoff = payoff[0], investPayoff = payoff[1];
-                io.in(room.name).emit('end current turn for game 2', competePayoff, investPayoff, allocation[0], allocation[1]);
-                io.in(room.name).emit('end game 2');
+                io.in(room.name).emit(BackendEventMessage.END_GAME_TWO_ROUND, competePayoff, investPayoff, allocation[0], allocation[1]);
+                io.in(room.name).emit(BackendEventMessage.END_GAME_TWO);
 
-                socket.on('get results', (playerInRoom) => {
+                socket.on(FrontendEventMessage.GET_FINAL_RESULTS, (experimentID, playerInRoom) => {
                     console.log("Results for: " + playerInRoom);
                     let competePayoff = payoff[0], investPayoff = payoff[1];
                     //game 1
@@ -163,7 +164,7 @@ io.on('connection', socket => {
                     let keep = game2.getKeepAtTurn(playerInRoom, room, payOutTurnNum);
                     let invest = game2.getInvestAtTurn(playerInRoom, room, payOutTurnNum);
                     console.log('compete: ' + compete + ' invest: ' + invest + ' keep: ' + keep);
-                    io.in(room.name).emit('send results', gameOneResult, gameOneBonus, payOutTurnNum + 1, keep, keep * 0.5, invest, investPayoff * 0.5, invest * investPayoff * 0.5, compete, competePayoff * 0.5, -1 * (compete * competePayoff * 0.5));
+                    io.in(room.name).emit(BackendEventMessage.SEND_FINAL_RESULTS, gameOneResult, gameOneBonus, payOutTurnNum + 1, keep, keep * 0.5, invest, investPayoff * 0.5, invest * investPayoff * 0.5, compete, competePayoff * 0.5, -1 * (compete * competePayoff * 0.5));
                 });
             } else {
                 let allocation = room.getTeamAllocationAtCurrentTurn();
@@ -179,13 +180,13 @@ io.on('connection', socket => {
                 // let keep = game2.getKeepAtTurn('me', room, payOutTurnNum);
                 // let invest = game2.getInvestAtTurn('me', room, payOutTurnNum);
                 // console.log('compete: ' +compete + ' invest: ' + invest + ' keep: ' + keep);
-                io.in(room.name).emit('end current turn for game 2', competePayoff, investPayoff, allocation[0], allocation[1]);
+                io.in(room.name).emit(BackendEventMessage.END_GAME_TWO_ROUND, competePayoff, investPayoff, allocation[0], allocation[1]);
             }
         }
     });
 
 
-    socket.on('disconnect', () => {
+    socket.on(FrontendEventMessage.DISCONNECT, () => {
         let prolificID = socket.prolificID;
         console.log(`Player with id ${prolificID} disconnected`);
 
@@ -194,7 +195,7 @@ io.on('connection', socket => {
             let player = room.getPlayerWithID(prolificID);
             player.setIsBot(true);
 
-            socket.to(room.name).emit('left', "someone left");
+            socket.to(room.name).emit(BackendEventMessage.PLAYER_LEAVE_ROOM, "someone left");
             socket.leave(room.name);
         }
     });

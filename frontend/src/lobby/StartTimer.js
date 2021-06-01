@@ -91,7 +91,8 @@ function StartTimer(props) {
       setWaitingOnPlayerCounter((prevCount) => prevCount - 1);
     });
 
-    socket.on(ROOM_FULL_WEBSOCKET, (allPlayers) => {
+    socket.on(ROOM_FULL_WEBSOCKET, (experimentID, allPlayers) => {
+      props.setExperimentID(experimentID);
       reIndexPlayers(code, allPlayers, props.setBackendIndex);
       setAllLoginCodes(allPlayers);
     });
