@@ -526,9 +526,8 @@ module.exports = {
                 socket.roomName = roomName;
                 socket.prolificID = prolificID;
                 socket.to(roomName).emit(BackendEventMessage.PLAYER_JOIN_ROOM, socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
-                socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, lobby.getNumOfPlayersInRoom(roomName)); // only to self
-                // TODO: replace above line with updated logic below
-                // socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, roomName, lobby.getNumOfPlayersInRoom(roomName)); // only to self
+                // socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, lobby.getNumOfPlayersInRoom(roomName)); // only to self
+                socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, roomName, lobby.getNumOfPlayersInRoom(roomName)); // only to self
 
                 const numPlayers = lobby.getNumOfPlayersInRoom(roomName);
                 if (numPlayers >= Lobby.MAX_CAPACITY_PER_ROOM) {
