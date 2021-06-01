@@ -65,10 +65,10 @@ function PassiveAlert(props) {
                 <DialogContentText>{SUBMESSAGE}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => exitGame(INACTIVE_PLAYER_WEBSOCKET, props.loginCode, setOpen, setResponded, props)} variant={BUTTON_VARIANT} color={NO_COLOR}>
+                <Button onClick={() => exitGame(INACTIVE_PLAYER_WEBSOCKET, props.experimentID, props.loginCode, setOpen, setResponded, props)} variant={BUTTON_VARIANT} color={NO_COLOR}>
                     {NO}
                 </Button>
-                <Button onClick={() => emitSocket(ACTIVE_PLAYER_WEBSOCKET, props.loginCode, setOpen, setResponded)} variant={BUTTON_VARIANT} color={YES_COLOR}>
+                <Button onClick={() => emitSocket(ACTIVE_PLAYER_WEBSOCKET, props.experimentID, props.loginCode, setOpen, setResponded)} variant={BUTTON_VARIANT} color={YES_COLOR}>
                     {YES}
                 </Button>
             </DialogActions>
@@ -76,16 +76,16 @@ function PassiveAlert(props) {
     )
 }
 
-function exitGame(webSocket, loginCode, setOpen, setResponded, props) {
-    emitSocket(webSocket, loginCode, setOpen, setResponded);
+function exitGame(webSocket, experimentID, loginCode, setOpen, setResponded, props) {
+    emitSocket(webSocket, experimentID, loginCode, setOpen, setResponded);
     props.history.push('/');
 }
 
-function emitSocket(webSocket, loginCode, setOpen, setResponded) {
+function emitSocket(webSocket, experimentID, loginCode, setOpen, setResponded) {
     if (loginCode != null) {
-    socket.emit(webSocket, loginCode);
-    setOpen(CLOSE_DIALOGUE);
-    setResponded(RESPONDED);
+        socket.emit(webSocket, experimentID, loginCode);
+        setOpen(CLOSE_DIALOGUE);
+        setResponded(RESPONDED);
     }
 }
 

@@ -69,7 +69,7 @@ function App() {
     <div className={CLASS_NAME}>
         
         <Router>
-          <PassiveAlert loginCode={loginCode}/>
+          <PassiveAlert loginCode={loginCode} experimentID={experimentID}/>
           <RefreshChecker loginCode={loginCode}/>
           <WindowChecker setWindowWidth={setWindowWidth} setWindowHeight={setWindowHeight}/>
           <BrowserChecker/>
@@ -153,7 +153,7 @@ function App() {
 
           <Route
             path={COMPENSATION_ROUTE}
-            render={() => <Compensation code={loginCode} windowHeight={windowHeight} windowWidth={windowWidth} />}
+            render={() => <Compensation experimentID={experimentID} code={loginCode} windowHeight={windowHeight} windowWidth={windowWidth} />}
           />
 
           <Route

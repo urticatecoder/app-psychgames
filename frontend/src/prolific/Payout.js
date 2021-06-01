@@ -67,7 +67,7 @@ function Payout(props) {
   useEffect(() => {
     if (props.code != null && !askedForResults) {
       setAskedForResults(ASKED_FOR_RESULTS);
-      socket.emit(GET_RESULTS_SOCKET, props.code);
+      socket.emit(GET_RESULTS_SOCKET, props.experimentID, props.code);
     }
 
     socket.on(RECIEVE_RESULTS_SOCKET, (gameOneResult, gameOneAmount, gameTwoTurn, keepTokens, keepAmount, investTokens, investRate, investAmount, competeTokens, competeRate, competeAmount) => {
