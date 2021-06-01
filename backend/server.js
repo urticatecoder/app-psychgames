@@ -34,20 +34,19 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
     require('./lobby.js').LobbyDefaultSocketListener(io, socket);
 
     // TODO: move to lobby socket listener code
-    socket.on(FrontendEventMessage.TIME_IN_LOBBY, (prolificID) => {
-        prolificID = prolificID.toString();
-        let room = lobby.getRoomPlayerIsIn(prolificID);
-        if (prolificID != null) {
-            let time = room.getTime(prolificID);
-            console.log(prolificID + ' time is' + time);
+    socket.on(FrontendEventMessage.TIME_IN_LOBBY, (experimentID) => {
+        let room = lobby.getRoomPlayerIsIn(experimentID);
+        // TODO: Replace the line above with updated version below
+        // let room = lobby.getRoomByRoomName(experimentID);
+        if (room != null) {
+            let time = room.getTime();
+            console.log(experimentID + ' time is' + time);
             io.in(room.name).emit(BackendEventMessage.PLAYER_TIME, time);
         }
     });
 
-    socket.on(FrontendEventMessage.CONFIRM_GAME_ONE, (prolificID, choices, zeroTime) => {
+    socket.on(FrontendEventMessage.CONFIRM_GAME_ONE, (experimentID, prolificID, choices, zeroTime) => {
         // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
-        // TODO: receive experimentID from frontend
-        let experimentID = lobby.rooms.entries().next().value[0];
         prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
@@ -80,15 +79,15 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
                         DB_API.saveChoiceToDB(experimentID, currPlayer.prolificID, botChoices, room.turnNum, true);
                         currPlayer.recordChoices(botChoices);
 
-                        socket.on(FrontendEventMessage.ACTIVE_PLAYER, (playerProlific) => {
+                        socket.on(FrontendEventMessage.ACTIVE_PLAYER, (experimentID, playerProlific) => {
                             // let it pass
-                            console.log(playerProlific + ' is active');
+                            console.log(playerProlific + ' in room ' + experimentID + ' is active');
                         });
 
-                        socket.on(FrontendEventMessage.INACTIVE_PLAYER, (playerProlific) => {
+                        socket.on(FrontendEventMessage.INACTIVE_PLAYER, (experimentID, playerProlific) => {
                             //make this player a bot
                             player.setIsBot(true);
-                            console.log(playerProlific + ' is inactive');
+                            console.log(playerProlific + ' in room ' + experimentID + ' is inactive');
                         });
                     }
                 }
@@ -115,10 +114,10 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         }
     });
 
-    socket.on(FrontendEventMessage.CONFIRM_GAME_TWO, (prolificID, competeToken, keepToken, investToken) => {
+    socket.on(FrontendEventMessage.CONFIRM_GAME_TWO, (experimentID, prolificID, competeToken, keepToken, investToken) => {
         prolificID = prolificID.toString();
-        console.log("Game 2 decision received: ", prolificID, competeToken, keepToken, investToken);
-        let room = lobby.getRoomPlayerIsIn(prolificID);
+        console.log("Game 2 decision received: ", experimentID, prolificID, competeToken, keepToken, investToken);
+        let room = lobby.getRoomByRoomName(experimentID);
         let player = room.getPlayerWithID(prolificID);
         player.setIsBot(false);
 
@@ -145,7 +144,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
                 io.in(room.name).emit(BackendEventMessage.END_GAME_TWO_ROUND, competePayoff, investPayoff, allocation[0], allocation[1]);
                 io.in(room.name).emit(BackendEventMessage.END_GAME_TWO);
 
-                socket.on(FrontendEventMessage.GET_FINAL_RESULTS, (playerInRoom) => {
+                socket.on(FrontendEventMessage.GET_FINAL_RESULTS, (experimentID, playerInRoom) => {
                     console.log("Results for: " + playerInRoom);
                     let competePayoff = payoff[0], investPayoff = payoff[1];
                     //game 1
