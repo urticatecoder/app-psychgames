@@ -35,9 +35,8 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
 
     // TODO: move to lobby socket listener code
     socket.on(FrontendEventMessage.TIME_IN_LOBBY, (experimentID) => {
-        let room = lobby.getRoomPlayerIsIn(experimentID);
-        // TODO: Replace the line above with updated version below
-        // let room = lobby.getRoomByRoomName(experimentID);
+        // let room = lobby.getRoomPlayerIsIn(experimentID);
+        let room = lobby.getRoomByRoomName(experimentID);
         if (room != null) {
             let time = room.getTime();
             console.log(experimentID + ' time is' + time);

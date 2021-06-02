@@ -99,7 +99,7 @@ class Lobby {
     handleRoomFill(io, roomName) {
         roomName = roomName.toString();
         const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName);
-        io.sockets.in(roomName).emit(BackendEventMessage.ROOM_FILL, roomName, playerIDs); // to everyone in the room, including self
+        io.sockets.in(roomName).emit(BackendEventMessage.ROOM_FILL, playerIDs); // to everyone in the room, including self
         DB_API.saveExperimentSession(roomName, playerIDs);
         console.log("The room is filled with users");
         console.log("roomName=" + roomName);
@@ -505,6 +505,10 @@ module.exports = {
             socket.to(roomName).emit(BackendEventMessage.PLAYER_JOIN_ROOM, socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
             let num = lobby.getNumOfPlayersInRoom(roomName)
             socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, roomName, num); // only to self
+            // Send player's time to frontend
+            let room = lobby.getRoomByRoomName(roomName);
+            let time = room.getTime();
+            io.in(roomName).emit(BackendEventMessage.PLAYER_TIME, time);
 
             // add 5 bot players once a player joins the lobby
             for (let i = 1; i <= 5; i++) {
@@ -526,9 +530,13 @@ module.exports = {
                 socket.roomName = roomName;
                 socket.prolificID = prolificID;
                 socket.to(roomName).emit(BackendEventMessage.PLAYER_JOIN_ROOM, socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
-                socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, lobby.getNumOfPlayersInRoom(roomName)); // only to self
-                // TODO: replace above line with updated logic below
-                // socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, roomName, lobby.getNumOfPlayersInRoom(roomName)); // only to self
+                // socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, lobby.getNumOfPlayersInRoom(roomName)); // only to self
+                socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, roomName, lobby.getNumOfPlayersInRoom(roomName)); // only to self
+
+                // Send player's time to frontend
+                let room = lobby.getRoomByRoomName(roomName);
+                let time = room.getTime();
+                io.in(roomName).emit(BackendEventMessage.PLAYER_TIME, time);
 
                 const numPlayers = lobby.getNumOfPlayersInRoom(roomName);
                 if (numPlayers >= Lobby.MAX_CAPACITY_PER_ROOM) {

@@ -39,14 +39,14 @@ describe('Socket connection', function () {
         let clients = createClients(6);
         let IDs = ['123', '456', '789', 'abc', 'def', '000'];
         let timesCalled = 0;
-        registerCallback(clients, BackendEventMessage.ROOM_FILL, (experimentID, players) => {
+        registerCallback(clients, BackendEventMessage.ROOM_FILL, (players) => {
             timesCalled++;
             expect(players).to.have.members(IDs);
         });
         registerCallback(clients, BackendEventMessage.PLAYER_JOIN_ROOM, (msg) => {
             expect(msg).to.match(/.+ has joined .+/);
         });
-        registerCallback(clients, BackendEventMessage.NUM_PLAYER_IN_ROOM, (num) => {
+        registerCallback(clients, BackendEventMessage.NUM_PLAYER_IN_ROOM, (experimentID, num) => {
             // TODO: update test to accommodate updated parameters
             expect(num).to.lessThan(7);
         });
