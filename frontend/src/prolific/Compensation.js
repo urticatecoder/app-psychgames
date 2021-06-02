@@ -79,7 +79,7 @@ function ProlificScreen(props) {
         {PAYOUT_MESSAGE}
         </Box>
       </Typography>
-      <Payout style={{}} windowWidth={props.windowWidth} windowHeight={props.windowHeight} code={props.code}/>
+      <Payout style={{}} windowWidth={props.windowWidth} windowHeight={props.windowHeight} experimentID={props.experimentID} code={props.code}/>
       <Button
         disabled={disableButton}
         variant={Variants.CONTAINED}
@@ -89,7 +89,7 @@ function ProlificScreen(props) {
       >
         {BUTTON_MESSAGE}
       </Button>
-      <ProlificDialogues open={openDialogue} setOpen={setOpenDialogue} code={props.code}/>
+      <ProlificDialogues experimentID={props.experimentID} open={openDialogue} setOpen={setOpenDialogue} code={props.code}/>
     </div>
   );
 }

@@ -42,7 +42,7 @@ app.get("/login-code", ((req, res) => {
         isValid = false;
         error = 'Duplicated prolificID found.';
     }
-    res.status(200).send({'isValid': isValid, 'error': error});
+    res.status(200).send({ 'isValid': isValid, 'error': error });
 }));
 
 /**
@@ -60,6 +60,7 @@ app.get("/download-game1", async (req, res) => {
             player.choice.forEach((choice) => {
                 result.push({
                     experimentID: experiment._id,
+                    experimentTime: experiment.date,
                     prolificID: player.prolificID,
                     turnNum: choice.turnNum,
                     selectedIDs: choice.selectedPlayerID,
@@ -108,7 +109,7 @@ app.get("/download-game2", async (req, res) => {
 app.get("/auth", (req, res) => {
     let username = req.query.username;
     let password = req.query.password;
-    res.status(200).send({'isValid': username === 'mel' && password === 'CS408'});
+    res.status(200).send({ 'isValid': username === 'mel' && password === 'CS408' });
 });
 
 /**
@@ -116,20 +117,20 @@ app.get("/auth", (req, res) => {
  */
 app.get("/minDate", async (req, res) => {
     let entry = await DB_API.getOldestEntry();
-    res.status(200).send({'minDate': entry.date});
+    res.status(200).send({ 'minDate': entry.date });
 });
 
 app.get("/verification-code", (req, res) => {
     let prolificID = req.query.loginCode;
     if (prolificID === undefined) {
-        res.status(200).send({'code': 'Please send me a loginCode'});
+        res.status(200).send({ 'code': 'Please send me a loginCode' });
     } else if (prolificID === 'CS307' || prolificID === '') {
-        res.status(200).send({'code': 'INVALID_CODE'});
+        res.status(200).send({ 'code': 'INVALID_CODE' });
     } else {
         res.status(200).send({
-                'code': 'CS408',
-                // 'payment': Game2.calculateFinalPaymentForAPlayer(prolificID, lobby)
-            }
+            'code': 'CS408',
+            // 'payment': Game2.calculateFinalPaymentForAPlayer(prolificID, lobby)
+        }
         );
     }
 
@@ -143,10 +144,10 @@ app.get("/player-ids", (req, res) => {
     let prolificID = req.query.loginCode;
     let room = lobby.getRoomPlayerIsIn(prolificID);
     if (room === undefined) {
-        res.status(200).send({"error": `ProlificID ${prolificID} not found.`});
+        res.status(200).send({ "error": `ProlificID ${prolificID} not found.` });
     } else {
         let ids = lobby.getAllPlayersIDsInRoomWithName(room.name);
-        res.status(200).send({"ids": ids});
+        res.status(200).send({ "ids": ids });
     }
 });
 
@@ -157,10 +158,10 @@ app.get("/game1-results", (req, res) => {
     let prolificID = req.query.loginCode;
     let room = lobby.getRoomPlayerIsIn(prolificID);
     if (room === undefined) {
-        res.status(200).send({"error": `ProlificID ${prolificID} not found.`});
+        res.status(200).send({ "error": `ProlificID ${prolificID} not found.` });
     } else {
         let results = room.gameOneResults;
-        res.status(200).send({"winners": results[0], "losers": results[1]});
+        res.status(200).send({ "winners": results[0], "losers": results[1] });
     }
 });
 
@@ -172,21 +173,21 @@ app.get("/validate", (req, res) => {
     let room = lobby.getRoomPlayerIsIn(prolificID);
     let gameOneTurns = 0;
     let gameTwoTurns = 0;
-    room.players.forEach( (player) => {
-        if(player.prolificID === prolificID){
+    room.players.forEach((player) => {
+        if (player.prolificID === prolificID) {
             gameOneTurns = player.getGameOneChoiceCount();
             gameTwoTurns = player.getGameTwoChoiceCount();
         }
         console.log(player);
         console.log('game 1: ' + gameOneTurns + ' game 2: ' + gameTwoTurns);
     });
-    if(gameOneTurns >= 2 && gameTwoTurns >= 2){
-        res.status(200).send({"success": "true", "code": `ProlificID ${prolificID}`});
+    if (gameOneTurns >= 2 && gameTwoTurns >= 2) {
+        res.status(200).send({ "success": "true", "code": `ProlificID ${prolificID}` });
     }
     else {
-        res.status(200).send({"sucess": "false", "code":`ProlificID ${prolificID}`});
+        res.status(200).send({ "sucess": "false", "code": `ProlificID ${prolificID}` });
     }
-    
+
     // if (room === undefined) {
     //     res.status(200).send({"error": `ProlificID ${prolificID} not found.`});
     // } 

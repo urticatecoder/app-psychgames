@@ -83,8 +83,9 @@ function StartTimer(props) {
       props.setLoggedIn(LOGGED_IN);
     }
 
-    if (props.code != null) {
-      socket.emit(TIME_IN_LOBBY_WEBSOCKET, props.code);
+    if (props.experimentID != -1) {
+      console.log('CALLED')
+      socket.emit(TIME_IN_LOBBY_WEBSOCKET, props.experimentID);
     }
 
     socket.on(JOIN_LOBBY_WEBSOCKET, () => {
@@ -92,11 +93,13 @@ function StartTimer(props) {
     });
 
     socket.on(ROOM_FULL_WEBSOCKET, (allPlayers) => {
+      console.log(allPlayers)
       reIndexPlayers(code, allPlayers, props.setBackendIndex);
       setAllLoginCodes(allPlayers);
     });
 
-    socket.on(PEOPLE_IN_ROOM_WEBSOCKET, (numOfPlayers) => {
+    socket.on(PEOPLE_IN_ROOM_WEBSOCKET, (experimentID, numOfPlayers) => {
+      props.setExperimentID(experimentID);
       setWaitingOnPlayerCounter(MAX_ROOM_CAPACITY - numOfPlayers);
     });
 
@@ -162,8 +165,6 @@ function StartTimer(props) {
 }
 
 function reIndexPlayers(myLoginCode, allLoginCodes, setBackendIndex) {
-  console.log('original codes');
-  console.log(allLoginCodes);
   let myIndex = allLoginCodes.indexOf(myLoginCode);
   setBackendIndex(myIndex);
   allLoginCodes.splice(myIndex, 1);

@@ -2,7 +2,7 @@ const assert = require('assert');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
-    calculateResults, checkPassiveness, zeroSumResults, getSinglePairMap,
+    calculateResults, isPlayerPassive, zeroSumResults, getSinglePairMap,
     getDoublePairMap, getTriplePairMap, isGameOneDone, getWinnersAndLosers } = require('../db/results.js');
 
 
@@ -323,9 +323,9 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id1').recordChoices(choicesOne);
         room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
-        let result = checkPassiveness('test_id2', room);
+        let result = isPlayerPassive('test_id2', room);
 
-        assert(null === result);
+        assert(result == false);
         done();
     })
     it('identify passiveness in player', (done) => {
@@ -338,14 +338,10 @@ describe('Location sending and calculation', () => {
         room.addPlayer(new Player('test_id2'));
         room.addPlayer(new Player('test_id3'));
         room.getPlayerWithID('test_id1').recordChoices(choicesOne);
-        room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
-        let result;
-        for (var i = 0; i < 4; i++) {
-            result = checkPassiveness('test_id2', room);
-        }
-        assert(result === 'test_id2');
-        // assert(null === result);
+        assert(isPlayerPassive('test_id1', room) === false);
+        assert(isPlayerPassive('test_id2', room) === false);
+        assert(isPlayerPassive('test_id3', room) === true);
         done();
     })
     it('calculates zero sum to be 0', (done) => {

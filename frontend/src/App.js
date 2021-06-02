@@ -50,6 +50,8 @@ const INITIAL_WINDOW_HEIGHT = window.innerHeight;
 
 const INITIAL_BACKEND_INDEX = -1;
 
+const DEFAULT_EXPERIMENT_ID = -1;
+
 function App() {
   const [loginCode, setLoginCode] = useState(INITIAL_CODE);
   const [allLoginCodes, setAllLoginCodes] = useState(INITIAL_CODES);
@@ -61,12 +63,13 @@ function App() {
   const [showWarnings, setShowWarnings] = useState(HIDE);
   const [windowWidth, setWindowWidth] = useState(INITIAL_WINDOW_WIDTH);
   const [windowHeight, setWindowHeight] = useState(INITIAL_WINDOW_HEIGHT);
+  const [experimentID, setExperimentID] = useState(DEFAULT_EXPERIMENT_ID)
 
   return (
     <div className={CLASS_NAME}>
         
         <Router>
-          <PassiveAlert loginCode={loginCode}/>
+          <PassiveAlert loginCode={loginCode} experimentID={experimentID}/>
           <RefreshChecker loginCode={loginCode}/>
           <WindowChecker setWindowWidth={setWindowWidth} setWindowHeight={setWindowHeight}/>
           <BrowserChecker/>
@@ -88,6 +91,8 @@ function App() {
                 loggedIn = {loggedIn}
                 setLoggedIn = {setLoggedIn}
                 setBackendIndex = {setBackendIndex}
+                setExperimentID = {setExperimentID}
+                experimentID = {experimentID}
               />
             )}
           />
@@ -142,13 +147,14 @@ function App() {
                 selectedIndex={selectedIndex}
                 windowWidth={windowWidth}
                 windowHeight={windowHeight}
+                experimentID={experimentID}
               />
             )}
           />
 
           <Route
             path={COMPENSATION_ROUTE}
-            render={() => <Compensation code={loginCode} windowHeight={windowHeight} windowWidth={windowWidth} />}
+            render={() => <Compensation experimentID={experimentID} code={loginCode} windowHeight={windowHeight} windowWidth={windowWidth} />}
           />
 
           <Route
@@ -163,6 +169,7 @@ function App() {
                 windowWidth={windowWidth}
                 windowHeight={windowHeight}
                 backendIndex={backendIndex}
+                experimentID={experimentID}
               />
             )}
           />

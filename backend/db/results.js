@@ -68,25 +68,20 @@ function getResults(playerProlific, prolificIDArray, room) {
  * @param room {room object} the room the players are in 
  * @returns playerProlific if player has been passive
  */
-function checkPassiveness(playerProlific, room) {
-    let allChoices = room.getEveryoneChoiceAtCurrentTurn();
-    let choice = allChoices.get(playerProlific);
-    if (choice[0] == null) {
+function isPlayerPassive(playerProlific, room) {
+    if (!room.hasPlayerWithIDConfirmed(playerProlific)) {
         if (passive.has(playerProlific)) {
             passive.set(playerProlific, passive.get(playerProlific) + 1);
         }
         else {
             passive.set(playerProlific, 1);
         }
+        return true;
     }
     else {
-        passive.set(playerProlific, 0);
+        passive.delete(playerProlific);
+        return false;
     }
-
-    if (passive.get(playerProlific) >= 3) {
-        return playerProlific
-    }
-    return null;
 }
 
 /**
@@ -431,7 +426,7 @@ module.exports = {
     calculateResults: getSinglePairMap,
     getResults: getResults,
     zeroSumResults: zeroSumResults,
-    checkPassiveness: checkPassiveness,
+    isPlayerPassive: isPlayerPassive,
     getSinglePairMap: getSinglePairMap,
     getDoublePairMap: getDoublePairMap,
     getTriplePairMap: getTriplePairMap,
