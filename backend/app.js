@@ -171,6 +171,10 @@ app.get("/game1-results", (req, res) => {
  */
 app.get("/validate", (req, res) => {
     let experimentID = req.query.experimentID;
+    // Sanity check
+    if (experimentID == -1) {
+        return;
+    }
     let prolificID = req.query.loginCode;
     let room = lobby.getRoomByRoomName(experimentID);
     let gameOneTurns = 0;
