@@ -99,7 +99,7 @@ class Lobby {
     handleRoomFill(io, roomName) {
         roomName = roomName.toString();
         const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName);
-        io.sockets.in(roomName).emit(BackendEventMessage.ROOM_FILL, roomName, playerIDs); // to everyone in the room, including self
+        io.sockets.in(roomName).emit(BackendEventMessage.ROOM_FILL, playerIDs); // to everyone in the room, including self
         DB_API.saveExperimentSession(roomName, playerIDs);
         console.log("The room is filled with users");
         console.log("roomName=" + roomName);
