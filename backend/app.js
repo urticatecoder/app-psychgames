@@ -9,6 +9,7 @@ const path = require('path');
 const lobby = require('./lobby.js').LobbyInstance;
 const DB_API = require('./db/db_api');
 const Game2 = require('./game2');
+const GamesConfig = require('./games_config.js');
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
@@ -169,8 +170,13 @@ app.get("/game1-results", (req, res) => {
  * This route will validate if the player played enough turns of the game to be paid out
  */
 app.get("/validate", (req, res) => {
+    let experimentID = req.query.experimentID;
+    // Sanity check
+    if (experimentID == -1) {
+        return;
+    }
     let prolificID = req.query.loginCode;
-    let room = lobby.getRoomPlayerIsIn(prolificID);
+    let room = lobby.getRoomByRoomName(experimentID);
     let gameOneTurns = 0;
     let gameTwoTurns = 0;
     room.players.forEach((player) => {
@@ -181,7 +187,8 @@ app.get("/validate", (req, res) => {
         console.log(player);
         console.log('game 1: ' + gameOneTurns + ' game 2: ' + gameTwoTurns);
     });
-    if (gameOneTurns >= 2 && gameTwoTurns >= 2) {
+    // Only check if sufficient rounds of game2 has been completed since game1's terminating conditions does not depend solely on the number of rounds
+    if (gameTwoTurns >= GamesConfig.GAME_TWO_MAX_ROUND_NUM) {
         res.status(200).send({ "success": "true", "code": `ProlificID ${prolificID}` });
     }
     else {
