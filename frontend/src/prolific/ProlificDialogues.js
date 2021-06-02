@@ -45,6 +45,7 @@ function ProlificDialogues(props) {
     axios.get(VERIFICATION_CODE_ROUTE, {
         params: {
           loginCode: props.code,
+          experimentID: props.experimentID
         }
       }).then((res) => {
         if (res.data.success == 'true') {
