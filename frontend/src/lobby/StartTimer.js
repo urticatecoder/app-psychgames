@@ -93,6 +93,7 @@ function StartTimer(props) {
     });
 
     socket.on(ROOM_FULL_WEBSOCKET, (allPlayers) => {
+      console.log(allPlayers)
       reIndexPlayers(code, allPlayers, props.setBackendIndex);
       setAllLoginCodes(allPlayers);
     });
@@ -164,8 +165,6 @@ function StartTimer(props) {
 }
 
 function reIndexPlayers(myLoginCode, allLoginCodes, setBackendIndex) {
-  console.log('original codes');
-  console.log(allLoginCodes);
   let myIndex = allLoginCodes.indexOf(myLoginCode);
   setBackendIndex(myIndex);
   allLoginCodes.splice(myIndex, 1);
