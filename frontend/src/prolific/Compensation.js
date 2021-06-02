@@ -89,7 +89,7 @@ function ProlificScreen(props) {
       >
         {BUTTON_MESSAGE}
       </Button>
-      <ProlificDialogues open={openDialogue} setOpen={setOpenDialogue} code={props.code}/>
+      <ProlificDialogues experimentID={props.experimentID} open={openDialogue} setOpen={setOpenDialogue} code={props.code}/>
     </div>
   );
 }

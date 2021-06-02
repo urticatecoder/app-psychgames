@@ -40,6 +40,7 @@ function Lobby(props) {
         setLoggedIn={props.setLoggedIn}
         setBackendIndex = {props.setBackendIndex}
         setExperimentID = {props.setExperimentID}
+        experimentID = {props.experimentID}
       />
       <div className={classes.avatarButton}>
         <ContinueButton
