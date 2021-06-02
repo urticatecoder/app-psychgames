@@ -35,7 +35,10 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
 
     // TODO: move to lobby socket listener code
     socket.on(FrontendEventMessage.TIME_IN_LOBBY, (experimentID) => {
-        // let room = lobby.getRoomPlayerIsIn(experimentID);
+        // Sanity check
+        if (experimentID == -1) {
+            return;
+        }
         let room = lobby.getRoomByRoomName(experimentID);
         if (room != null) {
             let time = room.getTime();
@@ -45,7 +48,15 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
     });
 
     socket.on(FrontendEventMessage.CONFIRM_GAME_ONE, (experimentID, prolificID, choices, zeroTime) => {
-        // prolific = prolific id; choices = [player1chosen, player2chosen] *minimum chosen players = 1*
+        // Sanity check
+        if (experimentID == -1) {
+            return;
+        }
+        /*
+        prolific = player's prolific id
+        choices = [player1chosen, player2chosen]
+        minimum chosen players = 1
+        */
         prolificID = prolificID.toString();
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
@@ -79,11 +90,19 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
                         currPlayer.recordChoices(botChoices);
 
                         socket.on(FrontendEventMessage.ACTIVE_PLAYER, (experimentID, playerProlific) => {
+                            // Sanity check
+                            if (experimentID == -1) {
+                                return;
+                            }
                             // let it pass
                             console.log(playerProlific + ' in room ' + experimentID + ' is active');
                         });
 
                         socket.on(FrontendEventMessage.INACTIVE_PLAYER, (experimentID, playerProlific) => {
+                            // Sanity check
+                            if (experimentID == -1) {
+                                return;
+                            }
                             //make this player a bot
                             player.setIsBot(true);
                             console.log(playerProlific + ' in room ' + experimentID + ' is inactive');
@@ -114,6 +133,10 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
     });
 
     socket.on(FrontendEventMessage.CONFIRM_GAME_TWO, (experimentID, prolificID, competeToken, keepToken, investToken) => {
+        // Sanity check
+        if (experimentID == -1) {
+            return;
+        }
         prolificID = prolificID.toString();
         console.log("Game 2 decision received: ", experimentID, prolificID, competeToken, keepToken, investToken);
         let room = lobby.getRoomByRoomName(experimentID);
@@ -144,6 +167,10 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
                 io.in(room.name).emit(BackendEventMessage.END_GAME_TWO);
 
                 socket.on(FrontendEventMessage.GET_FINAL_RESULTS, (experimentID, playerInRoom) => {
+                    // Sanity check
+                    if (experimentID == -1) {
+                        return;
+                    }
                     console.log("Results for: " + playerInRoom);
                     let competePayoff = payoff[0], investPayoff = payoff[1];
                     //game 1
