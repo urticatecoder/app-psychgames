@@ -43,7 +43,7 @@ describe('Test database query API', () => {
     });
     it('save allocation schema', (done) => {
         DB_API.saveExperimentSession(ObjectID(), ['aaa', 'bbb', 'ccc']).then((experiment) => {
-            return DB_API.saveAllocationToDB('aaa', 3, 4, 3, 0.5, 1, 1, false).then((result) => {
+            return DB_API.saveAllocationToDB(experiment._id, 'aaa', 3, 4, 3, 0.5, 1, 1, false).then((result) => {
                 let savedAllocation = result.players[0].allocation[0];
                 expect(savedAllocation.keepToken).to.equal(3);
                 expect(savedAllocation.investPayoff).to.equal(0.5);

@@ -143,20 +143,20 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         let player = room.getPlayerWithID(prolificID);
         player.setIsBot(false);
 
-        player.recordAllocationForGameTwo(competeToken, keepToken, investToken);
+        player.recordAllocation(competeToken, keepToken, investToken);
         let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn();
-        DB_API.saveAllocationToDB(prolificID, keepToken, investToken, competeToken, payoff[1], payoff[0], room.turnNum, player.isBot);
+        DB_API.saveAllocationToDB(experimentID, prolificID, keepToken, investToken, competeToken, payoff[1], payoff[0], room.turnNum, player.isBot);
 
         if (room.hasEveryoneConfirmed()) { // all players have confirmed choices
             console.log(room.turnNum - 1);
             // let all bots select their choices
-            room.players.forEach((playerInThisRoom) => {
-                if (playerInThisRoom.isBot && playerInThisRoom.prolificID !== prolificID) {
-                    let bot = playerInThisRoom;
+            room.players.forEach((player) => {
+                if (player.isBot) {
+                    let bot = player;
                     let botAllocation = Game2.generateBotAllocation();
-                    bot.recordAllocationForGameTwo(botAllocation[0], botAllocation[1], botAllocation[2]); // compete, keep, invest
-                    DB_API.saveAllocationToDB(bot.prolificID, botAllocation[1], botAllocation[2], botAllocation[0], payoff[1], payoff[0], room.turnNum, true);
-                    // console.log(room.getOthersAllocationAtTurnNum(playerInThisRoom.prolificID, room.turnNum + 1));
+                    console.log("Saving allocation for bot: " + player.prolificID);
+                    bot.recordAllocation(botAllocation[0], botAllocation[1], botAllocation[2]); // compete, keep, invest
+                    DB_API.saveAllocationToDB(experimentID, bot.prolificID, botAllocation[1], botAllocation[2], botAllocation[0], payoff[1], payoff[0], room.turnNum, true);
                 }
             });
             if (Game2.isGameTwoDone(room)) {

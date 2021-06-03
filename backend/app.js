@@ -51,7 +51,7 @@ app.get("/login-code", ((req, res) => {
  * It will accept a start date and end date, and respond with experiment data collected between the start date and end date in json format
  */
 app.get("/download-game1", async (req, res) => {
-    console.log(req.query.startDate, req.query.endDate);
+    console.log("Downloading game 1 data: " + req.query.startDate, req.query.endDate);
     let experiments = await DB_API.getAllDataByDateRange(req.query.startDate, req.query.endDate);
     let result = []
     experiments.forEach((experiment) => {
@@ -79,6 +79,7 @@ app.get("/download-game1", async (req, res) => {
  * It will accept a start date and end date, and respond with experiment data collected between the start date and end date in json format
  */
 app.get("/download-game2", async (req, res) => {
+    console.log("Downloading game 2 data: " + req.query.startDate, req.query.endDate);
     let experiments = await DB_API.getAllDataByDateRange(req.query.startDate, req.query.endDate);
     let result = []
     experiments.forEach((experiment) => {
@@ -88,6 +89,7 @@ app.get("/download-game2", async (req, res) => {
             player.allocation.forEach((allocation) => {
                 result.push({
                     experimentID: experiment._id,
+                    experimentTime: experiment.date,
                     prolificID: player.prolificID,
                     turnNum: allocation.turnNum,
                     keepToken: allocation.keepToken,
