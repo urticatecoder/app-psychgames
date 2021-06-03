@@ -30,36 +30,21 @@ function saveExperimentSession(experimentID, playerIDs) {
  * @return {Promise|PromiseLike<*>|Promise<*>}
  */
 function saveChoiceToDB(experimentID, prolificID, selectedPlayerIDs, turnNum, madeByBot) {
-    if (experimentID == undefined) {
-        return ExperimentModel.findOne({ "players.prolificID": prolificID }).then((experiment) => {
-            experiment.players.forEach((player) => {
-                if (player.prolificID === prolificID) {
-                    player.choice.push({
-                        prolificID: prolificID,
-                        selectedPlayerID: selectedPlayerIDs,
-                        turnNum: turnNum,
-                        madeByBot: madeByBot
-                    });
-                }
-            });
-            return experiment.save();
+    console.log("Saving user choices for experiment " + experimentID);
+    return ExperimentModel.findById(experimentID).then((experiment) => {
+        experiment.players.forEach((player) => {
+            if (player.prolificID === prolificID) {
+                player.choice.push({
+                    prolificID: prolificID,
+                    selectedPlayerID: selectedPlayerIDs,
+                    turnNum: turnNum,
+                    madeByBot: madeByBot
+                });
+            }
         });
-    } else {
-        console.log("Saving user choices for experiment " + experimentID);
-        return ExperimentModel.findById(experimentID).then((experiment) => {
-            experiment.players.forEach((player) => {
-                if (player.prolificID === prolificID) {
-                    player.choice.push({
-                        prolificID: prolificID,
-                        selectedPlayerID: selectedPlayerIDs,
-                        turnNum: turnNum,
-                        madeByBot: madeByBot
-                    });
-                }
-            });
-            return experiment.save();
-        });
-    }
+        return experiment.save();
+    });
+
 
 }
 
@@ -74,8 +59,9 @@ function saveChoiceToDB(experimentID, prolificID, selectedPlayerIDs, turnNum, ma
  * @param madeByBot {boolean} is this allocation made by a bot
  * @return {Promise|PromiseLike<*>|Promise<*>}
  */
-function saveAllocationToDB(prolificID, keepToken, investToken, competeToken, investPayoff, competePayoff, turnNum, madeByBot) {
-    return ExperimentModel.findOne({ "players.prolificID": prolificID }).then((experiment) => {
+function saveAllocationToDB(experimentID, prolificID, keepToken, investToken, competeToken, investPayoff, competePayoff, turnNum, madeByBot) {
+    console.log("Saving user allocation for experiment " + experimentID);
+    return ExperimentModel.findById(experimentID).then((experiment) => {
         experiment.players.forEach((player) => {
             if (player.prolificID === prolificID) {
                 player.allocation.push({
@@ -101,7 +87,9 @@ function saveAllocationToDB(prolificID, keepToken, investToken, competeToken, in
  */
 async function getAllDataByDateRange(startDate, endDate) {
     try {
-        return await ExperimentModel.find({ date: { $gte: startDate, $lte: endDate } }).sort({ date: -1 });
+        let endDateAdjusted = new Date(endDate);
+        endDateAdjusted.setDate(endDateAdjusted.getDate() + 1);
+        return await ExperimentModel.find({ date: { $gte: startDate, $lt: endDateAdjusted } }).sort({ date: -1 });
     } catch (e) {
         console.log(e);
     }

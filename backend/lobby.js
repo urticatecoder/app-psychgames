@@ -412,18 +412,6 @@ class Player {
     }
 
     /**
-     * @param {string[]} choice an array of selected players' IDs in game 1
-     */
-    recordChoices(choice) {
-        if (!(choice instanceof Array)) {
-            throw 'Parameter is not an Array.';
-        }
-        // console.log("Recording choice for player "+this.prolificID);
-        // console.log(choice);
-        this.choices.push(choice);
-    }
-
-    /**
      * @param {integer} turnNum 
      * @returns true if player has confirmed game 1 choice for the specified turn
      */
@@ -436,7 +424,26 @@ class Player {
             // console.log("Game 2 choice count = " + this.getGameTwoChoiceCount());
             return this.getGameTwoChoiceCount() >= turnNum;
         }
+    }
 
+    getGameOneChoiceCount() {
+        return this.choices.length;
+    }
+
+    getGameTwoChoiceCount() {
+        return this.allocations.length;
+    }
+
+    /**
+     * @param {string[]} choice an array of selected players' IDs in game 1
+     */
+    recordChoices(choice) {
+        if (!(choice instanceof Array)) {
+            throw 'Parameter is not an Array.';
+        }
+        // console.log("Recording choice for player "+this.prolificID);
+        // console.log(choice);
+        this.choices.push(choice);
     }
 
     /**
@@ -452,20 +459,12 @@ class Player {
         return this.choices[turnNum - 1];
     }
 
-    getGameOneChoiceCount() {
-        return this.choices.length;
-    }
-
-    getGameTwoChoiceCount() {
-        return this.allocations.length;
-    }
-
     /**
      * @param compete {number}
      * @param keep {number}
      * @param invest {number}
      */
-    recordAllocationForGameTwo(compete, keep, invest) {
+    recordAllocation(compete, keep, invest) {
         this.allocations.push(new GameTwoAllocation(compete, keep, invest));
     }
 
@@ -473,11 +472,10 @@ class Player {
         if (turnNum <= 0) {
             throw 'Invalid turn num.';
         }
-        turnNum = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
-        if (turnNum >= this.allocations.length) {
-            throw 'Array index out of bound.';
+        if (!this.hasConfirmedAtTurn(GameNum.GAMETWO, turnNum)) {
+            throw 'Player has not confirmed allocation for this turn.';
         }
-        return this.allocations[turnNum];
+        return this.allocations[turnNum - 1];
     }
 }
 
