@@ -3,7 +3,10 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
 const BOT = require("./db/bot");
-const { getResultsByProlificId, isGameOneDone, getWinnersAndLosers, calculateAllTripleBonuses, calculateAllDoubleBonuses, isPlayerPassive } = require("./db/results");
+const { getResultsByProlificId, isGameOneDone, getWinnersAndLosers,
+    isPlayerPassive, calculateAllTripleBonuses, calculateAllDoubleBonuses,
+    countTripleBonuses, countDoubleBonuses, countSingleChoices,
+} = require("./db/results");
 const Game2 = require('./game2');
 const lobby = require("./lobby.js").LobbyInstance;
 const FrontendEventMessage = require("./frontend_event_message.js").FrontendEventMessage;
@@ -61,24 +64,17 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         let room = lobby.getRoomPlayerIsIn(prolificID);
         let player = room.getPlayerWithID(prolificID);
         player.setIsBot(false);
-        DB_API.saveChoiceToDB(experimentID, prolificID, choices, room.turnNum, player.isBot);
         player.recordChoices(choices);
 
         // if everyone has confirmed or timer has reached 0
-        // let timeStart = room.getTime(prolificID);
-        // const computeBonus = room.hasEveryoneConfirmed() || zeroTime || ((room.getTime(prolificID) - timeStart) >= 30);
         const computeBonus = room.hasEveryoneConfirmed() || zeroTime <= 0;
         if (computeBonus) { // all 6 have confirmed choices
-            // console.log("hasEveryoneConfirmed: "+room.hasEveryoneConfirmed())
-            // console.log(zeroTime)
-            // console.log((room.getTime(prolificID) - timeStart))
             console.log("Computing bonuses");
             let allIDs = lobby.getAllPlayersIDsInRoomWithName(room.roomName);
             room.players.forEach((currPlayer) => {
                 if (currPlayer.isBot) {
                     // let all bots select their choices
                     let botChoices = BOT.determineBotChoice(currPlayer.prolificID, allIDs);
-                    DB_API.saveChoiceToDB(experimentID, currPlayer.prolificID, botChoices, room.turnNum, true);
                     currPlayer.recordChoices(botChoices);
                 } else {
                     if (isPlayerPassive(currPlayer.prolificID, room)) {
@@ -86,7 +82,6 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
                         console.log(currPlayer.prolificID + " is possibly inactive.");
                         io.in(room.name).emit(BackendEventMessage.CHECK_PASSIVITY, currPlayer.prolificID);
                         let botChoices = BOT.determineBotChoice(currPlayer.prolificID, allIDs);
-                        DB_API.saveChoiceToDB(experimentID, currPlayer.prolificID, botChoices, room.turnNum, true);
                         currPlayer.recordChoices(botChoices);
 
                         socket.on(FrontendEventMessage.ACTIVE_PLAYER, (experimentID, playerProlific) => {
@@ -103,19 +98,29 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
                             if (experimentID == -1) {
                                 return;
                             }
-                            //make this player a bot
+                            // make this player a bot
                             player.setIsBot(true);
                             console.log(playerProlific + ' in room ' + experimentID + ' is inactive');
                         });
                     }
                 }
             });
-            //emit list of lists of prolificIDs and int of how much to move up of triple bonuses
+            let singleChoiceCounts = countSingleChoices(room);
+            // emit list of lists of prolificIDs and int of how much to move up of triple bonuses
             let allTripleBonus = calculateAllTripleBonuses(allIDs, room);
-            //emit list of lists of prolificIDs and int of how much to move up of double bonuses
+            let tripleBonusCounts = countTripleBonuses(allTripleBonus, room);
+            // emit list of lists of prolificIDs and int of how much to move up of double bonuses
             let allDoubleBonus = calculateAllDoubleBonuses(allIDs, room);
-            //players will be emitted to the "net zero" position after showing who selected who (to be implemented)
+            let doubleBonusCounts = countDoubleBonuses(allDoubleBonus, room);
+            // players will be emitted to the "net zero" position after showing who selected who (to be implemented)
             let resultForAllPlayers = getResultsByProlificId(allIDs, room);
+            allIDs.forEach((playerID) => {
+                let currPlayer = room.getPlayerWithID(playerID);
+                DB_API.saveChoiceToDB(experimentID, playerID, currPlayer.getChoiceAtTurn(room.turnNum),
+                    room.turnNum, currPlayer.isBot, room.getPlayerOldLocation(playerID), room.getPlayerNewLocation(playerID),
+                    singleChoiceCounts.get(playerID), doubleBonusCounts.get(playerID), tripleBonusCounts.get(playerID));
+            });
+
             //turn count for game 1
             room.setGameOneTurnCount(room.gameOneTurnCount + 1);
             if (isGameOneDone(room)) {
@@ -127,8 +132,6 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
             io.in(room.name).emit(BackendEventMessage.GAME_ONE_ROUND_RESULT, resultForAllPlayers, allTripleBonus, 25,
                 allDoubleBonus, 15);
             room.advanceToNextRound();
-        } else {
-            // emit('someone has confirmed his/her choice') to 5 other
         }
     });
 
@@ -148,7 +151,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         DB_API.saveAllocationToDB(experimentID, prolificID, keepToken, investToken, competeToken, payoff[1], payoff[0], room.turnNum, player.isBot);
 
         if (room.hasEveryoneConfirmed()) { // all players have confirmed choices
-            console.log(room.turnNum - 1);
+            // console.log(room.turnNum - 1);
             // let all bots select their choices
             room.players.forEach((player) => {
                 if (player.isBot) {
@@ -197,15 +200,8 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
                 room.advanceToNextRound();
                 let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
                 let competePayoff = payoff[0], investPayoff = payoff[1];
-                console.log('winners: ' + allocation[0]);
-                console.log('losers' + allocation[1]);
-                // for testing purposes
-                // let payOutTurnNum = Math.floor(Math.random() * Math.floor(room.turnNum - 1) + 1);
-                // console.log(payOutTurnNum);
-                // let compete = game2.getCompeteAtTurn('me', room, payOutTurnNum);
-                // let keep = game2.getKeepAtTurn('me', room, payOutTurnNum);
-                // let invest = game2.getInvestAtTurn('me', room, payOutTurnNum);
-                // console.log('compete: ' +compete + ' invest: ' + invest + ' keep: ' + keep);
+                // console.log('winners: ' + allocation[0]);
+                // console.log('losers' + allocation[1]);
                 io.in(room.name).emit(BackendEventMessage.END_GAME_TWO_ROUND, competePayoff, investPayoff, allocation[0], allocation[1]);
             }
         }
