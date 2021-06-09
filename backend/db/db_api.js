@@ -93,7 +93,7 @@ function saveAllocationToDB(experimentID, prolificID, keepToken, investToken, co
 async function getAllDataByDateRange(startDate, endDate) {
     try {
         let endDateAdjusted = new Date(endDate);
-        endDateAdjusted.setDate(endDateAdjusted.getDate() + 2);
+        endDateAdjusted.setDate(endDateAdjusted.getDate() + 1);
         return await ExperimentModel.find({ date: { $gte: startDate, $lt: endDateAdjusted } }).sort({ date: -1 });
     } catch (e) {
         console.log(e);
