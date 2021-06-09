@@ -29,8 +29,8 @@ function saveExperimentSession(experimentID, playerIDs) {
  * @param madeByBot {boolean} is this choice made by a bot
  * @return {Promise|PromiseLike<*>|Promise<*>}
  */
-function saveChoiceToDB(experimentID, prolificID, selectedPlayerIDs, turnNum, madeByBot) {
-    console.log("Saving user choices for experiment " + experimentID);
+function saveChoiceToDB(experimentID, prolificID, selectedPlayerIDs, turnNum, madeByBot, oldLocation, newLocation, singleChoiceCount, doubleBonusCount, tripleBonusCount) {
+    // console.log("Saving user choices for experiment " + experimentID);
     return ExperimentModel.findById(experimentID).then((experiment) => {
         experiment.players.forEach((player) => {
             if (player.prolificID === prolificID) {
@@ -38,7 +38,12 @@ function saveChoiceToDB(experimentID, prolificID, selectedPlayerIDs, turnNum, ma
                     prolificID: prolificID,
                     selectedPlayerID: selectedPlayerIDs,
                     turnNum: turnNum,
-                    madeByBot: madeByBot
+                    madeByBot: madeByBot,
+                    oldLocation: oldLocation,
+                    newLocation: newLocation,
+                    singleChoiceCount: singleChoiceCount,
+                    doubleBonusCount: doubleBonusCount,
+                    tripleBonusCount: tripleBonusCount,
                 });
             }
         });
@@ -60,7 +65,7 @@ function saveChoiceToDB(experimentID, prolificID, selectedPlayerIDs, turnNum, ma
  * @return {Promise|PromiseLike<*>|Promise<*>}
  */
 function saveAllocationToDB(experimentID, prolificID, keepToken, investToken, competeToken, investPayoff, competePayoff, turnNum, madeByBot) {
-    console.log("Saving user allocation for experiment " + experimentID);
+    // console.log("Saving user allocation for experiment " + experimentID);
     return ExperimentModel.findById(experimentID).then((experiment) => {
         experiment.players.forEach((player) => {
             if (player.prolificID === prolificID) {
@@ -88,7 +93,7 @@ function saveAllocationToDB(experimentID, prolificID, keepToken, investToken, co
 async function getAllDataByDateRange(startDate, endDate) {
     try {
         let endDateAdjusted = new Date(endDate);
-        endDateAdjusted.setDate(endDateAdjusted.getDate() + 1);
+        endDateAdjusted.setDate(endDateAdjusted.getDate() + 2);
         return await ExperimentModel.find({ date: { $gte: startDate, $lt: endDateAdjusted } }).sort({ date: -1 });
     } catch (e) {
         console.log(e);

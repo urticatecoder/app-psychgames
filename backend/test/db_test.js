@@ -32,11 +32,13 @@ describe('Test database query API', () => {
     });
     it('save choice schema', (done) => {
         DB_API.saveExperimentSession(ObjectID(), ['111', '222', '333']).then((experiment) => {
-            return DB_API.saveChoiceToDB(experiment._id, '111', ['222', '333'], 1, false).then((result) => {
+            return DB_API.saveChoiceToDB(experiment._id, '111', ['222', '333'], 1, false, 5).then((result) => {
                 let savedChoice = result.players[0].choice[0];
                 expect(savedChoice.selectedPlayerID).to.deep.equal(['222', '333']);
                 expect(savedChoice.turnNum).to.equal(1);
                 expect(savedChoice.madeByBot).to.equal(false);
+                expect(savedChoice.oldLocation).to.equal(5);
+                expect(savedChoice.newLocation).to.equal(50);
                 done();
             });
         }).catch(err => done(err));
