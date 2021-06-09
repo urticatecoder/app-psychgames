@@ -66,6 +66,11 @@ app.get("/download-game1", async (req, res) => {
                     turnNum: choice.turnNum,
                     selectedIDs: choice.selectedPlayerID,
                     madeByBot: choice.madeByBot.toString(),
+                    oldLocation: choice.oldLocation,
+                    newLocation: choice.newLocation,
+                    singleChoiceCount: choice.singleChoiceCount,
+                    doubleBonusCount: choice.doubleBonusCount,
+                    tripleBonusCount: choice.tripleBonusCount,
                 });
             });
         });
