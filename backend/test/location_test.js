@@ -2,6 +2,7 @@ const assert = require('assert');
 const Room = require('../lobby.js').Room;
 const Player = require('../lobby.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
+    countTripleBonuses, countDoubleBonuses, countSingleChoices,
     calculateResults, isPlayerPassive, zeroSumResults, getSinglePairMap,
     getDoublePairMap, getTriplePairMap, isGameOneDone, getWinnersAndLosers } = require('../db/results.js');
 
@@ -41,68 +42,6 @@ describe('Location sending and calculation', () => {
         }
         done();
     });
-    // it('calculates triple bonus correctly', (done) => {
-    //     const testID = ['test_id1', 'test_id2', 'test_id3'];
-    //     var choicesOne = ['test_id2', 'test_id3'];
-    //     var choicesTwo = ['test_id1', 'test_id3'];
-    //     var choicesThree = ['test_id1', 'test_id2'];
-    //     const room = new Room('room 0');
-    //     room.addPlayer(new Player('test_id1'));
-    //     room.addPlayer(new Player('test_id2'));
-    //     room.addPlayer(new Player('test_id3'));
-    //     room.getPlayerWithID('test_id1').recordChoices(choicesOne);
-    //     room.getPlayerWithID('test_id3').recordChoices(choicesThree);
-    //     room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
-
-    //     const count = getResultsByProlificId(testID, room);
-    //     console.log(count);
-    //     for(var i =0; i <count.length; i++){
-    //         console.log(count[i]);
-    //         // assert(count[i] === 25);
-    //     }
-    //     done();
-    // });
-
-    // it('calculates random values correct for multiple rounds', (done) => {
-    //     const testID = ['test_id1', 'test_id2', 'test_id3'];
-    //     var choicesOne = ['test_id2'];
-    //     var choicesTwo = ['test_id1'];
-    //     var choicesThree = ['test_id2'];
-    //     const room = new Room('room 0');
-    //     room.addPlayer(new Player('test_id1'));
-    //     room.addPlayer(new Player('test_id2'));
-    //     room.addPlayer(new Player('test_id3'));
-    //     room.getPlayerWithID('test_id1').recordChoices(choicesOne);
-    //     room.getPlayerWithID('test_id3').recordChoices(choicesThree);
-    //     room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
-
-    //     const count = getResultsByProlificId(testID, room);
-    //     // console.log(count);
-    //     assert(count[0] == 1.333333333333333 && count[1] == 5.333333333333333);
-    //     assert(count[2] == -6.666666666666667);
-    //     done();
-    // });
-    // it('isGameOneDone works correctly', (done) => {
-    //     const testID = ['test_id1', 'test_id2', 'test_id3'];
-    //     var choicesOne = ['test_id2', 'test_id3'];
-    //     var choicesTwo = ['test_id1', 'test_id3'];
-    //     var choicesThree = ['test_id1', 'test_id2'];
-    //     const room = new Room('room 0');
-    //     room.addPlayer(new Player('test_id1'));
-    //     room.addPlayer(new Player('test_id2'));
-    //     room.addPlayer(new Player('test_id3'));
-    //     room.getPlayerWithID('test_id1').recordChoices(choicesOne);
-    //     room.getPlayerWithID('test_id3').recordChoices(choicesThree);
-    //     room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
-    //
-    //     for(var i = 0; i< 14; i++){
-    //         getResultsByProlificId(testID, room);
-    //         assert(isGameOneDone(room) == false);
-    //     }
-    //     getResultsByProlificId(testID, room);
-    //     assert(isGameOneDone(room) == true);
-    //     done();
-    // });
     it('calculates triple bonus', (done) => {
         const testID = ['test_id1', 'test_id2', 'test_id3'];
         var choicesOne = ['test_id2', 'test_id3'];
@@ -116,10 +55,20 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
 
+        let singleChoiceCount = countSingleChoices(room);
+        assert(singleChoiceCount.get('test_id1') == 2);
+        assert(singleChoiceCount.get('test_id2') == 2);
+        assert(singleChoiceCount.get('test_id3') == 2);
+
         let tripleBonuses = calculateAllTripleBonuses(testID, room);
         assert(tripleBonuses[0][0] == 'test_id1');
         assert(tripleBonuses[0][1] == 'test_id2');
         assert(tripleBonuses[0][2] == 'test_id3');
+
+        let tripleBonusCount = countTripleBonuses(tripleBonuses, room);
+        assert(tripleBonusCount.get('test_id1') == 1);
+        assert(tripleBonusCount.get('test_id2') == 1);
+        assert(tripleBonusCount.get('test_id3') == 1);
         done();
     });
     it('calculates triple bonus with 2 triple bonuses', (done) => {
@@ -144,6 +93,14 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id5').recordChoices(choicesFive);
         room.getPlayerWithID('test_id6').recordChoices(choicesSix);
 
+        let singleChoiceCount = countSingleChoices(room);
+        assert(singleChoiceCount.get('test_id1') == 2);
+        assert(singleChoiceCount.get('test_id2') == 2);
+        assert(singleChoiceCount.get('test_id3') == 2);
+        assert(singleChoiceCount.get('test_id4') == 2);
+        assert(singleChoiceCount.get('test_id5') == 2);
+        assert(singleChoiceCount.get('test_id6') == 2);
+
         let tripleBonuses = calculateAllTripleBonuses(testID, room);
         assert(tripleBonuses[0][0] == 'test_id1');
         assert(tripleBonuses[0][1] == 'test_id2');
@@ -151,6 +108,15 @@ describe('Location sending and calculation', () => {
         assert(tripleBonuses[1][0] == 'test_id4');
         assert(tripleBonuses[1][1] == 'test_id5');
         assert(tripleBonuses[1][2] == 'test_id6');
+
+        let tripleBonusCount = countTripleBonuses(tripleBonuses, room);
+        assert(tripleBonusCount.get('test_id1') == 1);
+        assert(tripleBonusCount.get('test_id2') == 1);
+        assert(tripleBonusCount.get('test_id3') == 1);
+        assert(tripleBonusCount.get('test_id4') == 1);
+        assert(tripleBonusCount.get('test_id5') == 1);
+        assert(tripleBonusCount.get('test_id6') == 1);
+
         done();
     });
     it('calculates double bonus', (done) => {
@@ -166,8 +132,17 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
 
+        let singleChoiceCount = countSingleChoices(room);
+        assert(singleChoiceCount.get('test_id1') == 1);
+        assert(singleChoiceCount.get('test_id2') == 1);
+        assert(singleChoiceCount.get('test_id3') == 2);
+
         let doubleBonuses = calculateAllDoubleBonuses(testID, room);
         assert(doubleBonuses.length == 2);
+        let doubleBonusCount = countDoubleBonuses(doubleBonuses, room);
+        assert(doubleBonusCount.get('test_id1') == 1);
+        assert(doubleBonusCount.get('test_id2') == 1);
+        assert(doubleBonusCount.get('test_id3') == 2);
         done();
     });
 
@@ -266,10 +241,16 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
 
-        let triple = calculateAllTripleBonuses(testID, room);
+        let singleChoiceCount = countSingleChoices(room);
+        assert(singleChoiceCount.get('test_id1') == 1);
+        assert(singleChoiceCount.get('test_id2') == 1);
+        assert(singleChoiceCount.get('test_id3') == 1);
+
         let double = calculateAllDoubleBonuses(testID, room);
-        assert(triple.length == 0);
         assert(double.length == 0);
+
+        let triple = calculateAllTripleBonuses(testID, room);
+        assert(triple.length == 0);
         done();
     });
     // it('zero sum locations', (done) => {
@@ -428,7 +409,6 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
         let result = getResultsByProlificId(testID, room);
-        console.log(result);
         assert(result[0] === 50);
         assert(result[1] === 50);
         assert(result[2] === 50);
@@ -447,7 +427,7 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
         let result = getResultsByProlificId(testID, room);
-        let endResults = room.playerLocation;
+        let endResults = room.playerCurrentLocations;
         assert(result[0] === 54 && endResults.get('test_id1') === 54);
         assert(result[1] === 50 && endResults.get('test_id2') === 50);
         assert(result[2] === 46 && endResults.get('test_id3') === 46);
@@ -514,8 +494,6 @@ describe('Location sending and calculation', () => {
         let single = getSinglePairMap(testID, room);
         let double = getDoublePairMap(testID, room);
         let triple = getTriplePairMap(testID, room);
-        console.log("triple:");
-        console.log(triple);
         for (var i = 0; i < testID.length; i++) {
             let player = testID[i];
             assert(single.get(player) === 0);
@@ -693,9 +671,6 @@ describe('Location sending and calculation', () => {
         room.setPlayerLocation('test_id4', 180);
         room.setPlayerLocation('test_id5', 60);
         room.setPlayerLocation('test_id6', 0);
-        let group = getWinnersAndLosers(room);
-        console.log(group[0]);
-        console.log(group[1]);
         done();
     });
 

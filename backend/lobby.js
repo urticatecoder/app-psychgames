@@ -3,6 +3,7 @@ const GameTwo = require('./game2.js');
 const DB_API = require('./db/db_api');
 const ObjectID = require("bson-objectid");
 const ROOM_WAIT_TIME_MILLISECONDS = 20000;
+const DEFAULT_PLAYER_LOCATION = 50;
 const FrontendEventMessage = require("./frontend_event_message.js").FrontendEventMessage;
 const BackendEventMessage = require("./backend_event_message.js").BackendEventMessage;
 
@@ -155,7 +156,8 @@ class Room {
     gameNum = GameNum.GAMEONE;
     turnNum = 1; // the current turn number in this room starting at 1
     players = []; // holds player objects who are in this room
-    allPlayerLocations = new Map();
+    oldPlayerLocations = new Map();
+    newPlayerLocations = new Map();
     gameOneResults = []; // two groups for winners/losers, winners = gameOneResults[0], losers = gameOneResults[1]
     gameTwoPayoff = GameTwo.generateCompeteAndInvestPayoff();
     gameOneTurnCount = 0; // turns for game 1
@@ -180,12 +182,30 @@ class Room {
         return this.roomName;
     }
 
-    get playerLocation() {
-        return this.allPlayerLocations;
+    get playerIDs() {
+        return this.players.map(player => player.prolificID);
+    }
+
+    get playerCurrentLocations() {
+        return this.newPlayerLocations;
+    }
+
+    getPlayerOldLocation(prolificID) {
+        return this.oldPlayerLocations.get(prolificID);
+    }
+
+    getPlayerNewLocation(prolificID) {
+        return this.newPlayerLocations.get(prolificID);
     }
 
     setPlayerLocation(prolificID, newLocation) {
-        this.allPlayerLocations.set(prolificID, newLocation);
+        this.oldPlayerLocations.set(prolificID, this.newPlayerLocations.get(prolificID));
+        this.newPlayerLocations.set(prolificID, newLocation);
+    }
+
+    initPlayerLocation(prolificID) {
+        this.oldPlayerLocations.set(prolificID, DEFAULT_PLAYER_LOCATION);
+        this.newPlayerLocations.set(prolificID, DEFAULT_PLAYER_LOCATION);
     }
 
     get roomCreationTime() {
@@ -212,12 +232,11 @@ class Room {
             throw 'Parameter is not an instance of the Player class.';
         }
         this.players.push(player);
-        this.setPlayerLocation(player.prolificID, 50);
+        this.initPlayerLocation(player.prolificID);
         this.allPlayerTimes.set(player.prolificID, Date.now());
         if (this.roomCreationTime == null) {
             this.setRoomCreationTime(Date.now());
         }
-        // this.allPlayerLocations.set(player.prolificID, 0);
     }
 
     advanceToNextRound() {
@@ -282,8 +301,6 @@ class Room {
             winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
         });
         let winnerSum = GameTwoAllocation.sumAllocations(winnerAllocations);
-        // console.log('compete keep invest');
-        // console.log('winner sum: ' + winnerSum.allocationAsArray);
         // losers
         let loserIDs = this.gameOneResults[1];
         let loserAllocations = [];
@@ -291,7 +308,6 @@ class Room {
             loserAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
         });
         let loserSum = GameTwoAllocation.sumAllocations(loserAllocations);
-        // console.log('loser sum: ' + loserSum.allocationAsArray);
         return [winnerSum.allocationAsArray, loserSum.allocationAsArray];
     }
 
@@ -416,12 +432,9 @@ class Player {
      * @returns true if player has confirmed game 1 choice for the specified turn
      */
     hasConfirmedAtTurn(gameNum, turnNum) {
-        // console.log("turnNum = " + turnNum)
         if (gameNum == GameNum.GAMEONE) {
-            // console.log("Game 1 choice count = " + this.getGameOneChoiceCount());
             return this.getGameOneChoiceCount() >= turnNum;
         } else {
-            // console.log("Game 2 choice count = " + this.getGameTwoChoiceCount());
             return this.getGameTwoChoiceCount() >= turnNum;
         }
     }
@@ -441,8 +454,6 @@ class Player {
         if (!(choice instanceof Array)) {
             throw 'Parameter is not an Array.';
         }
-        // console.log("Recording choice for player "+this.prolificID);
-        // console.log(choice);
         this.choices.push(choice);
     }
 
@@ -451,8 +462,6 @@ class Player {
      * @return {string[]}
      */
     getChoiceAtTurn(turnNum) {
-        // console.log("Getting choices of player " + this.prolificID + " in turn " + turnNum);
-        // console.log(this.choices)
         if (!this.hasConfirmedAtTurn(GameNum.GAMEONE, turnNum)) {
             throw 'Player has not confirmed choice for this turn.';
         }
@@ -528,7 +537,6 @@ module.exports = {
                 socket.roomName = roomName;
                 socket.prolificID = prolificID;
                 socket.to(roomName).emit(BackendEventMessage.PLAYER_JOIN_ROOM, socket.id + ' has joined ' + roomName); // to other players in the room, excluding self
-                // socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, lobby.getNumOfPlayersInRoom(roomName)); // only to self
                 socket.emit(BackendEventMessage.NUM_PLAYER_IN_ROOM, roomName, lobby.getNumOfPlayersInRoom(roomName)); // only to self
 
                 // Send player's time to frontend

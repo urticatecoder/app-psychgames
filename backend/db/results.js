@@ -18,7 +18,7 @@ var passive = new Map();
  * @returns allResults {int array} of locations to move each player
  */
 function getResultsByProlificId(prolificIDArray, room) {
-    let allLocations = room.playerLocation;
+    let allLocations = room.playerCurrentLocations;
     let roundResults = [];
     let initialLocations = [];
     for (let i = 0; i < prolificIDArray.length; i++) {
@@ -97,10 +97,10 @@ function zeroSumResults(allResults, prolificIDArray, room) {
         let playerProlific = prolificIDArray[i];
         let newLocation = allResults[i] - average;
         newResults.push(newLocation);
-        room.setPlayerLocation(playerProlific, newLocation);
     }
     return newResults;
 }
+
 /**
  * @param prolificIDArray {string array} in the format of prolific IDs e.g. "['testID1', 'testID2']"
  * @param room {room object} the room the players are in 
@@ -178,12 +178,6 @@ function getDoublePairMap(prolificIDArray, room) {
     for (var i = 0; i < prolificIDArray.length; i++) {
         doubleMap.set(prolificIDArray[i], 0);
     }
-    // let doublePairs = calculateAllDoubleBonuses(prolificIDArray, room);
-    // // place double pairs into doubleAndTriple map
-    // for (var i = 0; i < doublePairs.length; i++) {
-    //     doubleMap.set(doublePairs[i][0], doubleMap.get(doublePairs[i][0]) + 1);
-    //     doubleMap.set(doublePairs[i][1], doubleMap.get(doublePairs[i][1]) + 1);
-    // }
     let doubleAndTriple = getDoubleAndTripleCount(prolificIDArray, room);
     let triple = getTriplePairMap(prolificIDArray, room);
     // put double and triple counts into double map
@@ -235,6 +229,20 @@ function calculateDoubleAndTripleBonusesOfID(playerProlific, allChoices) {
     }
     return count;
 }
+
+function countSingleChoices(room) {
+    let prolificIDs = room.playerIDs;
+    let allChoices = room.getEveryoneChoiceAtCurrentTurn();
+    let counts = new Map();
+    prolificIDs.forEach((prolificID) => { counts.set(prolificID, 0); });
+    allChoices.forEach((choice) => {
+        choice.forEach((chosenID) => {
+            counts.set(chosenID, counts.get(chosenID) + 1);
+        });
+    })
+    return counts;
+}
+
 /**
  * @param prolificIDArray {string array} in the format of prolific IDs e.g. "['testID1', 'testID2']"
  * @param room {room object} the room the players are in 
@@ -282,6 +290,24 @@ function calculateAllDoubleBonuses(prolificIDArray, room) {
     }
     return allDoubleBonuses;
 }
+
+/**
+ * Count the number of double bonuses awarded to each player in the room in a given turn
+ * @param {string[][]} doubleBonuses Nested arrays containing double bonuses in a given turn
+ * @param {Room} room the room the players are in
+ * @returns Mapping of player prolificID to the count of double bonuses 
+ */
+function countDoubleBonuses(doubleBonuses, room) {
+    let prolificIDs = room.playerIDs;
+    let counts = new Map();
+    prolificIDs.forEach((prolificID) => { counts.set(prolificID, 0); });
+    doubleBonuses.forEach((tuple) => {
+        counts.set(tuple[0], counts.get(tuple[0]) + 1);
+        counts.set(tuple[1], counts.get(tuple[1]) + 1);
+    })
+    return counts;
+}
+
 /**
  * @param prolificIDArray {string array} in the format of prolific IDs e.g. "['testID1', 'testID2']"
  * @param room {room object} the room the players are in 
@@ -304,6 +330,7 @@ function calculateAllTripleBonuses(prolificIDArray, room) {
     }
     return allTripleBonuses;
 }
+
 /**
  * @param choicesProlific {string array} of IDs a player chose
  * @param allChoices {map} of all choices of players
@@ -311,10 +338,6 @@ function calculateAllTripleBonuses(prolificIDArray, room) {
  * @returns firstPlayerChosen, secondPlayerChosen, triple in order to determine if Triple Bonus  
  **/
 function isTripleBonus(choicesProlific, allChoices, playerProlific) {
-    // console.log("isTripleBonus: allChoices = ");
-    // console.log(allChoices);
-    // console.log("choicesProlific = ");
-    // console.log(choicesProlific);
     let firstPlayerChosen = choicesProlific[0];
     let secondPlayerChosen = choicesProlific[1];
     let firstPlayerChoices = allChoices.get(firstPlayerChosen);
@@ -355,12 +378,31 @@ function placeIntoTripleBonus(allTripleBonuses, playerProlific, firstPlayerChose
         allTripleBonuses.push(tempTripleBonus);
     }
 }
+
+/**
+ * Count the number of triple bonuses awarded to each player in the room in a given turn
+ * @param {string[][]} tripleBonuses Nested arrays containing triple bonuses in a given turn
+ * @param {Room} room the room the players are in
+ * @returns Mapping of player prolificID to the count of triple bonuses
+ */
+function countTripleBonuses(tripleBonuses, room) {
+    let prolificIDs = room.playerIDs;
+    let counts = new Map();
+    prolificIDs.forEach((prolificID) => { counts.set(prolificID, 0); });
+    tripleBonuses.forEach((tuple) => {
+        counts.set(tuple[0], counts.get(tuple[0]) + 1);
+        counts.set(tuple[1], counts.get(tuple[1]) + 1);
+        counts.set(tuple[2], counts.get(tuple[2]) + 1);
+    })
+    return counts;
+}
+
 /**
  * @param room {room object} the room the players are in 
  * @returns playerMax {int} for how many players have won
  */
 function isGameOneDone(room) {
-    let allLocations = room.playerLocation;
+    let allLocations = room.playerCurrentLocations;
     var playerMax = 0;
     for (let location of allLocations.values()) {
         if (location >= 100) {
@@ -369,12 +411,13 @@ function isGameOneDone(room) {
     }
     return playerMax >= GamesConfig.GAME_ONE_MIN_WINNER_NUM || room.gameOneTurnCount >= GamesConfig.GAME_ONE_MAX_ROUND_NUM;
 }
+
 /**
  * @param room {room object} the room the players are in 
  * @returns winners, losers {string List}
  */
 function getWinnersAndLosers(room) {
-    let allLocations = room.playerLocation;
+    let allLocations = room.playerCurrentLocations;
     let winners = [];
     let losers = [];
     let highScores = [];
@@ -421,6 +464,9 @@ module.exports = {
     getWinnersAndLosers: getWinnersAndLosers,
     calculateAllTripleBonuses: calculateAllTripleBonuses,
     calculateAllDoubleBonuses: calculateAllDoubleBonuses,
+    countTripleBonuses: countTripleBonuses,
+    countDoubleBonuses: countDoubleBonuses,
+    countSingleChoices: countSingleChoices,
     calculateResults: getSinglePairMap,
     getResults: getResults,
     zeroSumResults: zeroSumResults,
