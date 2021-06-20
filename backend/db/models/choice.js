@@ -6,7 +6,7 @@
  */
 
 let mongoose = require('mongoose');
-const DEFAULT_PLAYER_LOCATION = 50;
+const DEFAULT_PLAYER_LOCATION = require("../../games_config.js").DEFAULT_PLAYER_LOCATION;;
 
 
 let ChoiceSchema = new mongoose.Schema(
