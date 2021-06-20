@@ -1,6 +1,6 @@
 const assert = require('assert');
-const Room = require('../lobby.js').Room;
-const Player = require('../lobby.js').Player;
+const Room = require('../room.js').Room;
+const Player = require('../player.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
     countTripleBonuses, countDoubleBonuses, countSingleChoices,
     calculateResults, isPlayerPassive, zeroSumResults, getSinglePairMap,
