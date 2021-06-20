@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
-const Lobby = require('../lobby.js').Lobby;
-const Room = require('../lobby.js').Room;
-const Player = require('../lobby.js').Player;
+const Room = require('../room.js').Room;
+const Player = require('../player.js').Player;
+const GAME_TWO_MAX_ROUND_NUM = require('../games_config.js').GAME_TWO_MAX_ROUND_NUM;
 const Game2 = require('../game2.js');
 
 describe('Test game 2 backend logic', () => {
@@ -33,7 +33,7 @@ describe('Test game 2 backend logic', () => {
     it('isGameTwoDone works', (done) => {
         let room = new Room('room 1');
         room.advanceToGameTwo();
-        for (let i = 1; i <= Game2.GameTwoAllocation.GAME_TWO_MAX_ROUND_NUM - 1; i++) {
+        for (let i = 1; i <= GAME_TWO_MAX_ROUND_NUM - 1; i++) {
             room.advanceToNextRound();
         }
         expect(Game2.isGameTwoDone(room)).to.equal(false);
