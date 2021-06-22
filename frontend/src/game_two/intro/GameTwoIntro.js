@@ -11,8 +11,8 @@ const HIDE_BUTTON = false;
 const TIMER_MESSAGE = "Game Two";
 const TIMER_LENGTH = 55999;
 
-const GAME_TWO_TUTORIAL_FILEPATH = "Tutorials/GameTwo.mp4";
-const GAME_TWO_TUTORIAL_LENGTH = 45000;
+const GAME_TWO_TUTORIAL_FILEPATH = "Tutorials/GameTwoPlaceholder.mp4";
+const GAME_TWO_TUTORIAL_LENGTH = 5000;
 const GAME_TWO_TUTORIAL_TEXT = "Game 2 Tutorial";
 const DEFAULT_ANIMATION_PAUSE = 1000;
 
@@ -46,7 +46,7 @@ function GameTwoIntro(props) {
         <IntroTimer
           message={TIMER_MESSAGE}
           // length={TIMER_LENGTH}
-          length={10000}
+          length={16500}
           nextRoute={GAME_TWO_ROUTE}
         />
         {display}
@@ -70,7 +70,7 @@ function getTutorial() {
         <TutorialScreen
             URL={GAME_TWO_TUTORIAL_FILEPATH}
             showButton={HIDE_BUTTON}
-            initialPause={SUMMARY_SCREEN_DURATION}
+            initialPause={500}
             videoLength={GAME_TWO_TUTORIAL_LENGTH}
             text={GAME_TWO_TUTORIAL_TEXT}
         />
