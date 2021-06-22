@@ -10,8 +10,8 @@ const SHOW_BUTTON = true;
 
 const TIMER_MESSAGE = "Game One";
 const NO_PAUSE = 0;
-const GAME_ONE_TUTORIAL_FILEPATH = "Tutorials/GameOne.mp4";
-const GAME_ONE_TUTORIAL_LENGTH = 53000;
+const GAME_ONE_TUTORIAL_FILEPATH = "Tutorials/GameOnePlaceholder.mp4";
+const GAME_ONE_TUTORIAL_LENGTH = 5000;
 const GAME_ONE_TUTORIAL_TEXT = "Game 1 Tutorial";
 const DEFAULT_ANIMATION_PAUSE = 1000;
 const BUTTON_MESSAGE = "See My Avatar";
@@ -33,10 +33,12 @@ function GameOneIntro(props) {
   let avatarScreen = getMainAvatar(props);
   var display = showTutorial ? tutorialScreen : avatarScreen;
 
+// reset this to DEFAULT_ANIMATION + GAME_ONE_TUTORIAL_LENGTH + DEFAULT_ANIMATION
+// GAME_ONE_TUTORIAL IS 45000
   useEffect(() => {
     setTimeout(() => {
       setShowTutorial(HIDE_TUTORIAL);
-    }, DEFAULT_ANIMATION_PAUSE + GAME_ONE_TUTORIAL_LENGTH + DEFAULT_ANIMATION_PAUSE);
+    }, 500 + GAME_ONE_TUTORIAL_LENGTH); // reset this to DEFAULT_ANIMATION + GAME_ONE_TUTORIAL_LENGTH + DEFAULT_ANIMATION
   });
 
   return (

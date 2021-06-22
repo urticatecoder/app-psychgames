@@ -67,6 +67,7 @@ function TutorialScreen(props) {
           width={FULL_SCREEN}
           height={FULL_SCREEN}
           playing={playVideo}
+          loop={false}
         />
       </div>
     </div>
