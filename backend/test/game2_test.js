@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
-const Lobby = require('../lobby.js').Lobby;
-const Room = require('../lobby.js').Room;
-const Player = require('../lobby.js').Player;
+const Room = require('../room.js').Room;
+const Player = require('../player.js').Player;
+const GAME_TWO_MAX_ROUND_NUM = require('../games_config.js').GAME_TWO_MAX_ROUND_NUM;
 const Game2 = require('../game2.js');
 
 describe('Test game 2 backend logic', () => {
@@ -33,7 +33,7 @@ describe('Test game 2 backend logic', () => {
     it('isGameTwoDone works', (done) => {
         let room = new Room('room 1');
         room.advanceToGameTwo();
-        for (let i = 1; i <= Game2.GameTwoAllocation.GAME_TWO_MAX_ROUND_NUM - 1; i++) {
+        for (let i = 1; i <= GAME_TWO_MAX_ROUND_NUM - 1; i++) {
             room.advanceToNextRound();
         }
         expect(Game2.isGameTwoDone(room)).to.equal(false);
@@ -46,10 +46,10 @@ describe('Test game 2 backend logic', () => {
         room.addPlayer(new Player('123'));
         room.advanceToGameTwo();
         let player1 = room.getPlayerWithID('123');
-        player1.recordAllocationForGameTwo(3, 4, 3);
+        player1.recordAllocation(3, 4, 3);
         let expectedAllocation = new Game2.GameTwoAllocation(3, 4, 3);
         expect(room.getPlayerAllocationAtTurnNum('123', 1)).to.deep.equal(expectedAllocation);
-        player1.recordAllocationForGameTwo(1, 2, 7);
+        player1.recordAllocation(1, 2, 7);
         expectedAllocation = new Game2.GameTwoAllocation(1, 2, 7);
         expect(room.getPlayerAllocationAtTurnNum('123', 2)).to.deep.equal(expectedAllocation);
         done();
@@ -63,7 +63,7 @@ describe('Test game 2 backend logic', () => {
         room.advanceToGameTwo();
         room.setGameOneResults([['123', '456', '789'], ['aaa', 'bbb', 'ccc']]);
         ids.forEach((id) => {
-            room.getPlayerWithID(id).recordAllocationForGameTwo(3, 4, 3);
+            room.getPlayerWithID(id).recordAllocation(3, 4, 3);
         });
         let group = room.getOthersAllocationAtTurnNum('123', 1);
         expect(group[0].length).to.equal(2);
@@ -80,7 +80,7 @@ describe('Test game 2 backend logic', () => {
         room.advanceToNextRound();
         room.setGameOneResults([['123', '456', '789'], ['aaa', 'bbb', 'ccc']]);
         ids.forEach((id) => {
-            room.getPlayerWithID(id).recordAllocationForGameTwo(3, 4, 3);
+            room.getPlayerWithID(id).recordAllocation(3, 4, 3);
         });
         let result = room.getTeamAllocationAtCurrentTurn();
         expect(result[0]).to.deep.equal([9, 12, 9]);

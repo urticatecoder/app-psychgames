@@ -32,18 +32,20 @@ describe('Test database query API', () => {
     });
     it('save choice schema', (done) => {
         DB_API.saveExperimentSession(ObjectID(), ['111', '222', '333']).then((experiment) => {
-            return DB_API.saveChoiceToDB(experiment._id, '111', ['222', '333'], 1, false).then((result) => {
+            return DB_API.saveChoiceToDB(experiment._id, '111', ['222', '333'], 1, false, 5).then((result) => {
                 let savedChoice = result.players[0].choice[0];
                 expect(savedChoice.selectedPlayerID).to.deep.equal(['222', '333']);
                 expect(savedChoice.turnNum).to.equal(1);
                 expect(savedChoice.madeByBot).to.equal(false);
+                expect(savedChoice.oldLocation).to.equal(5);
+                expect(savedChoice.newLocation).to.equal(50);
                 done();
             });
         }).catch(err => done(err));
     });
     it('save allocation schema', (done) => {
         DB_API.saveExperimentSession(ObjectID(), ['aaa', 'bbb', 'ccc']).then((experiment) => {
-            return DB_API.saveAllocationToDB('aaa', 3, 4, 3, 0.5, 1, 1, false).then((result) => {
+            return DB_API.saveAllocationToDB(experiment._id, 'aaa', 3, 4, 3, 0.5, 1, 1, false).then((result) => {
                 let savedAllocation = result.players[0].allocation[0];
                 expect(savedAllocation.keepToken).to.equal(3);
                 expect(savedAllocation.investPayoff).to.equal(0.5);

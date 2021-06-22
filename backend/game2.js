@@ -3,6 +3,8 @@
  * This file contains a data class for game 2 and a few helper functions to calculate stats related to game 2
  */
 
+const GamesConfig = require('./games_config.js');
+
 /**
  * Class representing the amount of tokens allocated for each token category.
  * It has a few static helper functions for aggregating instances of GameTwoAllocation
@@ -10,8 +12,6 @@
 class GameTwoAllocation {
     static TOKEN_VALUE = 0.5;
     static POSSIBLE_PAYOFF = [0, 0.5, 1, 1.5, 2];
-    static GAME_TWO_MAX_ROUND_NUM = 5;
-
 
     constructor(compete, keep, invest) {
         this.compete = compete;
@@ -63,7 +63,7 @@ class GameTwoAllocation {
 }
 
 function calculateFinalPaymentForAPlayer(prolificID, lobby) {
-    let turnNum = getRandomInt(GameTwoAllocation.GAME_TWO_MAX_ROUND_NUM - 1) + 1; // select a random turn num to calculate final payment
+    let turnNum = getRandomInt(GamesConfig.GAME_TWO_MAX_ROUND_NUM - 1) + 1; // select a random turn num to calculate final payment
     let room = lobby.getRoomPlayerIsIn(prolificID);
     return calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum);
 }
@@ -173,7 +173,7 @@ function shuffleArray(array) {
 }
 
 function isGameTwoDone(room) {
-    return room.turnNum >= GameTwoAllocation.GAME_TWO_MAX_ROUND_NUM;
+    return room.turnNum >= GamesConfig.GAME_TWO_MAX_ROUND_NUM;
 }
 
 module.exports = {

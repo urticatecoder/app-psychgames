@@ -9,6 +9,7 @@ const path = require('path');
 const lobby = require('./lobby.js').LobbyInstance;
 const DB_API = require('./db/db_api');
 const Game2 = require('./game2');
+const GamesConfig = require('./games_config.js');
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
@@ -50,7 +51,7 @@ app.get("/login-code", ((req, res) => {
  * It will accept a start date and end date, and respond with experiment data collected between the start date and end date in json format
  */
 app.get("/download-game1", async (req, res) => {
-    console.log(req.query.startDate, req.query.endDate);
+    console.log("Downloading game 1 data: " + req.query.startDate, req.query.endDate);
     let experiments = await DB_API.getAllDataByDateRange(req.query.startDate, req.query.endDate);
     let result = []
     experiments.forEach((experiment) => {
@@ -65,6 +66,11 @@ app.get("/download-game1", async (req, res) => {
                     turnNum: choice.turnNum,
                     selectedIDs: choice.selectedPlayerID,
                     madeByBot: choice.madeByBot.toString(),
+                    oldLocation: choice.oldLocation,
+                    newLocation: choice.newLocation,
+                    singleChoiceCount: choice.singleChoiceCount,
+                    doubleBonusCount: choice.doubleBonusCount,
+                    tripleBonusCount: choice.tripleBonusCount,
                 });
             });
         });
@@ -78,6 +84,7 @@ app.get("/download-game1", async (req, res) => {
  * It will accept a start date and end date, and respond with experiment data collected between the start date and end date in json format
  */
 app.get("/download-game2", async (req, res) => {
+    console.log("Downloading game 2 data: " + req.query.startDate, req.query.endDate);
     let experiments = await DB_API.getAllDataByDateRange(req.query.startDate, req.query.endDate);
     let result = []
     experiments.forEach((experiment) => {
@@ -87,6 +94,7 @@ app.get("/download-game2", async (req, res) => {
             player.allocation.forEach((allocation) => {
                 result.push({
                     experimentID: experiment._id,
+                    experimentTime: experiment.date,
                     prolificID: player.prolificID,
                     turnNum: allocation.turnNum,
                     keepToken: allocation.keepToken,
@@ -169,8 +177,13 @@ app.get("/game1-results", (req, res) => {
  * This route will validate if the player played enough turns of the game to be paid out
  */
 app.get("/validate", (req, res) => {
+    let experimentID = req.query.experimentID;
+    // Sanity check
+    if (experimentID == -1) {
+        return;
+    }
     let prolificID = req.query.loginCode;
-    let room = lobby.getRoomPlayerIsIn(prolificID);
+    let room = lobby.getRoomByRoomName(experimentID);
     let gameOneTurns = 0;
     let gameTwoTurns = 0;
     room.players.forEach((player) => {
@@ -181,7 +194,8 @@ app.get("/validate", (req, res) => {
         console.log(player);
         console.log('game 1: ' + gameOneTurns + ' game 2: ' + gameTwoTurns);
     });
-    if (gameOneTurns >= 2 && gameTwoTurns >= 2) {
+    // Only check if sufficient rounds of game2 has been completed since game1's terminating conditions does not depend solely on the number of rounds
+    if (gameTwoTurns >= GamesConfig.GAME_TWO_MAX_ROUND_NUM) {
         res.status(200).send({ "success": "true", "code": `ProlificID ${prolificID}` });
     }
     else {
