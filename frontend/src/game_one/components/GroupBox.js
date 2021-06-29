@@ -42,11 +42,19 @@ function GroupBox(props) {
     >
       <div className={classes.innerDiv}>
         <Typography className={classes.innerDiv} variant={Variants.SMALL_TEXT}>
-          {GROUP} {props.groupNumber}
+          {GROUP} {getGroupLabel(props.groupNumber)}
         </Typography>
       </div>
     </div>
   );
+}
+
+function getGroupLabel(groupNumber) {
+  if (groupNumber == 'One') {
+    return 'One Winners'
+  } else {
+    return 'Two Losers'
+  }
 }
 
 export default withStyles(styles)(GroupBox);
