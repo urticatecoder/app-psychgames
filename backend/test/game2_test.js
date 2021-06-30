@@ -7,14 +7,14 @@ const Game2 = require('../game2.js');
 describe('Test game 2 backend logic', () => {
     it('generateCompeteAndInvestPayoff works correctly', (done) => {
         let payoff = Game2.generateCompeteAndInvestPayoff();
-        expect(payoff.length).to.equal(25);
+        expect(payoff.length).to.equal(GAME_TWO_MAX_ROUND_NUM);
         done();
     });
     it('advanceToGameTwo sets the correct values for instance variables', (done) => {
         let room = new Room('room 1');
         room.advanceToGameTwo();
         expect(room.turnNum).to.equal(0);
-        expect(room.gameTwoPayoff.length).to.equal(25);
+        expect(room.gameTwoPayoff.length).to.equal(GAME_TWO_MAX_ROUND_NUM);
         done();
     });
     it('getCompeteAndInvestPayoffAtTurnNum works', (done) => {

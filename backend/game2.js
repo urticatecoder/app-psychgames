@@ -11,7 +11,7 @@ const GamesConfig = require('./games_config.js');
  */
 class GameTwoAllocation {
     static TOKEN_VALUE = 0.5;
-    static POSSIBLE_PAYOFF = [0, 0.5, 1, 1.5, 2];
+    static POSSIBLE_PAYOFF = [0, 0.5, 1];
 
     constructor(compete, keep, invest) {
         this.compete = compete;
