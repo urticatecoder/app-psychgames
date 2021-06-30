@@ -183,7 +183,7 @@ class Room {
    * @return {number[]} an array of two numbers. The first number is the compete payoff and the second number is the invest payoff
    */
   getCompeteAndInvestPayoffAtTurnNum(turnNum) {
-    let idx = turnNum - 1; // remember to subtract 1 because turnNum in Room starts at 1 instead of 0
+    let idx = turnNum - 1; // turnNum is one-indexed
     return this.gameTwoPayoff[idx];
   }
 
