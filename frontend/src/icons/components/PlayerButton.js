@@ -2,6 +2,7 @@ import React from "react";
 import PlayerImages from "./PlayerImages";
 import PlayerOptions from "./PlayerOptions";
 import GameImage from './GameImage';
+import { withStyles } from "@material-ui/core";
 
 const SELECTED = "#32a852";
 const NOT_SELECTED = "#0093f542";
@@ -20,6 +21,13 @@ const LARGE_SIZE = '85';
 const MEDIUM_SIZE = '75';
 const SMALL_SIZE = '65';
 
+const styles = {
+  glowingDiv: {
+    boxShadow: "0px 0px 1px #0093f542 inset, 0px 0px 20px #32a852",
+    borderRadius: BORDER_RADIUS 
+  },
+};
+
 /**
  * Component that wraps around a player image and allows it to be clicked in Game One.
  * Calls the onSelect() method when clicked, which indicates that the player was chosen in Game One.
@@ -28,14 +36,24 @@ const SMALL_SIZE = '65';
  * @author Eric Doppelt
  */
 function PlayerButton(props) {
+
+  const { classes } = props
   let background = getBackgroundColor(props.double, props.triple, props.selected);
 
+  if (props.player == 0 && !props.double && !props.triple) {
+    background = SELECTED
+  }
+  
+  let boxShadowStyle = "0px 0px 1px #0093f542 inset, 0px 0px 20px " + background
   return (
     <div
       style={{ backgroundColor: background, borderRadius: BORDER_RADIUS }}
       onClick={() => handleSelect(props.disabled, props.onSelect)}
     >
-      {getImage(props.player, props.selectedIndex, props.windowWidth)}
+      <div
+      className={classes.glowingDiv} style={{boxShadow: boxShadowStyle}}>
+        {getImage(props.player, props.selectedIndex, props.windowWidth)}
+      </div>
     </div>
   );
 }
@@ -53,13 +71,13 @@ function getImage(playerNumber, selectedIndex, windowWidth) {
     );
   } else {
     return (
-      <GameImage
-        image={PlayerOptions[IMAGE + selectedIndex]}
-        id={PlayerOptions[NAME + selectedIndex]}
-        alt={PlayerOptions[LABEL + selectedIndex]}
-        width={getSize(windowWidth)}
-        height={getSize(windowWidth)}
-      />
+        <GameImage
+          image={PlayerOptions[IMAGE + selectedIndex]}
+          id={PlayerOptions[NAME + selectedIndex]}
+          alt={PlayerOptions[LABEL + selectedIndex]}
+          width={getSize(windowWidth)}
+          height={getSize(windowWidth)}
+        />
     );
   }
 }
@@ -81,4 +99,4 @@ function getBackgroundColor(isDouble, isTriple, isSelected) {
   else return NOT_SELECTED;
 }
 
-export default PlayerButton;
+export default withStyles(styles)(PlayerButton);
