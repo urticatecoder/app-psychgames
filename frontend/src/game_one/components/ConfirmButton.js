@@ -51,15 +51,16 @@ function ConfirmButton(props) {
       variant={Variants.CONTAINED}
       color={PRIMARY_COLOR}
       disabled = {props.disabled}
-      onClick={() => handleSubmission(props.disableButton, props.setNoteTime)}
+      onClick={() => handleSubmission(props.disableButton, props.showWaitingDiv, props.setNoteTime)}
     >
       {CONFIRM_CHOICES_TEXT}
     </Button>
   );
 }
 
-function handleSubmission(disableButton, setNoteTime) {
+function handleSubmission(disableButton, showWaitingDiv, setNoteTime) {
   disableButton();
+  showWaitingDiv();
   setNoteTime(NOTE_TIME);
 }
 
