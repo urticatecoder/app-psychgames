@@ -9,6 +9,7 @@ import GroupBox from "./components/GroupBox";
 import GameTimer from "../util/common_components/GameTimer";
 import getAlerts from './components/getAlerts';
 import BonusShower from './components/BonusShower';
+import WaitingDiv from "../util/common_components/WaitingDiv";
 
 const FULL_DIV = "fullDiv";
 const GAME_TWO_INTRO_ROUTE = "/game-two-intro";
@@ -82,6 +83,9 @@ const TRIPLE_BONUS = 'triple';
 const OPEN = true;
 const CLOSED = false;
 
+const SHOW_DIV = true
+const HIDE_DIV = false
+
 const styles = {
   animatedColumns: {
     position: "absolute",
@@ -126,6 +130,7 @@ function GameOne(props) {
   const [pauseTimer, setPauseTimer] =  useState()
   const [submitDecisions, setSubmitDecisions] = useState(DONT_SUBMIT_DECISIONS);
   const [disableButton, setDisableButton] = useState(DO_NOT_DISABLE_BUTTON);
+  const [showWaitingDiv, setShowWaitingDiv] = useState(HIDE_DIV);
   const [timeLeft, setTimeLeft] = useState(INITIAL_TIME_LEFT);
   const [noteTime, setNoteTime] = useState(DONT_NOTE_TIME);
 
@@ -136,8 +141,7 @@ function GameOne(props) {
   useEffect(() => {
     socket.on(END_TURN_WEBSOCKET, (heights, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
       reIndexHeights(heights, props.backendIndex);
-      console.log('TURN OVER')
-      console.log('current height: ' + currentHeight)
+      setShowWaitingDiv(HIDE_DIV)
       let posAfterTriple = handleTripleBonuses(
           tripleBonuses,
           tripleIncrease,
@@ -215,6 +219,8 @@ function GameOne(props) {
         tooManySelects,
         setTooManySelects
       )}
+      
+      <WaitingDiv show={showWaitingDiv} windowWidth={props.windowWidth}/>
       <BonusShower bonus={bonusType} open={openBonusShower} windowWidth={props.windowWidth}/>
       <GameTimer
         setSubmitDecisions={setSubmitDecisions}
@@ -240,6 +246,7 @@ function GameOne(props) {
         setNoteTime = {setNoteTime}
         windowWidth={props.windowWidth}
         experimentID = {props.experimentID}
+        showWaitingDiv = {() => setShowWaitingDiv(SHOW_DIV)}
       />
 
       <div className={classes.animatedColumns}>
@@ -278,7 +285,6 @@ function GameOne(props) {
   );
 }
 
-// TO IMPLEMENT DISABLING TOP PLAYERS, HAVE NICK SEND AN ARRAY
 function handleDisablePlayers(animationPause, setDisabledPlayers) {
   setDisabledPlayers(DISABLE_PLAYERS);
   setTimeout(() => {
