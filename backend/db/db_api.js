@@ -111,7 +111,7 @@ function savePlayerRecieptTurnNum(experimentID, prolificID, turnNum) {
 async function getAllDataByDateRange(startDate, endDate) {
     try {
         let endDateAdjusted = new Date(endDate);
-        endDateAdjusted.setDate(endDateAdjusted.getDate() + 2);
+        endDateAdjusted.setDate(endDateAdjusted.getDate() + 1);
         console.log("Retrieving data in date range: " + startDate, endDateAdjusted);
         return await ExperimentModel.find({ date: { $gte: startDate, $lt: endDateAdjusted } }).sort({ date: -1 });
 
