@@ -86,6 +86,24 @@ function saveAllocationToDB(experimentID, prolificID, keepToken, investToken, co
 }
 
 /**
+ * Save the randomly selected Gamd 2 turn number for calculating the player's final payout
+ * @param {*} experimentID 
+ * @param {string} prolificID 
+ * @param {integer} turnNum 
+ * @returns 
+ */
+function savePlayerRecieptTurnNum(experimentID, prolificID, turnNum) {
+    return ExperimentModel.findById(experimentID).then((experiment) => {
+        experiment.players.forEach((player) => {
+            if (player.prolificID === prolificID) {
+                player.receiptTurnNum = turnNum;
+            }
+        });
+        return experiment.save();
+    });
+}
+
+/**
  * @param startDate {string} in the format of YYYY-MM-DD, e.g. "2020-11-10"
  * @param endDate {string} in the format of YYYY-MM-DD, e.g. "2020-11-11"
  * @return {Promise<*>}
@@ -93,8 +111,10 @@ function saveAllocationToDB(experimentID, prolificID, keepToken, investToken, co
 async function getAllDataByDateRange(startDate, endDate) {
     try {
         let endDateAdjusted = new Date(endDate);
-        endDateAdjusted.setDate(endDateAdjusted.getDate() + 2);
+        endDateAdjusted.setDate(endDateAdjusted.getDate() + 1);
+        console.log("Retrieving data in date range: " + startDate, endDateAdjusted);
         return await ExperimentModel.find({ date: { $gte: startDate, $lt: endDateAdjusted } }).sort({ date: -1 });
+
     } catch (e) {
         console.log(e);
     }
@@ -167,6 +187,7 @@ module.exports = {
     saveExperimentSession: saveExperimentSession,
     saveChoiceToDB: saveChoiceToDB,
     saveAllocationToDB: saveAllocationToDB,
+    savePlayerRecieptTurnNum: savePlayerRecieptTurnNum,
     getAllDataByDateRange: getAllDataByDateRange,
     getOldestEntry: getOldestEntry,
 }

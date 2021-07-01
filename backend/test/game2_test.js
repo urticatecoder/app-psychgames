@@ -83,8 +83,8 @@ describe('Test game 2 backend logic', () => {
             room.getPlayerWithID(id).recordAllocation(3, 4, 3);
         });
         let result = room.getTeamAllocationAtCurrentTurn();
-        expect(result[0]).to.deep.equal([9, 12, 9]);
-        expect(result[1]).to.deep.equal([9, 12, 9]);
+        expect(result[0].allocationAsArray).to.deep.equal([9, 12, 9]);
+        expect(result[1].allocationAsArray).to.deep.equal([9, 12, 9]);
         done();
     });
 });
