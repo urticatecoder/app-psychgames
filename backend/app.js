@@ -91,6 +91,7 @@ app.get("/download-game2", async (req, res) => {
         let players = experiment.players;
         players.forEach((player) => {
             // game 2 allocations
+            console.log(player);
             player.allocation.forEach((allocation) => {
                 result.push({
                     experimentID: experiment._id,
@@ -103,6 +104,7 @@ app.get("/download-game2", async (req, res) => {
                     investPayoff: allocation.investPayoff,
                     competePayoff: allocation.competePayoff,
                     madeByBot: allocation.madeByBot.toString(),
+                    receiptTurnNum: player.receiptTurnNum,
                 });
             });
         });

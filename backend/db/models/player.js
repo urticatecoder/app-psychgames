@@ -13,10 +13,11 @@ let Allocation = require('./allocation');
 let PlayerSchema = new mongoose.Schema(
     {
         _id: false, // this is for making sure mongoDB will not automatically add this field
-        prolificID: {type: String, required: true}, // the id of this player
-        choice: {type: [Choice.ChoiceSchema], default: []}, // all the choices this player made in game 1
-        allocation: {type: [Allocation.AllocationSchema], default: []}, // all the allocation this player made in game 2
-        payment: {type: Number, default: 0}, // this player's final payment in cents
+        prolificID: { type: String, required: true }, // the id of this player
+        choice: { type: [Choice.ChoiceSchema], default: [] }, // all the choices this player made in game 1
+        allocation: { type: [Allocation.AllocationSchema], default: [] }, // all the allocation this player made in game 2
+        receiptTurnNum: { type: Number, default: -1 }, // the selected Game 2 turn number for calculating the final payout
+        payment: { type: Number, default: 0 }, // this player's final payment in cents
     }
 );
 
