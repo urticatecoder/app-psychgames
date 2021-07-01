@@ -11,6 +11,7 @@ const Game2 = require('./game2');
 const lobby = require("./lobby.js").LobbyInstance;
 const FrontendEventMessage = require("./frontend_event_message.js").FrontendEventMessage;
 const BackendEventMessage = require("./backend_event_message.js").BackendEventMessage;
+const GamesConfig = require('./games_config.js');
 
 // Set up mongoose connection
 let mongoose = require('mongoose');
@@ -141,70 +142,82 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
             return;
         }
         prolificID = prolificID.toString();
-        console.log("Game 2 decision received: ", experimentID, prolificID, competeToken, keepToken, investToken);
+        // console.log("Game 2 decision received: ", experimentID, prolificID, competeToken, keepToken, investToken);
         let room = lobby.getRoomByRoomName(experimentID);
         let player = room.getPlayerWithID(prolificID);
         player.setIsBot(false);
 
         player.recordAllocation(competeToken, keepToken, investToken);
         let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn();
-        DB_API.saveAllocationToDB(experimentID, prolificID, keepToken, investToken, competeToken, payoff[1], payoff[0], room.turnNum, player.isBot);
+        let competePayoff = payoff[0], investPayoff = payoff[1];
+        DB_API.saveAllocationToDB(experimentID, prolificID, keepToken, investToken, competeToken, investPayoff, competePayoff, room.turnNum, player.isBot);
 
         if (room.hasEveryoneConfirmed()) { // all players have confirmed choices
             // console.log(room.turnNum - 1);
-            // let all bots select their choices
+            // generate bot choices
             room.players.forEach((player) => {
                 if (player.isBot) {
                     let bot = player;
                     let botAllocation = Game2.generateBotAllocation();
-                    console.log("Saving allocation for bot: " + player.prolificID);
                     bot.recordAllocation(botAllocation[0], botAllocation[1], botAllocation[2]); // compete, keep, invest
-                    DB_API.saveAllocationToDB(experimentID, bot.prolificID, botAllocation[1], botAllocation[2], botAllocation[0], payoff[1], payoff[0], room.turnNum, true);
+                    DB_API.saveAllocationToDB(experimentID, bot.prolificID, botAllocation[1], botAllocation[2], botAllocation[0], investPayoff, competePayoff, room.turnNum, true);
                 }
             });
+
+            let allocation = room.getTeamAllocationAtCurrentTurn();
+            io.in(room.name).emit(BackendEventMessage.END_GAME_TWO_ROUND, competePayoff, investPayoff, allocation[0].allocationAsArray, allocation[1].allocationAsArray);
+
             if (Game2.isGameTwoDone(room)) {
-                let allocation = room.getTeamAllocationAtCurrentTurn();
-                let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
-                let competePayoff = payoff[0], investPayoff = payoff[1];
-                io.in(room.name).emit(BackendEventMessage.END_GAME_TWO_ROUND, competePayoff, investPayoff, allocation[0], allocation[1]);
                 io.in(room.name).emit(BackendEventMessage.END_GAME_TWO);
 
-                socket.on(FrontendEventMessage.GET_FINAL_RESULTS, (experimentID, playerInRoom) => {
-                    // Sanity check
-                    if (experimentID == -1) {
-                        return;
-                    }
-                    console.log("Results for: " + playerInRoom);
-                    let competePayoff = payoff[0], investPayoff = payoff[1];
-                    //game 1
-                    let gameOneResult = false;
-                    let group = getWinnersAndLosers(room);
-                    let winners = group[0];
-                    let gameOneBonus = 0;
-                    winners.forEach((winner) => {
-                        if (winner === prolificID) {
-                            gameOneResult = true;
-                            gameOneBonus = 5; // 5 dollars to win game 1
-                        }
-                    });
-                    let payOutTurnNum = Math.floor(Math.random() * Math.floor(room.turnNum - 1) + 1);
-                    //compete, keep, invest
-                    let compete = game2.getCompeteAtTurn(playerInRoom, room, payOutTurnNum);
-                    let keep = game2.getKeepAtTurn(playerInRoom, room, payOutTurnNum);
-                    let invest = game2.getInvestAtTurn(playerInRoom, room, payOutTurnNum);
-                    console.log('compete: ' + compete + ' invest: ' + invest + ' keep: ' + keep);
-                    io.in(room.name).emit(BackendEventMessage.SEND_FINAL_RESULTS, gameOneResult, gameOneBonus, payOutTurnNum + 1, keep, keep * 0.5, invest, investPayoff * 0.5, invest * investPayoff * 0.5, compete, competePayoff * 0.5, -1 * (compete * competePayoff * 0.5));
-                });
+                // marker for the previously final result computation part
             } else {
-                let allocation = room.getTeamAllocationAtCurrentTurn();
                 room.advanceToNextRound();
-                let payoff = room.getCompeteAndInvestPayoffAtCurrentTurn(); // payoff for next turn
-                let competePayoff = payoff[0], investPayoff = payoff[1];
-                // console.log('winners: ' + allocation[0]);
-                // console.log('losers' + allocation[1]);
-                io.in(room.name).emit(BackendEventMessage.END_GAME_TWO_ROUND, competePayoff, investPayoff, allocation[0], allocation[1]);
             }
         }
+    });
+
+    socket.on(FrontendEventMessage.GET_FINAL_RESULTS, (experimentID, playerProlificID) => {
+        // Sanity check
+        if (experimentID == -1) {
+            return;
+        }
+        console.log("Results for: " + playerProlificID);
+        // Grant bonus to Game 1 winners
+        let room = lobby.getRoomByRoomName(experimentID);
+        let group = getWinnersAndLosers(room);
+        let winners = group[0];
+        let gameOneResult = false;
+        let gameOneBonus = 0;
+        winners.forEach((winner) => {
+            if (winner === playerProlificID) {
+                gameOneResult = true;
+                gameOneBonus = GamesConfig.GAME_ONE_PAYOUT; // Extra payout for winning Game 1
+            }
+        });
+        // Compute the final payout based on a randomly selected turn in Game 2
+        let payOutTurnNum = Math.floor(Math.random() * Math.floor(room.turnNum - 1) + 1);
+        let allocation = room.getPlayerTeamAllocationAtTurn(playerProlificID, payOutTurnNum + 1); // adjust turnNum to 1-based indexed
+        let payoff = room.getCompeteAndInvestPayoffAtTurnNum(payOutTurnNum + 1);
+        let competePayoff = payoff[0], investPayoff = payoff[1];
+        // keep
+        let keepTokens = allocation.keep;
+        let keepAmount = keepTokens * GamesConfig.TOKEN_VALUE;
+        // invest
+        let investTokens = allocation.invest;
+        let investRate = investPayoff * GamesConfig.TOKEN_VALUE;
+        let investAmount = investTokens * investRate;
+        // compete
+        let competeTokens = allocation.compete;
+        let competeRate = competePayoff * GamesConfig.TOKEN_VALUE;
+        let competeAmount = competeTokens * (-1) * competeRate;
+
+        console.log('compete tokens: ' + competeTokens + ' invest tokens: ' + investTokens + ' keep tokens: ' + keepTokens);
+        console.log('compete rate: ' + competeRate + ' invest rate: ' + investRate);
+        console.log('compete amount: ' + competeAmount + ' invest amount: ' + investAmount + ' keep amount: ' + keepAmount);
+
+        DB_API.savePlayerRecieptTurnNum(experimentID, playerProlificID, payOutTurnNum + 1);
+        socket.emit(BackendEventMessage.SEND_FINAL_RESULTS, gameOneResult, gameOneBonus, payOutTurnNum + 1, keepTokens, keepAmount, investTokens, investRate, investAmount, competeTokens, competeRate, competeAmount);
     });
 
 

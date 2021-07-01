@@ -122,9 +122,14 @@ function getInvestAtTurn(prolificID, room, turnNum) {
 }
 
 function getKeepAtTurn(prolificID, room, turnNum) {
-    let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
-    console.log(playerAllocation.keep);
-    return playerAllocation.keep;
+    let group = room.getOthersAllocationAtTurnNum(prolificID, turnNum);
+    let teammates = group[0];
+    let keepAmount = 0;
+    for (var i = 0; i < teammates.length; i++) {
+        keepAmount += teammates[i].keep;
+    }
+    console.log(keepAmount);
+    return keepAmount;
 }
 
 /**
