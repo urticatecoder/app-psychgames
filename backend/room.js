@@ -154,21 +154,59 @@ class Room {
   }
 
   getTeamAllocationAtCurrentTurn() {
+    return this.getTeamAllocationAtTurn(this.turnNum);
+    // // winners
+    // let winnerIDs = this.gameOneResults[0];
+    // let winnerAllocations = [];
+    // winnerIDs.forEach((id) => {
+    //   winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
+    // });
+    // let winnerSum = GameTwoAllocation.sumAllocations(winnerAllocations);
+    // // losers
+    // let loserIDs = this.gameOneResults[1];
+    // let loserAllocations = [];
+    // loserIDs.forEach((id) => {
+    //   loserAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
+    // });
+    // let loserSum = GameTwoAllocation.sumAllocations(loserAllocations);
+    // return [winnerSum.allocationAsArray, loserSum.allocationAsArray];
+  }
+
+  getTeamAllocationAtTurn(turnNum) {
     // winners
     let winnerIDs = this.gameOneResults[0];
     let winnerAllocations = [];
     winnerIDs.forEach((id) => {
-      winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
+      winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(turnNum));
     });
     let winnerSum = GameTwoAllocation.sumAllocations(winnerAllocations);
     // losers
     let loserIDs = this.gameOneResults[1];
     let loserAllocations = [];
     loserIDs.forEach((id) => {
-      loserAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
+      loserAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(turnNum));
     });
     let loserSum = GameTwoAllocation.sumAllocations(loserAllocations);
-    return [winnerSum.allocationAsArray, loserSum.allocationAsArray];
+    return [winnerSum, loserSum];
+  }
+
+  getPlayerTeamAllocationAtTurn(prolificID, turnNum) {
+    // Retrieve teammate prolificIDs
+    let teamIDs;
+    let winnerIDs = this.gameOneResults[0];
+    let loserIDs = this.gameOneResults[1];
+    if (winnerIDs.indexOf(prolificID) > -1) {
+      teamIDs = winnerIDs;
+    } else {
+      teamIDs = loserIDs;
+    }
+    // Sum up allocations
+    let teamAllocations = [];
+    teamIDs.forEach((id) => {
+      teamAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(turnNum));
+    });
+    let sum = GameTwoAllocation.sumAllocations(teamAllocations);
+    return sum;
   }
 
   /**
