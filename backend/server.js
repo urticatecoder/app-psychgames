@@ -11,6 +11,7 @@ const Game2 = require('./game2');
 const lobby = require("./lobby.js").LobbyInstance;
 const FrontendEventMessage = require("./frontend_event_message.js").FrontendEventMessage;
 const BackendEventMessage = require("./backend_event_message.js").BackendEventMessage;
+const GamesConfig = require('../games_config.js');
 
 // Set up mongoose connection
 let mongoose = require('mongoose');
@@ -175,7 +176,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
                         return;
                     }
                     console.log("Results for: " + playerInRoom);
-                    let competePayoff = payoff[0], investPayoff = payoff[1];
+                    // let competePayoff = payoff[0], investPayoff = payoff[1];
                     //game 1
                     let gameOneResult = false;
                     let group = getWinnersAndLosers(room);
@@ -184,7 +185,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
                     winners.forEach((winner) => {
                         if (winner === prolificID) {
                             gameOneResult = true;
-                            gameOneBonus = 5; // 5 dollars to win game 1
+                            gameOneBonus = GamesConfig.GAME_ONE_PAYOUT; // Extra payout for winning Game1
                         }
                     });
                     let payOutTurnNum = Math.floor(Math.random() * Math.floor(room.turnNum - 1) + 1);
