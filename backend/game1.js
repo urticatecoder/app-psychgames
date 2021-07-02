@@ -10,7 +10,31 @@ const DB_API = require('./db/db_api.js');
 const choice = require('./db/models/choice.js');
 const lobby = require('./lobby.js').LobbyInstance;
 const GamesConfig = require('./games_config.js');
-var passive = new Map();
+const GameOneRoundResult = require('./game_one_round_result.js');
+
+function computeResults(roomName) {
+    const room = lobby.getRoomByRoomName(roomName);
+    const players = lobby.getAllPlayersInRoom(roomName);
+    const allIDs = players.map(player => player.prolificID);
+    let singleChoiceCounts = countSingleChoices(room);
+    // emit list of lists of prolificIDs and integers of how much to move up for triple bonuses
+    let allTripleBonuses = calculateAllTripleBonuses(allIDs, room);
+    let tripleBonusCounts = countTripleBonuses(allTripleBonuses, room);
+    // emit list of lists of prolificIDs and integers of how much to move up for double bonuses
+    let allDoubleBonuses = calculateAllDoubleBonuses(allIDs, room);
+    let doubleBonusCounts = countDoubleBonuses(allDoubleBonuses, room);
+    // players will be emitted to the "net zero" position after showing who selected who (to be implemented)
+    let resultsForAllPlayers = getResultsByProlificId(allIDs, room);
+    const results = new GameOneRoundResult(singleChoiceCounts, doubleBonusCounts, allDoubleBonuses, tripleBonusCounts, allTripleBonuses, resultsForAllPlayers);
+    return results;
+}
+
+function recordPlayerChoices(prolificID, choices) {
+    prolificID = prolificID.toString();
+    let player = lobby.getPlayerByProlificID(prolificID);
+    player.setIsBot(false);
+    player.recordChoices(choices);
+}
 
 /**
  * @param prolificIDArray {string array} in the format of prolific IDs e.g. "['testID1', 'testID2']"
@@ -18,7 +42,7 @@ var passive = new Map();
  * @returns allResults {int array} of locations to move each player
  */
 function getResultsByProlificId(prolificIDArray, room) {
-    let allLocations = room.playerCurrentLocations;
+    let allLocations = room.playerLocations;
     let roundResults = [];
     let initialLocations = [];
     for (let i = 0; i < prolificIDArray.length; i++) {
@@ -59,27 +83,6 @@ function getResults(playerProlific, prolificIDArray, room) {
     count += doublePair.get(playerProlific) * 8;
     count += triplePair.get(playerProlific) * 15;
     return count;
-}
-
-/**
- * @param playerProlific {string} ID of player
- * @param room {room object} the room the players are in 
- * @returns playerProlific if player has been passive
- */
-function isPlayerPassive(playerProlific, room) {
-    if (!room.hasPlayerWithIDConfirmed(playerProlific)) {
-        if (passive.has(playerProlific)) {
-            passive.set(playerProlific, passive.get(playerProlific) + 1);
-        }
-        else {
-            passive.set(playerProlific, 1);
-        }
-        return true;
-    }
-    else {
-        passive.delete(playerProlific);
-        return false;
-    }
 }
 
 /**
@@ -130,8 +133,7 @@ function getSinglePairMap(prolificIDArray, room) {
         let tempCount = doubleAndTripleCount.get(tempPlayer);
         if (tripleMap.get(tempPlayer) !== 0) {
             singleMap.set(tempPlayer, singleMap.get(tempPlayer) - tempCount + 1);
-        }
-        else {
+        } else {
             singleMap.set(tempPlayer, singleMap.get(tempPlayer) - tempCount);
         }
     }
@@ -380,22 +382,26 @@ function countTripleBonuses(tripleBonuses, room) {
  * @returns playerMax {int} for how many players have won
  */
 function isGameOneDone(room) {
-    let allLocations = room.playerCurrentLocations;
+    let allLocations = room.playerLocations;
     var playerMax = 0;
     for (let location of allLocations.values()) {
         if (location >= 100) {
             playerMax += 1;
         }
     }
-    return playerMax >= GamesConfig.GAME_ONE_MIN_WINNER_NUM || room.gameOneTurnCount >= GamesConfig.GAME_ONE_MAX_ROUND_NUM;
+    return playerMax >= GamesConfig.GAME_ONE_MIN_WINNER_NUM || room.turnNum >= GamesConfig.GAME_ONE_MAX_TURN_NUM;
 }
 
 /**
  * @param room {room object} the room the players are in 
  * @returns winners, losers {string List}
  */
-function getWinnersAndLosers(room) {
-    let allLocations = room.playerCurrentLocations;
+function getWinnersAndLosers(roomName) {
+    room = lobby.getRoomByRoomName(roomName);
+    if (room.gameOneResults != null) {
+        return room.gameOneResults;
+    }
+    let allLocations = room.playerLocations;
     let winners = [];
     let losers = [];
     let highScores = [];
@@ -413,11 +419,12 @@ function getWinnersAndLosers(room) {
             losers.push(tempPlayer);
         }
     }
+    room.setGameOneResults(winners, losers);
     return [winners, losers];
 }
 
 function isWinner(prolificID, room) {
-    let results = getWinnersAndLosers(room);
+    let results = getWinnersAndLosers(room.roomName);
     let winners = results[0];
     for (var i = 0; i < winners.length; i++) {
         if (winners[i] === prolificID) {
@@ -437,6 +444,8 @@ function winningBonus(prolificID, room) {
 
 
 module.exports = {
+    computeResults: computeResults,
+    recordPlayerChoices: recordPlayerChoices,
     getResultsByProlificId: getResultsByProlificId,
     isGameOneDone: isGameOneDone,
     getWinnersAndLosers: getWinnersAndLosers,
@@ -448,7 +457,6 @@ module.exports = {
     calculateResults: getSinglePairMap,
     getResults: getResults,
     zeroSumResults: zeroSumResults,
-    isPlayerPassive: isPlayerPassive,
     getSinglePairMap: getSinglePairMap,
     getDoublePairMap: getDoublePairMap,
     getTriplePairMap: getTriplePairMap,

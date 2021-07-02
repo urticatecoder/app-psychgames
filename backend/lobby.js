@@ -17,11 +17,13 @@ const ROOM_WAIT_TIME_MILLISECONDS = require("./games_config.js").ROOM_WAIT_TIME_
  */
 class Lobby {
     currRoom; // new players who enter the lobby will join this room
+    passive = new Map(); // stores proflic IDs of passive players
     rooms = new Map(); // stores a mapping of room name to room instance
     playerToRoom = new Map(); // stores a mapping of a player's id to the room instance he is in
     roomToPlayer = new Map(); // stores a mapping of a room instance to an array of players who are in this room
     static MAX_CAPACITY_PER_ROOM = 6;
     botID = 0; // used as part of a bot's id
+
 
     constructor() {
         this.allocateNewRoom();
@@ -37,20 +39,55 @@ class Lobby {
         this.rooms.forEach((value, key) => { console.log(`m[${key}] = ${value.name}`); });
     }
 
-    getRoomPlayerIsIn(prolificID) {
-        return this.playerToRoom.get(prolificID);
-    }
-
     getRoomByRoomName(roomName) {
         return this.rooms.get(roomName.toString());
     }
 
-    getAllPlayersInRoomWithName(roomName) {
+    getRoomTurnNum(roomName) {
+        let room = this.rooms.get(roomName.toString());
+        return room.turnNum;
+    }
+
+    getAllPlayersInRoom(roomName) {
         return this.roomToPlayer.get(roomName.toString());
     }
 
-    getAllPlayersIDsInRoomWithName(roomName) {
-        return this.getAllPlayersInRoomWithName(roomName.toString()).map(player => player.prolificID);
+    getAllPlayersIDs(roomName) {
+        return this.getAllPlayersInRoom(roomName.toString()).map(player => player.prolificID);
+    }
+
+    getRoomNameOfPlayer(prolificID) {
+        let room = this.getRoomOfPlayer(prolificID);
+        return room.name;
+    }
+
+    getRoomOfPlayer(prolificID) {
+        if (!this.playerToRoom.has(prolificID)) {
+            return undefined;
+        }
+        return this.playerToRoom.get(prolificID);
+    }
+
+    getPlayerByProlificID(prolificID) {
+        room = this.getRoomOfPlayer(prolificID);
+        player = room.getPlayerWithID(prolificID);
+        return player;
+    }
+
+    areCoPlayersReady(prolificID) {
+        room = this.getRoomOfPlayer(prolificID);
+        return room.hasEveryoneConfirmed();
+    }
+
+    hasPlayerConfirmedChoices(playerProlific) {
+        room = this.getRoomOfPlayer(prolificID);
+        if (!room.hasPlayerConfirmed(playerProlific)) {
+            passive.set(playerProlific, true);
+            return false;
+        } else {
+            passive.delete(playerProlific);
+            return true;
+        }
     }
 
     findRoomForPlayerToJoin(prolificID) {
@@ -93,7 +130,7 @@ class Lobby {
 
     handleRoomFill(io, roomName) {
         roomName = roomName.toString();
-        const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName);
+        const playerIDs = lobby.getAllPlayersIDs(roomName);
         io.sockets.in(roomName).emit(BackendEventMessage.ROOM_FILL, playerIDs); // to everyone in the room, including self
         DB_API.saveExperimentSession(roomName, playerIDs);
         console.log("The room is filled with users");

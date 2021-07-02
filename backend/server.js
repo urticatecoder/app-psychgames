@@ -5,10 +5,12 @@ const DB_API = require('./db/db_api');
 const BOT = require("./bot");
 const Game1 = require("./game1");
 const Game2 = require('./game2');
+const GameOneRoundResult = require('./game_one_round_result.js');
 const lobby = require("./lobby.js").LobbyInstance;
 const FrontendEventMessage = require("./frontend_event_message.js").FrontendEventMessage;
 const BackendEventMessage = require("./backend_event_message.js").BackendEventMessage;
 const GamesConfig = require('./games_config.js');
+
 
 // Set up mongoose connection
 let mongoose = require('mongoose');
@@ -46,6 +48,27 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         }
     });
 
+    socket.on(FrontendEventMessage.ACTIVE_PLAYER, (experimentID, playerProlific) => {
+        // Sanity check
+        if (experimentID == -1) {
+            return;
+        }
+        player = lobby.getPlayerByProlificID(playerProlific);
+        player.setIsBot(false);
+        // console.log(playerProlific + ' in room ' + experimentID + ' is active');
+    });
+
+    socket.on(FrontendEventMessage.INACTIVE_PLAYER, (experimentID, playerProlific) => {
+        // Sanity check
+        if (experimentID == -1) {
+            return;
+        }
+        // make this player a bot
+        player = lobby.getPlayerByProlificID(playerProlific);
+        player.setIsBot(true);
+        // console.log(playerProlific + ' in room ' + experimentID + ' is inactive');
+    });
+
     socket.on(FrontendEventMessage.CONFIRM_GAME_ONE, (experimentID, prolificID, choices, zeroTime) => {
         // Sanity check
         if (experimentID == -1) {
@@ -56,78 +79,51 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         choices = [player1chosen, player2chosen]
         minimum chosen players = 1
         */
-        prolificID = prolificID.toString();
-        let room = lobby.getRoomPlayerIsIn(prolificID);
-        let player = room.getPlayerWithID(prolificID);
-        player.setIsBot(false);
-        player.recordChoices(choices);
+        Game1.recordPlayerChoices(prolificID, choices);
 
         // if everyone has confirmed or timer has reached 0
-        const computeBonus = room.hasEveryoneConfirmed() || zeroTime <= 0;
-        if (computeBonus) { // all 6 have confirmed choices
-            console.log("Computing bonuses");
-            let allIDs = lobby.getAllPlayersIDsInRoomWithName(room.roomName);
-            room.players.forEach((currPlayer) => {
-                if (currPlayer.isBot) {
-                    // let all bots select their choices
-                    let botChoices = BOT.determineBotChoice(currPlayer.prolificID, allIDs);
-                    currPlayer.recordChoices(botChoices);
-                } else {
-                    if (Game1.isPlayerPassive(currPlayer.prolificID, room)) {
-                        // make bot choices for inactive players
-                        console.log(currPlayer.prolificID + " is possibly inactive.");
-                        io.in(room.name).emit(BackendEventMessage.CHECK_PASSIVITY, currPlayer.prolificID);
-                        let botChoices = BOT.determineBotChoice(currPlayer.prolificID, allIDs);
-                        currPlayer.recordChoices(botChoices);
-
-                        socket.on(FrontendEventMessage.ACTIVE_PLAYER, (experimentID, playerProlific) => {
-                            // Sanity check
-                            if (experimentID == -1) {
-                                return;
-                            }
-                            // let it pass
-                            console.log(playerProlific + ' in room ' + experimentID + ' is active');
-                        });
-
-                        socket.on(FrontendEventMessage.INACTIVE_PLAYER, (experimentID, playerProlific) => {
-                            // Sanity check
-                            if (experimentID == -1) {
-                                return;
-                            }
-                            // make this player a bot
-                            player.setIsBot(true);
-                            console.log(playerProlific + ' in room ' + experimentID + ' is inactive');
-                        });
-                    }
+        const computeBonus = lobby.areCoPlayersReady(prolificID) || zeroTime <= 0;
+        if (computeBonus) { // all human players have confirmed choices
+            // Check player passivity
+            const room = lobby.getRoomByRoomName(experimentID);
+            const roomName = room.roomName;
+            const players = lobby.getAllPlayersInRoom(roomName);
+            players.forEach((currPlayer) => {
+                if (!currPlayer.isBot && !lobby.hasPlayerConfirmedChoices(currPlayer.prolificID)) {
+                    io.in(roomName).emit(BackendEventMessage.CHECK_PASSIVITY, currPlayer.prolificID);
+                    currPlayer.setIsBot(true);
                 }
             });
-            let singleChoiceCounts = Game1.countSingleChoices(room);
-            // emit list of lists of prolificIDs and int of how much to move up of triple bonuses
-            let allTripleBonus = Game1.calculateAllTripleBonuses(allIDs, room);
-            let tripleBonusCounts = Game1.countTripleBonuses(allTripleBonus, room);
-            // emit list of lists of prolificIDs and int of how much to move up of double bonuses
-            let allDoubleBonus = Game1.calculateAllDoubleBonuses(allIDs, room);
-            let doubleBonusCounts = Game1.countDoubleBonuses(allDoubleBonus, room);
-            // players will be emitted to the "net zero" position after showing who selected who (to be implemented)
-            let resultForAllPlayers = Game1.getResultsByProlificId(allIDs, room);
-            allIDs.forEach((playerID) => {
-                let currPlayer = room.getPlayerWithID(playerID);
-                DB_API.saveChoiceToDB(experimentID, playerID, currPlayer.getChoiceAtTurn(room.turnNum),
-                    room.turnNum, currPlayer.isBot, room.getPlayerOldLocation(playerID), room.getPlayerNewLocation(playerID),
-                    singleChoiceCounts.get(playerID), doubleBonusCounts.get(playerID), tripleBonusCounts.get(playerID));
+
+            // Generate bot choices
+            console.log("Generating bot choices");
+            const allIDs = players.map(player => player.prolificID);
+            players.forEach((currPlayer) => {
+                if (currPlayer.isBot) {
+                    const botChoices = BOT.generateBotChoices(currPlayer.prolificID, allIDs);
+                    currPlayer.recordChoices(botChoices);
+                }
             });
 
-            //turn count for game 1
-            room.setGameOneTurnCount(room.gameOneTurnCount + 1);
+            // Compute bonuses for all players
+            const turnResults = Game1.computeResults(roomName);
+            const turnNum = lobby.getRoomTurnNum(roomName);
+            allIDs.forEach((currPlayerID) => {
+                let currPlayer = room.getPlayerWithID(currPlayerID);
+                DB_API.saveChoiceToDB(experimentID, currPlayerID, currPlayer.getChoiceAtTurn(turnNum),
+                    turnNum, currPlayer.isBot, currPlayer.oldLocation, currPlayer.newLocation,
+                    turnResults.singleChoiceCounts.get(currPlayerID), turnResults.doubleBonusCounts.get(currPlayerID), turnResults.tripleBonusCounts.get(currPlayerID));
+            });
+
+            // Update turn count in game 1
             if (Game1.isGameOneDone(room)) {
-                let group = Game1.getWinnersAndLosers(room);
-                room.setGameOneResults(group);
-                io.in(room.name).emit(BackendEventMessage.END_GAME_ONE, group[0], group[1], allDoubleBonus.length, allTripleBonus.length);
+                let finalResults = Game1.getWinnersAndLosers(roomName);
+                io.in(roomName).emit(BackendEventMessage.END_GAME_ONE, finalResults[0], finalResults[1], turnResults.allDoubleBonus.length, turnResults.allTripleBonus.length);
                 room.advanceToGameTwo();
             }
-            io.in(room.name).emit(BackendEventMessage.GAME_ONE_ROUND_RESULT, resultForAllPlayers, allTripleBonus, 25,
-                allDoubleBonus, 15);
-            room.advanceToNextRound();
+            io.in(roomName).emit(BackendEventMessage.GAME_ONE_ROUND_RESULT, turnResults.resultForAllPlayers, turnResults.allTripleBonus, 25,
+                turnResults.allDoubleBonus, 15);
+            room.advanceToNextTurn();
         }
     });
 
@@ -167,7 +163,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
 
                 // marker for the previously final result computation part
             } else {
-                room.advanceToNextRound();
+                room.advanceToNextTurn();
             }
         }
     });
@@ -180,7 +176,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         console.log("Results for: " + playerProlificID);
         // Grant bonus to Game 1 winners
         let room = lobby.getRoomByRoomName(experimentID);
-        let group = Game1.getWinnersAndLosers(room);
+        let group = Game1.getWinnersAndLosers(room.roomName);
         let winners = group[0];
         let gameOneResult = false;
         let gameOneBonus = 0;
@@ -221,7 +217,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         console.log(`Player with id ${prolificID} disconnected`);
 
         if (prolificID !== undefined) {
-            let room = lobby.getRoomPlayerIsIn(prolificID);
+            let room = lobby.getRoomOfPlayer(prolificID);
             let player = room.getPlayerWithID(prolificID);
             player.setIsBot(true);
 

@@ -8,8 +8,8 @@ const Allocation = require('./allocation').Allocation;
 
 
 function calculateFinalPaymentForAPlayer(prolificID, lobby) {
-    let turnNum = getRandomInt(GamesConfig.GAME_TWO_MAX_ROUND_NUM - 1) + 1; // select a random turn num to calculate final payment
-    let room = lobby.getRoomPlayerIsIn(prolificID);
+    let turnNum = getRandomInt(GamesConfig.GAME_TWO_MAX_TURN_NUM - 1) + 1; // select a random turn num to calculate final payment
+    let room = lobby.getRoomOfPlayer(prolificID);
     return calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum);
 }
 
@@ -123,7 +123,7 @@ function shuffleArray(array) {
 }
 
 function isGameTwoDone(room) {
-    return room.turnNum >= GamesConfig.GAME_TWO_MAX_ROUND_NUM;
+    return room.turnNum >= GamesConfig.GAME_TWO_MAX_TURN_NUM;
 }
 
 module.exports = {
