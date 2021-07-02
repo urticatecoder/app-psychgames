@@ -113,16 +113,6 @@ class Lobby {
         this.handleRoomFill(io, roomName);
     }
 
-    /**
-     * @deprecated use getNumOfPeopleInRoom(roomName) instead
-     * @param serverSocket
-     * @param roomName
-     * @returns {number}
-     */
-    static getNumOfPeopleInRoom(serverSocket, roomName) {
-        return serverSocket.sockets.adapter.rooms[roomName].length;
-    }
-
     // need to refactor this method later
     getNumOfPlayersInRoom(roomName) {
         roomName = roomName.toString();

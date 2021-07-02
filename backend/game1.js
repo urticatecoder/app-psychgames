@@ -208,28 +208,6 @@ function getTriplePairMap(prolificIDArray, room) {
     return tripleMap;
 }
 
-/**
- * @deprecated Will be deleted in the final version
- */
-function calculateDoubleAndTripleBonusesOfID(playerProlific, allChoices) {
-    let choicesProlific = allChoices.get(playerProlific);
-    let count = 0;
-    for (var i = 0; i < choicesProlific.length; i++) {
-        let playerChosen = choicesProlific[i];
-        let choicesChosenPlayer = allChoices.get(playerChosen);
-        for (var j = 0; j < choicesChosenPlayer.length; j++) {
-            if (choicesChosenPlayer[j] === (playerProlific)) {
-                count += 8;
-            }
-        }
-    }
-    if (count === 16) {
-        console.log('TRIPLE BONUS');
-        return (count - 1);
-    }
-    return count;
-}
-
 function countSingleChoices(room) {
     let prolificIDs = room.playerIDs;
     let allChoices = room.getEveryoneChoiceAtCurrentTurn();

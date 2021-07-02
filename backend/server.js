@@ -33,7 +33,6 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
     // }
     require('./lobby.js').LobbyDefaultSocketListener(io, socket);
 
-    // TODO: move to lobby socket listener code
     socket.on(FrontendEventMessage.TIME_IN_LOBBY, (experimentID) => {
         // Sanity check
         if (experimentID == -1) {
@@ -52,7 +51,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         if (experimentID == -1) {
             return;
         }
-        /*
+        /* Expected data:
         prolific = player's prolific id
         choices = [player1chosen, player2chosen]
         minimum chosen players = 1

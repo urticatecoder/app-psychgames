@@ -155,21 +155,6 @@ class Room {
 
   getTeamAllocationAtCurrentTurn() {
     return this.getTeamAllocationAtTurn(this.turnNum);
-    // // winners
-    // let winnerIDs = this.gameOneResults[0];
-    // let winnerAllocations = [];
-    // winnerIDs.forEach((id) => {
-    //   winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
-    // });
-    // let winnerSum = Allocation.sumAllocations(winnerAllocations);
-    // // losers
-    // let loserIDs = this.gameOneResults[1];
-    // let loserAllocations = [];
-    // loserIDs.forEach((id) => {
-    //   loserAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
-    // });
-    // let loserSum = Allocation.sumAllocations(loserAllocations);
-    // return [winnerSum.allocationAsArray, loserSum.allocationAsArray];
   }
 
   getTeamAllocationAtTurn(turnNum) {
