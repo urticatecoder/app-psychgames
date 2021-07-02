@@ -3,10 +3,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
 const BOT = require("./bot");
-const { getResultsByProlificId, isGameOneDone, getWinnersAndLosers,
-    isPlayerPassive, calculateAllTripleBonuses, calculateAllDoubleBonuses,
-    countTripleBonuses, countDoubleBonuses, countSingleChoices,
-} = require("./results");
+const Game1 = require("./game1");
 const Game2 = require('./game2');
 const lobby = require("./lobby.js").LobbyInstance;
 const FrontendEventMessage = require("./frontend_event_message.js").FrontendEventMessage;
@@ -15,7 +12,6 @@ const GamesConfig = require('./games_config.js');
 
 // Set up mongoose connection
 let mongoose = require('mongoose');
-const game2 = require("./game2");
 
 /* use the test database if no environment variables named MONGODB_URI are passed in */
 let mongoDB_URI = process.env.MONGODB_URI || 'mongodb+srv://xipu:k5q1J0qhOrVb1F65@cluster0.jcnnf.azure.mongodb.net/psych_game?retryWrites=true&w=majority'
@@ -78,7 +74,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
                     let botChoices = BOT.determineBotChoice(currPlayer.prolificID, allIDs);
                     currPlayer.recordChoices(botChoices);
                 } else {
-                    if (isPlayerPassive(currPlayer.prolificID, room)) {
+                    if (Game1.isPlayerPassive(currPlayer.prolificID, room)) {
                         // make bot choices for inactive players
                         console.log(currPlayer.prolificID + " is possibly inactive.");
                         io.in(room.name).emit(BackendEventMessage.CHECK_PASSIVITY, currPlayer.prolificID);
@@ -106,15 +102,15 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
                     }
                 }
             });
-            let singleChoiceCounts = countSingleChoices(room);
+            let singleChoiceCounts = Game1.countSingleChoices(room);
             // emit list of lists of prolificIDs and int of how much to move up of triple bonuses
-            let allTripleBonus = calculateAllTripleBonuses(allIDs, room);
-            let tripleBonusCounts = countTripleBonuses(allTripleBonus, room);
+            let allTripleBonus = Game1.calculateAllTripleBonuses(allIDs, room);
+            let tripleBonusCounts = Game1.countTripleBonuses(allTripleBonus, room);
             // emit list of lists of prolificIDs and int of how much to move up of double bonuses
-            let allDoubleBonus = calculateAllDoubleBonuses(allIDs, room);
-            let doubleBonusCounts = countDoubleBonuses(allDoubleBonus, room);
+            let allDoubleBonus = Game1.calculateAllDoubleBonuses(allIDs, room);
+            let doubleBonusCounts = Game1.countDoubleBonuses(allDoubleBonus, room);
             // players will be emitted to the "net zero" position after showing who selected who (to be implemented)
-            let resultForAllPlayers = getResultsByProlificId(allIDs, room);
+            let resultForAllPlayers = Game1.getResultsByProlificId(allIDs, room);
             allIDs.forEach((playerID) => {
                 let currPlayer = room.getPlayerWithID(playerID);
                 DB_API.saveChoiceToDB(experimentID, playerID, currPlayer.getChoiceAtTurn(room.turnNum),
@@ -124,8 +120,8 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
 
             //turn count for game 1
             room.setGameOneTurnCount(room.gameOneTurnCount + 1);
-            if (isGameOneDone(room)) {
-                let group = getWinnersAndLosers(room);
+            if (Game1.isGameOneDone(room)) {
+                let group = Game1.getWinnersAndLosers(room);
                 room.setGameOneResults(group);
                 io.in(room.name).emit(BackendEventMessage.END_GAME_ONE, group[0], group[1], allDoubleBonus.length, allTripleBonus.length);
                 room.advanceToGameTwo();
@@ -185,7 +181,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         console.log("Results for: " + playerProlificID);
         // Grant bonus to Game 1 winners
         let room = lobby.getRoomByRoomName(experimentID);
-        let group = getWinnersAndLosers(room);
+        let group = Game1.getWinnersAndLosers(room);
         let winners = group[0];
         let gameOneResult = false;
         let gameOneBonus = 0;
