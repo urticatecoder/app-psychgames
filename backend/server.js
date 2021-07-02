@@ -2,11 +2,11 @@ const app = require("./app");
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
-const BOT = require("./db/bot");
+const BOT = require("./bot");
 const { getResultsByProlificId, isGameOneDone, getWinnersAndLosers,
     isPlayerPassive, calculateAllTripleBonuses, calculateAllDoubleBonuses,
     countTripleBonuses, countDoubleBonuses, countSingleChoices,
-} = require("./db/results");
+} = require("./results");
 const Game2 = require('./game2');
 const lobby = require("./lobby.js").LobbyInstance;
 const FrontendEventMessage = require("./frontend_event_message.js").FrontendEventMessage;
