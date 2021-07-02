@@ -4,63 +4,8 @@
  */
 
 const GamesConfig = require('./games_config.js');
+const Allocation = require('./allocation').Allocation;
 
-/**
- * Class representing the amount of tokens allocated for each token category.
- * It has a few static helper functions for aggregating instances of GameTwoAllocation
- */
-class GameTwoAllocation {
-    static TOKEN_VALUE = 0.5;
-    static POSSIBLE_PAYOFF = [0, 0.5, 1];
-
-    constructor(compete, keep, invest) {
-        this.compete = compete;
-        this.keep = keep;
-        this.invest = invest;
-    }
-
-    get numOfCompeteToken() {
-        return this.compete;
-    }
-
-    get numOfKeepToken() {
-        return this.keep;
-    }
-
-    get numOfInvestToken() {
-        return this.invest;
-    }
-
-    get allocationAsArray() {
-        return [this.compete, this.keep, this.invest];
-    }
-
-    /**
-     * @param allocation1 must be an instance of GameTwoAllocation
-     * @param allocation2 must be an instance of GameTwoAllocation
-     * @return {GameTwoAllocation}
-     */
-    static addAllocations(allocation1, allocation2) {
-        if (!(allocation1 instanceof GameTwoAllocation) || !(allocation2 instanceof GameTwoAllocation)) {
-            throw 'Not an instance of GameTwoAllocation.';
-        }
-        return new GameTwoAllocation(allocation1.numOfCompeteToken + allocation2.numOfCompeteToken,
-            allocation1.numOfKeepToken + allocation2.numOfKeepToken,
-            allocation1.numOfInvestToken + allocation2.numOfInvestToken);
-    }
-
-    /**
-     * @param allocations {GameTwoAllocation[]}
-     * @return {GameTwoAllocation}
-     */
-    static sumAllocations(allocations) {
-        let sum = new GameTwoAllocation(0, 0, 0);
-        allocations.forEach((allocation) => {
-            sum = GameTwoAllocation.addAllocations(sum, allocation);
-        });
-        return sum;
-    }
-}
 
 function calculateFinalPaymentForAPlayer(prolificID, lobby) {
     let turnNum = getRandomInt(GamesConfig.GAME_TWO_MAX_ROUND_NUM - 1) + 1; // select a random turn num to calculate final payment
@@ -75,7 +20,7 @@ function calculateFinalPaymentForAPlayer(prolificID, lobby) {
  * @returns {number} payment for the player
  */
 function calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum) {
-    let tokenValue = GameTwoAllocation.TOKEN_VALUE;
+    let tokenValue = Allocation.TOKEN_VALUE;
     let payoff = room.getCompeteAndInvestPayoffAtTurnNum(turnNum);
     let competePayoff = payoff[0], investPayoff = payoff[1];
     let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
@@ -155,8 +100,8 @@ function getRandomInt(max) {
 
 function generateCompeteAndInvestPayoff() {
     let allPairs = [];
-    GameTwoAllocation.POSSIBLE_PAYOFF.forEach((competePayoff) => {
-        GameTwoAllocation.POSSIBLE_PAYOFF.forEach((investPayoff) => {
+    Allocation.POSSIBLE_PAYOFF.forEach((competePayoff) => {
+        Allocation.POSSIBLE_PAYOFF.forEach((investPayoff) => {
             allPairs.push([competePayoff, investPayoff]);
         });
     });
@@ -182,7 +127,6 @@ function isGameTwoDone(room) {
 }
 
 module.exports = {
-    GameTwoAllocation,
     generateCompeteAndInvestPayoff: generateCompeteAndInvestPayoff,
     calculatePaymentForAPlayerAtTurn: calculatePaymentForAPlayerAtTurn,
     generateBotAllocation: generateBotAllocation,

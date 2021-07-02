@@ -3,6 +3,7 @@ const Room = require('../room.js').Room;
 const Player = require('../player.js').Player;
 const GAME_TWO_MAX_ROUND_NUM = require('../games_config.js').GAME_TWO_MAX_ROUND_NUM;
 const Game2 = require('../game2.js');
+const Allocation = require('../allocation.js').Allocation;
 
 describe('Test game 2 backend logic', () => {
     it('generateCompeteAndInvestPayoff works correctly', (done) => {
@@ -47,10 +48,10 @@ describe('Test game 2 backend logic', () => {
         room.advanceToGameTwo();
         let player1 = room.getPlayerWithID('123');
         player1.recordAllocation(3, 4, 3);
-        let expectedAllocation = new Game2.GameTwoAllocation(3, 4, 3);
+        let expectedAllocation = new Allocation(3, 4, 3);
         expect(room.getPlayerAllocationAtTurnNum('123', 1)).to.deep.equal(expectedAllocation);
         player1.recordAllocation(1, 2, 7);
-        expectedAllocation = new Game2.GameTwoAllocation(1, 2, 7);
+        expectedAllocation = new Allocation(1, 2, 7);
         expect(room.getPlayerAllocationAtTurnNum('123', 2)).to.deep.equal(expectedAllocation);
         done();
     });

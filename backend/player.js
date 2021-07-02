@@ -1,4 +1,4 @@
-const GameTwoAllocation = require('./game2.js').GameTwoAllocation;
+const Allocation = require('./game2.js').Allocation;
 const GameNum = require("./game_num.js").GameNum;
 
 
@@ -108,7 +108,7 @@ class Player {
    * @param invest {number}
    */
   recordAllocation(compete, keep, invest) {
-    this.allocations.push(new GameTwoAllocation(compete, keep, invest));
+    this.allocations.push(new Allocation(compete, keep, invest));
   }
 
   getAllocationAtTurn(turnNum) {

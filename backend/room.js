@@ -1,6 +1,6 @@
 const GameNum = require("./game_num.js").GameNum;
 const GameTwo = require('./game2.js');
-const GameTwoAllocation = require('./game2.js').GameTwoAllocation;
+const Allocation = require('./game2.js').Allocation;
 const Player = require("./player.js").Player;
 const ROOM_WAIT_TIME_MILLISECONDS = require("./games_config.js").ROOM_WAIT_TIME_MILLISECONDS;
 const DEFAULT_PLAYER_LOCATION = require("./games_config.js").DEFAULT_PLAYER_LOCATION;;
@@ -161,14 +161,14 @@ class Room {
     // winnerIDs.forEach((id) => {
     //   winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
     // });
-    // let winnerSum = GameTwoAllocation.sumAllocations(winnerAllocations);
+    // let winnerSum = Allocation.sumAllocations(winnerAllocations);
     // // losers
     // let loserIDs = this.gameOneResults[1];
     // let loserAllocations = [];
     // loserIDs.forEach((id) => {
     //   loserAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
     // });
-    // let loserSum = GameTwoAllocation.sumAllocations(loserAllocations);
+    // let loserSum = Allocation.sumAllocations(loserAllocations);
     // return [winnerSum.allocationAsArray, loserSum.allocationAsArray];
   }
 
@@ -179,14 +179,14 @@ class Room {
     winnerIDs.forEach((id) => {
       winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(turnNum));
     });
-    let winnerSum = GameTwoAllocation.sumAllocations(winnerAllocations);
+    let winnerSum = Allocation.sumAllocations(winnerAllocations);
     // losers
     let loserIDs = this.gameOneResults[1];
     let loserAllocations = [];
     loserIDs.forEach((id) => {
       loserAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(turnNum));
     });
-    let loserSum = GameTwoAllocation.sumAllocations(loserAllocations);
+    let loserSum = Allocation.sumAllocations(loserAllocations);
     return [winnerSum, loserSum];
   }
 
@@ -205,7 +205,7 @@ class Room {
     teamIDs.forEach((id) => {
       teamAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(turnNum));
     });
-    let sum = GameTwoAllocation.sumAllocations(teamAllocations);
+    let sum = Allocation.sumAllocations(teamAllocations);
     return sum;
   }
 
