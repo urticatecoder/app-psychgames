@@ -1,6 +1,6 @@
 const GameNum = require("./game_num.js").GameNum;
 const GameTwo = require('./game2.js');
-const Allocation = require('./game2.js').Allocation;
+const Allocation = require('./allocation.js').Allocation;
 const Player = require("./player.js").Player;
 const ROOM_WAIT_TIME_MILLISECONDS = require("./games_config.js").ROOM_WAIT_TIME_MILLISECONDS;
 const DEFAULT_PLAYER_LOCATION = require("./games_config.js").DEFAULT_PLAYER_LOCATION;;

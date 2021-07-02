@@ -4,7 +4,7 @@ const Player = require('../player.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
     countTripleBonuses, countDoubleBonuses, countSingleChoices,
     calculateResults, isPlayerPassive, zeroSumResults, getSinglePairMap,
-    getDoublePairMap, getTriplePairMap, isGameOneDone, getWinnersAndLosers } = require('../db/results.js');
+    getDoublePairMap, getTriplePairMap, isGameOneDone, getWinnersAndLosers } = require('../results.js');
 
 
 describe('Location sending and calculation', () => {

@@ -1,4 +1,4 @@
-const Allocation = require('./game2.js').Allocation;
+const Allocation = require('./allocation.js').Allocation;
 const GameNum = require("./game_num.js").GameNum;
 
 

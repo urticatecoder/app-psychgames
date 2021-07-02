@@ -5,11 +5,11 @@
  * See comments for a description of what each method represents
  */
 const e = require('express');
-const { all } = require('../app.js');
-const DB_API = require('../db/db_api.js');
-const choice = require('./models/choice.js');
-const lobby = require('../lobby.js').LobbyInstance;
-const GamesConfig = require('../games_config.js');
+const { all } = require('./app.js');
+const DB_API = require('./db/db_api.js');
+const choice = require('./db/models/choice.js');
+const lobby = require('./lobby.js').LobbyInstance;
+const GamesConfig = require('./games_config.js');
 var passive = new Map();
 
 /**
