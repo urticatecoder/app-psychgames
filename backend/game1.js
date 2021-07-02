@@ -10,7 +10,7 @@ const DB_API = require('./db/db_api.js');
 const choice = require('./db/models/choice.js');
 const lobby = require('./lobby.js').LobbyInstance;
 const GamesConfig = require('./games_config.js');
-const GameOneRoundResult = require('./game_one_round_result.js');
+const GameOneTurnResult = require('./game_one_turn_result.js').GameOneTurnResult;
 
 function computeResults(roomName) {
     const room = lobby.getRoomByRoomName(roomName);
@@ -25,12 +25,11 @@ function computeResults(roomName) {
     let doubleBonusCounts = countDoubleBonuses(allDoubleBonuses, room);
     // players will be emitted to the "net zero" position after showing who selected who (to be implemented)
     let resultsForAllPlayers = getResultsByProlificId(allIDs, room);
-    const results = new GameOneRoundResult(singleChoiceCounts, doubleBonusCounts, allDoubleBonuses, tripleBonusCounts, allTripleBonuses, resultsForAllPlayers);
+    const results = new GameOneTurnResult(singleChoiceCounts, doubleBonusCounts, allDoubleBonuses, tripleBonusCounts, allTripleBonuses, resultsForAllPlayers);
     return results;
 }
 
 function recordPlayerChoices(prolificID, choices) {
-    prolificID = prolificID.toString();
     let player = lobby.getPlayerByProlificID(prolificID);
     player.setIsBot(false);
     player.recordChoices(choices);

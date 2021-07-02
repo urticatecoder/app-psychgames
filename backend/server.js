@@ -5,7 +5,7 @@ const DB_API = require('./db/db_api');
 const BOT = require("./bot");
 const Game1 = require("./game1");
 const Game2 = require('./game2');
-const GameOneRoundResult = require('./game_one_round_result.js');
+const GameOneTurnResult = require('./game_one_turn_result.js');
 const lobby = require("./lobby.js").LobbyInstance;
 const FrontendEventMessage = require("./frontend_event_message.js").FrontendEventMessage;
 const BackendEventMessage = require("./backend_event_message.js").BackendEventMessage;
@@ -48,23 +48,25 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         }
     });
 
-    socket.on(FrontendEventMessage.ACTIVE_PLAYER, (experimentID, playerProlific) => {
+    socket.on(FrontendEventMessage.ACTIVE_PLAYER, (experimentID, prolificID) => {
         // Sanity check
         if (experimentID == -1) {
             return;
         }
-        player = lobby.getPlayerByProlificID(playerProlific);
+        prolificID = prolificID.toString();
+        player = lobby.getPlayerByProlificID(prolificID);
         player.setIsBot(false);
         // console.log(playerProlific + ' in room ' + experimentID + ' is active');
     });
 
-    socket.on(FrontendEventMessage.INACTIVE_PLAYER, (experimentID, playerProlific) => {
+    socket.on(FrontendEventMessage.INACTIVE_PLAYER, (experimentID, prolificID) => {
         // Sanity check
         if (experimentID == -1) {
             return;
         }
         // make this player a bot
-        player = lobby.getPlayerByProlificID(playerProlific);
+        prolificID = prolificID.toString();
+        player = lobby.getPlayerByProlificID(prolificID);
         player.setIsBot(true);
         // console.log(playerProlific + ' in room ' + experimentID + ' is inactive');
     });
@@ -79,12 +81,16 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         choices = [player1chosen, player2chosen]
         minimum chosen players = 1
         */
+        prolificID = prolificID.toString();
+        console.log(prolificID);
+        console.log(choices);
         Game1.recordPlayerChoices(prolificID, choices);
 
         // if everyone has confirmed or timer has reached 0
         const computeBonus = lobby.areCoPlayersReady(prolificID) || zeroTime <= 0;
         if (computeBonus) { // all human players have confirmed choices
             // Check player passivity
+            console.log("Checking player passivity");
             const room = lobby.getRoomByRoomName(experimentID);
             const roomName = room.roomName;
             const players = lobby.getAllPlayersInRoom(roomName);
@@ -106,6 +112,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
             });
 
             // Compute bonuses for all players
+            console.log("Computing bonuses");
             const turnResults = Game1.computeResults(roomName);
             const turnNum = lobby.getRoomTurnNum(roomName);
             allIDs.forEach((currPlayerID) => {
@@ -118,11 +125,11 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
             // Update turn count in game 1
             if (Game1.isGameOneDone(room)) {
                 let finalResults = Game1.getWinnersAndLosers(roomName);
-                io.in(roomName).emit(BackendEventMessage.END_GAME_ONE, finalResults[0], finalResults[1], turnResults.allDoubleBonus.length, turnResults.allTripleBonus.length);
+                io.in(roomName).emit(BackendEventMessage.END_GAME_ONE, finalResults[0], finalResults[1], turnResults.doubleBonuses.length, turnResults.tripleBonuses.length);
                 room.advanceToGameTwo();
             }
-            io.in(roomName).emit(BackendEventMessage.GAME_ONE_ROUND_RESULT, turnResults.resultForAllPlayers, turnResults.allTripleBonus, 25,
-                turnResults.allDoubleBonus, 15);
+            io.in(roomName).emit(BackendEventMessage.GAME_ONE_ROUND_RESULT, turnResults.allPlayersResults, turnResults.tripleBonuses, 25,
+                turnResults.doubleBonuses, 15);
             room.advanceToNextTurn();
         }
     });

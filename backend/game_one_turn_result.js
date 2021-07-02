@@ -1,4 +1,4 @@
-class GameOneRoundResult {
+class GameOneTurnResult {
   /**
    * @constructor
    */
@@ -13,5 +13,5 @@ class GameOneRoundResult {
 }
 
 module.exports = {
-  GameOneRoundResult,
+  GameOneTurnResult,
 }

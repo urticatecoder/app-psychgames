@@ -19,7 +19,7 @@ class Lobby {
     currRoom; // new players who enter the lobby will join this room
     passive = new Map(); // stores proflic IDs of passive players
     rooms = new Map(); // stores a mapping of room name to room instance
-    playerToRoom = new Map(); // stores a mapping of a player's id to the room instance he is in
+    playerToRoom = new Map(); // stores a mapping of a player's id to the corresponding room instance
     roomToPlayer = new Map(); // stores a mapping of a room instance to an array of players who are in this room
     static MAX_CAPACITY_PER_ROOM = 6;
     botID = 0; // used as part of a bot's id
@@ -62,30 +62,36 @@ class Lobby {
     }
 
     getRoomOfPlayer(prolificID) {
+        console.log('getRoomOfPlayer:');
         if (!this.playerToRoom.has(prolificID)) {
+            console.log('Room not found');
             return undefined;
         }
-        return this.playerToRoom.get(prolificID);
+        console.log('Room found');
+        // console.log(this.playerToRoom);
+        let room = this.playerToRoom.get(prolificID);
+        // console.log(room);
+        return room;
     }
 
     getPlayerByProlificID(prolificID) {
-        room = this.getRoomOfPlayer(prolificID);
-        player = room.getPlayerWithID(prolificID);
+        let room = this.getRoomOfPlayer(prolificID);
+        let player = room.getPlayerWithID(prolificID);
         return player;
     }
 
     areCoPlayersReady(prolificID) {
-        room = this.getRoomOfPlayer(prolificID);
+        let room = this.getRoomOfPlayer(prolificID);
         return room.hasEveryoneConfirmed();
     }
 
-    hasPlayerConfirmedChoices(playerProlific) {
-        room = this.getRoomOfPlayer(prolificID);
-        if (!room.hasPlayerConfirmed(playerProlific)) {
-            passive.set(playerProlific, true);
+    hasPlayerConfirmedChoices(prolificID) {
+        let room = this.getRoomOfPlayer(prolificID);
+        if (!room.hasPlayerConfirmed(prolificID)) {
+            this.passive.set(prolificID, true);
             return false;
         } else {
-            passive.delete(playerProlific);
+            this.passive.delete(prolificID);
             return true;
         }
     }
@@ -94,10 +100,13 @@ class Lobby {
         if (this.playerToRoom.has(prolificID)) {
             throw `Duplicated prolificID ${prolificID} found`;
         }
+        console.log('findRoomForPlayerToJoin: ');
+        console.log(prolificID);
         let player = new Player(prolificID);
         this.currRoom.addPlayer(player);
         this.playerToRoom.set(prolificID, this.currRoom);
         this.roomToPlayer.get(this.currRoom.name.toString()).push(player);
+        console.log('Room ' + this.currRoom.name + ' mapped to player ' + prolificID);
         return this.currRoom.name;
     }
 
