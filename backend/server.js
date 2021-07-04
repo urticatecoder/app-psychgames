@@ -121,16 +121,18 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
                     turnNum, currPlayer.isBot, currPlayer.oldLocation, currPlayer.newLocation,
                     turnResults.singleChoiceCounts.get(currPlayerID), turnResults.doubleBonusCounts.get(currPlayerID), turnResults.tripleBonusCounts.get(currPlayerID));
             });
+            io.in(roomName).emit(BackendEventMessage.GAME_ONE_ROUND_RESULT, turnResults.allPlayersResults, turnResults.tripleBonuses, 25,
+                turnResults.doubleBonuses, 15);
 
-            // Update turn count in game 1
             if (Game1.isGameOneDone(room)) {
+                // Proceed to game 2
                 let finalResults = Game1.getWinnersAndLosers(roomName);
                 io.in(roomName).emit(BackendEventMessage.END_GAME_ONE, finalResults[0], finalResults[1], turnResults.doubleBonuses.length, turnResults.tripleBonuses.length);
                 room.advanceToGameTwo();
+            } else {
+                // Proceed to the next round in game 1
+                room.advanceToNextTurn();
             }
-            io.in(roomName).emit(BackendEventMessage.GAME_ONE_ROUND_RESULT, turnResults.allPlayersResults, turnResults.tripleBonuses, 25,
-                turnResults.doubleBonuses, 15);
-            room.advanceToNextTurn();
         }
     });
 
