@@ -91,6 +91,7 @@ app.get("/download-game2", async (req, res) => {
         let players = experiment.players;
         players.forEach((player) => {
             // game 2 allocations
+            // console.log(player);
             player.allocation.forEach((allocation) => {
                 result.push({
                     experimentID: experiment._id,
@@ -103,6 +104,7 @@ app.get("/download-game2", async (req, res) => {
                     investPayoff: allocation.investPayoff,
                     competePayoff: allocation.competePayoff,
                     madeByBot: allocation.madeByBot.toString(),
+                    receiptTurnNum: player.receiptTurnNum,
                 });
             });
         });
@@ -191,8 +193,8 @@ app.get("/validate", (req, res) => {
             gameOneTurns = player.getGameOneChoiceCount();
             gameTwoTurns = player.getGameTwoChoiceCount();
         }
-        console.log(player);
-        console.log('game 1: ' + gameOneTurns + ' game 2: ' + gameTwoTurns);
+        // console.log(player);
+        // console.log('game 1: ' + gameOneTurns + ' game 2: ' + gameTwoTurns);
     });
     // Only check if sufficient rounds of game2 has been completed since game1's terminating conditions does not depend solely on the number of rounds
     if (gameTwoTurns >= GamesConfig.GAME_TWO_MAX_ROUND_NUM) {
