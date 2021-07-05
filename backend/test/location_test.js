@@ -3,8 +3,8 @@ const Room = require('../room.js').Room;
 const Player = require('../player.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
     countTripleBonuses, countDoubleBonuses, countSingleChoices,
-    calculateResults, isPlayerPassive, zeroSumResults, getSinglePairMap,
-    getDoublePairMap, getTriplePairMap, isGameOneDone, getWinnersAndLosers } = require('../db/results.js');
+    calculateResults, zeroSumResults, getSinglePairMap,
+    getDoublePairMap, getTriplePairMap, isGameOneDone } = require('../game1.js');
 
 
 describe('Location sending and calculation', () => {
@@ -17,9 +17,7 @@ describe('Location sending and calculation', () => {
         room.addPlayer(new Player('test_id1'));
         room.getPlayerWithID('test_id').recordChoices(choices_other);
         room.getPlayerWithID('test_id1').recordChoices(choices);
-        // console.log(room);
         let results = getResultsByProlificId(testID, room)
-        // console.log(results);
         for (var i = 0; i < results.length; i++) {
             assert(results[i] !== 0);
         }
@@ -34,9 +32,7 @@ describe('Location sending and calculation', () => {
         room.addPlayer(new Player('test_id1'));
         room.getPlayerWithID('test_id').recordChoices(choices_other);
         room.getPlayerWithID('test_id1').recordChoices(choices);
-        // console.log(room);
         let results = getResultsByProlificId(testID, room)
-        // console.log(results);
         for (var i = 0; i < results.length; i++) {
             assert(results[i] === 50);
         }
@@ -293,36 +289,36 @@ describe('Location sending and calculation', () => {
     //     done();
     // });
     it('identify no passiveness in player', (done) => {
-        const testID = ['test_id1', 'test_id2', 'test_id3'];
-        var choicesOne = ['test_id3'];
-        var choicesTwo = [];
-        var choicesThree = ['test_id2'];
+        const choicesOne = ['test_id3'];
+        const choicesTwo = [];
+        const choicesThree = ['test_id2'];
         const room = new Room('room 0');
         room.addPlayer(new Player('test_id1'));
         room.addPlayer(new Player('test_id2'));
         room.addPlayer(new Player('test_id3'));
         room.getPlayerWithID('test_id1').recordChoices(choicesOne);
         room.getPlayerWithID('test_id3').recordChoices(choicesThree);
-        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
-        let result = isPlayerPassive('test_id2', room);
+        assert(room.hasPlayerConfirmed('test_id1') == true);
+        assert(room.hasPlayerConfirmed('test_id2') == false);
+        assert(room.hasPlayerConfirmed('test_id3') == true);
 
-        assert(result == false);
+        room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
+        assert(room.hasPlayerConfirmed('test_id2') == true);
+
         done();
     })
     it('identify passiveness in player', (done) => {
-        const testID = ['test_id1', 'test_id2', 'test_id3'];
-        var choicesOne = [];
-        var choicesTwo = [];
-        var choicesThree = [];
+        const choicesOne = [];
+        const choicesTwo = [];
         const room = new Room('room 0');
         room.addPlayer(new Player('test_id1'));
         room.addPlayer(new Player('test_id2'));
         room.addPlayer(new Player('test_id3'));
         room.getPlayerWithID('test_id1').recordChoices(choicesOne);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
-        assert(isPlayerPassive('test_id1', room) === false);
-        assert(isPlayerPassive('test_id2', room) === false);
-        assert(isPlayerPassive('test_id3', room) === true);
+        assert(room.hasPlayerConfirmed('test_id1') === true);
+        assert(room.hasPlayerConfirmed('test_id2') === true);
+        assert(room.hasPlayerConfirmed('test_id3') === false);
         done();
     })
     it('calculates zero sum to be 0', (done) => {
@@ -427,7 +423,7 @@ describe('Location sending and calculation', () => {
         room.getPlayerWithID('test_id3').recordChoices(choicesThree);
         room.getPlayerWithID('test_id2').recordChoices(choicesTwo);
         let result = getResultsByProlificId(testID, room);
-        let endResults = room.playerCurrentLocations;
+        let endResults = room.playerLocations;
         assert(result[0] === 54 && endResults.get('test_id1') === 54);
         assert(result[1] === 50 && endResults.get('test_id2') === 50);
         assert(result[2] === 46 && endResults.get('test_id3') === 46);

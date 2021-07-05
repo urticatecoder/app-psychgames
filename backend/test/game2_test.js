@@ -1,20 +1,21 @@
 const expect = require('chai').expect;
 const Room = require('../room.js').Room;
 const Player = require('../player.js').Player;
-const GAME_TWO_MAX_ROUND_NUM = require('../games_config.js').GAME_TWO_MAX_ROUND_NUM;
+const GAME_TWO_MAX_TURN_NUM = require('../games_config.js').GAME_TWO_MAX_TURN_NUM;
 const Game2 = require('../game2.js');
+const Allocation = require('../allocation.js').Allocation;
 
 describe('Test game 2 backend logic', () => {
     it('generateCompeteAndInvestPayoff works correctly', (done) => {
         let payoff = Game2.generateCompeteAndInvestPayoff();
-        expect(payoff.length).to.equal(GAME_TWO_MAX_ROUND_NUM);
+        expect(payoff.length).to.equal(GAME_TWO_MAX_TURN_NUM);
         done();
     });
     it('advanceToGameTwo sets the correct values for instance variables', (done) => {
         let room = new Room('room 1');
         room.advanceToGameTwo();
-        expect(room.turnNum).to.equal(0);
-        expect(room.gameTwoPayoff.length).to.equal(GAME_TWO_MAX_ROUND_NUM);
+        expect(room.turnNum).to.equal(1);
+        expect(room.gameTwoPayoff.length).to.equal(GAME_TWO_MAX_TURN_NUM);
         done();
     });
     it('getCompeteAndInvestPayoffAtTurnNum works', (done) => {
@@ -33,11 +34,11 @@ describe('Test game 2 backend logic', () => {
     it('isGameTwoDone works', (done) => {
         let room = new Room('room 1');
         room.advanceToGameTwo();
-        for (let i = 1; i <= GAME_TWO_MAX_ROUND_NUM - 1; i++) {
-            room.advanceToNextRound();
+        for (let i = 1; i < GAME_TWO_MAX_TURN_NUM - 1; i++) {
+            room.advanceToNextTurn();
         }
         expect(Game2.isGameTwoDone(room)).to.equal(false);
-        room.advanceToNextRound();
+        room.advanceToNextTurn();
         expect(Game2.isGameTwoDone(room)).to.equal(true);
         done();
     });
@@ -47,10 +48,10 @@ describe('Test game 2 backend logic', () => {
         room.advanceToGameTwo();
         let player1 = room.getPlayerWithID('123');
         player1.recordAllocation(3, 4, 3);
-        let expectedAllocation = new Game2.GameTwoAllocation(3, 4, 3);
+        let expectedAllocation = new Allocation(3, 4, 3);
         expect(room.getPlayerAllocationAtTurnNum('123', 1)).to.deep.equal(expectedAllocation);
         player1.recordAllocation(1, 2, 7);
-        expectedAllocation = new Game2.GameTwoAllocation(1, 2, 7);
+        expectedAllocation = new Allocation(1, 2, 7);
         expect(room.getPlayerAllocationAtTurnNum('123', 2)).to.deep.equal(expectedAllocation);
         done();
     });
@@ -61,7 +62,7 @@ describe('Test game 2 backend logic', () => {
             room.addPlayer(new Player(id));
         });
         room.advanceToGameTwo();
-        room.setGameOneResults([['123', '456', '789'], ['aaa', 'bbb', 'ccc']]);
+        room.setGameOneResults(['123', '456', '789'], ['aaa', 'bbb', 'ccc']);
         ids.forEach((id) => {
             room.getPlayerWithID(id).recordAllocation(3, 4, 3);
         });
@@ -77,8 +78,7 @@ describe('Test game 2 backend logic', () => {
             room.addPlayer(new Player(id));
         });
         room.advanceToGameTwo();
-        room.advanceToNextRound();
-        room.setGameOneResults([['123', '456', '789'], ['aaa', 'bbb', 'ccc']]);
+        room.setGameOneResults(['123', '456', '789'], ['aaa', 'bbb', 'ccc']);
         ids.forEach((id) => {
             room.getPlayerWithID(id).recordAllocation(3, 4, 3);
         });

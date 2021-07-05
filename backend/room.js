@@ -1,9 +1,8 @@
 const GameNum = require("./game_num.js").GameNum;
 const GameTwo = require('./game2.js');
-const GameTwoAllocation = require('./game2.js').GameTwoAllocation;
+const Allocation = require('./allocation.js').Allocation;
 const Player = require("./player.js").Player;
 const ROOM_WAIT_TIME_MILLISECONDS = require("./games_config.js").ROOM_WAIT_TIME_MILLISECONDS;
-const DEFAULT_PLAYER_LOCATION = require("./games_config.js").DEFAULT_PLAYER_LOCATION;;
 
 
 /**
@@ -16,13 +15,11 @@ class Room {
   gameNum = GameNum.GAMEONE;
   turnNum = 1; // the current turn number in this room starting at 1
   players = []; // holds player objects who are in this room
-  oldPlayerLocations = new Map();
-  newPlayerLocations = new Map();
-  gameOneResults = []; // two groups for winners/losers, winners = gameOneResults[0], losers = gameOneResults[1]
+  gameOneResults = null; // two groups for winners/losers, winners = gameOneResults[0], losers = gameOneResults[1]
   gameTwoPayoff = GameTwo.generateCompeteAndInvestPayoff();
-  gameOneTurnCount = 0; // turns for game 1
   roomCreationTime = null;
   allPlayerTimes = new Map();
+  playerLocations = new Map();
   /**
    * @constructor
    * @param roomName {string}
@@ -46,26 +43,24 @@ class Room {
     return this.players.map(player => player.prolificID);
   }
 
-  get playerCurrentLocations() {
-    return this.newPlayerLocations;
+  get playerLocations() {
+    return this.playerLocations;
   }
 
   getPlayerOldLocation(prolificID) {
-    return this.oldPlayerLocations.get(prolificID);
+    let player = this.getPlayerWithID(prolificID);
+    return player.oldLocation;
   }
 
   getPlayerNewLocation(prolificID) {
-    return this.newPlayerLocations.get(prolificID);
+    let player = this.getPlayerWithID(prolificID);
+    return player.newLocation;
   }
 
   setPlayerLocation(prolificID, newLocation) {
-    this.oldPlayerLocations.set(prolificID, this.newPlayerLocations.get(prolificID));
-    this.newPlayerLocations.set(prolificID, newLocation);
-  }
-
-  initPlayerLocation(prolificID) {
-    this.oldPlayerLocations.set(prolificID, DEFAULT_PLAYER_LOCATION);
-    this.newPlayerLocations.set(prolificID, DEFAULT_PLAYER_LOCATION);
+    let player = this.getPlayerWithID(prolificID);
+    player.updateLocation(newLocation);
+    this.playerLocations.set(prolificID, newLocation);
   }
 
   get roomCreationTime() {
@@ -76,13 +71,6 @@ class Room {
     this.roomCreationTime = creationTime;
   }
 
-  get GameOneTurnCount() {
-    return this.gameOneTurnCount;
-  }
-
-  setGameOneTurnCount(newCount) {
-    this.gameOneTurnCount = newCount;
-  }
 
   /**
    * @param player Must be an instance of Player
@@ -92,20 +80,20 @@ class Room {
       throw 'Parameter is not an instance of the Player class.';
     }
     this.players.push(player);
-    this.initPlayerLocation(player.prolificID);
     this.allPlayerTimes.set(player.prolificID, Date.now());
+    this.playerLocations.set(player.prolificID, player.newLocation);
     if (this.roomCreationTime == null) {
       this.setRoomCreationTime(Date.now());
     }
   }
 
-  advanceToNextRound() {
+  advanceToNextTurn() {
     this.turnNum++;
   }
 
   advanceToGameTwo() {
     this.gameNum = GameNum.GAMETWO;
-    this.turnNum = 0;
+    this.turnNum = 1;
   }
 
   hasEveryoneConfirmed() {
@@ -118,7 +106,7 @@ class Room {
     return result;
   }
 
-  hasPlayerWithIDConfirmed(prolificID) {
+  hasPlayerConfirmed(prolificID) {
     if (!this.canFindPlayerWithID(prolificID)) {
       throw 'Player not found in room.'
     }
@@ -144,32 +132,12 @@ class Room {
     return this.gameOneResults;
   }
 
-  /**
-   * Set who are the winners and losers for game 1. This will be used to form groups in game 2
-   * @param results {[][]} an array of two arrays that represents winners and losers.
-   * Example input: [['player1', 'player2', 'player4'], ['player3', 'player5', player6]]
-   */
-  setGameOneResults(results) {
-    this.gameOneResults = results;
+  setGameOneResults(winners, losers) {
+    this.gameOneResults = [winners, losers];
   }
 
   getTeamAllocationAtCurrentTurn() {
     return this.getTeamAllocationAtTurn(this.turnNum);
-    // // winners
-    // let winnerIDs = this.gameOneResults[0];
-    // let winnerAllocations = [];
-    // winnerIDs.forEach((id) => {
-    //   winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
-    // });
-    // let winnerSum = GameTwoAllocation.sumAllocations(winnerAllocations);
-    // // losers
-    // let loserIDs = this.gameOneResults[1];
-    // let loserAllocations = [];
-    // loserIDs.forEach((id) => {
-    //   loserAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(this.turnNum));
-    // });
-    // let loserSum = GameTwoAllocation.sumAllocations(loserAllocations);
-    // return [winnerSum.allocationAsArray, loserSum.allocationAsArray];
   }
 
   getTeamAllocationAtTurn(turnNum) {
@@ -179,14 +147,14 @@ class Room {
     winnerIDs.forEach((id) => {
       winnerAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(turnNum));
     });
-    let winnerSum = GameTwoAllocation.sumAllocations(winnerAllocations);
+    let winnerSum = Allocation.sumAllocations(winnerAllocations);
     // losers
     let loserIDs = this.gameOneResults[1];
     let loserAllocations = [];
     loserIDs.forEach((id) => {
       loserAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(turnNum));
     });
-    let loserSum = GameTwoAllocation.sumAllocations(loserAllocations);
+    let loserSum = Allocation.sumAllocations(loserAllocations);
     return [winnerSum, loserSum];
   }
 
@@ -205,7 +173,7 @@ class Room {
     teamIDs.forEach((id) => {
       teamAllocations.push(this.getPlayerWithID(id).getAllocationAtTurn(turnNum));
     });
-    let sum = GameTwoAllocation.sumAllocations(teamAllocations);
+    let sum = Allocation.sumAllocations(teamAllocations);
     return sum;
   }
 

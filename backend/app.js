@@ -152,11 +152,11 @@ app.get("/verification-code", (req, res) => {
  */
 app.get("/player-ids", (req, res) => {
     let prolificID = req.query.loginCode;
-    let room = lobby.getRoomPlayerIsIn(prolificID);
+    let room = lobby.getRoomOfPlayer(prolificID);
     if (room === undefined) {
         res.status(200).send({ "error": `ProlificID ${prolificID} not found.` });
     } else {
-        let ids = lobby.getAllPlayersIDsInRoomWithName(room.name);
+        let ids = lobby.getAllPlayersIDs(room.name);
         res.status(200).send({ "ids": ids });
     }
 });
@@ -166,7 +166,7 @@ app.get("/player-ids", (req, res) => {
  */
 app.get("/game1-results", (req, res) => {
     let prolificID = req.query.loginCode;
-    let room = lobby.getRoomPlayerIsIn(prolificID);
+    let room = lobby.getRoomOfPlayer(prolificID);
     if (room === undefined) {
         res.status(200).send({ "error": `ProlificID ${prolificID} not found.` });
     } else {
@@ -197,7 +197,7 @@ app.get("/validate", (req, res) => {
         // console.log('game 1: ' + gameOneTurns + ' game 2: ' + gameTwoTurns);
     });
     // Only check if sufficient rounds of game2 has been completed since game1's terminating conditions does not depend solely on the number of rounds
-    if (gameTwoTurns >= GamesConfig.GAME_TWO_MAX_ROUND_NUM) {
+    if (gameTwoTurns >= GamesConfig.GAME_TWO_MAX_TURN_NUM) {
         res.status(200).send({ "success": "true", "code": `ProlificID ${prolificID}` });
     }
     else {
