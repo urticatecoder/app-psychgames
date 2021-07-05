@@ -1,4 +1,4 @@
-import { Typography, withStyles } from "@material-ui/core";
+import { Box, Typography, withStyles } from "@material-ui/core";
 import React from "react";
 import Variants from "../../util/common_constants/stylings/Variants";
 
@@ -10,16 +10,17 @@ const LARGE_FONT = '20px';
 const LARGE_MEDIUM_FONT = '18px';
 const MEDIUM_FONT = '17px';
 const SMALL_FONT = '16px';
+const ITALIC_FONT = "italic"
+const BOLD_FONT = "fontWeightBold"
 
 const styles = {
   fullDiv: {
     position: 'absolute',
     top: '25px',
     left: '43vw',
-    backgroundColor: '#a83297',
+    backgroundColor: '#757de8',
     height: '85px',
     width: '15vw',
-    opacity: '.8',
     borderRadius: '20px',
     alignItems: 'center',
     verticalAlign: 'middle',
@@ -52,11 +53,15 @@ function PayoutOdds(props) {
   return (
     <div className={classes.fullDiv}>
       <Typography className={classes.investText} style={{fontSize: font, top: marginTop}} variant={Variants.LARGE_TEXT}>
-        {INVEST_ODDS_LABEL + props.investOdds}
+        <Box fontStyle={ITALIC_FONT} fontWeight={BOLD_FONT}>  
+          {INVEST_ODDS_LABEL + props.investOdds}
+        </Box>
       </Typography>
       <Typography className={classes.competeText} style={{fontSize: font, marginTop: secondMarginTop}} variant={Variants.LARGE_TEXT}>
-        {COMPETE_ODDS_LABEL + props.competeOdds}
-      </Typography>
+        <Box fontStyle={ITALIC_FONT} fontWeight={BOLD_FONT}>  
+          {COMPETE_ODDS_LABEL + props.competeOdds}
+          </Box>
+        </Typography>
     </div>
   );
 }

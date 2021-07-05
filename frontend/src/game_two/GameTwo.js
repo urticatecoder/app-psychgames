@@ -16,6 +16,8 @@ import GroupBox from "../game_one/components/GroupBox";
 import { ResourceNames } from "../util/common_constants/game_two/GameTwoBundler";
 import { Variants } from '../util/common_constants/stylings/StylingsBundler';
 import getAlerts from './components/getAlerts';
+import WaitingDiv from "../util/common_components/WaitingDiv";
+import PayoffHelp from "./components/PayoffHelp";
 
 const GROUP_ONE = 1;
 const GROUP_TWO = 2;
@@ -76,6 +78,9 @@ const DO_NOT_DISABLE_BUTTON = false;
 const INITIAL_TIME_LEFT = -1;
 const DONT_NOTE_TIME = false;
 
+const SHOW_DIV = true
+const HIDE_DIV = false
+
 const styles = {
   groupOne: {
     position: "absolute",
@@ -119,19 +124,15 @@ function GameTwo(props) {
 
   const [timeLeft, setTimeLeft] = useState(INITIAL_TIME_LEFT);
   const [noteTime, setNoteTime] = useState(DONT_NOTE_TIME);
-  
+  const [showWaitingDiv, setShowWaitingDiv] = useState(HIDE_DIV);
+
   const [disableButton, setDisableButton] = useState(DO_NOT_DISABLE_BUTTON);
 
 
   useEffect(() => {
     
     socket.on(END_TURN_WEBSOCKET, (competePayoff, investPayoff, winnerResults, loserResults) => {
-      console.log('[compete, keep, invest]');
-      console.log('winner');
-      console.log(winnerResults);
-      console.log('loser');
-      console.log(loserResults);
-      
+      setShowWaitingDiv(HIDE_DIV);
       setCompetePayoff(competePayoff);
       setInvestPayoff(investPayoff);
       setResetTimer(RESET_TIMER);
@@ -186,6 +187,8 @@ function GameTwo(props) {
     setTimeLeft,
     disableButton, 
     setDisableButton,
+    showWaitingDiv, 
+    setShowWaitingDiv
   );
 
   let resourceView = showResults ? resourceResultsView : resourceChoiceView;
@@ -238,9 +241,11 @@ function getDelayedBar(resource, group, delay, tokens, windowWidth) {
 
 function getResourceChoices(props, setFromResources, setToResources, fromResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, 
   tokensSpent, setTokensSpent, setCurrentResources, currentResources, payoffInvest, payoffCompete, resetTimer, setResetTimer, setSubmitDecisions, submitDecisions,
-  noteTime, setNoteTime, timeLeft, setTimeLeft, disableButton, setDisableButton) {
+  noteTime, setNoteTime, timeLeft, setTimeLeft, disableButton, setDisableButton, showWaitingDiv, setShowWaitingDiv) {
   return (
     <div>
+      <PayoffHelp/>
+      <WaitingDiv show={showWaitingDiv} windowWidth={props.windowWidth}/>
       <TokenCounter tokens={totalTokens - tokensSpent} windowHeight={props.windowHeight} windowWidth={props.windowWidth}/>
       <PayoutOdds investOdds={payoffInvest} competeOdds={payoffCompete} windowHeight={props.windowHeight} windowWidth={props.windowWidth}/>
       <GameTimer
@@ -266,6 +271,7 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
         windowWidth={props.windowWidth}
         windowHeight={props.windowHeight}
         experimentID={props.experimentID}
+        showWaitingDiv = {() => setShowWaitingDiv(SHOW_DIV)}
       />
       <VerticalPlayerGroup
         type={GROUP_ONE}

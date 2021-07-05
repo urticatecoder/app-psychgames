@@ -1,5 +1,6 @@
-const GameTwoAllocation = require('./game2.js').GameTwoAllocation;
+const Allocation = require('./allocation.js').Allocation;
 const GameNum = require("./game_num.js").GameNum;
+const DEFAULT_PLAYER_LOCATION = require("./games_config.js").DEFAULT_PLAYER_LOCATION;
 
 
 /**
@@ -8,6 +9,8 @@ const GameNum = require("./game_num.js").GameNum;
  * It contains data/information specific to a player, e.g. prolificID, choices and allocations he/she made in each turn of game 1 and 2.
  */
 class Player {
+  oldLocation = DEFAULT_PLAYER_LOCATION;
+  newLocation = DEFAULT_PLAYER_LOCATION;
   choices = []; // stores an array of array to represent choices made by this player in game 1
   allocations = []; // stores an array of array to represent allocations of tokens made by this player in game 2
   keepTotal = 0; // stores the total keep of game2 
@@ -35,6 +38,11 @@ class Player {
       throw 'Parameter is not a Boolean type.';
     }
     this.isBot = isBot;
+  }
+
+  updateLocation(newLocation) {
+    this.oldLocation = this.newLocation;
+    this.newLocation = newLocation;
   }
 
   updateCompeteAmount(competeValue) {
@@ -108,7 +116,7 @@ class Player {
    * @param invest {number}
    */
   recordAllocation(compete, keep, invest) {
-    this.allocations.push(new GameTwoAllocation(compete, keep, invest));
+    this.allocations.push(new Allocation(compete, keep, invest));
   }
 
   getAllocationAtTurn(turnNum) {
