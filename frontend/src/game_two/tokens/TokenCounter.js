@@ -1,4 +1,4 @@
-import { Typography, withStyles } from '@material-ui/core';
+import { Box, Typography, withStyles } from '@material-ui/core';
 import React from 'react';
 import Token from './money-bag.png'
 import Variants from "../../util/common_constants/stylings/Variants";
@@ -12,15 +12,17 @@ const LARGE_WINDOW = 1300;
 const LARGE_FONT = '20px';
 const SMALL_FONT = '17px';
 
+const ITALIC_FONT = "italic"
+const BOLD_FONT = "fontWeightBold"
+
 const styles = ({
     fullDiv: {
       position: 'absolute',
       top: '25px',
       left: '62vw',
-      backgroundColor: '#a83297',
+      backgroundColor: '#757de8',
       height: '85px',
       width: '15vw',
-      opacity: '.8',
       borderRadius: '20px',
       alignItems: 'center',
       verticalAlign: 'middle',
@@ -55,7 +57,9 @@ function TokenCounter(props) {
         </div>
         <div className={classes.tokenText}>
           <Typography style={{fontSize: getFontSize(props.windowWidth)}} variant={Variants.LARGE_TEXT}>
-            {TOKENS_LABEL + props.tokens}
+            <Box fontStyle={ITALIC_FONT} fontWeight={BOLD_FONT}>
+              {TOKENS_LABEL + props.tokens}
+            </Box>
           </Typography>
         </div>
       </div>

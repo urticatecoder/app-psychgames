@@ -23,7 +23,6 @@ const styles = {
     marginTop: '280px',
     left: "5vw",
     height: "40px",
-    opacity: ".8",
     borderRadius: "8px",
     alignItems: "center",
     fontSize: "15px",
@@ -53,16 +52,17 @@ function ConfirmButtonTwo(props) {
       variant={Variants.CONTAINED}
       color={PRIMARY_COLOR}
       disabled={props.disabled}
-      onClick={() => handleSubmission(props.disableButton, props.setNoteTime)}
+      onClick={() => handleSubmission(props.disableButton, props.setNoteTime, props.showWaitingDiv)}
     >
       {CONFIRM_CHOICES_TEXT}
     </Button>
   );
 }
 
-function handleSubmission(disableButton, setNoteTime) {
+function handleSubmission(disableButton, setNoteTime, showWaitingDiv) {
   disableButton();
   setNoteTime(NOTE_TIME);
+  showWaitingDiv()
 }
 
 function getWidth(windowWidth) {

@@ -4,9 +4,8 @@
  * @author Eric Doppelt
  */
 const ResourceColors = {
-  KEEP: "#e3aac9",
-  INVEST: "#36c960",
-  COMPETE: "#f5d971",
+  DARK: '#002984',
+  LIGHT: '#757de8',
   DEFAULT: "#dbd4c1",
 };
 

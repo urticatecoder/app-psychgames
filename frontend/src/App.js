@@ -15,7 +15,7 @@ import GameOneIntro from "./game_one/intro/GameOneIntro";
 import GameTwoIntro from "./game_two/intro/GameTwoIntro";
 import WindowChecker from './util/common_components/WindowChecker';
 import BrowserChecker from './util/common_components/BrowserChecker';
-import Warnings from "./util/common_components/Warnings";
+import Rules from "./util/common_components/Rules";
 
 const INITIAL_CODE = null;
 const INITIAL_CODES = [null, null, null, null, null, null];
@@ -60,7 +60,7 @@ function App() {
   const [losers, setLosers] = useState(NO_LOSERS);
   const [selectedIndex, setSelectedIndex] = useState(DEFAULT_SELECTION_INDEX);
   const [loggedIn, setLoggedIn] = useState(LOGGED_OUT);
-  const [showWarnings, setShowWarnings] = useState(HIDE);
+  const [showRules, setShowRules] = useState(HIDE);
   const [windowWidth, setWindowWidth] = useState(INITIAL_WINDOW_WIDTH);
   const [windowHeight, setWindowHeight] = useState(INITIAL_WINDOW_HEIGHT);
   const [experimentID, setExperimentID] = useState(DEFAULT_EXPERIMENT_ID)
@@ -73,12 +73,12 @@ function App() {
           <RefreshChecker loginCode={loginCode}/>
           <WindowChecker setWindowWidth={setWindowWidth} setWindowHeight={setWindowHeight}/>
           <BrowserChecker/>
-          <Warnings showWarnings={showWarnings} setShowWarnings={setShowWarnings}/>
+          <Rules showRules={showRules} setShowRules={setShowRules}/>
 
           <Route
             path={LOGIN_ROUTE}
             exact
-            render={() => <Login code={loginCode} setLoginCode={setLoginCode} setShowWarnings={setShowWarnings}/>}
+            render={() => <Login code={loginCode} setLoginCode={setLoginCode} setShowWarnings={setShowRules}/>}
           />
 
           <Route
