@@ -9,7 +9,7 @@
  * @param prolificIDs {string array} of players in game
  * @returns botChoices {string list}
  */
-function determineBotChoice(selfID, prolificIDs) {
+function generateBotChoices(selfID, prolificIDs) {
     let numberOfChoices = 2;
     let botChoices = [];
     for (let i = 0; i < numberOfChoices; i++) {
@@ -24,5 +24,5 @@ function determineBotChoice(selfID, prolificIDs) {
 
 
 module.exports = {
-    determineBotChoice: determineBotChoice,
+    generateBotChoices: generateBotChoices,
 }

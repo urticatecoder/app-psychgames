@@ -17,11 +17,13 @@ const ROOM_WAIT_TIME_MILLISECONDS = require("./games_config.js").ROOM_WAIT_TIME_
  */
 class Lobby {
     currRoom; // new players who enter the lobby will join this room
+    passive = new Map(); // stores proflic IDs of passive players
     rooms = new Map(); // stores a mapping of room name to room instance
-    playerToRoom = new Map(); // stores a mapping of a player's id to the room instance he is in
+    playerToRoom = new Map(); // stores a mapping of a player's id to the corresponding room instance
     roomToPlayer = new Map(); // stores a mapping of a room instance to an array of players who are in this room
     static MAX_CAPACITY_PER_ROOM = 6;
     botID = 0; // used as part of a bot's id
+
 
     constructor() {
         this.allocateNewRoom();
@@ -37,30 +39,74 @@ class Lobby {
         this.rooms.forEach((value, key) => { console.log(`m[${key}] = ${value.name}`); });
     }
 
-    getRoomPlayerIsIn(prolificID) {
-        return this.playerToRoom.get(prolificID);
-    }
-
     getRoomByRoomName(roomName) {
         return this.rooms.get(roomName.toString());
     }
 
-    getAllPlayersInRoomWithName(roomName) {
+    getRoomTurnNum(roomName) {
+        let room = this.rooms.get(roomName.toString());
+        return room.turnNum;
+    }
+
+    getAllPlayersInRoom(roomName) {
         return this.roomToPlayer.get(roomName.toString());
     }
 
-    getAllPlayersIDsInRoomWithName(roomName) {
-        return this.getAllPlayersInRoomWithName(roomName.toString()).map(player => player.prolificID);
+    getAllPlayersIDs(roomName) {
+        return this.getAllPlayersInRoom(roomName.toString()).map(player => player.prolificID);
+    }
+
+    getRoomNameOfPlayer(prolificID) {
+        let room = this.getRoomOfPlayer(prolificID);
+        return room.name;
+    }
+
+    getRoomOfPlayer(prolificID) {
+        console.log('getRoomOfPlayer:');
+        if (!this.playerToRoom.has(prolificID)) {
+            console.log('Room not found');
+            return undefined;
+        }
+        console.log('Room found');
+        // console.log(this.playerToRoom);
+        let room = this.playerToRoom.get(prolificID);
+        // console.log(room);
+        return room;
+    }
+
+    getPlayerByProlificID(prolificID) {
+        let room = this.getRoomOfPlayer(prolificID);
+        let player = room.getPlayerWithID(prolificID);
+        return player;
+    }
+
+    areCoPlayersReady(prolificID) {
+        let room = this.getRoomOfPlayer(prolificID);
+        return room.hasEveryoneConfirmed();
+    }
+
+    hasPlayerConfirmedChoices(prolificID) {
+        let room = this.getRoomOfPlayer(prolificID);
+        if (!room.hasPlayerConfirmed(prolificID)) {
+            this.passive.set(prolificID, true);
+            return false;
+        } else {
+            this.passive.delete(prolificID);
+            return true;
+        }
     }
 
     findRoomForPlayerToJoin(prolificID) {
         if (this.playerToRoom.has(prolificID)) {
             throw `Duplicated prolificID ${prolificID} found`;
         }
+        console.log('findRoomForPlayerToJoin: ');
+        console.log(prolificID);
         let player = new Player(prolificID);
         this.currRoom.addPlayer(player);
         this.playerToRoom.set(prolificID, this.currRoom);
         this.roomToPlayer.get(this.currRoom.name.toString()).push(player);
+        console.log('Room ' + this.currRoom.name + ' mapped to player ' + prolificID);
         return this.currRoom.name;
     }
 
@@ -93,7 +139,7 @@ class Lobby {
 
     handleRoomFill(io, roomName) {
         roomName = roomName.toString();
-        const playerIDs = lobby.getAllPlayersIDsInRoomWithName(roomName);
+        const playerIDs = lobby.getAllPlayersIDs(roomName);
         io.sockets.in(roomName).emit(BackendEventMessage.ROOM_FILL, playerIDs); // to everyone in the room, including self
         DB_API.saveExperimentSession(roomName, playerIDs);
         console.log("The room is filled with users");
@@ -111,16 +157,6 @@ class Lobby {
             this.addBotPlayersToRoom(roomName);
         }
         this.handleRoomFill(io, roomName);
-    }
-
-    /**
-     * @deprecated use getNumOfPeopleInRoom(roomName) instead
-     * @param serverSocket
-     * @param roomName
-     * @returns {number}
-     */
-    static getNumOfPeopleInRoom(serverSocket, roomName) {
-        return serverSocket.sockets.adapter.rooms[roomName].length;
     }
 
     // need to refactor this method later
