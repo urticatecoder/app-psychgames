@@ -59,10 +59,11 @@ const styles = {
     const {classes} = props;
     
     
-    if (props.showWarnings) {
+    if (props.showRules) {
         return(
             <Dialog
-            open={props.showWarnings}
+            open={props.showRules}
+            onClose={() => props.setShowRules(HIDE)}
             >
             <DialogTitle>{DIALOG_TITLE}</DialogTitle>
             <DialogContent>
@@ -74,7 +75,7 @@ const styles = {
             </DialogContent>
             <DialogActions>
                 <Button
-                    onClick={() => props.setShowWarnings(HIDE)} 
+                    onClick={() => props.setShowRules(HIDE)} 
                     variant={BUTTON_VARIANT} 
                     color={OKAY_COLOR}
                 >
@@ -89,7 +90,7 @@ const styles = {
                 <Button
                     variant={BUTTON_VARIANT} 
                     color={OKAY_COLOR}
-                    onClick={() => props.setShowWarnings(SHOW)}
+                    onClick={() => props.setShowRules(SHOW)}
                 >
                     {RULES}
                 </Button>

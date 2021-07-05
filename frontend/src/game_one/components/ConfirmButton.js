@@ -20,7 +20,6 @@ const styles = {
     marginTop: '280px',
     left: "5vw",
     height: "40px",
-    opacity: ".8",
     borderRadius: "8px",
     alignItems: "center",
     fontSize: "15px",

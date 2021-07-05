@@ -4,6 +4,8 @@ import { withStyles } from "@material-ui/core";
 import getBackgroundColor from "../../util/common_functions/getResourceBackgroundColor";
 import getMarginLeft from "../../util/common_functions/getResourceMarginLeft";
 
+const BAR = 'Bar'
+
 const styles = {
   outerDiv: {
     position: "absolute",
@@ -39,7 +41,7 @@ function ResourceBar(props) {
   });
 
   const { classes } = props;
-  let background = getBackgroundColor(props.resource);
+  let background = getBackgroundColor(props.resource + BAR);
   let marginL = getMarginLeft(props.resource);
   return (
     <div className={classes.outerDiv}>
