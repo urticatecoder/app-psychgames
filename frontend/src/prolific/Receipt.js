@@ -37,52 +37,52 @@ const INVEST_DELAY = 9000;
 
 const KEEP = 'Kept';
 const KEEP_DELAY = 15000;
-const KEEP_RATE = .50;
+const KEEP_RATE = .10;
 
 const COMPETE = 'Competed';
 const COMPETE_DELAY = 21000;
 
 const styles = {
-  game: {
-    position: 'relative',
-    textAlign: 'left',
-    marginLeft: '75px',
-  },
+    game: {
+        position: 'relative',
+        textAlign: 'left',
+        marginLeft: '75px',
+    },
 
-  description: {
-    position: 'relative',
-    marginRight: '180px',
-    textAlign: 'right'
-  },
+    description: {
+        position: 'relative',
+        marginRight: '180px',
+        textAlign: 'right'
+    },
 
-  amount: {
-    position: 'relative',
-    marginRight: '50px',
-    marginTop: '-39px',
-    textAlign: 'right',
-  },
+    amount: {
+        position: 'relative',
+        marginRight: '50px',
+        marginTop: '-39px',
+        textAlign: 'right',
+    },
 
-  resourceDescription: {
-    position: 'relative',
-    marginRight: '180px',
-    textAlign: 'right',
-  },
+    resourceDescription: {
+        position: 'relative',
+        marginRight: '180px',
+        textAlign: 'right',
+    },
 
-  resourceAmount: {
-    position: 'relative',
-    marginRight: '50px',
-    marginTop: '-39px',
-    textAlign: 'right',
-  },
+    resourceAmount: {
+        position: 'relative',
+        marginRight: '50px',
+        marginTop: '-39px',
+        textAlign: 'right',
+    },
 
-  gameOneFade: {
-    position: 'relative',
-    marginTop: '10px',
-  },
+    gameOneFade: {
+        position: 'relative',
+        marginTop: '10px',
+    },
 
-  gameTwoFade: {
-    position: 'relative',
-  }
+    gameTwoFade: {
+        position: 'relative',
+    }
 };
 
 /**
@@ -93,19 +93,19 @@ const styles = {
  * @author Eric Doppelt
  */
 function Receipt(props) {
-  const { classes } = props;
+    const { classes } = props;
 
-  
-  return (
-      <div>
+
+    return (
+        <div>
             {getGameOne(props.gameOneResult, props.gameOneAmount, classes, props.windowHeight)}
             {getGameTwo(props.gameTwoTurn, classes, props.windowHeight)}
             {getGameTwoResource(props.investTokens, INVEST, props.investRate, props.investAmount, INVEST_DELAY, classes, props.windowHeight)}
             {getGameTwoResource(props.keepTokens, KEEP, KEEP_RATE, props.keepAmount, KEEP_DELAY, classes, props.windowHeight)}
             {getGameTwoResource(props.competeTokens, COMPETE, props.competeRate, props.competeAmount, COMPETE_DELAY, classes, props.windowHeight)}
 
-      </div>
-  );
+        </div>
+    );
 }
 
 function getGameOne(won, amount, classes, windowHeight) {
@@ -113,38 +113,38 @@ function getGameOne(won, amount, classes, windowHeight) {
     let marginResource = getResourceMargin(windowHeight);
     let marginGame = getGameOneMargin(windowHeight);
 
-    return(
+    return (
         <div className={classes.gameOneFade}>
 
-        <FadeIn delay={GAME_ONE_DELAY}>
-            <span>
-                <Typography className={classes.game} style={{marginTop: marginGame}} variant={Variants.NORMAL_TEXT}>
-                <Box fontStyle={ITALIC_FONT}>
-                    {GAME_ONE}
-                </Box>
-                </Typography>
-            </span>
-
-               
-            <div className={classes.description}>
-            <span>
-                 <Typography style={{fontSize: ITEM_FONT_SIZE, marginTop: marginResource}} variant={Variants.NORMAL_TEXT}>
-                    <Box fontStyle={ITALIC_FONT}>
-                        {getGameOneResultText(won)}
-                    </Box>
-                </Typography>
-            </span>
-            </div>
-
-            <div className={classes.amount}>
-            <span>
-                <Typography variant={Variants.NORMAL_TEXT} style={{fontSize: ITEM_FONT_SIZE, color: getColor(amount)}}>
-                    {getSign(amount) + amount.toFixed(DECIMAL_PLACES)}
-                </Typography>
+            <FadeIn delay={GAME_ONE_DELAY}>
+                <span>
+                    <Typography className={classes.game} style={{ marginTop: marginGame }} variant={Variants.NORMAL_TEXT}>
+                        <Box fontStyle={ITALIC_FONT}>
+                            {GAME_ONE}
+                        </Box>
+                    </Typography>
                 </span>
-            </div>
-        </FadeIn>
-    </div>
+
+
+                <div className={classes.description}>
+                    <span>
+                        <Typography style={{ fontSize: ITEM_FONT_SIZE, marginTop: marginResource }} variant={Variants.NORMAL_TEXT}>
+                            <Box fontStyle={ITALIC_FONT}>
+                                {getGameOneResultText(won)}
+                            </Box>
+                        </Typography>
+                    </span>
+                </div>
+
+                <div className={classes.amount}>
+                    <span>
+                        <Typography variant={Variants.NORMAL_TEXT} style={{ fontSize: ITEM_FONT_SIZE, color: getColor(amount) }}>
+                            {getSign(amount) + amount.toFixed(DECIMAL_PLACES)}
+                        </Typography>
+                    </span>
+                </div>
+            </FadeIn>
+        </div>
     );
 }
 
@@ -155,9 +155,9 @@ function getGameOneResultText(won) {
 
 function getGameTwo(turn, classes, windowHeight) {
     let margin = getGameTwoMargin(windowHeight);
-    return(
+    return (
         <FadeIn className={classes.gameTwoFade} delay={GAME_TWO_DELAY}>
-            <Typography className={classes.game} style={{marginTop: margin}} variant={Variants.NORMAL_TEXT}>
+            <Typography className={classes.game} style={{ marginTop: margin }} variant={Variants.NORMAL_TEXT}>
                 <Box fontStyle={ITALIC_FONT}>
                     {GAME_TWO_PREFIX + turn}
                 </Box>
@@ -168,25 +168,25 @@ function getGameTwo(turn, classes, windowHeight) {
 
 function getGameTwoResource(tokens, resource, rate, amount, delay, classes, windowHeight) {
     let marginTop = getGameTwoResourceMargin(windowHeight);
-    
-    return(
+
+    return (
         <div>
-        <FadeIn delay={delay}>
-            <div className={classes.resourceDescription}>
-                <Typography style={{fontSize: RESOURCE_FONT_SIZE, marginTop: marginTop}} variant={Variants.NORMAL_TEXT}>
-                    <Box fontStyle={ITALIC_FONT}>
-                        {tokens + TOKENS + resource + getRate(rate)}
-                    </Box>
-                </Typography>
-            </div>
-        </FadeIn>
-        <FadeIn delay={delay + AMOUNT_DELAY}>
-            <div className={classes.resourceAmount}>
-                <Typography  style={{fontSize: ITEM_FONT_SIZE, color: getColor(amount)}} variant={Variants.NORMAL_TEXT}>
-                    {getSign(amount) + amount.toFixed(DECIMAL_PLACES)}
-                </Typography>
-            </div>
-        </FadeIn>
+            <FadeIn delay={delay}>
+                <div className={classes.resourceDescription}>
+                    <Typography style={{ fontSize: RESOURCE_FONT_SIZE, marginTop: marginTop }} variant={Variants.NORMAL_TEXT}>
+                        <Box fontStyle={ITALIC_FONT}>
+                            {tokens + TOKENS + resource + getRate(rate)}
+                        </Box>
+                    </Typography>
+                </div>
+            </FadeIn>
+            <FadeIn delay={delay + AMOUNT_DELAY}>
+                <div className={classes.resourceAmount}>
+                    <Typography style={{ fontSize: ITEM_FONT_SIZE, color: getColor(amount) }} variant={Variants.NORMAL_TEXT}>
+                        {getSign(amount) + amount.toFixed(DECIMAL_PLACES)}
+                    </Typography>
+                </div>
+            </FadeIn>
         </div>
     )
 }
