@@ -1,6 +1,6 @@
-const Allocation = require('./allocation.js').Allocation;
-const GameNum = require("./game_num.js").GameNum;
-const DEFAULT_PLAYER_LOCATION = require("./games_config.js").DEFAULT_PLAYER_LOCATION;
+const Allocation = require('../game_two/allocation.js').Allocation;
+const GameNum = require("../game_num.js").GameNum;
+const DEFAULT_PLAYER_LOCATION = require("../games_config.js").DEFAULT_PLAYER_LOCATION;
 
 
 /**
