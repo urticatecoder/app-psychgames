@@ -1,8 +1,8 @@
 const expect = require('chai').expect;
-const DB_API = require('../db/db_api.js');
+const DB_API = require('../src/db/db_api.js');
 const mongoose = require('mongoose');
 const ObjectID = require("bson-objectid");
-const { ExperimentModel } = require("../db/models/experiment");
+const { ExperimentModel } = require("../src/db/models/experiment");
 
 describe('Test database query API', () => {
     before(function (done) {

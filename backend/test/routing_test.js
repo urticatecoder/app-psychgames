@@ -1,6 +1,6 @@
 const supertest = require('supertest');
-const app = require('../app.js');
-const lobby = require('../lobby').LobbyInstance;
+const app = require('../src/app.js');
+const lobby = require('../src/lobby/lobby').LobbyInstance;
 
 describe("API route test", function () {
     it("GET / should has status code 200", function (done) {

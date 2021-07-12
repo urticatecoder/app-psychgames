@@ -3,46 +3,8 @@
  * This file contains a data class for game 2 and a few helper functions to calculate stats related to game 2
  */
 
-const GamesConfig = require('./games_config.js');
+const GamesConfig = require('../games_config.js');
 const Allocation = require('./allocation').Allocation;
-
-
-function calculateFinalPaymentForAPlayer(prolificID, lobby) {
-    let turnNum = getRandomInt(GamesConfig.GAME_TWO_MAX_TURN_NUM - 1) + 1; // select a random turn num to calculate final payment
-    let room = lobby.getRoomOfPlayer(prolificID);
-    return calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum);
-}
-
-/**
- * @param prolificID {string}
- * @param room Must be a room instance
- * @param turnNum {number}
- * @returns {number} payment for the player
- */
-function calculatePaymentForAPlayerAtTurn(prolificID, room, turnNum) {
-    let tokenValue = Allocation.TOKEN_VALUE;
-    let payoff = room.getCompeteAndInvestPayoffAtTurnNum(turnNum);
-    let competePayoff = payoff[0], investPayoff = payoff[1];
-    let playerAllocation = room.getPlayerAllocationAtTurnNum(prolificID, turnNum);
-    let payment = 0;
-    payment += (tokenValue * playerAllocation.numOfKeepToken + investPayoff * playerAllocation.numOfInvestToken + competePayoff * playerAllocation.numOfCompeteToken);
-
-    let allocations = room.getOthersAllocationAtTurnNum(prolificID, turnNum);
-    let teammatesAllocations = allocations[0];
-    let opponentsAllocations = allocations[1];
-    teammatesAllocations.forEach((allocation) => {
-        // add compete and invest tokens allocated by your teammates
-        payment += (investPayoff * allocation.numOfInvestToken);
-        payment += (competePayoff * allocation.numOfCompeteToken);
-    });
-
-    // opponents impact
-    opponentsAllocations.forEach((allocation) => {
-        payment -= (competePayoff * allocation.numOfCompeteToken);
-    });
-
-    return payment;
-}
 
 function getCompeteAtTurn(prolificID, room, turnNum) {
     let group = room.getOthersAllocationAtTurnNum(prolificID, turnNum);
@@ -128,11 +90,9 @@ function isGameTwoDone(room) {
 
 module.exports = {
     generateCompeteAndInvestPayoff: generateCompeteAndInvestPayoff,
-    calculatePaymentForAPlayerAtTurn: calculatePaymentForAPlayerAtTurn,
     generateBotAllocation: generateBotAllocation,
     isGameTwoDone: isGameTwoDone,
     getRandomInt: getRandomInt,
-    calculateFinalPaymentForAPlayer: calculateFinalPaymentForAPlayer,
     getCompeteAtTurn: getCompeteAtTurn,
     getInvestAtTurn: getInvestAtTurn,
     getKeepAtTurn: getKeepAtTurn
