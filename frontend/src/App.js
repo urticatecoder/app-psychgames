@@ -23,8 +23,6 @@ const INITIAL_CODES = [null, null, null, null, null, null];
 const NO_WINNERS = [];
 const NO_LOSERS = [];
 
-const DEFAULT_ANIMATION_PAUSE = 1000;
-
 const CLASS_NAME = "App";
 
 const HIDE = false;
@@ -48,14 +46,14 @@ const LOGGED_OUT = false;
 const INITIAL_WINDOW_WIDTH = window.innerWidth;
 const INITIAL_WINDOW_HEIGHT = window.innerHeight;
 
-const INITIAL_BACKEND_INDEX = -1;
-
+const INITIAL_INDEX = -1;
 const DEFAULT_EXPERIMENT_ID = -1;
 
 function App() {
   const [loginCode, setLoginCode] = useState(INITIAL_CODE);
   const [allLoginCodes, setAllLoginCodes] = useState(INITIAL_CODES);
-  const [backendIndex, setBackendIndex] = useState(INITIAL_BACKEND_INDEX);
+  const [frontendIndex, setFrontendIndex] = useState(INITIAL_INDEX);
+  const [backendIndex, setBackendIndex] = useState(INITIAL_INDEX);
   const [winners, setWinners] = useState(NO_WINNERS);
   const [losers, setLosers] = useState(NO_LOSERS);
   const [selectedIndex, setSelectedIndex] = useState(DEFAULT_SELECTION_INDEX);
@@ -70,7 +68,7 @@ function App() {
         
         <Router>
           <PassiveAlert loginCode={loginCode} experimentID={experimentID}/>
-          <RefreshChecker loginCode={loginCode}/>
+          {/* <RefreshChecker loginCode={loginCode}/> */}
           <WindowChecker setWindowWidth={setWindowWidth} setWindowHeight={setWindowHeight}/>
           <BrowserChecker/>
           <Rules showRules={showRules} setShowRules={setShowRules}/>
@@ -91,6 +89,7 @@ function App() {
                 loggedIn = {loggedIn}
                 setLoggedIn = {setLoggedIn}
                 setBackendIndex = {setBackendIndex}
+                setFrontendIndex = {setFrontendIndex}
                 setExperimentID = {setExperimentID}
                 experimentID = {experimentID}
               />
@@ -122,6 +121,7 @@ function App() {
                 losers={losers}
                 allLoginCodes={allLoginCodes}
                 selectedIndex={selectedIndex}
+                frontendIndex={frontendIndex}
               />
             }
           />   
@@ -148,6 +148,7 @@ function App() {
                 windowWidth={windowWidth}
                 windowHeight={windowHeight}
                 experimentID={experimentID}
+                frontendIndex={frontendIndex}
               />
             )}
           />
@@ -170,6 +171,7 @@ function App() {
                 windowHeight={windowHeight}
                 backendIndex={backendIndex}
                 experimentID={experimentID}
+                frontendIndex={frontendIndex}
               />
             )}
           />

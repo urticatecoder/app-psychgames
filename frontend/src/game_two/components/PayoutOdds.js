@@ -18,7 +18,7 @@ const styles = {
     position: 'absolute',
     top: '25px',
     left: '43vw',
-    backgroundColor: '#757de8',
+    backgroundColor: '#0066ff',
     height: '85px',
     width: '15vw',
     borderRadius: '20px',

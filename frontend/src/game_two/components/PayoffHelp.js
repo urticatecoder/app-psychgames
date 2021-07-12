@@ -43,7 +43,6 @@ const styles = {
         top: '10px',
         right: '110px',
         zIndex: 1,
-        backgroundColo: "#21b6ae",
       },
       avatar: {
         width: 55, 
@@ -72,9 +71,9 @@ const styles = {
             <DialogTitle>{DIALOG_TITLE}</DialogTitle>
             <DialogContent>
                 <List className={classes.dialogue}>
+                        {getListItem(classes.avatar, ResourceNames.COLOR_COMPETE, COMPETE_PRIMARY, COMPETE_SECONDARY)}
                         {getListItem(classes.avatar, ResourceNames.COLOR_KEEP, KEEP_PRIMARY, KEEP_SECONDARY)}
                         {getListItem(classes.avatar, ResourceNames.COLOR_INVEST, INVEST_PRIMARY, INVEST_SECONDARY)}
-                        {getListItem(classes.avatar, ResourceNames.COLOR_COMPETE, COMPETE_PRIMARY, COMPETE_SECONDARY)}
                 </List>
                 <br/>
                 <br/>

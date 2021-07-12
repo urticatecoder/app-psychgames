@@ -39,6 +39,7 @@ function Lobby(props) {
         loggedIn={props.loggedIn}
         setLoggedIn={props.setLoggedIn}
         setBackendIndex = {props.setBackendIndex}
+        setFrontendIndex = {props.setFrontendIndex}
         setExperimentID = {props.setExperimentID}
         experimentID = {props.experimentID}
       />

@@ -61,6 +61,7 @@ function getSummary(props) {
           losers={props.losers}
           allLoginCodes={props.allLoginCodes}
           selectedIndex={props.selectedIndex}
+          frontendIndex={props.frontendIndex}
         />
     );
 }

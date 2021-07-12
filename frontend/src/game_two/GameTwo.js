@@ -280,6 +280,7 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
         selectedIndex={props.selectedIndex}
         windowHeight={props.windowHeight}
         windowWidth={props.windowWidth}
+        frontendIndex={props.frontendIndex}
       />
       <VerticalPlayerGroup
         type={GROUP_TWO}
@@ -288,6 +289,7 @@ function getResourceChoices(props, setFromResources, setToResources, fromResourc
         selectedIndex={props.selectedIndex}
         windowHeight={props.windowHeight}
         windowWidth={props.windowWidth}
+        frontendIndex={props.frontendIndex}
       />
       {getResourceButton(ResourceNames.KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
         setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources, props.windowWidth)}

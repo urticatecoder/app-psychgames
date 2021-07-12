@@ -5,9 +5,9 @@ import { Variants } from "../../util/common_constants/stylings/StylingsBundler";
 
 const CONFIRM_CHOICES_TEXT = "Confirm!";
 const NUM_PLAYERS = 6;
-const PRIMARY_COLOR = "primary";
 const SEND_DECISIONS_WEBSOCKET = "confirm choice for game 1";
 
+const PRIMARY_COLOR = "primary";
 const DISABLED = true;
 const NOTE_TIME = true;
 const LARGE_WIDTH_THRESHOLD = 1550;
@@ -23,6 +23,7 @@ const styles = {
     borderRadius: "8px",
     alignItems: "center",
     fontSize: "15px",
+    backgroundColor: '#002984'
   },
 };
 
