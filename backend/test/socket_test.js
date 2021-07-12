@@ -1,9 +1,9 @@
 const expect = require('chai').expect;
 const clientIO = require('socket.io-client');
 const serverIO = require('socket.io').listen(3001);
-const lobby = require('../lobby.js').LobbyInstance;
-const FrontendEventMessage = require("../frontend_event_message.js").FrontendEventMessage;
-const BackendEventMessage = require("../backend_event_message").BackendEventMessage;
+const lobby = require('../src/lobby/lobby.js').LobbyInstance;
+const FrontendEventMessage = require("../src/frontend_event_message.js").FrontendEventMessage;
+const BackendEventMessage = require("../src/backend_event_message").BackendEventMessage;
 
 describe('Socket connection', function () {
     let socketURL = 'http://localhost:3001';
@@ -30,7 +30,7 @@ describe('Socket connection', function () {
 
     beforeEach(function (done) {
         serverIO.sockets.on(FrontendEventMessage.CONNECTION, function (socket) {
-            require('../lobby.js').LobbyDefaultSocketListener(serverIO, socket);
+            require('../src/lobby/lobby.js').LobbyDefaultSocketListener(serverIO, socket);
         });
         done();
     });

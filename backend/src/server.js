@@ -2,11 +2,10 @@ const app = require("./app");
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const DB_API = require('./db/db_api');
-const BOT = require("./bot");
-const Game1 = require("./game1");
-const Game2 = require('./game2');
-const GameOneTurnResult = require('./game_one_turn_result.js');
-const lobby = require("./lobby.js").LobbyInstance;
+const BOT = require("./lobby/bot");
+const GameOne = require("./game_one/game_one");
+const GameTwo = require('./game_two/game_two');
+const lobby = require("./lobby/lobby.js").LobbyInstance;
 const FrontendEventMessage = require("./frontend_event_message.js").FrontendEventMessage;
 const BackendEventMessage = require("./backend_event_message.js").BackendEventMessage;
 const GamesConfig = require('./games_config.js');
@@ -29,11 +28,11 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
     console.log('New client connected');
     //          for Bots 
     // if (process.env.START_MODE === 'bots_auto_join') {
-    //     require('./lobby.js').LobbyBotSocketListener(io, socket);
+    //     require('./lobby/lobby.js').LobbyBotSocketListener(io, socket);
     // } else {
-    //     require('./lobby.js').LobbyDefaultSocketListener(io, socket);
+    //     require('./lobby/lobby.js').LobbyDefaultSocketListener(io, socket);
     // }
-    require('./lobby.js').LobbyDefaultSocketListener(io, socket);
+    require('./lobby/lobby.js').LobbyDefaultSocketListener(io, socket);
 
     socket.on(FrontendEventMessage.TIME_IN_LOBBY, (experimentID) => {
         // Sanity check
@@ -84,7 +83,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         prolificID = prolificID.toString();
         console.log(prolificID);
         console.log(choices);
-        Game1.recordPlayerChoices(prolificID, choices);
+        GameOne.recordPlayerChoices(prolificID, choices);
 
         // if everyone has confirmed or timer has reached 0
         const computeBonus = lobby.areCoPlayersReady(prolificID) || zeroTime <= 0;
@@ -113,7 +112,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
 
             // Compute bonuses for all players
             console.log("Computing bonuses");
-            const turnResults = Game1.computeResults(roomName);
+            const turnResults = GameOne.computeResults(roomName);
             const turnNum = lobby.getRoomTurnNum(roomName);
             allIDs.forEach((currPlayerID) => {
                 let currPlayer = room.getPlayerWithID(currPlayerID);
@@ -124,9 +123,9 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
             io.in(roomName).emit(BackendEventMessage.GAME_ONE_ROUND_RESULT, turnResults.allPlayersResults, turnResults.tripleBonuses, 25,
                 turnResults.doubleBonuses, 15);
 
-            if (Game1.isGameOneDone(room)) {
+            if (GameOne.isGameOneDone(room)) {
                 // Proceed to game 2
-                let finalResults = Game1.getWinnersAndLosers(roomName);
+                let finalResults = GameOne.getWinnersAndLosers(roomName);
                 io.in(roomName).emit(BackendEventMessage.END_GAME_ONE, finalResults[0], finalResults[1], turnResults.doubleBonuses.length, turnResults.tripleBonuses.length);
                 room.advanceToGameTwo();
             } else {
@@ -158,7 +157,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
             room.players.forEach((player) => {
                 if (player.isBot) {
                     let bot = player;
-                    let botAllocation = Game2.generateBotAllocation();
+                    let botAllocation = GameTwo.generateBotAllocation();
                     bot.recordAllocation(botAllocation[0], botAllocation[1], botAllocation[2]); // compete, keep, invest
                     DB_API.saveAllocationToDB(experimentID, bot.prolificID, botAllocation[1], botAllocation[2], botAllocation[0], investPayoff, competePayoff, room.turnNum, true);
                 }
@@ -167,7 +166,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
             let allocation = room.getTeamAllocationAtCurrentTurn();
             io.in(room.name).emit(BackendEventMessage.END_GAME_TWO_ROUND, competePayoff, investPayoff, allocation[0].allocationAsArray, allocation[1].allocationAsArray);
 
-            if (Game2.isGameTwoDone(room)) {
+            if (GameTwo.isGameTwoDone(room)) {
                 io.in(room.name).emit(BackendEventMessage.END_GAME_TWO);
 
                 // marker for the previously final result computation part
@@ -185,7 +184,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         console.log("Results for: " + playerProlificID);
         // Grant bonus to Game 1 winners
         let room = lobby.getRoomByRoomName(experimentID);
-        let group = Game1.getWinnersAndLosers(room.roomName);
+        let group = GameOne.getWinnersAndLosers(room.roomName);
         let winners = group[0];
         let gameOneResult = false;
         let gameOneBonus = 0;
