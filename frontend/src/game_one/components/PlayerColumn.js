@@ -32,6 +32,7 @@ function PlayerColumn(props) {
         disabled={props.disabled}
         selectedIndex={props.selectedIndex}
         windowWidth={props.windowWidth}
+        frontendIndex={props.frontendIndex}
       />
     </animated.div>
   );

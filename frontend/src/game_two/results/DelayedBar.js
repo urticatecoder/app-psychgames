@@ -34,21 +34,22 @@ const styles = {
     position: "relative",
     borderRadius: 20,
     width: "80px",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#0066ff",
     display: "inline-block",
     marginLeft: ".75vw",
   },
-  reduceDiv: {
+  textDivWrapper: {
     position: "relative",
     marginTop: "30px",
     borderRadius: 20,
     height: "25px",
     width: "100px",
-    backgroundColor: "#ff645c",
+    backgroundColor: "#002984",
   },
-  reduceTextDiv: {
+  textDiv: {
     position: "relative",
     top: "3px",
+    color: '#ffffff'
   },
 };
 
@@ -78,7 +79,7 @@ function DelayedBar(props) {
     setToHeight(props.tokens);
   }, props.delay);
 
-  let background = getBackgroundColor(props.resource);
+  let background = getBackgroundColor(props.resource + 'Bar');
   let marginL = getMarginL(props.resource, props.group, props.windowWidth) + 'px';
 
   return (
@@ -94,10 +95,10 @@ function DelayedBar(props) {
       />
 
       <div
-        className={classes.reduceDiv}
-        style={{ backgroundColor: background, marginLeft: marginL }}
+        className={classes.textDivWrapper}
+        style={{marginLeft: marginL }}
       >
-        <div className={classes.reduceTextDiv}>
+        <div className={classes.textDiv}>
           {props.resource + COLON_SPACE + props.tokens}
         </div>
       </div>

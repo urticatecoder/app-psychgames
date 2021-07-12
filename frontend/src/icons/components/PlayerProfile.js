@@ -12,7 +12,7 @@ const LABEL = 'label'
 function PlayerProfile(props) {
     return(
         <div>
-        {getImage(props.player, props.selectedIndex)}
+        {getImage(props.player, props.selectedIndex, props.frontendIndex)}
         </div>
     )
 }
