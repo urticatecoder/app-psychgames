@@ -26,6 +26,7 @@ const styles = {
     borderRadius: "8px",
     alignItems: "center",
     fontSize: "15px",
+    backgroundColor: "#002984"
   },
 };
 

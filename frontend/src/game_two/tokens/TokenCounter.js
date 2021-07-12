@@ -1,6 +1,6 @@
 import { Box, Typography, withStyles } from '@material-ui/core';
 import React from 'react';
-import Token from './money-bag.png'
+import Token from './tokens.png'
 import Variants from "../../util/common_constants/stylings/Variants";
 
 const IMAGE_HEIGHT = '45vh';
@@ -20,7 +20,7 @@ const styles = ({
       position: 'absolute',
       top: '25px',
       left: '62vw',
-      backgroundColor: '#757de8',
+      backgroundColor: '#0066ff',
       height: '85px',
       width: '15vw',
       borderRadius: '20px',

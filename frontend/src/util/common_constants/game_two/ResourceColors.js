@@ -5,7 +5,7 @@
  */
 const ResourceColors = {
   DARK: '#002984',
-  LIGHT: '#757de8',
+  LIGHT: '#0066ff',
   DEFAULT: "#dbd4c1",
 };
 

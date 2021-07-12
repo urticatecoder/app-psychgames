@@ -31,6 +31,9 @@ const TRIANGLE_LABEL = "Triangle";
  */
 
 const PlayerInfo = {
+  image0: Leaves,
+  name0: LEAVES_ID,
+  label0: LEAVES_LABEL,
   image1: Triangle,
   name1: TRIANGLE_ID,
   label1: TRIANGLE_LABEL,
@@ -43,9 +46,6 @@ const PlayerInfo = {
   image4: Headset,
   name4: HEADSET_ID,
   label4: HEADSET_LABEL,
-  image5: Leaves,
-  name5: LEAVES_ID,
-  label5: LEAVES_LABEL,
 };
 
 export default PlayerInfo;

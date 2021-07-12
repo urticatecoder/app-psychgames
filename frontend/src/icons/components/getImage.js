@@ -8,8 +8,11 @@ const NAME = 'name';
 const IMAGE_HEIGHT = '85vh';
 const IMAGE_WIDTH = '85vw';
 
-function getImage(playerNumber, selectedIndex) {
-    if (playerNumber > 0) {
+function getImage(playerNumber, selectedIndex, frontendIndex) {
+  if (playerNumber != frontendIndex) {
+    if (playerNumber > frontendIndex) {
+      playerNumber -= 1
+    } 
       return (
         <GameImage
           image={PlayerImages[IMAGE + playerNumber]}

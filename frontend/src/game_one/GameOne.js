@@ -140,7 +140,7 @@ function GameOne(props) {
 
   useEffect(() => {
     socket.on(END_TURN_WEBSOCKET, (heights, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
-      reIndexHeights(heights, props.backendIndex);
+      reIndexHeights(heights, props.backendIndex, props.frontendIndex);
       setShowWaitingDiv(HIDE_DIV)
       let posAfterTriple = handleTripleBonuses(
           tripleBonuses,
@@ -273,7 +273,8 @@ function GameOne(props) {
               triples,
               disabledPlayers,
               props.selectedIndex,
-              props.windowWidth
+              props.windowWidth,
+              props.frontendIndex
             );
           })}
         </Grid>
@@ -315,7 +316,7 @@ function pauseSubmitButton(animationPause, setDisableButton) {
   }, animationPause);
 }
 
-function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID, doubles, triples, disabledPlayers, selectedIndex, windowWidth) {
+function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, playerIDs, myID, doubles, triples, disabledPlayers, selectedIndex, windowWidth, frontendIndex) {
   return (
     <Grid item>
       <PlayerColumn
@@ -327,7 +328,8 @@ function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooM
             setSelectedSelf,
             setTooManySelections,
             playerIDs,
-            myID
+            myID,
+            frontendIndex
           )
         }
         selected={selected[playerNumber]}
@@ -339,6 +341,7 @@ function getColumn(playerNumber, selected, setSelected, setSelectedSelf, setTooM
         disabled={disabledPlayers[playerNumber]}
         selectedIndex={selectedIndex}
         windowWidth={windowWidth}
+        frontendIndex={frontendIndex}
       />
     </Grid>
   );
@@ -370,8 +373,6 @@ function markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, dela
 }
 
 function handleDoubleBonuses(doubleArray, doubleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setDoubles, animationOffset, setBonusType, setOpenBonusShower) {
-  console.log('original heights');
-  console.log(originalHeights);
   let oldHeights = originalHeights.slice(0);
   let newHeights;
   for (let i = 0; i < doubleArray.length; i++) {
@@ -408,14 +409,11 @@ function updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights) {
   console.log(setNewHeights);
 }
 
-function reIndexHeights(heights, backendIndex) {
-  console.log('reindexing');
-  console.log(heights);
-  console.log(backendIndex);
+// We want to take the backend heights and move the main player's height to his frontend index.
+function reIndexHeights(heights, backendIndex, frontendIndex) {
   let myHeight = heights[backendIndex];
-  console.log(myHeight);
   heights.splice(backendIndex, 1);
-  heights.unshift(myHeight);
+  heights.splice(frontendIndex, 0, myHeight)
 }
 
 function clearBonusArray(setBonus, delay) {
@@ -453,8 +451,8 @@ function createPlayerArray(height) {
   return heights;
 }
 
-function selectPlayer(player, selected, setSelected, setSelectedSelf, setTooManySelections, playerIDs, myID) {
-  if (playerIDs[player] == myID || player == 0) {
+function selectPlayer(player, selected, setSelected, setSelectedSelf, setTooManySelections, playerIDs, myID, frontendIndex) {
+  if (playerIDs[player] == myID || player == frontendIndex) {
     setSelectedSelf(SELECTED_SELF);
     return;
   }

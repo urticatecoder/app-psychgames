@@ -26,7 +26,7 @@ const styles = {
     top: "30vh",
     marginTop: '55px',
     left: "5vw",
-    backgroundColor: "#757de8",
+    backgroundColor: "#0066ff",
     height: "200px",
     borderRadius: "20px",
     alignItems: "center",

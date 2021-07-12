@@ -94,7 +94,7 @@ function StartTimer(props) {
 
     socket.on(ROOM_FULL_WEBSOCKET, (allPlayers) => {
       console.log(allPlayers)
-      reIndexPlayers(code, allPlayers, props.setBackendIndex);
+      reIndexPlayers(code, allPlayers, props.setBackendIndex, props.setFrontendIndex);
       setAllLoginCodes(allPlayers);
     });
 
@@ -164,13 +164,14 @@ function StartTimer(props) {
   );
 }
 
-function reIndexPlayers(myLoginCode, allLoginCodes, setBackendIndex) {
-  let myIndex = allLoginCodes.indexOf(myLoginCode);
-  setBackendIndex(myIndex);
-  allLoginCodes.splice(myIndex, 1);
-  allLoginCodes.unshift(myLoginCode);
-  console.log('new codes');
-  console.log(allLoginCodes)
+// The backend index is the index that the backend sends to 
+function reIndexPlayers(myLoginCode, allLoginCodes, setBackendIndex, setFrontendIndex) {
+  let backendIndex = allLoginCodes.indexOf(myLoginCode);
+  setBackendIndex(backendIndex);
+  let frontendIndex = Math.floor(Math.random() * 6)
+  setFrontendIndex(frontendIndex)
+  allLoginCodes.splice(backendIndex, 1);
+  allLoginCodes.splice(frontendIndex, 0, myLoginCode)
 }
 
 function checkForReset(resetter, setResetter, setTime, timeLeft) {

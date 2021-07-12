@@ -68,6 +68,7 @@ function VerticalPlayerGroup(props) {
               props.players[FIRST_PLAYER_INDEX],
               props.allLoginCodes,
               props.selectedIndex,
+              props.frontendIndex
           )}
           </div>
           <div className={classes.imageDiv} style={{marginTop: margin}}>
@@ -75,6 +76,7 @@ function VerticalPlayerGroup(props) {
               props.players[SECOND_PLAYER_INDEX],
               props.allLoginCodes,
               props.selectedIndex,
+              props.frontendIndex
             )}
           </div>
           <div className={classes.imageDiv} style={{marginTop: margin}}>
@@ -82,6 +84,7 @@ function VerticalPlayerGroup(props) {
               props.players[THIRD_PLAYER_INDEX],
               props.allLoginCodes,
               props.selectedIndex,
+              props.frontendIndex
             )}
           </div>
         </div>
@@ -128,10 +131,10 @@ function getMarginTop(windowHeight) {
   else return '6.5vh';
 }
 
-function getFormattedImage(code, allLoginCodes, selectedIndex) {
+function getFormattedImage(code, allLoginCodes, selectedIndex, frontendIndex) {
   let codeIndex = allLoginCodes.indexOf(code);
   return (
-    <PlayerProfile player={codeIndex} selectedIndex={selectedIndex}/>
+    <PlayerProfile player={codeIndex} selectedIndex={selectedIndex} frontendIndex={frontendIndex}/>
   );
 }
 

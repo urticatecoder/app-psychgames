@@ -40,7 +40,7 @@ function PlayerButton(props) {
   const { classes } = props
   let background = getBackgroundColor(props.double, props.triple, props.selected);
 
-  if (props.player == 0 && !props.double && !props.triple) {
+  if (props.player == props.frontendIndex && !props.double && !props.triple) {
     background = SELECTED
   }
   
@@ -52,14 +52,22 @@ function PlayerButton(props) {
     >
       <div
       className={classes.glowingDiv} style={{boxShadow: boxShadowStyle}}>
-        {getImage(props.player, props.selectedIndex, props.windowWidth)}
+        {getImage(props.player, props.selectedIndex, props.windowWidth, props.frontendIndex)}
       </div>
     </div>
   );
 }
 
-function getImage(playerNumber, selectedIndex, windowWidth) {
-  if (playerNumber > 0) {
+function getImage(playerNumber, selectedIndex, windowWidth, frontendIndex) {
+  console.log('frontend index: ' + frontendIndex)
+   // Adjust the player number if it is greater than the frontendIndex.
+   // Ex: player 4 is player 3, if frontend index is 1. This is done to map to avatars correctly.
+  
+  // If the player is the main player, return the selection.
+  if (playerNumber != frontendIndex) {
+    if (playerNumber > frontendIndex) {
+      playerNumber -= 1
+    } 
     return (
       <GameImage
         image={PlayerImages[IMAGE + playerNumber]}
