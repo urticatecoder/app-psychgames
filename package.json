@@ -24,8 +24,8 @@
     "yarn": "^1.22.10"
   },
   "scripts": {
-    "start": "START_MODE=bots_auto_join node backend/server.js",
-    "start-with-bots": "START_MODE=bots_auto_join node backend/server.js",
+    "start": "START_MODE=bots_auto_join node backend/src/server.js",
+    "start-with-bots": "START_MODE=bots_auto_join node backend/src/server.js",
     "test": "mocha backend/test/*.js",
     "test-coverage": "nyc --reporter=text-summary mocha backend/test/*.js",
     "heroku-postbuild": "cd frontend && npm install && npm run build"

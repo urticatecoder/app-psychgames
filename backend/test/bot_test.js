@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const BOT = require('../bot');
+const BOT = require('../src/lobby/bot');
 
 describe("Bot choice test", function () {
     it("determineBotChoice works correctly", function (done) {

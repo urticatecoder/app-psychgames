@@ -1,10 +1,10 @@
 const ObjectID = require("bson-objectid");
-const DB_API = require('./db/db_api');
-const FrontendEventMessage = require("./frontend_event_message.js").FrontendEventMessage;
-const BackendEventMessage = require("./backend_event_message.js").BackendEventMessage;
+const DB_API = require('../db/db_api');
+const FrontendEventMessage = require("../frontend_event_message.js").FrontendEventMessage;
+const BackendEventMessage = require("../backend_event_message.js").BackendEventMessage;
 const Room = require("./room.js").Room;
 const Player = require("./player.js").Player;
-const ROOM_WAIT_TIME_MILLISECONDS = require("./games_config.js").ROOM_WAIT_TIME_MILLISECONDS;
+const ROOM_WAIT_TIME_MILLISECONDS = require("../games_config.js").ROOM_WAIT_TIME_MILLISECONDS;
 
 /**
  * @author Xi Pu
@@ -64,10 +64,10 @@ class Lobby {
     getRoomOfPlayer(prolificID) {
         console.log('getRoomOfPlayer:');
         if (!this.playerToRoom.has(prolificID)) {
-            console.log('Room not found');
+            // console.log('Room not found');
             return undefined;
         }
-        console.log('Room found');
+        // console.log('Room found');
         // console.log(this.playerToRoom);
         let room = this.playerToRoom.get(prolificID);
         // console.log(room);
@@ -100,13 +100,11 @@ class Lobby {
         if (this.playerToRoom.has(prolificID)) {
             throw `Duplicated prolificID ${prolificID} found`;
         }
-        console.log('findRoomForPlayerToJoin: ');
-        console.log(prolificID);
         let player = new Player(prolificID);
         this.currRoom.addPlayer(player);
         this.playerToRoom.set(prolificID, this.currRoom);
         this.roomToPlayer.get(this.currRoom.name.toString()).push(player);
-        console.log('Room ' + this.currRoom.name + ' mapped to player ' + prolificID);
+        // console.log('Room ' + this.currRoom.name + ' mapped to player ' + prolificID);
         return this.currRoom.name;
     }
 

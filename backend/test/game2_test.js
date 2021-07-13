@@ -1,13 +1,13 @@
 const expect = require('chai').expect;
-const Room = require('../room.js').Room;
-const Player = require('../player.js').Player;
-const GAME_TWO_MAX_TURN_NUM = require('../games_config.js').GAME_TWO_MAX_TURN_NUM;
-const Game2 = require('../game2.js');
-const Allocation = require('../allocation.js').Allocation;
+const Room = require('../src/lobby/room.js').Room;
+const Player = require('../src/lobby/player.js').Player;
+const GAME_TWO_MAX_TURN_NUM = require('../src/games_config.js').GAME_TWO_MAX_TURN_NUM;
+const GameTwo = require('../src/game_two/game_two.js');
+const Allocation = require('../src/game_two/allocation.js').Allocation;
 
 describe('Test game 2 backend logic', () => {
     it('generateCompeteAndInvestPayoff works correctly', (done) => {
-        let payoff = Game2.generateCompeteAndInvestPayoff();
+        let payoff = GameTwo.generateCompeteAndInvestPayoff();
         expect(payoff.length).to.equal(GAME_TWO_MAX_TURN_NUM);
         done();
     });
@@ -25,7 +25,7 @@ describe('Test game 2 backend logic', () => {
         done();
     });
     it('generateBotAllocation works', (done) => {
-        let allocation = Game2.generateBotAllocation();
+        let allocation = GameTwo.generateBotAllocation();
         let sum = 0;
         allocation.forEach((n) => sum += n);
         expect(sum).to.equal(10);
@@ -37,9 +37,9 @@ describe('Test game 2 backend logic', () => {
         for (let i = 1; i < GAME_TWO_MAX_TURN_NUM - 1; i++) {
             room.advanceToNextTurn();
         }
-        expect(Game2.isGameTwoDone(room)).to.equal(false);
+        expect(GameTwo.isGameTwoDone(room)).to.equal(false);
         room.advanceToNextTurn();
-        expect(Game2.isGameTwoDone(room)).to.equal(true);
+        expect(GameTwo.isGameTwoDone(room)).to.equal(true);
         done();
     });
     it('recordAllocation/getAllocation works', (done) => {

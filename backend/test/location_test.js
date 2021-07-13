@@ -1,10 +1,10 @@
 const assert = require('assert');
-const Room = require('../room.js').Room;
-const Player = require('../player.js').Player;
+const Room = require('../src/lobby/room.js').Room;
+const Player = require('../src/lobby/player.js').Player;
 const { getResultsByProlificId, calculateAllDoubleBonuses, calculateAllTripleBonuses,
     countTripleBonuses, countDoubleBonuses, countSingleChoices,
     calculateResults, zeroSumResults, getSinglePairMap,
-    getDoublePairMap, getTriplePairMap, isGameOneDone } = require('../game1.js');
+    getDoublePairMap, getTriplePairMap, isGameOneDone } = require('../src/game_one/game_one.js');
 
 
 describe('Location sending and calculation', () => {

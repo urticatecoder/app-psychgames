@@ -6,9 +6,8 @@
 const express = require("express");
 const app = express();
 const path = require('path');
-const lobby = require('./lobby.js').LobbyInstance;
+const lobby = require('./lobby/lobby.js').LobbyInstance;
 const DB_API = require('./db/db_api');
-const Game2 = require('./game2');
 const GamesConfig = require('./games_config.js');
 
 app.use(function (req, res, next) {
@@ -139,7 +138,6 @@ app.get("/verification-code", (req, res) => {
     } else {
         res.status(200).send({
             'code': 'CS408',
-            // 'payment': Game2.calculateFinalPaymentForAPlayer(prolificID, lobby)
         }
         );
     }

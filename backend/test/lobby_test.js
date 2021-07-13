@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
-const Lobby = require('../lobby.js').Lobby;
-const Room = require('../room.js').Room;
-const Player = require('../player.js').Player;
+const Lobby = require('../src/lobby/lobby.js').Lobby;
+const Room = require('../src/lobby/room.js').Room;
+const Player = require('../src/lobby/player.js').Player;
 
 describe('Test Lobby class functionality', () => {
     it('Lobby class has the correct initial values', (done) => {
