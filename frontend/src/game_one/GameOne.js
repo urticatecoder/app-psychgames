@@ -140,7 +140,9 @@ function GameOne(props) {
 
   useEffect(() => {
     socket.on(END_TURN_WEBSOCKET, (heights, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
+      console.log('TURN RESULTS: ' + heights)
       reIndexHeights(heights, props.backendIndex, props.frontendIndex);
+      console.log('REINDEXED TURN RESULTS: ' + heights)
       setShowWaitingDiv(HIDE_DIV)
       let posAfterTriple = handleTripleBonuses(
           tripleBonuses,
