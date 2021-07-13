@@ -70,7 +70,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         // console.log(playerProlific + ' in room ' + experimentID + ' is inactive');
     });
 
-    socket.on(FrontendEventMessage.CONFIRM_GAME_ONE, (experimentID, prolificID, choices, zeroTime) => {
+    socket.on(FrontendEventMessage.CONFIRM_GAME_ONE, (experimentID, prolificID, choices, remainingTime) => {
         // Sanity check
         if (experimentID == -1) {
             return;
@@ -86,13 +86,13 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         GameOne.recordPlayerChoices(prolificID, choices);
 
         // if everyone has confirmed or timer has reached 0
-        const computeBonus = lobby.areCoPlayersReady(prolificID) || zeroTime <= 0;
+        const computeBonus = lobby.areCoPlayersReady(prolificID) || remainingTime <= 0;
         if (computeBonus) { // all human players have confirmed choices
             // Check player passivity
-            console.log("Checking player passivity");
+            // console.log("Checking player passivity for game 1");
             const room = lobby.getRoomByRoomName(experimentID);
             const roomName = room.roomName;
-            const players = lobby.getAllPlayersInRoom(roomName);
+            const players = room.players;
             players.forEach((currPlayer) => {
                 if (!currPlayer.isBot && !lobby.hasPlayerConfirmedChoices(currPlayer.prolificID)) {
                     io.in(roomName).emit(BackendEventMessage.CHECK_PASSIVITY, currPlayer.prolificID);
@@ -135,7 +135,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         }
     });
 
-    socket.on(FrontendEventMessage.CONFIRM_GAME_TWO, (experimentID, prolificID, competeToken, keepToken, investToken) => {
+    socket.on(FrontendEventMessage.CONFIRM_GAME_TWO, (experimentID, prolificID, competeToken, keepToken, investToken, remainingTime) => {
         // Sanity check
         if (experimentID == -1) {
             return;
@@ -151,8 +151,21 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         let competePayoff = payoff[0], investPayoff = payoff[1];
         DB_API.saveAllocationToDB(experimentID, prolificID, keepToken, investToken, competeToken, investPayoff, competePayoff, room.turnNum, player.isBot);
 
-        if (room.hasEveryoneConfirmed()) { // all players have confirmed choices
+        let computeBonus = room.hasEveryoneConfirmed() || remainingTime <= 0;
+
+        if (computeBonus) { // all players have confirmed choices or timer has run out
             // console.log(room.turnNum - 1);
+            // Check player passivity
+            // console.log("Checking player passivity for game 2");
+            const room = lobby.getRoomByRoomName(experimentID);
+            const roomName = room.roomName;
+            room.players.forEach((currPlayer) => {
+                if (!currPlayer.isBot && !lobby.hasPlayerConfirmedChoices(currPlayer.prolificID)) {
+                    io.in(roomName).emit(BackendEventMessage.CHECK_PASSIVITY, currPlayer.prolificID);
+                    currPlayer.setIsBot(true);
+                }
+            });
+
             // generate bot choices
             room.players.forEach((player) => {
                 if (player.isBot) {
