@@ -68,7 +68,7 @@ function App() {
         
         <Router>
           <PassiveAlert loginCode={loginCode} experimentID={experimentID}/>
-          {/* <RefreshChecker loginCode={loginCode}/> */}
+          <RefreshChecker loginCode={loginCode}/>
           <WindowChecker setWindowWidth={setWindowWidth} setWindowHeight={setWindowHeight}/>
           <BrowserChecker/>
           <Rules showRules={showRules} setShowRules={setShowRules}/>
