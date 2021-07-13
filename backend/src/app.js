@@ -17,7 +17,7 @@ app.use(function (req, res, next) {
 });
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, '/../frontend/build')));
+app.use(express.static(path.join(__dirname, '/../../frontend/build')));
 
 app.get("/test_api", (req, res) => {
     res.status(200).send("Hello World!");
