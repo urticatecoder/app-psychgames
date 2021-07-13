@@ -59,7 +59,6 @@ function PlayerButton(props) {
 }
 
 function getImage(playerNumber, selectedIndex, windowWidth, frontendIndex) {
-  console.log('frontend index: ' + frontendIndex)
    // Adjust the player number if it is greater than the frontendIndex.
    // Ex: player 4 is player 3, if frontend index is 1. This is done to map to avatars correctly.
   

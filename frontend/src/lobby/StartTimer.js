@@ -46,6 +46,10 @@ const DONT_RESET = false;
 const RECIEVED_TIME = true;
 const HAVE_NOT_RECIEVED_TIME = false;
 
+// Move random index out of function declaration to ensure this does not change on rerenders.
+let frontendIndex = Math.floor(Math.random() * 6)
+let reindexed = false
+
 const styles = {
   welcomeInstruction: {
     marginTop: "15vh",
@@ -84,7 +88,6 @@ function StartTimer(props) {
     }
 
     if (props.experimentID != -1) {
-      console.log('CALLED')
       socket.emit(TIME_IN_LOBBY_WEBSOCKET, props.experimentID);
     }
 
@@ -93,9 +96,11 @@ function StartTimer(props) {
     });
 
     socket.on(ROOM_FULL_WEBSOCKET, (allPlayers) => {
-      console.log(allPlayers)
-      reIndexPlayers(code, allPlayers, props.setBackendIndex, props.setFrontendIndex);
-      setAllLoginCodes(allPlayers);
+      if (!reindexed) {
+        reIndexPlayers(code, allPlayers, props.setBackendIndex, props.setFrontendIndex);
+        setAllLoginCodes(allPlayers);
+        reindexed = true
+      }
     });
 
     socket.on(PEOPLE_IN_ROOM_WEBSOCKET, (experimentID, numOfPlayers) => {
@@ -120,7 +125,7 @@ function StartTimer(props) {
       socket.off(PEOPLE_IN_ROOM_WEBSOCKET);
       socket.off(PLAYER_TIME_WEBSOCKET);
     };
-  }, [code, setAllLoginCodes]);
+  }, []);
 
   return (
     <div className={classes.startTimer} id={DIV_ID}>
@@ -166,12 +171,16 @@ function StartTimer(props) {
 
 // The backend index is the index that the backend sends to 
 function reIndexPlayers(myLoginCode, allLoginCodes, setBackendIndex, setFrontendIndex) {
+  console.log('\n REINDEXING PLAYERS \n')
   let backendIndex = allLoginCodes.indexOf(myLoginCode);
   setBackendIndex(backendIndex);
-  let frontendIndex = Math.floor(Math.random() * 6)
   setFrontendIndex(frontendIndex)
+  console.log('Backend Index: ' + backendIndex)
+  console.log('Frontend Index: ' + frontendIndex)
+  console.log('Beginning: ' + allLoginCodes)
   allLoginCodes.splice(backendIndex, 1);
   allLoginCodes.splice(frontendIndex, 0, myLoginCode)
+  console.log('End: ' + allLoginCodes)
 }
 
 function checkForReset(resetter, setResetter, setTime, timeLeft) {
