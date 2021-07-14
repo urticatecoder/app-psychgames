@@ -14,7 +14,7 @@ const GameOneTurnResult = require('./game_one_turn_result.js').GameOneTurnResult
 
 function computeResults(roomName) {
     const room = lobby.getRoomByRoomName(roomName);
-    const players = lobby.getAllPlayersInRoom(roomName);
+    const players = room.players;
     const allIDs = players.map(player => player.prolificID);
     let singleChoiceCounts = countSingleChoices(room);
     // emit list of lists of prolificIDs and integers of how much to move up for triple bonuses

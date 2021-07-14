@@ -48,12 +48,8 @@ class Lobby {
         return room.turnNum;
     }
 
-    getAllPlayersInRoom(roomName) {
-        return this.roomToPlayer.get(roomName.toString());
-    }
-
     getAllPlayersIDs(roomName) {
-        return this.getAllPlayersInRoom(roomName.toString()).map(player => player.prolificID);
+        return this.roomToPlayer.get(roomName.toString()).map(player => player.prolificID);
     }
 
     getRoomNameOfPlayer(prolificID) {
