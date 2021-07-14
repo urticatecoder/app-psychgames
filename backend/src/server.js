@@ -89,7 +89,6 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         const computeBonus = lobby.areCoPlayersReady(prolificID) || remainingTime <= 0;
         if (computeBonus) { // all human players have confirmed choices
             // Check player passivity
-            // console.log("Checking player passivity for game 1");
             const room = lobby.getRoomByRoomName(experimentID);
             const roomName = room.roomName;
             const players = room.players;
@@ -156,7 +155,6 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         if (computeBonus) { // all players have confirmed choices or timer has run out
             // console.log(room.turnNum - 1);
             // Check player passivity
-            // console.log("Checking player passivity for game 2");
             const room = lobby.getRoomByRoomName(experimentID);
             const roomName = room.roomName;
             room.players.forEach((currPlayer) => {
