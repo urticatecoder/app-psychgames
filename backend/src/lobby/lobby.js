@@ -17,7 +17,6 @@ const ROOM_WAIT_TIME_MILLISECONDS = require("../games_config.js").ROOM_WAIT_TIME
  */
 class Lobby {
     currRoom; // new players who enter the lobby will join this room
-    passive = new Map(); // stores proflic IDs of passive players
     rooms = new Map(); // stores a mapping of room name to room instance
     playerToRoom = new Map(); // stores a mapping of a player's id to the corresponding room instance
     roomToPlayer = new Map(); // stores a mapping of a room instance to an array of players who are in this room
@@ -84,10 +83,8 @@ class Lobby {
     hasPlayerConfirmedChoices(prolificID) {
         let room = this.getRoomOfPlayer(prolificID);
         if (!room.hasPlayerConfirmed(prolificID)) {
-            this.passive.set(prolificID, true);
             return false;
         } else {
-            this.passive.delete(prolificID);
             return true;
         }
     }
