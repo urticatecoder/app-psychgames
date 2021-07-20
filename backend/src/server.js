@@ -236,7 +236,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         console.log('compete amount: ' + competeAmount + ' invest amount: ' + investAmount + ' keep amount: ' + keepAmount);
 
         DB_API.savePlayerRecieptTurnNum(experimentID, playerProlificID, payOutTurnNum + 1);
-        socket.emit(BackendEventMessage.SEND_FINAL_RESULTS, gameOneResult, gameOneBonus, payOutTurnNum + 1, keepTokens, keepAmount, investTokens, investRate, investAmount, competeTokens, competeRate, competeAmount);
+        socket.emit(BackendEventMessage.SEND_FINAL_RESULTS, gameOneResult, gameOneBonus, payOutTurnNum + 1, keepTokens, keepAmount, investTokens, investRate, investAmount, competeTokens, competeRate, competeAmount, GamesConfig.PROLIFIC_COMPLETION_CODE);
     });
 
 
