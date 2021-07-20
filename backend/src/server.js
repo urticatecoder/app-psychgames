@@ -16,6 +16,7 @@ let mongoose = require('mongoose');
 
 /* use the test database if no environment variables named MONGODB_URI are passed in */
 let mongoDB_URI = process.env.MONGODB_URI || 'mongodb+srv://xipu:k5q1J0qhOrVb1F65@cluster0.jcnnf.azure.mongodb.net/psych_game?retryWrites=true&w=majority'
+console.log('Connecting to mongoDB_URI: ' + mongoDB_URI);
 mongoose.connect(mongoDB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -55,7 +56,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         prolificID = prolificID.toString();
         player = lobby.getPlayerByProlificID(prolificID);
         player.setIsBot(false);
-        // console.log(playerProlific + ' in room ' + experimentID + ' is active');
+        console.log(playerProlific + ' in room ' + experimentID + ' is active');
     });
 
     socket.on(FrontendEventMessage.INACTIVE_PLAYER, (experimentID, prolificID) => {
@@ -67,7 +68,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         prolificID = prolificID.toString();
         player = lobby.getPlayerByProlificID(prolificID);
         player.setIsBot(true);
-        // console.log(playerProlific + ' in room ' + experimentID + ' is inactive');
+        console.log(playerProlific + ' in room ' + experimentID + ' is inactive');
     });
 
     socket.on(FrontendEventMessage.CONFIRM_GAME_ONE, (experimentID, prolificID, choices, remainingTime) => {
@@ -93,9 +94,13 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
             const roomName = room.roomName;
             const players = room.players;
             players.forEach((currPlayer) => {
+                console.log("Checking player " + currPlayer.prolificID);
                 if (!currPlayer.isBot && !lobby.hasPlayerConfirmedChoices(currPlayer.prolificID)) {
+                    console.log("Choice not yet confirmed");
                     io.in(roomName).emit(BackendEventMessage.CHECK_PASSIVITY, currPlayer.prolificID);
                     currPlayer.setIsBot(true);
+                } else {
+                    console.log("Choice confirmed");
                 }
             });
 
@@ -104,6 +109,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
             const allIDs = players.map(player => player.prolificID);
             players.forEach((currPlayer) => {
                 if (currPlayer.isBot) {
+                    console.log("Bot choice for " + currPlayer.prolificID);
                     const botChoices = BOT.generateBotChoices(currPlayer.prolificID, allIDs);
                     currPlayer.recordChoices(botChoices);
                 }
@@ -119,6 +125,8 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
                     turnNum, currPlayer.isBot, currPlayer.oldLocation, currPlayer.newLocation,
                     turnResults.singleChoiceCounts.get(currPlayerID), turnResults.doubleBonusCounts.get(currPlayerID), turnResults.tripleBonusCounts.get(currPlayerID));
             });
+            console.log("Game one turn result: ");
+            console.log(turnResults.allPlayersResults);
             io.in(roomName).emit(BackendEventMessage.GAME_ONE_ROUND_RESULT, turnResults.allPlayersResults, turnResults.tripleBonuses, 25,
                 turnResults.doubleBonuses, 15);
 
@@ -175,11 +183,12 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
             });
 
             let allocation = room.getTeamAllocationAtCurrentTurn();
+            console.log("Game two turn result: ");
+            console.log(allocation);
             io.in(room.name).emit(BackendEventMessage.END_GAME_TWO_ROUND, competePayoff, investPayoff, allocation[0].allocationAsArray, allocation[1].allocationAsArray);
 
             if (GameTwo.isGameTwoDone(room)) {
                 io.in(room.name).emit(BackendEventMessage.END_GAME_TWO);
-
                 // marker for the previously final result computation part
             } else {
                 room.advanceToNextTurn();
@@ -227,7 +236,7 @@ io.on(FrontendEventMessage.CONNECTION, socket => {
         console.log('compete amount: ' + competeAmount + ' invest amount: ' + investAmount + ' keep amount: ' + keepAmount);
 
         DB_API.savePlayerRecieptTurnNum(experimentID, playerProlificID, payOutTurnNum + 1);
-        socket.emit(BackendEventMessage.SEND_FINAL_RESULTS, gameOneResult, gameOneBonus, payOutTurnNum + 1, keepTokens, keepAmount, investTokens, investRate, investAmount, competeTokens, competeRate, competeAmount);
+        socket.emit(BackendEventMessage.SEND_FINAL_RESULTS, gameOneResult, gameOneBonus, payOutTurnNum + 1, keepTokens, keepAmount, investTokens, investRate, investAmount, competeTokens, competeRate, competeAmount, GamesConfig.PROLIFIC_COMPLETION_CODE);
     });
 
 
