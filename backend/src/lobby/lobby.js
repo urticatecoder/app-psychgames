@@ -57,7 +57,7 @@ class Lobby {
     }
 
     getRoomOfPlayer(prolificID) {
-        console.log('getRoomOfPlayer:');
+        console.log('getRoomOfPlayer: ' + prolificID);
         if (!this.playerToRoom.has(prolificID)) {
             // console.log('Room not found');
             return undefined;

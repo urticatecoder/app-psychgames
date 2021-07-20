@@ -97,7 +97,7 @@ class Room {
   }
 
   hasEveryoneConfirmed() {
-    let result = true
+    let result = true;
     this.players.forEach((p) => {
       if (!p.isBot && !p.hasConfirmedAtTurn(this.gameNum, this.turnNum)) {
         result = false;
