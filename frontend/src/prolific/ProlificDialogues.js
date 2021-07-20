@@ -18,8 +18,8 @@ const VALID_PLAYER = true;
 
 const CLOSE_DIALOGUE = false;
 
-const VALID_PREFIX = "Your prolific code is as follows: ";
-const VALID_SUBMESSAGE = "Please return to Prolific and enter the following code to recieve the amount listed for your compensation. Note that this code is case sensitive. Thanks again for participating!";
+const VALID_PREFIX = "Here is your Prolific Completion Code: ";
+const VALID_SUBMESSAGE = "Please return to the survey to provide feedback and return this code to Prolific to get your payment!";
 
 
 const INVALID_TITLE = "You did not complete the experiment, so you will not be compensated.";
