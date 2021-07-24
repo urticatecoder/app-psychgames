@@ -49,6 +49,8 @@ function ProlificDialogues(props) {
         }
       }).then((res) => {
         if (res.data.success == 'true') {
+          console.log('RESPONSE')
+          console.log(res)
           setProlificCode(res.data.code);
           setValidPlayer(VALID_PLAYER);
         }
