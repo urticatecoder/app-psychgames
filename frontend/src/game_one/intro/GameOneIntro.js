@@ -10,14 +10,13 @@ const SHOW_BUTTON = true;
 
 const TIMER_MESSAGE = "Game One";
 const NO_PAUSE = 0;
-const GAME_ONE_TUTORIAL_FILEPATH = "Tutorials/GameOnePlaceholder.mp4";
-const GAME_ONE_TUTORIAL_LENGTH = 5000;
+const GAME_ONE_TUTORIAL_FILEPATH = "Tutorials/GameOne.mp4";
+const GAME_ONE_TUTORIAL_LENGTH = 104000;
 const GAME_ONE_TUTORIAL_TEXT = "Game 1 Tutorial";
 const DEFAULT_ANIMATION_PAUSE = 1000;
 const BUTTON_MESSAGE = "See My Avatar";
 const FULL_DIV = "fullDiv";
-// const INTRO_LENGTH = 65999;
-const INTRO_LENGTH = 11000;
+const INTRO_LENGTH = 114000;
 const GAME_ONE_ROUTE = '/game-one';
 /**
  * Component used to visualize the lobby where users wait to enter the game.
@@ -38,7 +37,7 @@ function GameOneIntro(props) {
   useEffect(() => {
     setTimeout(() => {
       setShowTutorial(HIDE_TUTORIAL);
-    }, 500 + GAME_ONE_TUTORIAL_LENGTH); // reset this to DEFAULT_ANIMATION + GAME_ONE_TUTORIAL_LENGTH + DEFAULT_ANIMATION
+    }, DEFAULT_ANIMATION_PAUSE + GAME_ONE_TUTORIAL_LENGTH + DEFAULT_ANIMATION_PAUSE); // reset this to DEFAULT_ANIMATION + GAME_ONE_TUTORIAL_LENGTH + DEFAULT_ANIMATION
   });
 
   return (

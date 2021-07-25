@@ -196,10 +196,10 @@ app.get("/validate", (req, res) => {
     });
     // Only check if sufficient rounds of game2 has been completed since game1's terminating conditions does not depend solely on the number of rounds
     if (gameTwoTurns >= GamesConfig.GAME_TWO_MAX_TURN_NUM) {
-        res.status(200).send({ "success": "true", "code": `ProlificID ${prolificID}` });
+        res.status(200).send({ "success": "true", "code": `${GamesConfig.PROLIFIC_COMPLETION_CODE}` });
     }
     else {
-        res.status(200).send({ "sucess": "false", "code": `ProlificID ${prolificID}` });
+        res.status(200).send({ "sucess": "false", "code": `${prolificID}` });
     }
 
     // if (room === undefined) {

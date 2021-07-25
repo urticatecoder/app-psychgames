@@ -8,7 +8,7 @@ const IS_CHROME = true;
 const IS_NOT_CHROME = false;
 
 const DIALOG_TITLE = "Oh no! You are using an unsupported web browser!";
-const DIALOG_CONTENT = "Please use Googe's Chrome web broswer to acess the site. Thanks!";
+const DIALOG_CONTENT = "Please use Google's Chrome web broswer to acess the site. Thanks!";
 
   /**
    * Function used to get formatting for buttons and bars associated with resources used in Game Two.
