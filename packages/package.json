@@ -1,0 +1,13 @@
+{
+  "packageManager": "yarn@3.0.1",
+  "author": "Dominic Martinez",
+  "private": true,
+  "license": "UNLICENSED",
+  "workspaces": [
+    "*"
+  ],
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1",
+    "@tsconfig/svelte": "^2.0.1"
+  }
+}

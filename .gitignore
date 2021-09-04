@@ -1,6 +1,11 @@
-.idea
-.vscode
-node_modules
-.nyc_output
 .DS_Store
-Searching
+
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
+node_modules

@@ -1,5 +1,0 @@
-You can move between players with the arrow keys and select them using the spacebar key. 
-When you are done choosing these recipient players, you may click ‘End Turn’ to confirm your selection.
-If you decide to choose none of them, you may just click ‘End Turn’. 
-Pressing the space key over an already-selected player will reverse the decision.
-The turn will conclude once every player in the room clicks on the ‘End Turn’ button.

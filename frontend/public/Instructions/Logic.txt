@@ -1,5 +1,0 @@
-On every turn you will be able to choose up to two other players.
-At the end of the turn the players you have chosen will move a little closer to the top. 
-The other players will similarly be choosing others to travel upwards. 
-The turn ends when everyone has finished choosing. 
-Bonuses (described later) will also be awarded at the end of the turn.

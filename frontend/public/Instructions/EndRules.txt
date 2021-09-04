@@ -1,5 +1,0 @@
-The game ends when either of the following happens first:
-3 players reach the top.
-3 players reach the bottom.
-100 turns have elapsed and no set of three players has reached the top or bottom regions. 
-In this case, the three players closest to the top will earn the $9 prize.

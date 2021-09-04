@@ -1,3 +1,0 @@
-The goal is to coordinate with other players in order to reach the top before other players do.
-In this game, you will be designated a shape and player number (e.g., P1, P2, etc.).
-Each shape and number corresponds to a player in the room. Note that everyone’s symbols and positions are randomized on each computer.

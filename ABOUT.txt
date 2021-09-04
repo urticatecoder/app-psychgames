@@ -1,3 +1,0 @@
-Rise to the Top Project Description
-
-This is a closed-source website developed by Nick DeCapite, Eric Doppelt, Xi Pu, and Ping Ping Kitsiriboon. This was developed as a project in the CSC408 (Delivering Softwware) class offerred by Duke University in the fall of 2020. Dr. Mel win Khaw, Dr. Scott Huettel, and Dr. Rachel Kranton are the intended clients and owners of this app.

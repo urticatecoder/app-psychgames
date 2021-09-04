@@ -1,8 +1,0 @@
-Welcome to the study!
-
-In this first part, you and the other participants will be playing a game in
-where your goal is to reach the top of the screen. 
-
-By the end of the game:
-1) All participants will be assigned to either Group 1 or 2.
-2) The group that enters the top boundary first (like crossing a finish line) will earn a $9 bonus.
