@@ -1,4 +1,4 @@
-export namespace UserData {
+export namespace PlayerData {
   /**
    * A v4 RFC4122 UUID; don't confuse this with user entered
    * data like prolific/lobby keys
@@ -8,31 +8,37 @@ export namespace UserData {
   export type ID = string;
 
   /**
-   * The session data sent to the server upon initial negotiation
+   * A request to enter an existing game with an ID
    */
-  export type SessionRequest = {
+  export type EnterGameRequest = {
     id?: string;
   };
 
   /**
-   * The session response; if not in game, the client must negotiate
-   * entry into a new game. If the session is in game, the client will
+   * The enter response; if not in game, the client must negotiate
+   * entry into a new game. If the ID is in game, the client will
    * recieve a state update message; make sure you have your subscription
-   * set up *before* you initiate a session
+   * set up *before* you request game entry.
    */
-  export type SessionResponse = {
+  export type EnterGameResponse = {
     inGame: boolean;
   };
 
   /**
    * Request entry into a game, optionally with metadata like prolific/lobby ids
    * The server will matchmake appropriately and then send a state update message
+   *
+   * If the game request is accepted, the client will recieve a state update message;
+   * make sure you have your subscriptionset up *before* you initiate a session
    */
-  export type GameRequest = {
+  export type StartGameRequest = {
     playerMetadata?: PlayerMetadata;
   };
 
-  export type GameResponse = {
+  /**
+   * A new ID assigned for the requested game.
+   */
+  export type StartGameResponse = {
     id: string;
   };
 

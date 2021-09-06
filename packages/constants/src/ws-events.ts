@@ -1,7 +1,7 @@
 export namespace ServerEvents {
-  export const Action = "action";
-  export const InitializeSession = "initialize-session";
-  export const GameRequest = "game-request";
+  export const GameAction = "game-action";
+  export const EnterGame = "enter-game";
+  export const StartGame = "start-game";
 }
 
 export namespace AppEvents {
