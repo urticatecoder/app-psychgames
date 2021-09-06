@@ -21,7 +21,6 @@ export namespace UserData {
    * set up *before* you initiate a session
    */
   export type SessionResponse = {
-    id: string;
     inGame: boolean;
   };
 
@@ -31,6 +30,10 @@ export namespace UserData {
    */
   export type GameRequest = {
     playerMetadata?: PlayerMetadata;
+  };
+
+  export type GameResponse = {
+    id: string;
   };
 
   export type PlayerMetadata = {
