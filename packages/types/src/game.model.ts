@@ -18,18 +18,14 @@ export namespace GameData {
    */
   export type Player = {
     id: string;
-
-    /**
-     * TODO: implement interface for avatar data
-     */
-    avatar: string;
+    avatar: number;
   };
 }
 
 export namespace Lobby {
   export type PlayerData = {
     type: "lobby--player-data";
-    avatar: string;
+    avatar: number;
   };
 
   export type State = {
