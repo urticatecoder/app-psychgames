@@ -40,12 +40,13 @@ export namespace GameOne {
    */
   export type Turn = {
     type: "game-one--turn";
+    round: number;
     playersSelected: GameData.Player[];
   };
 
   export type State = {
     type: "game-one";
-    turnNumber: number;
+    round: number;
     roundStartTime: Date | string;
     roundEndTime: Date | string;
     playerPositions: PlayerPosition[];
@@ -66,6 +67,7 @@ export namespace GameTwo {
    */
   export type Turn = {
     type: "game-two--turn";
+    round: number;
     tokenDistribution: TokenDistribution;
   };
 
@@ -78,7 +80,7 @@ export namespace GameTwo {
   export type State = {
     type: "game-two";
     team: "winners" | "losers";
-    turnNumber: number;
+    round: number;
     roundStartTime: Date | string;
     roundEndTime: Date | string;
     investCoefficient: number;
