@@ -71,6 +71,6 @@
     "testEnvironment": "node"
   },
   "volta": {
-    "node": "16.8.0"
+    "extends": "../../package.json"
   }
 }
