@@ -1,6 +1,6 @@
 export namespace GameModel {
   /**
-   * Combination of game actionc; this is only used to represent
+   * Combination of game actions; this is only used to represent
    * game-dependent action data. Game-independent action data
    * is included in { Action }, which is what the client should use.
    */
