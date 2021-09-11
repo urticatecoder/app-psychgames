@@ -5,10 +5,10 @@ import { GameTwo } from "./game-two";
 import { Lobby } from "./lobby";
 
 export class Game {
-  gameCount: number;
-  currentGame: GameInstance;
   players: Set<PlayerModel.ID>;
 
+  private gameCount: number;
+  private currentGame: GameInstance;
   private games: GameConstructor[] = [Lobby, GameOne, GameTwo];
 
   constructor(private room: Socket, private endGame: () => void) {
