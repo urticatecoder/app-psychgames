@@ -1,6 +1,5 @@
 import { PLAYERS_PER_GAME } from "@dpg/constants";
 import { GameModel, PlayerModel } from "@dpg/types";
-import { Socket } from "socket.io";
 import { v4 as uuidv4 } from "uuid";
 import { GameOne } from "./game-one";
 import { GameTwo } from "./game-two";
@@ -13,7 +12,7 @@ export class Game {
   private currentGame: GameInstance;
   private games: GameConstructor[] = [Lobby, GameOne, GameTwo];
 
-  constructor(private room: Socket, private endGame: () => void) {
+  constructor(private emitState: () => void, private endGame: () => void) {
     this.players = new Set();
     /**
      * Generate player IDs
@@ -50,19 +49,15 @@ export class Game {
     this.gameCount = 0;
     this.currentGame = new this.games[this.gameCount](
       this.goToNextGame,
-      this.room
+      this.emitState
     );
   }
 
   goToNextGame(): void {
-    if (this.gameCount == this.games.length - 1) {
-      this.endGame();
-    }
-
     this.gameCount++;
     this.currentGame = new this.games[this.gameCount](
       this.goToNextGame,
-      this.room
+      this.emitState
     );
   }
 
@@ -92,7 +87,10 @@ export class GameError extends Error {
 }
 
 export interface GameConstructor {
-  new (goToNextGame: () => void, room: Socket): GameInstance;
+  new (
+    emitState: (state: GameModel.GameState) => void,
+    goToNextGame: () => void
+  ): GameInstance;
 }
 
 export interface GameInstance {
