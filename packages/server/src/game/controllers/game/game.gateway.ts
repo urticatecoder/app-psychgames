@@ -31,7 +31,7 @@ export class GameGateway {
    * The client may skip this check if they know they don't have
    * a valid ID.
    */
-  @SubscribeMessage(ServerEvents.EnterGame)
+  @SubscribeMessage(ServerEvents.ENTER_GAME)
   handleInitializeSession(
     @MessageBody() data: PlayerModel.EnterGameRequest
   ): PlayerModel.EnterGameResponse {
@@ -60,7 +60,7 @@ export class GameGateway {
    *
    * TODO: define error interface so client can give descriptive errors
    */
-  @SubscribeMessage(ServerEvents.StartGame)
+  @SubscribeMessage(ServerEvents.START_GAME)
   handleGameRequest(
     @MessageBody() data: PlayerModel.StartGameRequest
   ): PlayerModel.StartGameResponse {
@@ -77,11 +77,15 @@ export class GameGateway {
    *        <acknowledgement>
    * Client <---------------- Server
    *
+   * If the action is invalid:
+   *        <error object>
+   * Client <------------- Server
+   *
    * Notice there is no synchronous state update; the server can send
    * a state update at any point but is under no obligation to do so
    * directly after recieving a game action.
    */
-  @SubscribeMessage(ServerEvents.GameAction)
+  @SubscribeMessage(ServerEvents.GAME_ACTION)
   handleAction(@MessageBody() data: GameModel.Action): void {
     throw new Error("Method not implemented.");
   }
