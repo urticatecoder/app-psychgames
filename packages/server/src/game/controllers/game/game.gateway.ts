@@ -4,7 +4,7 @@ import {
   WebSocketGateway,
 } from "@nestjs/websockets";
 import { ServerEvents } from "@dpg/constants";
-import { GameData, PlayerData } from "@dpg/types";
+import { GameModel, PlayerModel } from "@dpg/types";
 
 @WebSocketGateway({ namespace: "game" })
 export class GameGateway {
@@ -33,8 +33,8 @@ export class GameGateway {
    */
   @SubscribeMessage(ServerEvents.EnterGame)
   handleInitializeSession(
-    @MessageBody() data: PlayerData.EnterGameRequest
-  ): PlayerData.EnterGameResponse {
+    @MessageBody() data: PlayerModel.EnterGameRequest
+  ): PlayerModel.EnterGameResponse {
     throw new Error("Method not implemented.");
   }
 
@@ -62,8 +62,8 @@ export class GameGateway {
    */
   @SubscribeMessage(ServerEvents.StartGame)
   handleGameRequest(
-    @MessageBody() data: PlayerData.StartGameRequest
-  ): PlayerData.StartGameResponse {
+    @MessageBody() data: PlayerModel.StartGameRequest
+  ): PlayerModel.StartGameResponse {
     throw new Error("Method not implemented.");
   }
 
@@ -82,7 +82,7 @@ export class GameGateway {
    * directly after recieving a game action.
    */
   @SubscribeMessage(ServerEvents.GameAction)
-  handleAction(@MessageBody() data: GameData.Action): void {
+  handleAction(@MessageBody() data: GameModel.Action): void {
     throw new Error("Method not implemented.");
   }
 }

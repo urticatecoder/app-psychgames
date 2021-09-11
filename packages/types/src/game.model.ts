@@ -1,5 +1,25 @@
-export namespace GameData {
-  export type Action = Lobby.PlayerData | GameOne.Turn | GameTwo.Turn;
+export namespace GameModel {
+  /**
+   * Combination of game actionc; this is only used to represent
+   * game-dependent action data. Game-independent action data
+   * is included in { Action }, which is what the client should use.
+   */
+  export type GameAction =
+    | LobbyModel.PlayerData
+    | GameOneModel.Turn
+    | GameTwoModel.Turn;
+
+  /**
+   * Combination of game states; this is only used to represent
+   * game-dependent state. Game-independent state is included in
+   * { State }, which is what the client should use.
+   */
+  export type GameState =
+    | LobbyModel.State
+    | GameOneModel.State
+    | GameTwoModel.State;
+
+  export type Action = GameAction;
 
   /**
    * Encodes the entire game state; the client should render
@@ -9,7 +29,7 @@ export namespace GameData {
    * the server has agency to modify round times, number of rounds,
    * and all other variables at any point.
    */
-  export type State = (Lobby.State | GameOne.State | GameTwo.State) & {
+  export type State = GameState & {
     timestamp: Date | string;
   };
 
@@ -22,7 +42,7 @@ export namespace GameData {
   };
 }
 
-export namespace Lobby {
+export namespace LobbyModel {
   export type PlayerData = {
     type: "lobby--player-data";
     avatar: number;
@@ -34,14 +54,14 @@ export namespace Lobby {
   };
 }
 
-export namespace GameOne {
+export namespace GameOneModel {
   /**
    * Data submitted by client to register player turn
    */
   export type Turn = {
     type: "game-one--turn";
     round: number;
-    playersSelected: GameData.Player[];
+    playersSelected: GameModel.Player[];
   };
 
   export type State = {
@@ -53,7 +73,7 @@ export namespace GameOne {
   };
 
   export type PlayerPosition = {
-    player: GameData.Player;
+    player: GameModel.Player;
     position: number;
     previousTurnBonus?: TurnBonus;
   };
@@ -61,7 +81,7 @@ export namespace GameOne {
   export type TurnBonus = "none" | "doublet" | "triplet";
 }
 
-export namespace GameTwo {
+export namespace GameTwoModel {
   /**
    * Data submitted by client to register player turn
    */

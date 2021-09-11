@@ -1,4 +1,4 @@
-export namespace PlayerData {
+export namespace PlayerModel {
   /**
    * A v4 RFC4122 UUID; don't confuse this with user entered
    * data like prolific/lobby keys
