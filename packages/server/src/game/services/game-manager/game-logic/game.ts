@@ -21,6 +21,10 @@ export class Game {
   }
 
   goToNextGame(): void {
+    if (this.gameCount == this.games.length - 1) {
+      this.endGame();
+    }
+
     this.gameCount++;
     this.currentGame = new this.games[this.gameCount](
       this.goToNextGame,
