@@ -49,6 +49,18 @@ export class GameManagerService {
     return playerID;
   }
 
+  /**
+   * Remove an *already disconnected* socket from game info.
+   * This method *does not* disconnect sockets and should only be called
+   * on disconnect.
+   * @param socketID
+   */
+  discardSocket(socketID: SocketID) {
+    for (const game of this.games) {
+      game.activePlayers.delete(socketID);
+    }
+  }
+
   private createGame(): ManagedGame {
     const gameID = uuidv4();
     const newGame = new ManagedGame(

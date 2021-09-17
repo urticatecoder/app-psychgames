@@ -3,6 +3,7 @@ import { GameModel, PlayerModel } from "@dpg/types";
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayDisconnect,
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
@@ -11,11 +12,15 @@ import { Server, Socket } from "socket.io";
 import { GameManagerService } from "./../../services/game-manager/game-manager.service";
 
 @WebSocketGateway({ namespace: "game" })
-export class GameGateway implements OnGatewayInit {
+export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
   constructor(private gameManager: GameManagerService) {}
 
   afterInit(server: Server) {
     this.gameManager.setServer(server);
+  }
+
+  handleDisconnect(socket: Socket) {
+    this.gameManager.discardSocket(socket.id);
   }
 
   /**
