@@ -1,10 +1,9 @@
-import { Server, Socket } from "socket.io";
-import { AppEvents, PLAYERS_PER_GAME } from "@dpg/constants";
+import { AppEvents } from "@dpg/constants";
 import { GameModel, PlayerModel } from "@dpg/types";
 import { Injectable } from "@nestjs/common";
+import { Server } from "socket.io";
 import { v4 as uuidv4 } from "uuid";
 import { Game } from "./game-logic/game";
-import { threadId } from "worker_threads";
 
 // TODO: test and clean up this mess; I was too tired on the first write
 type GameID = string;

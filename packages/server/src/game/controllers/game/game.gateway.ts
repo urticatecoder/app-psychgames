@@ -1,4 +1,5 @@
-import { GameManagerService } from "./../../services/game-manager/game-manager.service";
+import { ServerEvents } from "@dpg/constants";
+import { GameModel, PlayerModel } from "@dpg/types";
 import {
   ConnectedSocket,
   MessageBody,
@@ -6,9 +7,8 @@ import {
   SubscribeMessage,
   WebSocketGateway,
 } from "@nestjs/websockets";
-import { ServerEvents } from "@dpg/constants";
-import { GameModel, PlayerModel } from "@dpg/types";
 import { Server, Socket } from "socket.io";
+import { GameManagerService } from "./../../services/game-manager/game-manager.service";
 
 @WebSocketGateway({ namespace: "game" })
 export class GameGateway implements OnGatewayInit {
