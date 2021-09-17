@@ -3,6 +3,7 @@ import { GameModel, PlayerModel } from "@dpg/types";
 import { Injectable } from "@nestjs/common";
 import { Server } from "socket.io";
 import { v4 as uuidv4 } from "uuid";
+import { GameFactory } from "../game-factory/game-factory";
 import { Game } from "./game-logic/game";
 
 // TODO: test and clean up this mess; I was too tired on the first write
@@ -13,7 +14,7 @@ export class GameManagerService {
   private games: ManagedGame[];
   private server: Server | null;
 
-  constructor() {
+  constructor(private gameFactory: GameFactory) {
     this.games = [];
     this.server = null;
   }
@@ -64,7 +65,7 @@ export class GameManagerService {
   private createGame(): ManagedGame {
     const gameID = uuidv4();
     const newGame = new ManagedGame(
-      new Game(
+      this.gameFactory.create(
         (state: GameModel.State) => this.emitStateTo(gameID, state),
         () => this.endGame(gameID)
       ),
