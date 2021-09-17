@@ -87,6 +87,10 @@ export class GameManagerService {
     game.instance.submitAction(playerID, action);
   }
 
+  getGames(): ManagedGame[] {
+    return this.games;
+  }
+
   private endGame(gameID: GameID) {
     const game = this.games.find((game: ManagedGame) => game.id === gameID);
     if (!game) {
