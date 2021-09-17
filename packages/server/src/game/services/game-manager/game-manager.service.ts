@@ -88,9 +88,15 @@ export class GameManagerService {
   }
 
   private endGame(gameID: GameID) {
-    this.games = this.games.filter((game: ManagedGame) => {
-      game.id !== gameID;
-    });
+    const game = this.games.find((game: ManagedGame) => game.id === gameID);
+    if (!game) {
+      throw new Error(
+        `attempted to end game ${gameID} but game was not found.`
+      );
+    }
+
+    this.server?.in(gameID).disconnectSockets();
+    this.games = this.games.filter((game: ManagedGame) => game.id === gameID);
   }
 
   private emitStateTo(
