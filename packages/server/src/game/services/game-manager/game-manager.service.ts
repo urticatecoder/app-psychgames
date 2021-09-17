@@ -22,14 +22,14 @@ export class GameManagerService {
     this.server = server;
   }
 
-  attachToPlayer(socketID: SocketID, playerID: PlayerModel.ID): boolean {
+  attachPlayer(socketID: SocketID, playerID: PlayerModel.ID): boolean {
     const game = this.getPlayerGame(playerID);
     if (!game) return false;
     this.addPlayerToGame(socketID, playerID, game);
     return true;
   }
 
-  attachToGame(
+  attachSocket(
     socketID: SocketID,
     playerInfo?: PlayerModel.PlayerMetadata
   ): PlayerModel.ID {

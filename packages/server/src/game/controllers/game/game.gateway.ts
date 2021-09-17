@@ -57,10 +57,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
       };
     }
 
-    const ableToInitialize = this.gameManager.attachToPlayer(
-      socket.id,
-      data.id
-    );
+    const ableToInitialize = this.gameManager.attachPlayer(socket.id, data.id);
 
     return {
       inGame: ableToInitialize,
@@ -94,7 +91,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     @MessageBody() data: PlayerModel.StartGameRequest,
     @ConnectedSocket() socket: Socket
   ): PlayerModel.StartGameResponse {
-    const id = this.gameManager.attachToGame(socket.id, data.playerMetadata);
+    const id = this.gameManager.attachSocket(socket.id, data.playerMetadata);
 
     return { id };
   }
