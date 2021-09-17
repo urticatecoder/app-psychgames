@@ -1,19 +1,20 @@
 import { PLAYERS_PER_GAME } from "@dpg/constants";
 import { GameModel, PlayerModel } from "@dpg/types";
-import { v4 as uuidv4 } from "uuid";
 import { GameOne } from "./game-one";
 import { GameTwo } from "./game-two";
 import { Lobby } from "./lobby";
+import { v4 as uuidv4 } from "uuid";
 
 export class Game {
-  players: Set<PlayerModel.ID>;
-
   private gameCount: number;
   private currentGame: GameInstance;
   private games: GameConstructor[] = [Lobby, GameOne, GameTwo];
+  private players: Set<PlayerModel.ID>;
 
-  constructor(private emitState: () => void, private endGame: () => void) {
-    this.players = new Set();
+  constructor(
+    private emitState: (state: GameModel.State) => void,
+    private endGame: () => void
+  ) {
     /**
      * Generate player IDs
      *
@@ -42,23 +43,28 @@ export class Game {
      * We would probably only want to support player replacement during random
      * lobbies with no player metadata.
      */
+    this.players = new Set<PlayerModel.ID>();
     for (let i = 0; i < PLAYERS_PER_GAME; i++) {
       this.players.add(uuidv4());
     }
 
     this.gameCount = 0;
     this.currentGame = new this.games[this.gameCount](
-      this.goToNextGame,
-      this.emitState
+      (state: GameModel.GameState) => this.emitState(this.makeState(state)),
+      this.goToNextGame
     );
   }
 
-  goToNextGame(): void {
+  private goToNextGame(): void {
     this.gameCount++;
     this.currentGame = new this.games[this.gameCount](
-      this.goToNextGame,
-      this.emitState
+      (state: GameModel.GameState) => this.emitState(this.makeState(state)),
+      this.goToNextGame
     );
+  }
+
+  getPlayers(): Set<PlayerModel.ID> {
+    return this.players;
   }
 
   submitAction(playerID: PlayerModel.ID, action: GameModel.Action): void {
@@ -68,9 +74,17 @@ export class Game {
   }
 
   getState(): GameModel.State {
+    return this.makeState(this.currentGame.getState());
+  }
+
+  isJoinable(): boolean {
+    return this.gameCount === 0;
+  }
+
+  private makeState(gameState: GameModel.GameState) {
     const state: GameModel.State = {
       timestamp: new Date(),
-      ...this.currentGame.getState(),
+      ...gameState,
     };
 
     return state;

@@ -1,13 +1,23 @@
+import { GameManagerService } from "./../../services/game-manager/game-manager.service";
 import {
+  ConnectedSocket,
   MessageBody,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
 } from "@nestjs/websockets";
 import { ServerEvents } from "@dpg/constants";
 import { GameModel, PlayerModel } from "@dpg/types";
+import { Server, Socket } from "socket.io";
 
 @WebSocketGateway({ namespace: "game" })
-export class GameGateway {
+export class GameGateway implements OnGatewayInit {
+  constructor(private gameManager: GameManagerService) {}
+
+  afterInit(server: Server) {
+    this.gameManager.setServer(server);
+  }
+
   /**
    * Entering a game follows the following transaction:
    *
@@ -33,9 +43,23 @@ export class GameGateway {
    */
   @SubscribeMessage(ServerEvents.ENTER_GAME)
   handleInitializeSession(
-    @MessageBody() data: PlayerModel.EnterGameRequest
+    @MessageBody() data: PlayerModel.EnterGameRequest,
+    @ConnectedSocket() socket: Socket
   ): PlayerModel.EnterGameResponse {
-    throw new Error("Method not implemented.");
+    if (!data.id) {
+      return {
+        inGame: false,
+      };
+    }
+
+    const ableToInitialize = this.gameManager.attachToPlayer(
+      socket.id,
+      data.id
+    );
+
+    return {
+      inGame: ableToInitialize,
+    };
   }
 
   /**
@@ -62,9 +86,12 @@ export class GameGateway {
    */
   @SubscribeMessage(ServerEvents.START_GAME)
   handleGameRequest(
-    @MessageBody() data: PlayerModel.StartGameRequest
+    @MessageBody() data: PlayerModel.StartGameRequest,
+    @ConnectedSocket() socket: Socket
   ): PlayerModel.StartGameResponse {
-    throw new Error("Method not implemented.");
+    const id = this.gameManager.attachToGame(socket.id, data.playerMetadata);
+
+    return { id };
   }
 
   /**
@@ -86,7 +113,10 @@ export class GameGateway {
    * directly after recieving a game action.
    */
   @SubscribeMessage(ServerEvents.GAME_ACTION)
-  handleAction(@MessageBody() data: GameModel.Action): void {
-    throw new Error("Method not implemented.");
+  handleAction(
+    @MessageBody() data: GameModel.Action,
+    @ConnectedSocket() socket: Socket
+  ): void {
+    this.gameManager.submitAction(socket.id, data);
   }
 }
