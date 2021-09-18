@@ -100,7 +100,7 @@ export class GameManagerService {
     }
 
     this.server?.in(gameID).disconnectSockets();
-    this.games = this.games.filter((game: ManagedGame) => game.id === gameID);
+    this.games = this.games.filter((game: ManagedGame) => game.id !== gameID);
   }
 
   private emitStateTo(
