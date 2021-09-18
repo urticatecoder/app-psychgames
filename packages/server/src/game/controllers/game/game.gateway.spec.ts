@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { GameManagerService } from "src/game/services/game-manager/game-manager.service";
+import { GameManagerService } from "../../services/game-manager/game-manager.service";
 import { GameGateway } from "./game.gateway";
 
 // TODO: write tests
