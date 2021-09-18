@@ -144,7 +144,7 @@ export class GameManagerService {
 
   private findAvailablePlayerID(game: ManagedGame): PlayerModel.ID | undefined {
     for (const player of game.instance.getPlayers()) {
-      if (!game.activePlayers.has(player)) return player;
+      if (!game.activePlayers.hasR(player)) return player;
     }
     return undefined;
   }
@@ -154,13 +154,68 @@ class ManagedGame {
   instance: AGame;
   humanID: string;
   id: string;
-  activePlayers: Map<SocketID, PlayerModel.ID>;
+  activePlayers: OneToOneMap<SocketID, PlayerModel.ID>;
 
   constructor(game: AGame, id: string) {
     this.instance = game;
     this.id = id;
-    this.activePlayers = new Map();
+    this.activePlayers = new OneToOneMap();
     // TODO: create human-readable ids
     this.humanID = "";
+  }
+}
+
+class OneToOneMap<A, B> {
+  private aMap: Map<A, B>;
+  private bMap: Map<B, A>;
+
+  constructor() {
+    this.aMap = new Map();
+    this.bMap = new Map();
+  }
+
+  set(a: A, b: B) {
+    this.aMap.set(a, b);
+    this.bMap.set(b, a);
+  }
+
+  get(a: A): B | undefined {
+    return this.aMap.get(a);
+  }
+
+  getR(b: B): A | undefined {
+    return this.bMap.get(b);
+  }
+
+  has(a: A): boolean {
+    return this.aMap.has(a);
+  }
+
+  hasR(b: B): boolean {
+    return this.bMap.has(b);
+  }
+
+  delete(a: A): boolean {
+    const b = this.aMap.get(a);
+    if (!b) return false;
+    this.aMap.delete(a);
+    this.bMap.delete(b);
+    return true;
+  }
+
+  deleteR(b: B): boolean {
+    const a = this.bMap.get(b);
+    if (!a) return false;
+    this.bMap.delete(b);
+    this.aMap.delete(a);
+    return true;
+  }
+
+  keys(): IterableIterator<A> {
+    return this.aMap.keys();
+  }
+
+  values(): IterableIterator<B> {
+    return this.bMap.keys();
   }
 }
