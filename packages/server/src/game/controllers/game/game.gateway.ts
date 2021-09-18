@@ -11,6 +11,7 @@ import {
 import { Server, Socket } from "socket.io";
 import { GameManagerService } from "./../../services/game-manager/game-manager.service";
 
+// TODO: validate requests
 @WebSocketGateway({ namespace: "game" })
 export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
   constructor(private gameManager: GameManagerService) {}
