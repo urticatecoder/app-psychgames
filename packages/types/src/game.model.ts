@@ -51,8 +51,7 @@ export namespace LobbyModel {
   export type State = {
     type: "lobby";
     lobbyEndTime: Date | string;
-    avatar: number;
-    // TODO: do we want to see other people in lobby?
+    players: GameModel.Player[];
   };
 }
 
