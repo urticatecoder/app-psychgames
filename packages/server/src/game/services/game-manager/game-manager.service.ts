@@ -91,7 +91,7 @@ export class GameManagerService {
     return this.games;
   }
 
-  private endGame(gameID: GameID) {
+  endGame(gameID: GameID) {
     const game = this.games.find((game: ManagedGame) => game.id === gameID);
     if (!game) {
       throw new Error(
@@ -150,7 +150,7 @@ export class GameManagerService {
   }
 }
 
-class ManagedGame {
+export class ManagedGame {
   instance: AGame;
   humanID: string;
   id: string;
