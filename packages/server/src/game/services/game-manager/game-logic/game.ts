@@ -5,7 +5,19 @@ import { GameOne } from "./game-one";
 import { GameTwo } from "./game-two";
 import { Lobby } from "./lobby";
 
-export class Game {
+export abstract class AGame {
+  abstract getPlayers(): Set<PlayerModel.ID>;
+
+  abstract submitAction(
+    playerID: PlayerModel.ID,
+    action: GameModel.Action
+  ): void;
+
+  abstract getState(): GameModel.State;
+
+  abstract isJoinable(): boolean;
+}
+export class Game extends AGame {
   private gameCount: number;
   private currentGame: GameInstance;
   private games: GameConstructor[] = [Lobby, GameOne, GameTwo];
@@ -15,6 +27,7 @@ export class Game {
     private emitState: (state: GameModel.State) => void,
     private endGame: () => void
   ) {
+    super();
     /**
      * Generate player IDs
      *

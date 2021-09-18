@@ -4,7 +4,7 @@ import { Injectable } from "@nestjs/common";
 import { Server } from "socket.io";
 import { v4 as uuidv4 } from "uuid";
 import { GameFactory } from "../game-factory/game-factory";
-import { Game } from "./game-logic/game";
+import { AGame } from "./game-logic/game";
 
 // TODO: test and clean up this mess; I was too tired on the first write
 type GameID = string;
@@ -151,12 +151,12 @@ export class GameManagerService {
 }
 
 class ManagedGame {
-  instance: Game;
+  instance: AGame;
   humanID: string;
   id: string;
   activePlayers: Map<SocketID, PlayerModel.ID>;
 
-  constructor(game: Game, id: string) {
+  constructor(game: AGame, id: string) {
     this.instance = game;
     this.id = id;
     this.activePlayers = new Map();
