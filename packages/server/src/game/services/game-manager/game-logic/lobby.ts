@@ -1,13 +1,8 @@
 import { LobbyModel } from "@dpg/types";
-import { GameInstance } from "./game";
+import { AGame, GameInstance } from "./game";
 
 export class Lobby implements GameInstance {
-  constructor(
-    private emitState: (state: LobbyModel.State) => void,
-    private goToNextGame: () => void
-  ) {
-    throw new Error("Method not implemented.");
-  }
+  constructor(private game: AGame) {}
 
   submitAction(playerID: string, action: LobbyModel.PlayerData): void {
     throw new Error("Method not implemented.");

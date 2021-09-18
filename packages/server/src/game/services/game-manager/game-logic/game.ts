@@ -16,7 +16,12 @@ export abstract class AGame {
   abstract getState(): GameModel.State;
 
   abstract isJoinable(): boolean;
+
+  abstract emitGameState(gameState: GameModel.GameState): void;
+
+  abstract goToNextGame(): void;
 }
+
 export class Game extends AGame {
   private gameCount: number;
   private currentGame: GameInstance;
@@ -25,7 +30,7 @@ export class Game extends AGame {
 
   constructor(
     private emitState: (state: GameModel.State) => void,
-    private endGame: () => void
+    private destroyGame: () => void
   ) {
     super();
     /**
@@ -62,18 +67,17 @@ export class Game extends AGame {
     }
 
     this.gameCount = 0;
-    this.currentGame = new this.games[this.gameCount](
-      (state: GameModel.GameState) => this.emitState(this.makeState(state)),
-      this.goToNextGame
-    );
+    this.currentGame = new this.games[this.gameCount](this);
   }
 
-  private goToNextGame(): void {
+  goToNextGame(): void {
     this.gameCount++;
-    this.currentGame = new this.games[this.gameCount](
-      (state: GameModel.GameState) => this.emitState(this.makeState(state)),
-      this.goToNextGame
-    );
+    if (this.gameCount === this.games.length) {
+      this.endGame();
+      return;
+    }
+
+    this.currentGame = new this.games[this.gameCount](this);
   }
 
   getPlayers(): Set<PlayerModel.ID> {
@@ -90,8 +94,17 @@ export class Game extends AGame {
     return this.makeState(this.currentGame.getState());
   }
 
+  emitGameState(gameState: GameModel.GameState) {
+    this.emitState(this.makeState(gameState));
+  }
+
   isJoinable(): boolean {
     return this.gameCount === 0;
+  }
+
+  private endGame() {
+    // TODO: do cleanup, database stuff, etc. here
+    this.destroyGame();
   }
 
   private makeState(gameState: GameModel.GameState) {
@@ -114,10 +127,7 @@ export class GameError extends Error {
 }
 
 export interface GameConstructor {
-  new (
-    emitState: (state: GameModel.GameState) => void,
-    goToNextGame: () => void
-  ): GameInstance;
+  new (game: AGame): GameInstance;
 }
 
 export interface GameInstance {

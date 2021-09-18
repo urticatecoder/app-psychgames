@@ -1,11 +1,8 @@
 import { GameTwoModel } from "@dpg/types";
-import { GameInstance } from "./game";
+import { AGame, GameInstance } from "./game";
 
 export class GameTwo implements GameInstance {
-  constructor(
-    private emitState: (state: GameTwoModel.State) => void,
-    private goToNextGame: () => void
-  ) {
+  constructor(private game: AGame) {
     throw new Error("Method not implemented.");
   }
 
