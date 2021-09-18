@@ -1,7 +1,7 @@
 import { GameModel } from "@dpg/types";
 import { Injectable } from "@nestjs/common";
-import { Game } from "../game-manager/game-logic/game";
-import { GameFactory } from "./game-factory";
+import { Game } from "../game-manager/game-logic/game.js";
+import { GameFactory } from "./game-factory.js";
 
 @Injectable()
 export class GameFactoryService extends GameFactory {

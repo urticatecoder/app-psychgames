@@ -1,3 +1,3 @@
-export * from "./src/ws-events";
-export * from "./src/players";
-export * from "./src/server";
+export * from "./src/ws-events.js";
+export * from "./src/players.js";
+export * from "./src/server.js";

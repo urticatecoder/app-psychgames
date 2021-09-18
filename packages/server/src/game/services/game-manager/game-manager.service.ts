@@ -3,8 +3,8 @@ import { GameModel, PlayerModel } from "@dpg/types";
 import { Injectable } from "@nestjs/common";
 import { Server } from "socket.io";
 import { v4 as uuidv4 } from "uuid";
-import { GameFactory } from "../game-factory/game-factory";
-import { AGame } from "./game-logic/game";
+import { GameFactory } from "../game-factory/game-factory.js";
+import { AGame } from "./game-logic/game.js";
 
 // TODO: test and clean up this mess; I was too tired on the first write
 type GameID = string;

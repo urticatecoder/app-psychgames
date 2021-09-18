@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { GameManagerService } from "../../services/game-manager/game-manager.service";
-import { GameGateway } from "./game.gateway";
+import { GameManagerService } from "../../services/game-manager/game-manager.service.js";
+import { GameGateway } from "./game.gateway.js";
 
 // TODO: write tests
 describe("GameGateway", () => {
@@ -8,8 +8,7 @@ describe("GameGateway", () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [GameGateway],
-      providers: [GameManagerService],
+      providers: [GameManagerService, GameGateway],
     }).compile();
 
     gateway = module.get<GameGateway>(GameGateway);

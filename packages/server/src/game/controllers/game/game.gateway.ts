@@ -9,7 +9,7 @@ import {
   WebSocketGateway,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
-import { GameManagerService } from "./../../services/game-manager/game-manager.service";
+import { GameManagerService } from "./../../services/game-manager/game-manager.service.js";
 
 // TODO: validate requests
 @WebSocketGateway({ namespace: "game" })

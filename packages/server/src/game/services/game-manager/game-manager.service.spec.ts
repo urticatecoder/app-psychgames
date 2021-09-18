@@ -1,9 +1,9 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { Server as RawServer } from "socket.io";
-import { GameManagerService, ManagedGame } from "./game-manager.service";
-import { GameFactory } from "../game-factory/game-factory";
 import { AppEvents, PLAYERS_PER_GAME } from "@dpg/constants";
 import { GameModel } from "@dpg/types";
+import { Test, TestingModule } from "@nestjs/testing";
+import { Server as RawServer } from "socket.io";
+import { GameFactory } from "../game-factory/game-factory.js";
+import { GameManagerService, ManagedGame } from "./game-manager.service.js";
 
 const serverMocks: any = {
   to: jest.fn(() => serverMocks),

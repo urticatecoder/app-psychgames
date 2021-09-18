@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "type": "module",
   "exports": {
-    ".": "./index.ts",
+    ".": "./dist/index.js",
     "./package.json": "./package.json"
   },
   "files": [
@@ -18,14 +18,6 @@
     "build": "rm -rf ./dist && tsc --build tsconfig.json",
     "lint": "prettier --check .",
     "format": "prettier --write ."
-  },
-  "publishConfig": {
-    "access": "restricted",
-    "exports": {
-      ".": "./dist/index.d.ts",
-      "./package.json": "./package.json"
-    },
-    "main": "./dist/index.d.ts"
   },
   "devDependencies": {
     "prettier": "^2.3.2",

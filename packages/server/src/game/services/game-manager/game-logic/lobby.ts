@@ -1,6 +1,6 @@
 import { LOBBY_TIME_SECONDS } from "@dpg/constants";
 import { GameModel, LobbyModel, PlayerModel } from "@dpg/types";
-import { AGame, GameInstance } from "./game";
+import { AGame, GameInstance } from "./game.js";
 
 export class Lobby implements GameInstance {
   private state: LobbyModel.State;

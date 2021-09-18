@@ -1,12 +1,12 @@
 import { Module } from "@nestjs/common";
-import { GameGateway } from "./controllers/game/game.gateway";
-import { GameFactory } from "./services/game-factory/game-factory";
-import { GameFactoryService } from "./services/game-factory/game-factory.service";
-import { GameManagerService } from "./services/game-manager/game-manager.service";
+import { GameGateway } from "./controllers/game/game.gateway.js";
+import { GameFactory } from "./services/game-factory/game-factory.js";
+import { GameFactoryService } from "./services/game-factory/game-factory.service.js";
+import { GameManagerService } from "./services/game-manager/game-manager.service.js";
 
 @Module({
-  controllers: [GameGateway],
   providers: [
+    GameGateway,
     GameManagerService,
     {
       provide: GameFactory,

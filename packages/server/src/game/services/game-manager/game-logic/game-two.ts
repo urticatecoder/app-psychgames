@@ -1,5 +1,5 @@
 import { GameTwoModel } from "@dpg/types";
-import { AGame, GameInstance } from "./game";
+import { AGame, GameInstance } from "./game.js";
 
 export class GameTwo implements GameInstance {
   constructor(private game: AGame) {

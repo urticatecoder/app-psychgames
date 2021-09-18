@@ -1,9 +1,9 @@
 import { PLAYERS_PER_GAME } from "@dpg/constants";
 import { GameModel, PlayerModel } from "@dpg/types";
 import { v4 as uuidv4 } from "uuid";
-import { GameOne } from "./game-one";
-import { GameTwo } from "./game-two";
-import { Lobby } from "./lobby";
+import { GameOne } from "./game-one.js";
+import { GameTwo } from "./game-two.js";
+import { Lobby } from "./lobby.js";
 
 export abstract class AGame {
   abstract getPlayers(): Set<PlayerModel.ID>;
