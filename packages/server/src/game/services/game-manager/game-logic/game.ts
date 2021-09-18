@@ -17,7 +17,7 @@ export abstract class AGame {
 
   abstract isJoinable(): boolean;
 
-  abstract emitGameState(gameState: GameModel.GameState): void;
+  abstract emitState(): void;
 
   abstract goToNextGame(): void;
 }
@@ -29,7 +29,7 @@ export class Game extends AGame {
   private players: Set<PlayerModel.ID>;
 
   constructor(
-    private emitState: (state: GameModel.State) => void,
+    private emitStateCallback: (state: GameModel.State) => void,
     private destroyGame: () => void
   ) {
     super();
@@ -94,8 +94,8 @@ export class Game extends AGame {
     return this.makeState(this.currentGame.getState());
   }
 
-  emitGameState(gameState: GameModel.GameState) {
-    this.emitState(this.makeState(gameState));
+  emitState() {
+    this.emitStateCallback(this.getState());
   }
 
   isJoinable(): boolean {
