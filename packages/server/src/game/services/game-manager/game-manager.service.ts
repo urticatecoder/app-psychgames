@@ -2,7 +2,7 @@ import { AppEvents } from "@dpg/constants";
 import { GameModel, PlayerModel } from "@dpg/types";
 import { Injectable } from "@nestjs/common";
 import { Server } from "socket.io";
-import { DefaultGameConstants } from "src/game/constants.js";
+import { DefaultGameConstants } from "./constants.js";
 import { v4 as uuidv4 } from "uuid";
 import { GameFactory } from "../game-factory/game-factory.js";
 import { AGame } from "./game-logic/game.js";

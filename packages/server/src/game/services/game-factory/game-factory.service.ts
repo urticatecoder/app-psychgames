@@ -1,6 +1,6 @@
 import { GameModel } from "@dpg/types";
 import { Injectable } from "@nestjs/common";
-import { GameConstants } from "src/game/constants.js";
+import { GameConstants } from "../game-manager/constants.js";
 import { Game } from "../game-manager/game-logic/game.js";
 import { GameFactory } from "./game-factory.js";
 

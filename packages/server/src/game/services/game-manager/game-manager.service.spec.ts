@@ -3,6 +3,8 @@ import { GameModel } from "@dpg/types";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Server as RawServer } from "socket.io";
 import { GameFactory } from "../game-factory/game-factory.js";
+import { DefaultGameConstants, GameConstants } from "./constants.js";
+import { AGame } from "./game-logic/game.js";
 import { GameManagerService, ManagedGame } from "./game-manager.service.js";
 
 const serverMocks: any = {
@@ -23,12 +25,63 @@ const gameState = {
   prop: "value",
 };
 
+const testPlayerMap = new Map([
+  [
+    "1",
+    {
+      id: "1",
+      avatar: 0,
+    },
+  ],
+  [
+    "2",
+    {
+      id: "2",
+      avatar: 0,
+    },
+  ],
+  [
+    "3",
+    {
+      id: "3",
+      avatar: 0,
+    },
+  ],
+  [
+    "4",
+    {
+      id: "4",
+      avatar: 0,
+    },
+  ],
+  [
+    "5",
+    {
+      id: "5",
+      avatar: 0,
+    },
+  ],
+  [
+    "6",
+    {
+      id: "6",
+      avatar: 0,
+    },
+  ],
+]);
+
 const gameMocks = {
-  getPlayers: jest.fn(() => new Set(["1", "2", "3", "4", "5", "6"])),
+  playerMap: testPlayerMap,
+  players: [...testPlayerMap.values()],
+  constants: DefaultGameConstants,
+  state: <GameModel.State>(<unknown>gameState),
   submitAction: jest.fn(),
-  getState: jest.fn(() => gameState),
+  emitState: jest.fn(),
+  goToNextGame: jest.fn(),
   isJoinable: jest.fn(() => true),
 };
+
+const Game = <AGame>gameMocks;
 
 let emitCallback: (state: any) => void;
 let endCallback: () => void;
@@ -42,9 +95,9 @@ beforeEach(() => {
   serverMocks.socketsJoin.mockClear();
   serverMocks.disconnectSockets.mockClear();
 
-  gameMocks.getPlayers.mockClear();
   gameMocks.submitAction.mockClear();
-  gameMocks.getState.mockClear();
+  gameMocks.emitState.mockClear();
+  gameMocks.goToNextGame.mockClear();
   gameMocks.isJoinable.mockClear();
 });
 
@@ -52,21 +105,24 @@ describe("GameManagerService", () => {
   let gameM: GameManagerService;
 
   beforeEach(async () => {
+    const gameFactory: GameFactory = {
+      create: (
+        emitState: (state: GameModel.State) => void,
+        endGame: () => void,
+        constants: GameConstants
+      ) => {
+        emitCallback = emitState;
+        endCallback = endGame;
+        return Game;
+      },
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GameManagerService,
         {
           provide: GameFactory,
-          useValue: {
-            create: (
-              emitState: (state: GameModel.State) => void,
-              endGame: () => void
-            ) => {
-              emitCallback = emitState;
-              endCallback = endGame;
-              return gameMocks;
-            },
-          },
+          useValue: gameFactory,
         },
       ],
     }).compile();

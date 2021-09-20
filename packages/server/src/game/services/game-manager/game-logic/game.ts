@@ -1,6 +1,6 @@
 import { PLAYERS_PER_GAME } from "@dpg/constants";
 import { GameModel, PlayerModel } from "@dpg/types";
-import { GameConstants } from "src/game/constants.js";
+import { GameConstants } from "../constants.js";
 import { v4 as uuidv4 } from "uuid";
 import { GameOne } from "./game-one.js";
 import { GameTwo } from "./game-two.js";
