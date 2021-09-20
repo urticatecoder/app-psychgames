@@ -31,6 +31,7 @@ export namespace GameModel {
    */
   export type State = GameState & {
     timestamp: Date | string;
+    players: GameModel.Player[];
   };
 
   /**
@@ -51,7 +52,6 @@ export namespace LobbyModel {
   export type State = {
     type: "lobby";
     lobbyEndTime: Date | string;
-    players: GameModel.Player[];
   };
 }
 

@@ -8,7 +8,8 @@ import { Lobby } from "./lobby.js";
 
 export abstract class AGame {
   abstract get constants(): GameConstants;
-  abstract get players(): Set<PlayerModel.ID>;
+  abstract get players(): GameModel.Player[];
+  abstract get playerMap(): Map<PlayerModel.ID, GameModel.Player>;
   abstract get state(): GameModel.State;
 
   abstract submitAction(
@@ -27,7 +28,7 @@ export class Game extends AGame {
   private gameCount: number;
   private currentGame: GameInstance;
   private games: GameConstructor[] = [Lobby, GameOne, GameTwo];
-  public players: Set<PlayerModel.ID>;
+  public playerMap: Map<PlayerModel.ID, GameModel.Player>;
 
   constructor(
     private emitStateCallback: (state: GameModel.State) => void,
@@ -63,9 +64,13 @@ export class Game extends AGame {
      * We would probably only want to support player replacement during random
      * lobbies with no player metadata.
      */
-    this.players = new Set<PlayerModel.ID>();
+    this.playerMap = new Map();
     for (let i = 0; i < PLAYERS_PER_GAME; i++) {
-      this.players.add(uuidv4());
+      const id = uuidv4();
+      this.playerMap.set(id, {
+        id,
+        avatar: 0,
+      });
     }
 
     this.gameCount = 0;
@@ -92,6 +97,10 @@ export class Game extends AGame {
     return this.makeState(this.currentGame.state);
   }
 
+  get players(): GameModel.Player[] {
+    return [...this.playerMap.values()];
+  }
+
   emitState() {
     this.emitStateCallback(this.state);
   }
@@ -108,6 +117,7 @@ export class Game extends AGame {
   private makeState(gameState: GameModel.GameState) {
     const state: GameModel.State = {
       timestamp: new Date(),
+      players: this.players,
       ...gameState,
     };
 
