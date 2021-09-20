@@ -1,5 +1,5 @@
 import { GameOneModel, GameModel, PlayerModel } from "@dpg/types";
-import { AGame, GameInstance } from "./game.js";
+import { AGame, GameError, GameInstance } from "./game.js";
 
 export class GameOne implements GameInstance {
   private selections: Map<PlayerModel.ID, Set<PlayerModel.ID>>;
@@ -29,6 +29,15 @@ export class GameOne implements GameInstance {
   }
 
   submitAction(playerID: string, action: GameOneModel.Turn): void {
+    if (action.round !== this.state.round) {
+      throw new GameError(
+        `Expected an action for round ${this.state.round}, recieved ${action.round}. 
+        This may be because you submitted an action just as the round advanced, 
+        in which case this error is safe.`,
+        playerID
+      );
+    }
+
     this.selections.set(
       playerID,
       new Set(
