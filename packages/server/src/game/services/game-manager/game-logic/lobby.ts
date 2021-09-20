@@ -6,7 +6,6 @@ export class Lobby implements GameInstance {
 
   constructor(private game: AGame) {
     const lobbyEndTime = new Date(Date.now() + game.constants.lobbyTime);
-    const players: GameModel.Player[] = [];
 
     this.state = {
       type: "lobby",
