@@ -50,7 +50,7 @@ export class GameOne implements GameInstance {
     const roundStartTime = new Date();
     const roundEndTime = new Date(
       roundStartTime.getTime() +
-        this.game.constants.gameOneRoundTime(this.state.round)
+        this.game.constants.gameOne.roundTime(this.state.round)
     );
 
     this.state = {
@@ -72,7 +72,7 @@ export class GameOne implements GameInstance {
       playerPositions,
     };
 
-    if (this.game.constants.gameOneMaxRounds == this.state.round) {
+    if (this.game.constants.gameOne.maxRounds == this.state.round) {
       this.game.goToNextGame();
     } else {
       this.beginRound();
