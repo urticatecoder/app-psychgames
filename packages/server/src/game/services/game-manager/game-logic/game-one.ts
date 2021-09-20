@@ -12,7 +12,7 @@ export class GameOne implements GameInstance {
     game.players.forEach((player: GameModel.Player) => {
       playerPositions.push({
         player,
-        position: 0.5,
+        position: 0,
       });
     });
 
