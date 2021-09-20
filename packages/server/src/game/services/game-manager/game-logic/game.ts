@@ -1,5 +1,6 @@
 import { PLAYERS_PER_GAME } from "@dpg/constants";
 import { GameModel, PlayerModel } from "@dpg/types";
+import { WsException } from "@nestjs/websockets";
 import { GameConstants } from "../constants.js";
 import { v4 as uuidv4 } from "uuid";
 import { GameOne } from "./game-one.js";
@@ -125,7 +126,7 @@ export class Game extends AGame {
   }
 }
 
-export class GameError extends Error {
+export class GameError extends WsException {
   playerID: PlayerModel.ID;
 
   constructor(message: string, playerID: PlayerModel.ID) {
