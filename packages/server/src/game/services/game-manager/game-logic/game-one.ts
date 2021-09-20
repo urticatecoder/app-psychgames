@@ -2,6 +2,7 @@ import { GameOneModel } from "@dpg/types";
 import { AGame, GameInstance } from "./game.js";
 
 export class GameOne implements GameInstance {
+  public state: GameOneModel.State;
   constructor(private game: AGame) {
     throw new Error("Method not implemented.");
   }

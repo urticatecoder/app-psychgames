@@ -8,15 +8,13 @@ import { Lobby } from "./lobby.js";
 
 export abstract class AGame {
   abstract get constants(): GameConstants;
-
-  abstract getPlayers(): Set<PlayerModel.ID>;
+  abstract get players(): Set<PlayerModel.ID>;
+  abstract get state(): GameModel.State;
 
   abstract submitAction(
     playerID: PlayerModel.ID,
     action: GameModel.Action
   ): void;
-
-  abstract getState(): GameModel.State;
 
   abstract isJoinable(): boolean;
 
@@ -29,7 +27,7 @@ export class Game extends AGame {
   private gameCount: number;
   private currentGame: GameInstance;
   private games: GameConstructor[] = [Lobby, GameOne, GameTwo];
-  private players: Set<PlayerModel.ID>;
+  public players: Set<PlayerModel.ID>;
 
   constructor(
     private emitStateCallback: (state: GameModel.State) => void,
@@ -84,22 +82,18 @@ export class Game extends AGame {
     this.currentGame = new this.games[this.gameCount](this);
   }
 
-  getPlayers(): Set<PlayerModel.ID> {
-    return this.players;
-  }
-
   submitAction(playerID: PlayerModel.ID, action: GameModel.Action): void {
     // TODO: validate playerID
     // TODO: validate action data
     this.currentGame.submitAction(playerID, action);
   }
 
-  getState(): GameModel.State {
-    return this.makeState(this.currentGame.getState());
+  get state(): GameModel.State {
+    return this.makeState(this.currentGame.state);
   }
 
   emitState() {
-    this.emitStateCallback(this.getState());
+    this.emitStateCallback(this.state);
   }
 
   isJoinable(): boolean {
@@ -136,5 +130,5 @@ export interface GameConstructor {
 
 export interface GameInstance {
   submitAction(playerID: PlayerModel.ID, action: GameModel.GameAction): void;
-  getState(): GameModel.GameState;
+  get state(): GameModel.GameState;
 }

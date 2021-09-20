@@ -122,7 +122,7 @@ export class GameManagerService {
 
   private getPlayerGame(playerID: PlayerModel.ID): ManagedGame | undefined {
     for (const game of this.games) {
-      if (game.instance.getPlayers().has(playerID)) return game;
+      if (game.instance.players.has(playerID)) return game;
     }
     return undefined;
   }
@@ -133,7 +133,7 @@ export class GameManagerService {
     game: ManagedGame
   ) {
     // Sanity check
-    if (!game.instance.getPlayers().has(playerID)) {
+    if (!game.instance.players.has(playerID)) {
       throw new Error(
         `attempted to add ${playerID} to game, but was not a valid player.`
       );
@@ -142,11 +142,11 @@ export class GameManagerService {
     // join socket to game room
     this.server?.in(socketID).socketsJoin(game.id);
     // emit state
-    this.emitStateTo(socketID, game.instance.getState());
+    this.emitStateTo(socketID, game.instance.state);
   }
 
   private findAvailablePlayerID(game: ManagedGame): PlayerModel.ID | undefined {
-    for (const player of game.instance.getPlayers()) {
+    for (const player of game.instance.players) {
       if (!game.activePlayers.hasR(player)) return player;
     }
     return undefined;

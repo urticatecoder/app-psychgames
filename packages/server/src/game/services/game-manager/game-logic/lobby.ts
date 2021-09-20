@@ -2,12 +2,12 @@ import { GameModel, LobbyModel, PlayerModel } from "@dpg/types";
 import { AGame, GameInstance } from "./game.js";
 
 export class Lobby implements GameInstance {
-  private state: LobbyModel.State;
+  public state: LobbyModel.State;
 
   constructor(private game: AGame) {
     const lobbyEndTime = new Date(Date.now() + game.constants.lobbyTime);
     const players: GameModel.Player[] = [];
-    game.getPlayers().forEach((id: PlayerModel.ID) => {
+    game.players.forEach((id: PlayerModel.ID) => {
       players.push({
         id,
         avatar: 0,
@@ -31,9 +31,5 @@ export class Lobby implements GameInstance {
         : player
     );
     this.game.emitState();
-  }
-
-  getState(): LobbyModel.State {
-    return this.state;
   }
 }
