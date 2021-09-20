@@ -37,11 +37,35 @@ export class GameOne implements GameInstance {
     );
   }
 
-  beginRound() {
-    throw new Error("Method not implemented");
+  private beginRound() {
+    const roundStartTime = new Date();
+    const roundEndTime = new Date(
+      roundStartTime.getTime() +
+        this.game.constants.gameOneRoundTime(this.state.round)
+    );
+
+    this.state = {
+      ...this.state,
+      roundStartTime,
+      roundEndTime,
+    };
+    this.game.emitState();
+
+    // timeout to advance round
+    setTimeout(() => this.advanceRound(), roundEndTime.getTime() - Date.now());
   }
 
-  advanceRound() {
+  private advanceRound() {
+    const playerPositions = this.calculatePlayerPositions();
+    this.state = {
+      ...this.state,
+      round: this.state.round + 1,
+      playerPositions,
+    };
+    this.beginRound();
+  }
+
+  private calculatePlayerPositions(): GameOneModel.PlayerPosition[] {
     throw new Error("Method not implemented");
   }
 }
