@@ -79,7 +79,14 @@ export namespace GameOneModel {
     previousTurnBonus?: TurnBonus;
   };
 
-  export type TurnBonus = "none" | "doublet" | "triplet";
+  /**
+   * - none = no other player picked this player
+   * - single = other players picked this player,
+   *   but the player is not in a pair or triplet that picked each other
+   * - doublet = the player is in at least one pair that picked each other
+   * - triplet = the player is in a triplet that all picked each other
+   */
+  export type TurnBonus = "none" | "single" | "doublet" | "triplet";
 }
 
 export namespace GameTwoModel {
