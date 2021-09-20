@@ -8,13 +8,14 @@ export type GameConstants = {
     roundTime: (round: number) => number;
     maxRounds: number;
     positionChange: {
-      bias: (position: number) => number;
-      single: (round: number) => number;
-      double: (round: number) => number;
-      triple: (round: number) => number;
+      single: (round: number, position: number) => number;
+      double: (round: number, position: number) => number;
+      triple: (round: number, position: number) => number;
     };
   };
 };
+
+const bias = (position: number) => position * 0.3;
 
 export const DefaultGameConstants: GameConstants = {
   lobbyTime: 120 * 1000,
@@ -28,10 +29,9 @@ export const DefaultGameConstants: GameConstants = {
     // TODO: change these to something sensible
     positionChange: {
       // we arbitrarily bias position by 30% of their distance from the origin
-      bias: (position) => position * 0.3,
-      single: (round) => 0.05 * round * round + 0.1,
-      double: (round) => 0.05 * round * round + 0.2,
-      triple: (round) => 0.05 * round * round + 0.35,
+      single: (round, position) => 0.05 * round * round + 0.1 + bias(position),
+      double: (round, position) => 0.05 * round * round + 0.2 + bias(position),
+      triple: (round, position) => 0.05 * round * round + 0.35 + bias(position),
     },
   },
 };
