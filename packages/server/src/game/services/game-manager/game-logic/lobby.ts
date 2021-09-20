@@ -1,4 +1,3 @@
-import { LOBBY_TIME_SECONDS } from "@dpg/constants";
 import { GameModel, LobbyModel, PlayerModel } from "@dpg/types";
 import { AGame, GameInstance } from "./game.js";
 
@@ -6,7 +5,7 @@ export class Lobby implements GameInstance {
   private state: LobbyModel.State;
 
   constructor(private game: AGame) {
-    const lobbyEndTime = new Date(Date.now() + LOBBY_TIME_SECONDS * 1000);
+    const lobbyEndTime = new Date(Date.now() + game.constants.lobbyTime);
     const players: GameModel.Player[] = [];
     game.getPlayers().forEach((id: PlayerModel.ID) => {
       players.push({

@@ -1,11 +1,14 @@
 import { PLAYERS_PER_GAME } from "@dpg/constants";
 import { GameModel, PlayerModel } from "@dpg/types";
+import { GameConstants } from "src/game/constants.js";
 import { v4 as uuidv4 } from "uuid";
 import { GameOne } from "./game-one.js";
 import { GameTwo } from "./game-two.js";
 import { Lobby } from "./lobby.js";
 
 export abstract class AGame {
+  abstract get constants(): GameConstants;
+
   abstract getPlayers(): Set<PlayerModel.ID>;
 
   abstract submitAction(
@@ -30,7 +33,8 @@ export class Game extends AGame {
 
   constructor(
     private emitStateCallback: (state: GameModel.State) => void,
-    private destroyGame: () => void
+    private destroyGame: () => void,
+    public constants: GameConstants
   ) {
     super();
     /**
