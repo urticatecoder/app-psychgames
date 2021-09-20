@@ -5,6 +5,7 @@ export type GameConstants = {
   lobbyTime: number;
   // round times are allowed to vary round to round
   gameOneRoundTime: (round: number) => number;
+  gameOneMaxRounds: number;
 };
 
 export const DefaultGameConstants: GameConstants = {
@@ -14,4 +15,5 @@ export const DefaultGameConstants: GameConstants = {
     if (round === 1) return 20 * 1000;
     else return 15 * 1000;
   },
+  gameOneMaxRounds: 10,
 };

@@ -71,7 +71,12 @@ export class GameOne implements GameInstance {
       round: this.state.round + 1,
       playerPositions,
     };
-    this.beginRound();
+
+    if (this.game.constants.gameOneMaxRounds == this.state.round) {
+      this.game.goToNextGame();
+    } else {
+      this.beginRound();
+    }
   }
 
   private calculatePlayerPositions(): GameOneModel.PlayerPosition[] {
