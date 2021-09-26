@@ -1,104 +1,20 @@
 import { AppEvents, PLAYERS_PER_GAME } from "@dpg/constants";
 import { GameModel } from "@dpg/types";
 import { Test, TestingModule } from "@nestjs/testing";
-import { Server as RawServer } from "socket.io";
+import { Server } from "socket.io";
 import { GameFactory } from "../game-factory/game-factory.js";
-import { DefaultGameConstants, GameConstants } from "./constants.js";
-import { AGame } from "./game-logic/game.js";
+import { GameConstants } from "./constants.js";
+import { Game } from "./game-logic/game.js";
 import { GameManagerService, ManagedGame } from "./game-manager.service.js";
 
-const serverMocks: any = {
-  to: jest.fn(() => serverMocks),
-  in: jest.fn(() => serverMocks),
-  emit: jest.fn(),
-  socketsJoin: jest.fn(),
-  disconnectSockets: jest.fn(),
-};
-
-const serverDec = jest.fn(() => {
-  return serverMocks;
-});
-
-const Server = <typeof RawServer & typeof serverDec>(<unknown>serverDec);
-
-const gameState = {
-  prop: "value",
-};
-
-const testPlayerMap = new Map([
-  [
-    "1",
-    {
-      id: "1",
-      avatar: 0,
-    },
-  ],
-  [
-    "2",
-    {
-      id: "2",
-      avatar: 0,
-    },
-  ],
-  [
-    "3",
-    {
-      id: "3",
-      avatar: 0,
-    },
-  ],
-  [
-    "4",
-    {
-      id: "4",
-      avatar: 0,
-    },
-  ],
-  [
-    "5",
-    {
-      id: "5",
-      avatar: 0,
-    },
-  ],
-  [
-    "6",
-    {
-      id: "6",
-      avatar: 0,
-    },
-  ],
-]);
-
-const gameMocks = {
-  playerMap: testPlayerMap,
-  players: [...testPlayerMap.values()],
-  constants: DefaultGameConstants,
-  state: <GameModel.State>(<unknown>gameState),
-  submitAction: jest.fn(),
-  emitState: jest.fn(),
-  goToNextGame: jest.fn(),
-  isJoinable: jest.fn(() => true),
-};
-
-const Game = <AGame>gameMocks;
+jest.mock("./game-logic/game.js");
 
 let emitCallback: (state: any) => void;
 let endCallback: () => void;
+let server: Server;
 
 beforeEach(() => {
-  Server.mockClear();
-
-  serverMocks.to.mockClear();
-  serverMocks.in.mockClear();
-  serverMocks.emit.mockClear();
-  serverMocks.socketsJoin.mockClear();
-  serverMocks.disconnectSockets.mockClear();
-
-  gameMocks.submitAction.mockClear();
-  gameMocks.emitState.mockClear();
-  gameMocks.goToNextGame.mockClear();
-  gameMocks.isJoinable.mockClear();
+  jest.clearAllMocks();
 });
 
 describe("GameManagerService", () => {
@@ -113,7 +29,7 @@ describe("GameManagerService", () => {
       ) => {
         emitCallback = emitState;
         endCallback = endGame;
-        return Game;
+        return new Game(emitState, endGame, constants);
       },
     };
 
@@ -128,7 +44,8 @@ describe("GameManagerService", () => {
     }).compile();
 
     gameM = module.get<GameManagerService>(GameManagerService);
-    gameM.setServer(new Server());
+    server = new Server();
+    gameM.setServer(server);
   });
 
   it("is defined", () => {
@@ -138,12 +55,11 @@ describe("GameManagerService", () => {
   describe("adding players/games", () => {
     const expectSocketAdded = (socket: string, game: ManagedGame) => {
       expect(game.activePlayers.keys()).toContain(socket);
-      expect(serverMocks.in).toHaveBeenCalledWith(socket);
-      expect(serverMocks.socketsJoin).toHaveBeenCalledWith(game.id);
-      expect(serverMocks.emit).toHaveBeenCalledWith(
-        AppEvents.STATE_UPDATE,
-        gameState
-      );
+      expect(server.in).toHaveBeenCalledWith(socket);
+      expect(server.socketsJoin).toHaveBeenCalledWith(game.id);
+      expect(server.emit).toHaveBeenCalledWith(AppEvents.STATE_UPDATE, {
+        prop: "value",
+      });
     };
 
     it("joins the first socket to a new game", () => {
@@ -194,8 +110,8 @@ describe("GameManagerService", () => {
     };
 
     const expectGameStateEmitted = (state: any, game: ManagedGame) => {
-      expect(serverMocks.to).toHaveBeenLastCalledWith(game.id);
-      expect(serverMocks.emit).toHaveBeenLastCalledWith(
+      expect(server.to).toHaveBeenLastCalledWith(game.id);
+      expect(server.emit).toHaveBeenLastCalledWith(
         AppEvents.STATE_UPDATE,
         state
       );
@@ -251,8 +167,8 @@ describe("GameManagerService", () => {
       const game = gameM.getGames()[0];
       endCallback();
 
-      expect(serverMocks.in).toHaveBeenCalledWith(game.id);
-      expect(serverMocks.disconnectSockets).toHaveBeenCalled();
+      expect(server.in).toHaveBeenCalledWith(game.id);
+      expect(server.disconnectSockets).toHaveBeenCalled();
     });
 
     it("removes game on end callback", () => {
