@@ -73,6 +73,7 @@ export class GameOne implements GameInstance {
   }
 
   private advanceRound() {
+    this.performBotMoves();
     const playerPositions = this.calculatePlayerPositions();
     this.state = {
       ...this.state,
@@ -210,5 +211,24 @@ export class GameOne implements GameInstance {
     );
 
     return playersAtBoundaries;
+  }
+
+  private performBotMoves() {
+    this.game.players.forEach((player) => {
+      if (!this.selections.has(player)) {
+        // if we did not recieve an action for a player,
+        // perform a random move for them
+        let players = this.game.players;
+        players = players.filter((oPlayer) => oPlayer !== player);
+        const c1 = Math.round(Math.random() * (players.length - 1));
+        const c2 = Math.round(Math.random() * (players.length - 1));
+
+        this.submitAction(player, {
+          type: "game-one--turn",
+          round: this.state.round,
+          playersSelected: [players[c1], players[c2]],
+        });
+      }
+    });
   }
 }

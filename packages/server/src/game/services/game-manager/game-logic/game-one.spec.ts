@@ -31,13 +31,17 @@ describe("game one", () => {
   });
 
   describe("bot actions", () => {
-    it.skip("makes player movements when no action is submitted", () => {
+    it("makes player movements when no action is submitted", () => {
       jest.runOnlyPendingTimers();
       expect(
         gameOne.state.playerPositions.filter(
           (position) => position.position === 0
         )
       ).not.toHaveLength(gameOne.state.playerPositions.length);
+    });
+
+    it.skip("selects two players that are not itself", () => {
+      // TODO: Implement history
     });
   });
 
