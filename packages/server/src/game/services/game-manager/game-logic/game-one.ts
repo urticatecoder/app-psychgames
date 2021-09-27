@@ -12,9 +12,9 @@ export class GameOne implements GameInstance {
   constructor(private game: AGame) {
     this.selections = new Map();
     const playerPositions: GameOneModel.PlayerPosition[] = [];
-    game.players.forEach((player: GameModel.Player) => {
+    game.players.forEach((player) => {
       playerPositions.push({
-        player,
+        player: player,
         position: 0,
       });
     });
@@ -50,9 +50,7 @@ export class GameOne implements GameInstance {
 
     this.selections.set(
       playerID,
-      new Set(
-        action.playersSelected.map((player: GameModel.Player) => player.id)
-      )
+      new Set(action.playersSelected.map((player: PlayerModel.ID) => player))
     );
   }
 
@@ -129,7 +127,7 @@ export class GameOne implements GameInstance {
     playerPosition: GameOneModel.PlayerPosition
   ): GameOneModel.PlayerPosition {
     // first, who selected this player?
-    const playerID = playerPosition.player.id;
+    const playerID = playerPosition.player;
     const selectedBy: PlayerModel.ID[] = [];
     this.selections.forEach((selections, otherPlayerID) => {
       if (selections.has(playerID)) selectedBy.push(otherPlayerID);

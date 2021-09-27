@@ -9,8 +9,9 @@ import { Lobby } from "./lobby.js";
 
 export abstract class AGame {
   abstract get constants(): GameConstants;
-  abstract get players(): GameModel.Player[];
-  abstract get playerMap(): Map<PlayerModel.ID, GameModel.Player>;
+  abstract get players(): PlayerModel.ID[];
+  abstract get playerData(): PlayerModel.Player[];
+  abstract get playerMap(): Map<PlayerModel.ID, PlayerModel.Player>;
   abstract get state(): GameModel.State;
 
   abstract submitAction(
@@ -29,7 +30,7 @@ export class Game extends AGame {
   private gameCount: number;
   private currentGame: GameInstance;
   private games: GameConstructor[] = [Lobby, GameOne, GameTwo];
-  public playerMap: Map<PlayerModel.ID, GameModel.Player>;
+  public playerMap: Map<PlayerModel.ID, PlayerModel.Player>;
 
   constructor(
     private emitStateCallback: (state: GameModel.State) => void,
@@ -98,7 +99,11 @@ export class Game extends AGame {
     return this.makeState(this.currentGame.state);
   }
 
-  get players(): GameModel.Player[] {
+  get players(): PlayerModel.ID[] {
+    return [...this.playerMap.keys()];
+  }
+
+  get playerData(): PlayerModel.Player[] {
     return [...this.playerMap.values()];
   }
 
@@ -118,7 +123,7 @@ export class Game extends AGame {
   private makeState(gameState: GameModel.GameState) {
     const state: GameModel.State = {
       timestamp: new Date(),
-      players: this.players,
+      playerData: this.playerData,
       ...gameState,
     };
 

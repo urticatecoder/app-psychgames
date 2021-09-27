@@ -1,3 +1,5 @@
+import type { PlayerModel } from "./player.model";
+
 export namespace GameModel {
   /**
    * Combination of game actions; this is only used to represent
@@ -31,15 +33,7 @@ export namespace GameModel {
    */
   export type State = GameState & {
     timestamp: Date | string;
-    players: GameModel.Player[];
-  };
-
-  /**
-   * Data used to identify all players in game
-   */
-  export type Player = {
-    id: string;
-    avatar: number;
+    playerData: PlayerModel.Player[];
   };
 }
 
@@ -62,7 +56,7 @@ export namespace GameOneModel {
   export type Turn = {
     type: "game-one--turn";
     round: number;
-    playersSelected: GameModel.Player[];
+    playersSelected: PlayerModel.ID[];
   };
 
   export type State = {
@@ -74,7 +68,7 @@ export namespace GameOneModel {
   };
 
   export type PlayerPosition = {
-    player: GameModel.Player;
+    player: PlayerModel.ID;
     position: number;
     previousTurnBonus?: TurnBonus;
   };
@@ -107,7 +101,10 @@ export namespace GameTwoModel {
 
   export type State = {
     type: "game-two";
-    team: "winners" | "losers";
+    playerTeams: {
+      id: PlayerModel.ID;
+      team: "winners" | "losers";
+    };
     round: number;
     roundStartTime: Date | string;
     roundEndTime: Date | string;

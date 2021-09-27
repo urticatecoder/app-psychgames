@@ -8,6 +8,14 @@ export namespace PlayerModel {
   export type ID = string;
 
   /**
+   * Required player data
+   */
+  export type Player = {
+    id: PlayerModel.ID;
+    avatar: number;
+  };
+
+  /**
    * A request to enter an existing game with an ID
    */
   export type EnterGameRequest = {

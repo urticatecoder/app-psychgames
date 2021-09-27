@@ -63,7 +63,8 @@ const testPlayerMap = new Map([
 
 const GameInstance: AGame = {
   constants: DefaultGameConstants,
-  players: [...testPlayerMap.values()],
+  players: [...testPlayerMap.keys()],
+  playerData: [...testPlayerMap.values()],
   playerMap: testPlayerMap,
   state: <GameModel.State>(<unknown>gameState),
   isJoinable: jest.fn().mockReturnValue(true),
