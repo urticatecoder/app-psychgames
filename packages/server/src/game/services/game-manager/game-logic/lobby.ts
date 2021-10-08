@@ -11,6 +11,8 @@ export class Lobby implements GameInstance {
       type: "lobby",
       lobbyEndTime: lobbyEndTime,
     };
+
+    setTimeout(() => this.game.goToNextGame(), game.constants.lobbyTime);
   }
 
   submitAction(playerID: string, action: LobbyModel.PlayerData): void {
