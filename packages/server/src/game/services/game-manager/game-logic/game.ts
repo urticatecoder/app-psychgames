@@ -23,7 +23,7 @@ export abstract class AGame {
 
   abstract emitState(): void;
 
-  abstract goToNextGame(): void;
+  abstract goToNextGame(initialState?: GameModel.GameState): void;
 }
 
 export class Game extends AGame {
@@ -76,17 +76,17 @@ export class Game extends AGame {
     }
 
     this.gameCount = 0;
-    this.currentGame = new this.games[this.gameCount](this);
+    this.currentGame = new this.games[this.gameCount](this, undefined);
   }
 
-  goToNextGame(): void {
+  goToNextGame(initialState?: GameModel.GameState): void {
     this.gameCount++;
     if (this.gameCount === this.games.length) {
       this.endGame();
       return;
     }
 
-    this.currentGame = new this.games[this.gameCount](this);
+    this.currentGame = new this.games[this.gameCount](this, initialState);
   }
 
   submitAction(playerID: PlayerModel.ID, action: GameModel.Action): void {
@@ -141,7 +141,7 @@ export class GameError extends WsException {
 }
 
 export interface GameConstructor {
-  new (game: AGame): GameInstance;
+  new (game: AGame, initialState?: GameModel.GameState): GameInstance;
 }
 
 export interface GameInstance {
