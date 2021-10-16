@@ -1,5 +1,9 @@
 import type { PlayerModel } from "./player.model";
 
+export type PlayerMap<T> = {
+  [key: PlayerModel.ID]: T;
+};
+
 export namespace GameModel {
   /**
    * Combination of game actions; this is only used to represent
@@ -33,7 +37,7 @@ export namespace GameModel {
    */
   export type State = GameState & {
     timestamp: Date | string;
-    playerData: PlayerModel.Player[];
+    playerData: PlayerMap<PlayerModel.Data>;
   };
 }
 
@@ -64,11 +68,14 @@ export namespace GameOneModel {
     round: number;
     roundStartTime: Date | string;
     roundEndTime: Date | string;
-    playerPositions: PlayerPosition[];
+    playerPositions: PlayerMap<PlayerPosition>;
+    /**
+     * Describes who selected a specific player in the previous round
+     */
+    playerPreviouslySelectedBy?: PlayerMap<PlayerModel.ID[]>;
   };
 
   export type PlayerPosition = {
-    player: PlayerModel.ID;
     position: number;
     previousTurnBonus?: TurnBonus;
   };
@@ -93,24 +100,21 @@ export namespace GameTwoModel {
     tokenDistribution: TokenDistribution;
   };
 
-  export type TokenDistribution = {
-    compete: number;
-    invest: number;
-    keep: number;
-  };
-
   export type State = {
     type: "game-two";
-    playerTeams: {
-      id: PlayerModel.ID;
-      team: "winners" | "losers";
-    };
+    playerTeam: PlayerMap<"winners" | "losers">;
     round: number;
     roundStartTime: Date | string;
     roundEndTime: Date | string;
     investCoefficient: number;
     competeCoefficient: number;
     previousRoundResults?: PreviousRoundResults;
+  };
+
+  export type TokenDistribution = {
+    compete: number;
+    invest: number;
+    keep: number;
   };
 
   export type PreviousRoundResults = {

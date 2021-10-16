@@ -10,8 +10,7 @@ export namespace PlayerModel {
   /**
    * Required player data
    */
-  export type Player = {
-    id: PlayerModel.ID;
+  export type Data = {
     avatar: number;
   };
 
@@ -19,7 +18,7 @@ export namespace PlayerModel {
    * A request to enter an existing game with an ID
    */
   export type EnterGameRequest = {
-    id?: string;
+    id?: ID;
   };
 
   /**
@@ -47,7 +46,7 @@ export namespace PlayerModel {
    * A new ID assigned for the requested game.
    */
   export type StartGameResponse = {
-    id: string;
+    id: ID;
   };
 
   export type PlayerMetadata = {
