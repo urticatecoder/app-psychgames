@@ -1,8 +1,8 @@
 import React from "react";
 import ResourceImages from "../../icons/components/ResourceImages";
 import {Box, withStyles } from "@material-ui/core";
-import getMarginLeft from "../../util/common_functions/getResourceMarginLeft";
-import getBackgroundColor from "../../util/common_functions/getResourceBackgroundColor";
+import getMarginLeft from "../../util/functions/getResourceMarginLeft";
+import getBackgroundColor from "../../util/functions/getResourceBackgroundColor";
 
 const REMOVE_TOKEN_LABEL = "-1 Token";
 

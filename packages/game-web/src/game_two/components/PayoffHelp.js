@@ -11,7 +11,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import ResourceImages from "../../icons/components/ResourceImages";
-import { ResourceNames } from "../../util/common_constants/game_two/GameTwoBundler";
+import { ResourceNames } from "../../util/constants/game_two/GameTwoBundler";
 
 const SHOW = true;
 const HIDE = false;

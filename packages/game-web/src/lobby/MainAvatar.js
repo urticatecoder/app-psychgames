@@ -1,9 +1,9 @@
 import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { Typography } from "@material-ui/core";
-import "../util/common_stylings/FullScreenDiv.css";
-import ContinueButton from "../util/common_components/ContinueButton";
-import { Variants } from "../util/common_constants/stylings/StylingsBundler";
+import "../util/stylings/FullScreenDiv.css";
+import ContinueButton from "../util/components/ContinueButton";
+import { Variants } from "../util/constants/stylings/StylingsBundler";
 import PlayerOptions from '../icons/components/PlayerOptions';
 
 const PLAYER_DESCRIPTION = "You are the following avatar!";

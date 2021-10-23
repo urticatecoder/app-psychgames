@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import { Variants } from "../common_constants/stylings/StylingsBundler";
+import { Variants } from "../constants/stylings/StylingsBundler";
 
 const BUTTON_COLOR = "primary";
 const BUTTON_OPACITY = .85

@@ -2,23 +2,21 @@ import React, {useEffect, useState} from "react";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
+
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { Button, withStyles } from "@material-ui/core";
+import Button from '@mui/material/Button';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import WifiOffIcon from '@material-ui/icons/WifiOff';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 
-const SHOW = true;
+const OPEN = true;
 const HIDE = false;
-const BUTTON_VARIANT = 'contained';
+
 const OKAY_COLOR = 'secondary';
 const RULES = "Rules";
 
@@ -35,70 +33,57 @@ const SCREEN_SECONDARY = "If you change the screen dimensions, you may be prompt
 
 const DIALOG_TITLE = "The following actions may get you removed:";
 
-const styles = {
-    dialogue: {
-        width: '100%',
-        maxWidth: 400,
-      },
-      button: {
-        position: 'absolute',
-        top: '10px',
-        right: '10px',
-        zIndex: 1,
-      },
-  };
+const buttonStyle = {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    zIndex: 1,
+    color: OKAY_COLOR
+}
 
   /**
-   * Function used to get formatting for buttons and bars associated with resources used in Game Two.
-   * This is used to position resource buttons and bars such that they are vertically on top of one another.
-   *
+   * Presents the "Rules" button on the top right of the page which shows the dialog when clicked.
    * @author Eric Doppelt
    */
-  function Warnings(props) {
+  function RulesDialog() {
 
-    const {classes} = props;
+    const [open, setOpen] = useState(HIDE)
     
-    
-    if (props.showRules) {
-        return(
+    return(
+        <div>
             <Dialog
-            open={props.showRules}
-            onClose={() => props.setShowRules(HIDE)}
+            open={open}
+            onClose={() => setOpen(HIDE)}
             >
             <DialogTitle>{DIALOG_TITLE}</DialogTitle>
             <DialogContent>
-                <List className={classes.dialogue}>
-                        {getListItem(<WifiOffIcon/>, WIFI_PRIMARY, WIFI_SECONDARY)}
-                        {getListItem(<ExitToAppIcon/>, EXIT_PRIMARY, EXIT_SECONDARY)}
-                        {getListItem(<AspectRatioIcon/>, SCREEN_PRIMARY, SCREEN_SECONDARY)}
+                <List sx={{width: '100%', maxWidth: 400}}>
+                    {getListItem(<WifiOffIcon/>, WIFI_PRIMARY, WIFI_SECONDARY)}
+                    {getListItem(<ExitToAppIcon/>, EXIT_PRIMARY, EXIT_SECONDARY)}
+                    {getListItem(<AspectRatioIcon/>, SCREEN_PRIMARY, SCREEN_SECONDARY)}
                 </List>
             </DialogContent>
             <DialogActions>
                 <Button
-                    onClick={() => props.setShowRules(HIDE)} 
-                    variant={BUTTON_VARIANT} 
+                    onClick={() => setOpen(HIDE)} 
+                    variant={"contained"} 
                     color={OKAY_COLOR}
                 >
                     {BUTTON_MESSAGE}
                 </Button>
             </DialogActions>
             </Dialog>
-        )
-    } else {
-        return(
-            <div className={classes.button}>
-                <Button
-                    variant={BUTTON_VARIANT} 
-                    color={OKAY_COLOR}
-                    onClick={() => props.setShowRules(SHOW)}
-                >
-                    {RULES}
-                </Button>
-            </div>
-        )
-    }
-
-} 
+            <Button
+                variant={'contained'} 
+                color={OKAY_COLOR}
+                onClick={() => setOpen(OPEN)}
+                sx={{...buttonStyle}}
+            >
+                {RULES}
+            </Button>
+        </div>
+    )
+}
 
 function getListItem(icon, primaryText, secondaryText) {
     return(
@@ -113,6 +98,5 @@ function getListItem(icon, primaryText, secondaryText) {
     )
 }
   
-
-  export default withStyles(styles)(Warnings);
+export default RulesDialog;
   

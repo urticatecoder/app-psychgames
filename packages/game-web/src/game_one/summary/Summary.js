@@ -2,8 +2,8 @@ import React from "react";
 import PlayerGroup from "../../icons/components/PlayerGroup";
 import { Typography, withStyles } from "@material-ui/core";
 import DelayedConfetti from "./DelayedConfetti";
-import ContinueButton from "../../util/common_components/ContinueButton";
-import { Variants } from "../../util/common_constants/stylings/StylingsBundler";
+import ContinueButton from "../../util/components/ContinueButton";
+import { Variants } from "../../util/constants/stylings/StylingsBundler";
 
 const FULL_DIV = "fullDiv";
 const WINNING_HEADER = "Winning Players";

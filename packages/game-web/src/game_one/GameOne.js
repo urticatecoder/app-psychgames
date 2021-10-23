@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import "../util/common_stylings/FullScreenDiv.css";
+import "../util/stylings/FullScreenDiv.css";
 import PlayerColumn from "./components/PlayerColumn";
 import { Grid, withStyles } from "@material-ui/core";
 import socket from "../socketClient";
 import ConfirmButton from "./components/ConfirmButton";
 import { withRouter } from "react-router-dom";
 import GroupBox from "./components/GroupBox";
-import GameTimer from "../util/common_components/GameTimer";
+import GameTimer from "../util/components/GameTimer";
 import getAlerts from './components/getAlerts';
 import BonusShower from './components/BonusShower';
-import WaitingDiv from "../util/common_components/WaitingDiv";
+import WaitingDiv from "../util/components/WaitingDiv";
 
 const FULL_DIV = "fullDiv";
 const GAME_TWO_INTRO_ROUTE = "/game-two-intro";

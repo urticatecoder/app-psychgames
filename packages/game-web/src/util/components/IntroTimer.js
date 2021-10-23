@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography, withStyles } from "@material-ui/core";
 import Timer from "react-compound-timer";
-import { Variants } from "../common_constants/stylings/StylingsBundler";
+import { Variants } from "../constants/stylings/StylingsBundler";
 import { withRouter } from "react-router-dom";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';

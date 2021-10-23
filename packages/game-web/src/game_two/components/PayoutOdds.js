@@ -1,6 +1,6 @@
 import { Box, Typography, withStyles } from "@material-ui/core";
 import React from "react";
-import Variants from "../../util/common_constants/stylings/Variants";
+import Variants from "../../util/constants/stylings/Variants";
 
 const INVEST_ODDS_LABEL = "Invest Payoffs: ";
 const COMPETE_ODDS_LABEL = "Compete Payoffs: ";

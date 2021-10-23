@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import StartTimer from "./StartTimer";
-import "../util/common_stylings/FullScreenDiv.css";
-import ContinueButton from "../util/common_components/ContinueButton";
+import "../util/stylings/FullScreenDiv.css";
+import ContinueButton from "../util/components/ContinueButton";
 
 const AVATAR_BUTTON_MESSAGE = "Choose Avatar";
 const AVATAR_SELECTION_ROUTE = "/avatar-selection";

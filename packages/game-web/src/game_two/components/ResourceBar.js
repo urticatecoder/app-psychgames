@@ -1,8 +1,8 @@
 import React from "react";
 import { useSpring, animated } from "react-spring";
 import { withStyles } from "@material-ui/core";
-import getBackgroundColor from "../../util/common_functions/getResourceBackgroundColor";
-import getMarginLeft from "../../util/common_functions/getResourceMarginLeft";
+import getBackgroundColor from "../../util/functions/getResourceBackgroundColor";
+import getMarginLeft from "../../util/functions/getResourceMarginLeft";
 
 const BAR = 'Bar'
 

@@ -6,7 +6,7 @@ import Compete from '../images/resources/compete.png'
 import ColorKeep from '../images/resources/colorKeep.png'
 import ColorInvest from '../images/resources/colorInvest.png'
 import ColorCompete from '../images/resources/colorCompete.png'
-import { ResourceNames } from '../../util/common_constants/game_two/GameTwoBundler';
+import { ResourceNames } from '../../util/constants/game_two/GameTwoBundler';
 
 const KEEP_LABEL = 'Keep';
 const INVEST_LABEL = 'Invest';

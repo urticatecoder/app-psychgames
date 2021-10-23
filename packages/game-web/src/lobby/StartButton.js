@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import { Variants } from "../util/common_constants/stylings/StylingsBundler";
+import { Variants } from "../util/constants/stylings/StylingsBundler";
 
 const BUTTON_MESSAGE = "Begin Experiment";
 const BUTTON_ID = "timerButton";

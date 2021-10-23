@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography, withStyles } from "@material-ui/core";
 import Timer from "react-compound-timer";
-import { Variants } from "../common_constants/stylings/StylingsBundler";
+import { Variants } from "../constants/stylings/StylingsBundler";
 
 const TURN_TIME = 30 * 1000;
 const LAST_TIME_UNIT = "h";

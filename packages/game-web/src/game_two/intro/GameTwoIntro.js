@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TutorialScreen from '../../tutorials/TutorialScreen';
-import IntroTimer from "../../util/common_components/IntroTimer";
+import IntroTimer from "../../util/components/IntroTimer";
 import Summary from '../../game_one/summary/Summary';
 
 const SHOW_TUTORIAL = true;

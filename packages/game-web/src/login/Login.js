@@ -2,10 +2,10 @@
 import React, {useState} from 'react';
 import {Typography, TextField, Box, Button} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import '../util/common_stylings/FullScreenDiv.css'
+import '../util/stylings/FullScreenDiv.css'
 import LoginButton from './LoginButton'
-import '../util/common_components/Loader.js'
-import Loader from '../util/common_components/Loader.js';
+import '../util/components/Loader.js'
+import Loader from '../util/components/Loader.js';
 
 const WELCOME_MESSAGE = 'Welcome to Rise to the Top!';
 const INSTRUCTIONS_MESSAGE = 'Please enter your Prolific ID.';
@@ -46,7 +46,7 @@ function Login(props) {
     const [invalidCode, setInvalidCode] = useState(NO_CODE);
 
     return(
-        <div className={FULL_DIV}>
+        <div className={'FULL_DIV'}>
             <Typography className={classes.welcomeText} id={TEXT_ID} variant={HEADER_VARIANT}>{WELCOME_MESSAGE}</Typography>
             <Typography className={classes.welcomeInstruction} variant={INSTRUCTIONS_VARIANT}>
                 <Box fontStyle="italic" >{INSTRUCTIONS_MESSAGE}</Box>

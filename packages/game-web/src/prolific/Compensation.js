@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Typography, Box, Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import "../util/common_stylings/FullScreenDiv.css";
-import { Variants } from "../util/common_constants/stylings/StylingsBundler";
+import "../util/stylings/FullScreenDiv.css";
+import { Variants } from "../util/constants/stylings/StylingsBundler";
 import Payout from "./Payout";
 import ProlificDialogues from "./ProlificDialogues";
 

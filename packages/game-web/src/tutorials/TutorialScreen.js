@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { withStyles } from "@material-ui/core/styles";
 import { Typography, Box, Button } from "@material-ui/core";
-import { Variants } from "../util/common_constants/stylings/StylingsBundler";
+import { Variants } from "../util/constants/stylings/StylingsBundler";
 
 const PLAY_VIDEO = true;
 const PAUSE_VIDEO = false;

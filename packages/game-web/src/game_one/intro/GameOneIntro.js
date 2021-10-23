@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MainAvatar from '../../lobby/MainAvatar';
 import TutorialScreen from '../../tutorials/TutorialScreen';
-import IntroTimer from "../../util/common_components/IntroTimer";
+import IntroTimer from "../../util/components/IntroTimer";
 
 const SHOW_TUTORIAL = true;
 

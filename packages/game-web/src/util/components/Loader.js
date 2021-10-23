@@ -1,5 +1,5 @@
 import React from "react"
-import '../common_stylings/Loader.scss'
+import '../stylings/Loader.scss'
 
 function Loader(props) {
     return (
@@ -12,7 +12,5 @@ function Loader(props) {
       </div>
     );
 }
-  
- 
 export default (Loader);
   

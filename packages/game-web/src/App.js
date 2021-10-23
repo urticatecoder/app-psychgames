@@ -1,86 +1,74 @@
 import React, { useState } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Redirect, Route, Switch, useHistory } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Lobby from "./lobby/Lobby";
 import Login from "./login/Login";
-import RefreshChecker from "./util/common_components/RefreshChecker";
+import RefreshChecker from "./util/components/RefreshChecker";
 import GameOne from "./game_one/GameOne";
 import GameTwo from "./game_two/GameTwo";
 import AdminAuth from "./admin_page/AdminAuth";
 import PrivateRoute from "./admin_page/PrivateRoute";
 import AvatarSelector from "../src/avatar_selection/AvatarSelector";
-import PassiveAlert from './passivity/PassiveDialogue';
+import PassiveDialog from './passivity/PassiveDialogue';
 import Compensation from "./prolific/Compensation";
 import GameOneIntro from "./game_one/intro/GameOneIntro";
 import GameTwoIntro from "./game_two/intro/GameTwoIntro";
-import WindowChecker from './util/common_components/WindowChecker';
-import BrowserChecker from './util/common_components/BrowserChecker';
-import Rules from "./util/common_components/Rules";
+import WindowChecker from './util/components/WindowChecker';
+import BrowserChecker from './util/components/BrowserChecker';
+import RulesDialog from "./util/components/RulesDialog";
+
+import Routes from './util/constants/routes';
 
 const INITIAL_CODE = null;
 const INITIAL_CODES = [null, null, null, null, null, null];
-
 const NO_WINNERS = [];
 const NO_LOSERS = [];
 
-const CLASS_NAME = "App";
-
-const HIDE = false;
-
-const LOGIN_ROUTE = "/";
-const LOBBY_ROUTE = "/lobby";
-const AVATAR_SELECTION_ROUTE = "/avatar-selection";
-
-const GAME_ONE_ROUTE = "/game-one";
-const GAME_ONE_INTRO_ROUTE = "/game-one-intro";
-const GAME_TWO_ROUTE = "/game-two";
-const GAME_TWO_INTRO_ROUTE = "/game-two-intro";
-
-const ADMIN_LOGIN_ROUTE = "/adminLogin";
-const ADMIN_PRIVATE_ROUTE = "/admin";
-const COMPENSATION_ROUTE = '/compensation';
-
 const DEFAULT_SELECTION_INDEX = -1;
 const LOGGED_OUT = false;
-
 const INITIAL_WINDOW_WIDTH = window.innerWidth;
 const INITIAL_WINDOW_HEIGHT = window.innerHeight;
-
-const INITIAL_INDEX = -1;
+const INITIAL_FRONTEND_INDEX = -1;
+const INITIAL_BACKEND_INDEX = -1;
 const DEFAULT_EXPERIMENT_ID = -1;
 
 function App() {
   const [loginCode, setLoginCode] = useState(INITIAL_CODE);
   const [allLoginCodes, setAllLoginCodes] = useState(INITIAL_CODES);
-  const [frontendIndex, setFrontendIndex] = useState(INITIAL_INDEX);
-  const [backendIndex, setBackendIndex] = useState(INITIAL_INDEX);
+  const [frontendIndex, setFrontendIndex] = useState(INITIAL_FRONTEND_INDEX);
+  const [backendIndex, setBackendIndex] = useState(INITIAL_BACKEND_INDEX);
   const [winners, setWinners] = useState(NO_WINNERS);
   const [losers, setLosers] = useState(NO_LOSERS);
   const [selectedIndex, setSelectedIndex] = useState(DEFAULT_SELECTION_INDEX);
   const [loggedIn, setLoggedIn] = useState(LOGGED_OUT);
-  const [showRules, setShowRules] = useState(HIDE);
   const [windowWidth, setWindowWidth] = useState(INITIAL_WINDOW_WIDTH);
   const [windowHeight, setWindowHeight] = useState(INITIAL_WINDOW_HEIGHT);
   const [experimentID, setExperimentID] = useState(DEFAULT_EXPERIMENT_ID)
 
   return (
-    <div className={CLASS_NAME}>
-        
+    <div className='app'>
+
         <Router>
-          <PassiveAlert loginCode={loginCode} experimentID={experimentID}/>
-          {/* <RefreshChecker loginCode={loginCode}/> */}
+  
+          {/* Add components which check that the user does not refresh the page; shrink the window too small; or use an incorrect browswer. */}
+          <RefreshChecker loginCode={loginCode}/>
           <WindowChecker setWindowWidth={setWindowWidth} setWindowHeight={setWindowHeight}/>
           <BrowserChecker/>
-          <Rules showRules={showRules} setShowRules={setShowRules}/>
+
+          {/* Add components which show the rules when selected or */}
+          <RulesDialog/>
+          <PassiveDialog loginCode={loginCode} experimentID={experimentID}/>
+
 
           <Route
-            path={LOGIN_ROUTE}
             exact
-            render={() => <Login code={loginCode} setLoginCode={setLoginCode} setShowWarnings={setShowRules}/>}
+            path={Routes.LOGIN}
+            render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}
           />
 
           <Route
-            path={LOBBY_ROUTE}
+            exact
+            path={Routes.LOBBY}
             render={() => (
               <Lobby
                 code={loginCode}
@@ -97,13 +85,13 @@ function App() {
           />
 
           <Route
-            path={AVATAR_SELECTION_ROUTE}
+            path={Routes.AVATAR_SELECTION}
             exact
             render={() => <AvatarSelector selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} windowWidth={windowWidth} windowHeight={windowHeight}/>}
           />
 
           <Route
-            path={GAME_ONE_INTRO_ROUTE}
+            path={Routes.GAME_ONE_INTRO}
             render={() => 
               <GameOneIntro
                 selectedIndex={selectedIndex} 
@@ -113,7 +101,7 @@ function App() {
           />
           
           <Route
-            path={GAME_TWO_INTRO_ROUTE}
+            path={Routes.GAME_TWO_INTRO}
             render={() => 
               <GameTwoIntro
                 winners={winners}
@@ -129,15 +117,15 @@ function App() {
           <Switch>
             <Route
               exact
-              path={ADMIN_LOGIN_ROUTE}
+              path={Routes.ADMIN_LOGIN}
               render={() => <AdminAuth />}
               component={AdminAuth}
             />
-            <PrivateRoute exact path={ADMIN_PRIVATE_ROUTE} />
+            <PrivateRoute exact path={Routes.ADMIN_PRIVATE} />
           </Switch>
 
           <Route
-            path={GAME_TWO_ROUTE}
+            path={Routes.GAME_TWO}
             render={() => (
               <GameTwo
                 loginCode={loginCode}
@@ -154,12 +142,12 @@ function App() {
           />
 
           <Route
-            path={COMPENSATION_ROUTE}
+            path={Routes.COMPENSATION}
             render={() => <Compensation experimentID={experimentID} code={loginCode} windowHeight={windowHeight} windowWidth={windowWidth} />}
           />
 
           <Route
-            path={GAME_ONE_ROUTE}
+            path={Routes.GAME_ONE}
             render={() => (
               <GameOne
                 setWinners={setWinners}

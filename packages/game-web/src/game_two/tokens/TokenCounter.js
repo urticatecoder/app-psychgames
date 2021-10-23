@@ -1,7 +1,7 @@
 import { Box, Typography, withStyles } from '@material-ui/core';
 import React from 'react';
 import Token from './tokens.png'
-import Variants from "../../util/common_constants/stylings/Variants";
+import Variants from "../../util/constants/stylings/Variants";
 
 const IMAGE_HEIGHT = '45vh';
 const IMAGE_WIDTH = '45vh';

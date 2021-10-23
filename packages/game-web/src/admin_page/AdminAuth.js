@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import "../util/common_stylings/FullScreenDiv.css";
+import "../util/stylings/FullScreenDiv.css";
 import axios from "axios";
 
 /* modified based on https://gist.github.com/joelgriffith/43a4a8195c9fd237a222fe84c2b2e2b4 */

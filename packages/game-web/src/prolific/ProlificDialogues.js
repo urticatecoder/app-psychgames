@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import "../util/common_stylings/FullScreenDiv.css";
+import "../util/stylings/FullScreenDiv.css";
 import axios from "axios";
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';

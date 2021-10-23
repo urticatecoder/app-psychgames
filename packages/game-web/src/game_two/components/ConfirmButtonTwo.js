@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, withStyles } from "@material-ui/core";
 import socket from "../../socketClient";
-import { Variants } from "../../util/common_constants/stylings/StylingsBundler";
+import { Variants } from "../../util/constants/stylings/StylingsBundler";
 
 const CONFIRM_CHOICES_TEXT = "Confirm!";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography, withStyles, Box} from "@material-ui/core";
 import Loader from "./Loader";
-import { Variants } from "../common_constants/stylings/StylingsBundler";
+import { Variants } from "../constants/stylings/StylingsBundler";
 
 const WAITING_MESSAGE = "Waiting on others..."
 

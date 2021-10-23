@@ -50,8 +50,6 @@ function handleLogin(props) {
     }).then(function (res) {
         let isValid = res.data.isValid;
         if (isValid) {
-            // CHANGE IF YOU WANT THE RULES TO AUTOMATICALLY SHOW.
-            props.setShowWarnings(HIDE);
             props.history.push("/lobby");
         }
         else props.setInvalidCode(INVALID_CODE);

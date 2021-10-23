@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import "../util/common_stylings/FullScreenDiv.css";
+import "../util/stylings/FullScreenDiv.css";
 import ResourceBar from "./components/ResourceBar";
 import VerticalPlayerGroup from "./components/VerticalPlayerGroup";
 import ResourceButton from "./components/ResourceButton";
 import { Typography, withStyles } from "@material-ui/core";
-import GameTimer from "../util/common_components/GameTimer";
+import GameTimer from "../util/components/GameTimer";
 import ConfirmButtonTwo from "./components/ConfirmButtonTwo";
 import socket from "../socketClient";
 import { withRouter } from "react-router-dom";
@@ -13,10 +13,10 @@ import PayoutOdds from "./components/PayoutOdds";
 import "./results/DelayedBar";
 import DelayedBar from "./results/DelayedBar";
 import GroupBox from "../game_one/components/GroupBox";
-import { ResourceNames } from "../util/common_constants/game_two/GameTwoBundler";
-import { Variants } from '../util/common_constants/stylings/StylingsBundler';
+import { ResourceNames } from "../util/constants/game_two/GameTwoBundler";
+import { Variants } from '../util/constants/stylings/StylingsBundler';
 import getAlerts from './components/getAlerts';
-import WaitingDiv from "../util/common_components/WaitingDiv";
+import WaitingDiv from "../util/components/WaitingDiv";
 import PayoffHelp from "./components/PayoffHelp";
 
 const GROUP_ONE = 1;

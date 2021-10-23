@@ -1,6 +1,5 @@
 import { Redirect, useHistory, withRouter} from "react-router-dom";
 import React, {useEffect} from "react";
-import { Beforeunload } from 'react-beforeunload';
 
 const HOME_ROUTE = "/";
 const LEAVE_MESSAGE = "If you leave, you won't be compensated."

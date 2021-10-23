@@ -1,7 +1,7 @@
 import {
   ResourceNames,
   ResourceColors,
-} from "../common_constants/game_two/GameTwoBundler";
+} from "../constants/game_two/GameTwoBundler";
 
 const BAR = "Bar"
 /**

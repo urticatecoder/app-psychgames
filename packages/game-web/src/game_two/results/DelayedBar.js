@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { withStyles } from "@material-ui/core";
 import { useSpring, animated } from "react-spring";
-import getBackgroundColor from "../../util/common_functions/getResourceBackgroundColor";
+import getBackgroundColor from "../../util/functions/getResourceBackgroundColor";
 
 const INITIAL_HEIGHT = 0;
 const COLON_SPACE = ": ";

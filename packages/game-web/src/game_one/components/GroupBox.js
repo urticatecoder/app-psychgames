@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography, withStyles } from "@material-ui/core";
-import { Variants } from "../../util/common_constants/stylings/StylingsBundler";
+import { Variants } from "../../util/constants/stylings/StylingsBundler";
 
 const GROUP = "Group ";
 const GROUP_ONE = "One";

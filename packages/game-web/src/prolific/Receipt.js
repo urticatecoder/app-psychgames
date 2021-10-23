@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography, Box } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import { Variants } from "../util/common_constants/stylings/StylingsBundler";
+import { Variants } from "../util/constants/stylings/StylingsBundler";
 import FadeIn from 'react-fade-in';
 
 const ITALIC_FONT = "italic";

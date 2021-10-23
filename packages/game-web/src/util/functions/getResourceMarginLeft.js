@@ -1,7 +1,7 @@
 import {
   ResourceNames,
   ResourceMargins,
-} from "../common_constants/game_two/GameTwoBundler";
+} from "../constants/game_two/GameTwoBundler";
 
 /**
  * Function used to get formatting for buttons and bars associated with resources used in Game Two.
