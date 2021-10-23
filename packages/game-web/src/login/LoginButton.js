@@ -1,49 +1,38 @@
 
-import React, { useState, useEffect } from 'react';
-import {Button} from '@material-ui/core';
+import React from 'react';
 import { withRouter } from "react-router-dom";
-import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
+import Button from '@mui/material/Button';
+import HTTP_Routes from '../util/constants/httpRoutes';
 
-
-const BUTTON_MESSAGE = 'Enter Code';
-const BUTTON_ID = 'loginButton';
-const EMPTY_STRING = '';
 const INVALID_CODE = true;
-const SHOW = true;
-const HIDE = false;
 
-const styles = ({
+const styles = {
     loginButton: {
         marginTop: '60px',
         width: '200px',
         height: '50px',
     },
-});
-
+}
 
 function LoginButton(props) {
-
-    const {classes} = props;
-    
     return(
         <div>
             <Button
-                className = {classes.loginButton}
-                id={BUTTON_ID}
                 variant="contained"
-                disabled = {props.code == EMPTY_STRING}
+                disabled = {props.code == ''}
                 color= "primary"
                 onClick={() => handleLogin(props)}
+                sx={{...styles.loginButton}}
                 >
-                {BUTTON_MESSAGE}
+                Enter Code
             </Button>
         </div>
     )
 }
 
 function handleLogin(props) {
-    axios.get('/login-code', {
+    axios.get(HTTP_Routes.LOGIN_CODE, {
         params: {
             loginCode: props.code
         }
@@ -53,8 +42,7 @@ function handleLogin(props) {
             props.history.push("/lobby");
         }
         else props.setInvalidCode(INVALID_CODE);
-    });
-    
+    });  
 }
 
-export default withStyles(styles)(withRouter(LoginButton));
+export default withRouter(LoginButton);

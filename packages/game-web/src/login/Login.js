@@ -1,22 +1,11 @@
 
 import React, {useState} from 'react';
-import {Typography, TextField, Box, Button} from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import '../util/stylings/FullScreenDiv.css'
+
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import LoginButton from './LoginButton'
-import '../util/components/Loader.js'
-import Loader from '../util/components/Loader.js';
 
-const WELCOME_MESSAGE = 'Welcome to Rise to the Top!';
-const INSTRUCTIONS_MESSAGE = 'Please enter your Prolific ID.';
-const DEFAULT_LOGIN = '';
-const LOGIN_LABEL = 'Login Code';
-const FULL_DIV = 'fullDiv';
-const HEADER_VARIANT = 'h3';
-const INSTRUCTIONS_VARIANT = 'h4';
-
-const TEXT_ID = 'loginText';
-const TEXTFIELD_ID = 'loginTextField';
 const NO_CODE = false;
 
 const styles = {
@@ -27,11 +16,11 @@ const styles = {
         marginTop: '1vh',
     },
     loginInput: {
-        fontSize: 50,
+        fontSize: 40,
     },
     loginField: {
         width: '400px',
-        marginTop: '1vh',
+        marginTop: '3vh',
     },
     submitButton: {
         marginTop: '5vh',
@@ -40,34 +29,48 @@ const styles = {
     },
 }
 
+/**
+ * Login page that is shown on the '/' route. Allows users to enter login codes; sends them to the server; and moves into the game if the code is valid.
+ *
+ * @author Eric Doppelt
+ */
 function Login(props) {
 
-    const {classes} = props;
     const [invalidCode, setInvalidCode] = useState(NO_CODE);
 
     return(
-        <div className={'FULL_DIV'}>
-            <Typography className={classes.welcomeText} id={TEXT_ID} variant={HEADER_VARIANT}>{WELCOME_MESSAGE}</Typography>
-            <Typography className={classes.welcomeInstruction} variant={INSTRUCTIONS_VARIANT}>
-                <Box fontStyle="italic" >{INSTRUCTIONS_MESSAGE}</Box>
+        <div>
+
+            <Typography sx={{...styles.welcomeText}} variant='h3'>
+                Welcome to Rise to the Top!
             </Typography>
+
+            <Typography sx={{...styles.welcomeInstruction}} variant='h4'>
+                <Box fontStyle="italic" >
+                    Please enter your Prolific ID.
+                </Box>
+            </Typography>
+
             <TextField
-                className = {classes.loginField}
-                id = {TEXTFIELD_ID}
-                InputProps={{
-                    classes: {
-                      input: classes.loginInput,
-                    },
-                  }}
+                sx={{...styles.loginField}}
+                InputProps={{sx: styles.loginInput}}
+                   
                 value={props.loginCode}
-                label={LOGIN_LABEL}
+                label='Login Code'
+                variant='standard'
                 error={invalidCode}
-                onChange={(e) => props.setLoginCode(e.target.value)}
+                onChange={(event) => props.setLoginCode(event.target.value)}
                 >
             </TextField>
-            <LoginButton code={props.code} invalidCode={invalidCode} setInvalidCode={setInvalidCode} setShowWarnings={props.setShowWarnings}/>
+
+            <LoginButton 
+                code={props.code} 
+                invalidCode={invalidCode} 
+                setInvalidCode={setInvalidCode} 
+                setShowWarnings={props.setShowWarnings}
+            />
         </div>
-    )
+    );
 }
 
-export default withStyles(styles)(Login);
+export default Login;

@@ -8,7 +8,7 @@ import React from 'react';
 import {Route, Redirect} from 'react-router-dom';
 import Admin from "./Admin";
 
-const PrivateRoute = () => {
+const PrivateAdminRoute = () => {
     return (
         // Show the component only when the user is logged in
         // Otherwise, redirect the user to /adminLogin page
@@ -22,4 +22,4 @@ const PrivateRoute = () => {
     );
 };
 
-export default PrivateRoute;
+export default PrivateAdminRoute;

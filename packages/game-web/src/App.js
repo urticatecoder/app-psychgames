@@ -1,21 +1,23 @@
 import React, { useState } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import Lobby from "./lobby/Lobby";
-import Login from "./login/Login";
+import { BrowserRouter as Router, Route} from "react-router-dom";
+
 import RefreshChecker from "./util/components/RefreshChecker";
-import GameOne from "./game_one/GameOne";
-import GameTwo from "./game_two/GameTwo";
-import AdminAuth from "./admin_page/AdminAuth";
-import PrivateRoute from "./admin_page/PrivateRoute";
-import AvatarSelector from "../src/avatar_selection/AvatarSelector";
-import PassiveDialog from './passivity/PassiveDialogue';
-import Compensation from "./prolific/Compensation";
-import GameOneIntro from "./game_one/intro/GameOneIntro";
-import GameTwoIntro from "./game_two/intro/GameTwoIntro";
 import WindowChecker from './util/components/WindowChecker';
 import BrowserChecker from './util/components/BrowserChecker';
 import RulesDialog from "./util/components/RulesDialog";
+import PassiveDialog from './passivity/PassiveDialogue';
+
+import Lobby from "./lobby/Lobby";
+import Login from "./login/Login";
+import GameOne from "./game_one/GameOne";
+import GameTwo from "./game_two/GameTwo";
+import AdminAuth from "./admin_page/AdminAuth";
+import PrivateAdminRoute from "./admin_page/PrivateAdminRoute";
+import AvatarSelector from "../src/avatar_selection/AvatarSelector";
+import Compensation from "./prolific/Compensation";
+import GameOneIntro from "./game_one/intro/GameOneIntro";
+import GameTwoIntro from "./game_two/intro/GameTwoIntro";
 
 import Routes from './util/constants/routes';
 
@@ -32,6 +34,11 @@ const INITIAL_FRONTEND_INDEX = -1;
 const INITIAL_BACKEND_INDEX = -1;
 const DEFAULT_EXPERIMENT_ID = -1;
 
+/**
+ * Root element that communicates with the backend for game state info and routes to each page with info passed via props.
+ *
+ * @author Eric Doppelt
+ */
 function App() {
   const [loginCode, setLoginCode] = useState(INITIAL_CODE);
   const [allLoginCodes, setAllLoginCodes] = useState(INITIAL_CODES);
@@ -55,19 +62,21 @@ function App() {
           <WindowChecker setWindowWidth={setWindowWidth} setWindowHeight={setWindowHeight}/>
           <BrowserChecker/>
 
-          {/* Add components which show the rules when selected or */}
+          {/* Add components which show the rules when selected or to prompt the user to ensure they are still playing.*/}
           <RulesDialog/>
           <PassiveDialog loginCode={loginCode} experimentID={experimentID}/>
 
+          {/* Add routes for the pages in the web app below.*/}
 
+          {/* LOGIN PAGE */}
           <Route
             exact
             path={Routes.LOGIN}
             render={() => <Login code={loginCode} setLoginCode={setLoginCode}/>}
           />
 
+          {/* LOBBY PAGE */}
           <Route
-            exact
             path={Routes.LOBBY}
             render={() => (
               <Lobby
@@ -84,12 +93,14 @@ function App() {
             )}
           />
 
+          {/* AVATAR SELECTION PAGE */}
           <Route
             path={Routes.AVATAR_SELECTION}
             exact
             render={() => <AvatarSelector selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} windowWidth={windowWidth} windowHeight={windowHeight}/>}
           />
 
+          {/* GAME ONE INTRO PAGE */}
           <Route
             path={Routes.GAME_ONE_INTRO}
             render={() => 
@@ -99,53 +110,8 @@ function App() {
               />
             }
           />
-          
-          <Route
-            path={Routes.GAME_TWO_INTRO}
-            render={() => 
-              <GameTwoIntro
-                winners={winners}
-                selectedIndex={selectedIndex}
-                losers={losers}
-                allLoginCodes={allLoginCodes}
-                selectedIndex={selectedIndex}
-                frontendIndex={frontendIndex}
-              />
-            }
-          />   
 
-          <Switch>
-            <Route
-              exact
-              path={Routes.ADMIN_LOGIN}
-              render={() => <AdminAuth />}
-              component={AdminAuth}
-            />
-            <PrivateRoute exact path={Routes.ADMIN_PRIVATE} />
-          </Switch>
-
-          <Route
-            path={Routes.GAME_TWO}
-            render={() => (
-              <GameTwo
-                loginCode={loginCode}
-                winners={winners}
-                losers={losers}
-                allLoginCodes={allLoginCodes}
-                selectedIndex={selectedIndex}
-                windowWidth={windowWidth}
-                windowHeight={windowHeight}
-                experimentID={experimentID}
-                frontendIndex={frontendIndex}
-              />
-            )}
-          />
-
-          <Route
-            path={Routes.COMPENSATION}
-            render={() => <Compensation experimentID={experimentID} code={loginCode} windowHeight={windowHeight} windowWidth={windowWidth} />}
-          />
-
+          {/* GAME ONE PAGE */}
           <Route
             path={Routes.GAME_ONE}
             render={() => (
@@ -163,6 +129,56 @@ function App() {
               />
             )}
           />
+          
+          {/* GAME TWO INTRO PAGE */}
+          <Route
+            path={Routes.GAME_TWO_INTRO}
+            render={() => 
+              <GameTwoIntro
+                winners={winners}
+                selectedIndex={selectedIndex}
+                losers={losers}
+                allLoginCodes={allLoginCodes}
+                selectedIndex={selectedIndex}
+                frontendIndex={frontendIndex}
+              />
+            }
+          />   
+
+          {/* GAME TWO PAGE */}
+          <Route
+            path={Routes.GAME_TWO}
+            render={() => (
+              <GameTwo
+                loginCode={loginCode}
+                winners={winners}
+                losers={losers}
+                allLoginCodes={allLoginCodes}
+                selectedIndex={selectedIndex}
+                windowWidth={windowWidth}
+                windowHeight={windowHeight}
+                experimentID={experimentID}
+                frontendIndex={frontendIndex}
+              />
+            )}
+          />
+
+          {/* COMPENSATION PAGE */}
+          <Route
+            path={Routes.COMPENSATION}
+            render={() => <Compensation experimentID={experimentID} code={loginCode} windowHeight={windowHeight} windowWidth={windowWidth} />}
+          />
+
+          {/* ADMIN LOGIN PAGE */}
+          <Route
+              exact
+              path={Routes.ADMIN_LOGIN}
+              render={() => <AdminAuth />}
+              component={AdminAuth}
+          />
+
+          {/* ADMIN PAGE -- USES PRIVATE ROUTE TO REDIRECT IF NOT ADMIN LOGIN.*/}
+          <PrivateAdminRoute exact path={Routes.ADMIN_PRIVATE} />
         </Router>
     </div>
   );
