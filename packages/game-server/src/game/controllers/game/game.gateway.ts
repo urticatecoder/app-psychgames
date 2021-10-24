@@ -1,5 +1,12 @@
 import { ServerEvents } from "@dpg/constants";
-import { GameModel, PlayerModel } from "@dpg/types";
+import {
+  EnterGameRequest,
+  GameModel,
+  PlayerModel,
+  requestTypes,
+  StartGameRequest,
+} from "@dpg/types";
+import { UsePipes, ValidationPipe } from "@nestjs/common";
 import {
   ConnectedSocket,
   MessageBody,
@@ -7,11 +14,20 @@ import {
   OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
+  WsException,
 } from "@nestjs/websockets";
+import { plainToClass } from "class-transformer";
+import { validate, ValidationError } from "class-validator";
 import { Server, Socket } from "socket.io";
 import { GameManagerService } from "./../../services/game-manager/game-manager.service.js";
 
-// TODO: validate requests
+function createValidationPipe() {
+  return new ValidationPipe({
+    transform: true,
+    whitelist: true,
+    forbidNonWhitelisted: true,
+  });
+}
 @WebSocketGateway({ namespace: "game" })
 export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
   constructor(private gameManager: GameManagerService) {}
@@ -48,8 +64,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
    * a valid ID.
    */
   @SubscribeMessage(ServerEvents.ENTER_GAME)
+  @UsePipes(createValidationPipe())
   handleInitializeSession(
-    @MessageBody() data: PlayerModel.EnterGameRequest,
+    @MessageBody() data: EnterGameRequest,
     @ConnectedSocket() socket: Socket
   ): PlayerModel.EnterGameResponse {
     if (!data.id) {
@@ -88,8 +105,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
    * TODO: define error interface so client can give descriptive errors
    */
   @SubscribeMessage(ServerEvents.START_GAME)
+  @UsePipes(createValidationPipe())
   handleGameRequest(
-    @MessageBody() data: PlayerModel.StartGameRequest,
+    @MessageBody() data: StartGameRequest,
     @ConnectedSocket() socket: Socket
   ): PlayerModel.StartGameResponse {
     const id = this.gameManager.attachSocket(socket.id, data.playerMetadata);
@@ -116,10 +134,37 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
    * directly after recieving a game action.
    */
   @SubscribeMessage(ServerEvents.GAME_ACTION)
-  handleAction(
-    @MessageBody() data: GameModel.Action,
+  async handleAction(
+    @MessageBody() data: { [key: string]: unknown },
     @ConnectedSocket() socket: Socket
-  ): void {
-    this.gameManager.submitAction(socket.id, data);
+  ) {
+    /**
+     * class-transformer and class-validator don't have proper top-level polymorphism,
+     * so we need to determine the correct class and validate it manually.
+     */
+    const type = typeof data["type"] === "string" ? data["type"] : undefined;
+    const requestClass = type ? requestTypes[type] : undefined;
+    if (!requestClass) {
+      throw new WsException(`invalid request type; ${type} was not recognized`);
+    }
+
+    const requestInstance = <{ [key: string]: unknown } | undefined>(
+      plainToClass(requestClass, data)
+    );
+    if (!requestInstance) {
+      throw new WsException(
+        "the data could not be interpreted; please check your schema"
+      );
+    }
+
+    try {
+      await validate(requestInstance);
+      this.gameManager.submitAction(socket.id, requestInstance);
+    } catch (errors) {
+      if (errors instanceof ValidationError) {
+      } else {
+        throw new WsException("an unknown error occurred");
+      }
+    }
   }
 }

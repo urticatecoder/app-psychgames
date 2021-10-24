@@ -2008,6 +2008,8 @@ __metadata:
     "@types/uuid": ^8.3.1
     "@typescript-eslint/eslint-plugin": ^4.28.2
     "@typescript-eslint/parser": ^4.28.2
+    class-transformer: ^0.4.0
+    class-validator: ^0.13.1
     eslint: ^7.30.0
     eslint-config-prettier: ^8.3.0
     jest: ^27.0.6

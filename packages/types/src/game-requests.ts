@@ -1,4 +1,4 @@
-import { Type } from "class-transformer";
+import { ClassConstructor, Type } from "class-transformer";
 import {
   Allow,
   IsInt,
@@ -82,3 +82,9 @@ export class GameTwoTurnRequest extends Round {
   @Type(() => TokenDistribution)
   tokenDistribution: TokenDistribution;
 }
+
+export const requestTypes: { [key: string]: ClassConstructor<unknown> } = {
+  lobby_avatar: LobbyAvatarRequest,
+  "game-one_turn": GameOneTurnRequest,
+  "game-two_turn": GameTwoTurnRequest,
+};
