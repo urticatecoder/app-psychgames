@@ -1,7 +1,41 @@
 import { Type } from "class-transformer";
-import { IsInt, IsPositive, IsUUID, ValidateNested } from "class-validator";
+import {
+  IsInt,
+  IsOptional,
+  IsPositive,
+  IsString,
+  IsUUID,
+  ValidateNested,
+} from "class-validator";
+import type { GameTwoModel } from "./game.model";
 import type { PlayerModel } from "./player.model";
 
+/** Game negotiation requests **/
+
+export class EnterGameRequest {
+  @IsUUID("4")
+  @IsOptional()
+  id?: PlayerModel.Id;
+}
+
+class PlayerMetadata implements PlayerModel.PlayerMetadata {
+  @IsString()
+  @IsOptional()
+  prolificId?: string;
+
+  @IsString()
+  @IsOptional()
+  lobbyId?: string;
+}
+
+export class StartGameRequest {
+  @ValidateNested()
+  @IsOptional()
+  @Type(() => PlayerMetadata)
+  playerMetadata?: PlayerMetadata;
+}
+
+/** Game actions **/
 export class LobbyAvatarRequest {
   type: "lobby_avatar";
 
@@ -23,7 +57,7 @@ export class GameOneTurnRequest extends Round {
   playersSelected: PlayerModel.Id[];
 }
 
-class TokenDistribution {
+class TokenDistribution implements GameTwoModel.TokenDistribution {
   @IsInt()
   @IsPositive()
   compete: number;

@@ -1,7 +1,7 @@
 import type {
-  LobbyAvatarRequest,
   GameOneTurnRequest,
   GameTwoTurnRequest,
+  LobbyAvatarRequest,
 } from "./game-requests";
 import type { PlayerModel } from "./player.model";
 

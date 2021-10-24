@@ -1,3 +1,5 @@
+import type { EnterGameRequest, StartGameRequest } from "./game-requests";
+
 export namespace PlayerModel {
   /**
    * A v4 RFC4122 UUID; don't confuse this with user entered
@@ -17,9 +19,7 @@ export namespace PlayerModel {
   /**
    * A request to enter an existing game with an ID
    */
-  export type EnterGameRequest = {
-    id?: Id;
-  };
+  export type EnterGameRequest = typeof EnterGameRequest;
 
   /**
    * The enter response; if not in game, the client must negotiate
@@ -38,9 +38,7 @@ export namespace PlayerModel {
    * If the game request is accepted, the client will recieve a state update message;
    * make sure you have your subscriptionset up *before* you initiate a session
    */
-  export type StartGameRequest = {
-    playerMetadata?: PlayerMetadata;
-  };
+  export type StartGameRequest = typeof StartGameRequest;
 
   /**
    * A new ID assigned for the requested game.
