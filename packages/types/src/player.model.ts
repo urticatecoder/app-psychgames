@@ -1,4 +1,7 @@
-import type { EnterGameRequest, StartGameRequest } from "./game-requests";
+import type {
+  EnterGameRequest as EGRClass,
+  StartGameRequest as SGRClass,
+} from "./game-requests";
 
 export namespace PlayerModel {
   /**
@@ -19,7 +22,7 @@ export namespace PlayerModel {
   /**
    * A request to enter an existing game with an ID
    */
-  export type EnterGameRequest = typeof EnterGameRequest;
+  export type EnterGameRequest = EGRClass;
 
   /**
    * The enter response; if not in game, the client must negotiate
@@ -38,7 +41,7 @@ export namespace PlayerModel {
    * If the game request is accepted, the client will recieve a state update message;
    * make sure you have your subscriptionset up *before* you initiate a session
    */
-  export type StartGameRequest = typeof StartGameRequest;
+  export type StartGameRequest = SGRClass;
 
   /**
    * A new ID assigned for the requested game.

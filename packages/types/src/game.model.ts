@@ -35,7 +35,7 @@ export namespace GameModel {
 }
 
 export namespace LobbyModel {
-  export type AvatarRequest = typeof LobbyAvatarRequest;
+  export type AvatarRequest = LobbyAvatarRequest;
 
   export type State = {
     type: "lobby";
@@ -44,7 +44,7 @@ export namespace LobbyModel {
 }
 
 export namespace GameOneModel {
-  export type Turn = typeof GameOneTurnRequest;
+  export type Turn = GameOneTurnRequest;
 
   export type State = {
     type: "game-one_state";
@@ -103,7 +103,7 @@ export namespace GameOneModel {
 }
 
 export namespace GameTwoModel {
-  export type Turn = typeof GameTwoTurnRequest;
+  export type Turn = GameTwoTurnRequest;
 
   export type State = {
     type: "game-two_state";
