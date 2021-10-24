@@ -2,8 +2,9 @@
   "extends": "../tsconfig.package.json",
   "compilerOptions": {
     "outDir": "dist",
-    "emitDeclarationOnly": true,
-    "declarationDir": "dist"
+    "declarationDir": "dist",
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false
   },
   "include": ["./**/*.d.ts", "./**/*.ts"],
   "exclude": ["dist"]

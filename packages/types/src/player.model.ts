@@ -5,7 +5,7 @@ export namespace PlayerModel {
    *
    * ex: 1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed
    */
-  export type ID = string;
+  export type Id = string;
 
   /**
    * Required player data
@@ -18,7 +18,7 @@ export namespace PlayerModel {
    * A request to enter an existing game with an ID
    */
   export type EnterGameRequest = {
-    id?: ID;
+    id?: Id;
   };
 
   /**
@@ -46,7 +46,7 @@ export namespace PlayerModel {
    * A new ID assigned for the requested game.
    */
   export type StartGameResponse = {
-    id: ID;
+    id: Id;
   };
 
   export type PlayerMetadata = {
