@@ -1,5 +1,6 @@
 import { Type } from "class-transformer";
 import {
+  Allow,
   IsInt,
   IsOptional,
   IsPositive,
@@ -37,6 +38,7 @@ export class StartGameRequest {
 
 /** Game actions **/
 export class LobbyAvatarRequest {
+  @Allow()
   type: "lobby_avatar";
 
   @IsInt()
@@ -51,6 +53,7 @@ class Round {
 }
 
 export class GameOneTurnRequest extends Round {
+  @Allow()
   type: "game-one_turn";
 
   @IsUUID("4", { each: true })
@@ -72,6 +75,7 @@ class TokenDistribution implements GameTwoModel.TokenDistribution {
 }
 
 export class GameTwoTurnRequest extends Round {
+  @Allow()
   type: "game-two_turn";
 
   @ValidateNested()
