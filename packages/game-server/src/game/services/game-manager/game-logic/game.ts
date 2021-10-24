@@ -9,13 +9,13 @@ import { Lobby } from "./lobby.js";
 
 export abstract class AGame {
   abstract get constants(): GameConstants;
-  abstract get players(): PlayerModel.ID[];
-  abstract get playerData(): PlayerModel.Player[];
-  abstract get playerMap(): Map<PlayerModel.ID, PlayerModel.Player>;
+  abstract get players(): PlayerModel.Id[];
+  abstract get playerData(): GameModel.Player[];
+  abstract get playerMap(): Map<PlayerModel.Id, GameModel.Player>;
   abstract get state(): GameModel.State;
 
   abstract submitAction(
-    playerID: PlayerModel.ID,
+    playerID: PlayerModel.Id,
     action: GameModel.Action
   ): void;
 
@@ -30,7 +30,7 @@ export class Game extends AGame {
   private gameCount: number;
   private currentGame: GameInstance;
   private games: GameConstructor[] = [Lobby, GameOne, GameTwo];
-  public playerMap: Map<PlayerModel.ID, PlayerModel.Player>;
+  public playerMap: Map<PlayerModel.Id, GameModel.Player>;
 
   constructor(
     private emitStateCallback: (state: GameModel.State) => void,
@@ -89,7 +89,7 @@ export class Game extends AGame {
     this.currentGame = new this.games[this.gameCount](this, initialState);
   }
 
-  submitAction(playerID: PlayerModel.ID, action: GameModel.Action): void {
+  submitAction(playerID: PlayerModel.Id, action: GameModel.Action): void {
     // TODO: validate playerID
     // TODO: validate action data
     this.currentGame.submitAction(playerID, action);
@@ -99,11 +99,11 @@ export class Game extends AGame {
     return this.makeState(this.currentGame.state);
   }
 
-  get players(): PlayerModel.ID[] {
+  get players(): PlayerModel.Id[] {
     return [...this.playerMap.keys()];
   }
 
-  get playerData(): PlayerModel.Player[] {
+  get playerData(): GameModel.Player[] {
     return [...this.playerMap.values()];
   }
 
@@ -123,7 +123,7 @@ export class Game extends AGame {
   private makeState(gameState: GameModel.GameState) {
     const state: GameModel.State = {
       timestamp: new Date(),
-      playerData: this.playerData,
+      playerData: Object.fromEntries(this.playerMap),
       ...gameState,
     };
 
@@ -132,9 +132,9 @@ export class Game extends AGame {
 }
 
 export class GameError extends WsException {
-  playerID: PlayerModel.ID;
+  playerID: PlayerModel.Id;
 
-  constructor(message: string, playerID: PlayerModel.ID) {
+  constructor(message: string, playerID: PlayerModel.Id) {
     super(`${playerID}: ${message}`);
     this.playerID = playerID;
   }
@@ -145,6 +145,6 @@ export interface GameConstructor {
 }
 
 export interface GameInstance {
-  submitAction(playerID: PlayerModel.ID, action: GameModel.GameAction): void;
+  submitAction(playerID: PlayerModel.Id, action: GameModel.GameAction): void;
   get state(): GameModel.GameState;
 }

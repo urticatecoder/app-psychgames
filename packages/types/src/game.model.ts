@@ -42,7 +42,11 @@ export namespace GameModel {
    */
   export type State = GameState & {
     timestamp: Date | string;
-    playerData: PlayerMap<PlayerModel.Data>;
+    playerData: PlayerMap<Player>;
+  };
+
+  export type Player = PlayerModel.Data & {
+    id: PlayerModel.Id;
   };
 }
 
