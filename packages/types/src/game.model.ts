@@ -11,6 +11,18 @@ export type PlayerMap<T> = {
 
 export namespace GameModel {
   /**
+   * Combination of game actions; this is only used to represent
+   * game-dependent action data. Game-independent action data
+   * is included in { Action }, which is what the client should use.
+   */
+  export type GameAction =
+    | LobbyAvatarRequest
+    | GameOneTurnRequest
+    | GameTwoTurnRequest;
+
+  export type Action = GameAction;
+
+  /**
    * Combination of game states; this is only used to represent
    * game-dependent state. Game-independent state is included in
    * { State }, which is what the client should use.
