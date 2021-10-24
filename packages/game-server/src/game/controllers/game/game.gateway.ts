@@ -159,7 +159,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
 
     try {
       await validate(requestInstance);
-      this.gameManager.submitAction(socket.id, requestInstance);
+      const validatedData = <GameModel.Action>(<unknown>requestInstance);
+      this.gameManager.submitAction(socket.id, validatedData);
     } catch (errors) {
       if (errors instanceof ValidationError) {
       } else {

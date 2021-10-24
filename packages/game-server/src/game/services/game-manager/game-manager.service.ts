@@ -24,7 +24,7 @@ export class GameManagerService {
     this.server = server;
   }
 
-  attachPlayer(socketID: SocketID, playerID: PlayerModel.ID): boolean {
+  attachPlayer(socketID: SocketID, playerID: PlayerModel.Id): boolean {
     const game = this.getPlayerGame(playerID);
     if (!game) return false;
     this.addPlayerToGame(socketID, playerID, game);
@@ -34,7 +34,7 @@ export class GameManagerService {
   attachSocket(
     socketID: SocketID,
     playerInfo?: PlayerModel.PlayerMetadata
-  ): PlayerModel.ID {
+  ): PlayerModel.Id {
     // TODO: Use metadata to join lobby
     for (const game of this.games) {
       if (!game.instance.isJoinable()) continue;
@@ -107,7 +107,7 @@ export class GameManagerService {
   }
 
   private emitStateTo(
-    filter: GameID | PlayerModel.ID,
+    filter: GameID | PlayerModel.Id,
     state: GameModel.State
   ): void {
     this.server?.to(filter).emit(AppEvents.STATE_UPDATE, state);
@@ -120,7 +120,7 @@ export class GameManagerService {
     return undefined;
   }
 
-  private getPlayerGame(playerID: PlayerModel.ID): ManagedGame | undefined {
+  private getPlayerGame(playerID: PlayerModel.Id): ManagedGame | undefined {
     for (const game of this.games) {
       if (game.instance.playerMap.has(playerID)) return game;
     }
@@ -129,7 +129,7 @@ export class GameManagerService {
 
   private addPlayerToGame(
     socketID: SocketID,
-    playerID: PlayerModel.ID,
+    playerID: PlayerModel.Id,
     game: ManagedGame
   ) {
     // Sanity check
@@ -145,7 +145,7 @@ export class GameManagerService {
     this.emitStateTo(socketID, game.instance.state);
   }
 
-  private findAvailablePlayerID(game: ManagedGame): PlayerModel.ID | undefined {
+  private findAvailablePlayerID(game: ManagedGame): PlayerModel.Id | undefined {
     for (const player of game.instance.playerMap.keys()) {
       if (!game.activePlayers.hasR(player)) return player;
     }
@@ -157,7 +157,7 @@ export class ManagedGame {
   instance: AGame;
   humanID: string;
   id: string;
-  activePlayers: OneToOneMap<SocketID, PlayerModel.ID>;
+  activePlayers: OneToOneMap<SocketID, PlayerModel.Id>;
 
   constructor(game: AGame, id: string) {
     this.instance = game;
