@@ -5,10 +5,7 @@ import type {
 } from "./game-requests";
 import type { PlayerModel } from "./player.model";
 
-export type PlayerMap<T> = {
-  [key: PlayerModel.Id]: T;
-};
-
+type IdObj = { id: PlayerModel.Id };
 export namespace GameModel {
   /**
    * Combination of game actions; this is only used to represent
@@ -42,12 +39,10 @@ export namespace GameModel {
    */
   export type State = GameState & {
     timestamp: Date | string;
-    playerData: PlayerMap<Player>;
+    playerData: Player[];
   };
 
-  export type Player = PlayerModel.Data & {
-    id: PlayerModel.Id;
-  };
+  export type Player = PlayerModel.Data & IdObj;
 }
 
 export namespace LobbyModel {
@@ -95,15 +90,10 @@ export namespace GameOneModel {
      * If there is only one entry in the array, then it is also round 0
      * and there is no animation step to perform.
      */
-    bonusGroups: PlayerMap<PlayerPosition>[];
-
-    /**
-     * Contains the list of players that selected a given player.
-     */
-    playersSelectedBy: PlayerMap<PlayerModel.Id[]>;
+    bonusGroups: PlayerPosition[][];
   };
 
-  export type PlayerPosition = {
+  export type PlayerPosition = IdObj & {
     position: number;
     turnBonus?: TurnBonus;
   };
@@ -123,7 +113,7 @@ export namespace GameTwoModel {
 
   export type State = {
     type: "game-two_state";
-    playerTeam: PlayerMap<"winners" | "losers">;
+    playerTeams: IdObj & { team: "winners" | "losers" };
     round: number;
     roundStartTime: Date | string;
     roundEndTime: Date | string;

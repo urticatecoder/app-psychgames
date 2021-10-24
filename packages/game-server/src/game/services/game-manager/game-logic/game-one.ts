@@ -3,9 +3,8 @@ import { AGame, GameError, GameInstance } from "./game.js";
 
 const WIN_POSITION = 1;
 const LOSE_POSITION = -1;
-
 export class GameOne implements GameInstance {
-  private selections: Map<PlayerModel.ID, Set<PlayerModel.ID>>;
+  private selections: Map<PlayerModel.Id, Set<PlayerModel.Id>>;
 
   public state: GameOneModel.State;
 
@@ -14,18 +13,21 @@ export class GameOne implements GameInstance {
     const playerPositions: GameOneModel.PlayerPosition[] = [];
     game.players.forEach((player) => {
       playerPositions.push({
-        player: player,
+        id: player,
         position: 0,
       });
     });
 
+    const bonusGroups = [];
+    bonusGroups.push(playerPositions);
+
     this.state = {
-      type: "game-one",
+      type: "game-one_state",
       round: 0,
       // will be set on round start
       roundStartTime: new Date(),
       roundEndTime: new Date(),
-      playerPositions,
+      bonusGroups,
     };
 
     this.beginRound();
@@ -50,7 +52,7 @@ export class GameOne implements GameInstance {
 
     this.selections.set(
       playerID,
-      new Set(action.playersSelected.map((player: PlayerModel.ID) => player))
+      new Set(action.playersSelected.map((player: PlayerModel.Id) => player))
     );
   }
 
@@ -78,7 +80,6 @@ export class GameOne implements GameInstance {
     this.state = {
       ...this.state,
       round: this.state.round + 1,
-      playerPositions,
     };
 
     if (this.isRoundOver()) {
@@ -88,16 +89,20 @@ export class GameOne implements GameInstance {
     }
   }
 
+  private get playerPositions() {
+    return this.state.bonusGroups[this.state.bonusGroups.length - 1];
+  }
+
   private calculatePlayerPositions(): GameOneModel.PlayerPosition[] {
-    const rawPositions = this.state.playerPositions.map(
+    const rawPositions = this.playerPositions.map(
       (playerPosition: GameOneModel.PlayerPosition) =>
         this.calculatePlayerPosition(playerPosition)
     );
 
     // normalize positions
     const oldAveragePosition =
-      this.state.playerPositions.reduce((sum, curr) => sum + curr.position, 0) /
-      this.state.playerPositions.length;
+      this.playerPositions.reduce((sum, curr) => sum + curr.position, 0) /
+      this.playerPositions.length;
 
     const newAveragePosition =
       rawPositions.reduce((sum, curr) => sum + curr.position, 0) /
@@ -128,8 +133,8 @@ export class GameOne implements GameInstance {
     playerPosition: GameOneModel.PlayerPosition
   ): GameOneModel.PlayerPosition {
     // first, who selected this player?
-    const playerID = playerPosition.player;
-    const selectedBy: PlayerModel.ID[] = [];
+    const playerID = playerPosition.id;
+    const selectedBy: PlayerModel.Id[] = [];
     this.selections.forEach((selections, otherPlayerID) => {
       if (selections.has(playerID)) selectedBy.push(otherPlayerID);
     });
@@ -138,7 +143,7 @@ export class GameOne implements GameInstance {
     if (selectedBy.length === 0) {
       return {
         ...playerPosition,
-        previousTurnBonus: "none",
+        turnBonus: "none",
       };
     }
 
@@ -193,7 +198,7 @@ export class GameOne implements GameInstance {
     return {
       ...playerPosition,
       position: playerPosition.position + positionChange,
-      previousTurnBonus: turnBonus,
+      turnBonus: turnBonus,
     };
   }
 
@@ -202,7 +207,7 @@ export class GameOne implements GameInstance {
       return true;
     }
 
-    const playersAtBoundaries = this.state.playerPositions.reduce(
+    const playersAtBoundaries = this.playerPositions.reduce(
       (areAtBoundary, playerPosition) =>
         areAtBoundary &&
         (playerPosition.position === WIN_POSITION ||
@@ -224,7 +229,7 @@ export class GameOne implements GameInstance {
         const c2 = Math.round(Math.random() * (players.length - 1));
 
         this.submitAction(player, {
-          type: "game-one--turn",
+          type: "game-one_turn",
           round: this.state.round,
           playersSelected: [players[c1], players[c2]],
         });

@@ -123,7 +123,7 @@ export class Game extends AGame {
   private makeState(gameState: GameModel.GameState) {
     const state: GameModel.State = {
       timestamp: new Date(),
-      playerData: Object.fromEntries(this.playerMap),
+      playerData: this.playerData,
       ...gameState,
     };
 
