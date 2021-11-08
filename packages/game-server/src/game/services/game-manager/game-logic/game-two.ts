@@ -1,10 +1,14 @@
-import { GameTwoModel } from "@dpg/types";
+import { GameTwoModel, PlayerModel } from "@dpg/types";
 import { AGame, GameInstance } from "./game.js";
 
 export class GameTwo implements GameInstance {
   public state: GameTwoModel.State;
 
-  constructor(private game: AGame) {
+  constructor(
+    private game: AGame,
+    private losers: PlayerModel.Id[],
+    private winners: PlayerModel.Id[]
+  ) {
     throw new Error("Method not implemented.");
   }
 

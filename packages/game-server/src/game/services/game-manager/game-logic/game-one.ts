@@ -1,6 +1,7 @@
 import { GameOneModel, PlayerModel } from "@dpg/types";
 import { GameOneConstants } from "../constants";
 import { AGame, GameError, GameInstance } from "./game";
+import { GameTwo } from "./game-two";
 
 // These constants are here for readability, but modifying them
 // WILL BREAK THE GAME. The underlying math relies on these constants
@@ -190,7 +191,18 @@ export class GameOne implements GameInstance {
   }
 
   private endGame() {
-    this.game.goToNextGame();
+    const sortedPositions = this.currentPositions.sort(
+      (a, b) => a.position - b.position
+    );
+
+    const losers = sortedPositions
+      .slice(0, sortedPositions.length / 2)
+      .map((pos) => pos.id);
+    const winners = sortedPositions
+      .slice(sortedPositions.length / 2)
+      .map((pos) => pos.id);
+
+    this.game.goToGame(new GameTwo(this.game, losers, winners));
   }
 }
 

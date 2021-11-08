@@ -1,4 +1,5 @@
-import { GameModel, LobbyModel, PlayerModel } from "@dpg/types";
+import { LobbyModel } from "@dpg/types";
+import { GameOne } from "./game-one.js";
 import { AGame, GameInstance } from "./game.js";
 
 export class Lobby implements GameInstance {
@@ -12,7 +13,10 @@ export class Lobby implements GameInstance {
       lobbyEndTime: lobbyEndTime,
     };
 
-    setTimeout(() => this.game.goToNextGame(), game.constants.lobbyTime);
+    setTimeout(
+      () => this.game.goToGame(new GameOne(this.game)),
+      game.constants.lobbyTime
+    );
   }
 
   submitAction(playerID: string, action: LobbyModel.AvatarRequest): void {

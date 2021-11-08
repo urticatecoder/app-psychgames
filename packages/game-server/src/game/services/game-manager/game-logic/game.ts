@@ -23,13 +23,12 @@ export abstract class AGame {
 
   abstract emitState(): void;
 
-  abstract goToNextGame(initialState?: GameModel.GameState): void;
+  abstract goToGame(game: GameInstance): void;
+  abstract endGame(): void;
 }
 
 export class Game extends AGame {
-  private gameCount: number;
   private currentGame: GameInstance;
-  private games: GameConstructor[] = [Lobby, GameOne, GameTwo];
   public playerMap: Map<PlayerModel.Id, GameModel.Player>;
 
   constructor(
@@ -75,18 +74,11 @@ export class Game extends AGame {
       });
     }
 
-    this.gameCount = 0;
-    this.currentGame = new this.games[this.gameCount](this, undefined);
+    this.currentGame = new Lobby(this);
   }
 
-  goToNextGame(initialState?: GameModel.GameState): void {
-    this.gameCount++;
-    if (this.gameCount === this.games.length) {
-      this.endGame();
-      return;
-    }
-
-    this.currentGame = new this.games[this.gameCount](this, initialState);
+  goToGame(game: GameInstance): void {
+    this.currentGame = game;
   }
 
   submitAction(playerID: PlayerModel.Id, action: GameModel.Action): void {
@@ -112,10 +104,10 @@ export class Game extends AGame {
   }
 
   isJoinable(): boolean {
-    return this.gameCount === 0;
+    return this.currentGame instanceof Lobby;
   }
 
-  private endGame() {
+  endGame() {
     // TODO: do cleanup, database stuff, etc. here
     this.destroyGame();
   }
@@ -138,10 +130,6 @@ export class GameError extends WsException {
     super(`${playerID}: ${message}`);
     this.playerID = playerID;
   }
-}
-
-export interface GameConstructor {
-  new (game: AGame, initialState?: GameModel.GameState): GameInstance;
 }
 
 export interface GameInstance {
