@@ -15,7 +15,7 @@ export class Lobby implements GameInstance {
     setTimeout(() => this.game.goToNextGame(), game.constants.lobbyTime);
   }
 
-  submitAction(playerID: string, action: LobbyModel.PlayerData): void {
+  submitAction(playerID: string, action: LobbyModel.AvatarRequest): void {
     this.game.playerMap.set(playerID, {
       id: playerID,
       avatar: action.avatar,
