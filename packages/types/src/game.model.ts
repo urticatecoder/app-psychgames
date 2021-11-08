@@ -113,19 +113,14 @@ export namespace GameTwoModel {
 
   export type State = {
     type: "game-two_state";
-    playerTeams: IdObj & { team: "winners" | "losers" };
+    winners: PlayerModel.Id[];
+    losers: PlayerModel.Id[];
     round: number;
     roundStartTime: Date | string;
     roundEndTime: Date | string;
     investCoefficient: number;
     competeCoefficient: number;
     previousRoundResults?: PreviousRoundResults;
-  };
-
-  export type TokenDistribution = {
-    compete: number;
-    invest: number;
-    keep: number;
   };
 
   export type PreviousRoundResults = {
@@ -139,5 +134,11 @@ export namespace GameTwoModel {
     competePenalty: number;
     netTokens: number;
     netMoney: number;
+  };
+
+  export type TokenDistribution = {
+    compete: number;
+    invest: number;
+    keep: number;
   };
 }
