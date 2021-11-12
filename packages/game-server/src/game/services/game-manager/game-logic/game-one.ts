@@ -1,7 +1,8 @@
-import { GameOneModel, PlayerModel } from "@dpg/types";
+import { GameModel, GameOneModel, PlayerModel } from "@dpg/types";
 import { GameOneConstants } from "../constants";
 import { AGame, GameError, GameInstance } from "./game";
 import { GameTwo } from "./game-two";
+import { getRandomItem } from "@dpg/utils";
 
 // These constants are here for readability, but modifying them
 // WILL BREAK THE GAME. The underlying math relies on these constants
@@ -39,9 +40,13 @@ export class GameOne implements GameInstance {
     this.beginRound();
   }
 
-  submitAction(playerID: string, action: GameOneModel.Turn): void {
-    this.validateAction(playerID, action);
-    this.selections.set(playerID, new Set(action.playersSelected));
+  getState(player: PlayerModel.Id): GameModel.GameState {
+    return this.state;
+  }
+
+  submitAction(playerId: string, action: GameOneModel.Turn): void {
+    this.validateAction(playerId, action);
+    this.selections.set(playerId, new Set(action.playersSelected));
   }
 
   private get currentPositions() {
@@ -55,14 +60,22 @@ export class GameOne implements GameInstance {
   /**
    * Throws an appropriate error if an action is invalid, otherwise does nothing.
    */
-  private validateAction(playerID: string, action: GameOneModel.Turn): void {
+  private validateAction(playerId: string, action: GameOneModel.Turn): void {
+    // The action should be of the correct type
+    if (action.type != "game-one_turn") {
+      throw new GameError(
+        `The action type ${action.type} does not match the expected type game-one_turn`,
+        playerId
+      );
+    }
+
     // The action must be for the current round
     if (action.round !== this.state.round) {
       throw new GameError(
         `Expected an action for round ${this.state.round}, recieved ${action.round}. 
         This may be because you submitted an action just as the round advanced, 
         in which case this error is safe.`,
-        playerID
+        playerId
       );
     }
 
@@ -70,13 +83,13 @@ export class GameOne implements GameInstance {
     if (action.playersSelected.length > MAX_SELECTIONS) {
       throw new GameError(
         `Expected a maximum of ${MAX_SELECTIONS} selected players, recieved ${action.playersSelected.length}`,
-        playerID
+        playerId
       );
     }
 
     // A player may not select themselves
-    if (action.playersSelected.includes(playerID)) {
-      throw new GameError(`Players cannot select themselves`, playerID);
+    if (action.playersSelected.includes(playerId)) {
+      throw new GameError(`Players cannot select themselves`, playerId);
     }
   }
 
@@ -168,13 +181,13 @@ export class GameOne implements GameInstance {
   private performBotMove(player: PlayerModel.Id) {
     // We can't select ourselves
     const players = this.game.players.filter((oPlayer) => oPlayer !== player);
-    const c1 = Math.floor(Math.random() * players.length);
-    const c2 = Math.floor(Math.random() * players.length);
+    const p1 = getRandomItem(players);
+    const p2 = getRandomItem(players);
 
     this.submitAction(player, {
       type: "game-one_turn",
       round: this.state.round,
-      playersSelected: [players[c1], players[c2]],
+      playersSelected: [p1, p2],
     });
   }
 

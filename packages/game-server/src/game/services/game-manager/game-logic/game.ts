@@ -1,10 +1,8 @@
 import { PLAYERS_PER_GAME } from "@dpg/constants";
 import { GameModel, PlayerModel } from "@dpg/types";
 import { WsException } from "@nestjs/websockets";
-import { GameConstants } from "../constants.js";
 import { v4 as uuidv4 } from "uuid";
-import { GameOne } from "./game-one.js";
-import { GameTwo } from "./game-two.js";
+import { GameConstants } from "../constants.js";
 import { Lobby } from "./lobby.js";
 
 export abstract class AGame {
@@ -12,7 +10,8 @@ export abstract class AGame {
   abstract get players(): PlayerModel.Id[];
   abstract get playerData(): GameModel.Player[];
   abstract get playerMap(): Map<PlayerModel.Id, GameModel.Player>;
-  abstract get state(): GameModel.State;
+
+  abstract getState(player: PlayerModel.Id): GameModel.State;
 
   abstract submitAction(
     playerID: PlayerModel.Id,
@@ -32,7 +31,10 @@ export class Game extends AGame {
   public playerMap: Map<PlayerModel.Id, GameModel.Player>;
 
   constructor(
-    private emitStateCallback: (state: GameModel.State) => void,
+    private emitStateCallback: (
+      player: PlayerModel.Id,
+      state: GameModel.State
+    ) => void,
     private destroyGame: () => void,
     public constants: GameConstants
   ) {
@@ -87,8 +89,8 @@ export class Game extends AGame {
     this.currentGame.submitAction(playerID, action);
   }
 
-  get state(): GameModel.State {
-    return this.makeState(this.currentGame.state);
+  getState(player: PlayerModel.Id): GameModel.State {
+    return this.makeState(this.currentGame.getState(player));
   }
 
   get players(): PlayerModel.Id[] {
@@ -100,7 +102,9 @@ export class Game extends AGame {
   }
 
   emitState() {
-    this.emitStateCallback(this.state);
+    for (const player of this.players) {
+      this.emitStateCallback(player, this.getState(player));
+    }
   }
 
   isJoinable(): boolean {
@@ -126,13 +130,13 @@ export class Game extends AGame {
 export class GameError extends WsException {
   playerID: PlayerModel.Id;
 
-  constructor(message: string, playerID: PlayerModel.Id) {
-    super(`${playerID}: ${message}`);
-    this.playerID = playerID;
+  constructor(message: string, playerId: PlayerModel.Id) {
+    super(`${playerId}: ${message}`);
+    this.playerID = playerId;
   }
 }
 
 export interface GameInstance {
-  submitAction(playerID: PlayerModel.Id, action: GameModel.GameAction): void;
-  get state(): GameModel.GameState;
+  submitAction(playerId: PlayerModel.Id, action: GameModel.GameAction): void;
+  getState(player: PlayerModel.Id): GameModel.GameState;
 }

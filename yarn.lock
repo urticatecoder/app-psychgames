@@ -1993,6 +1993,7 @@ __metadata:
   dependencies:
     "@dpg/constants": "workspace:packages/constants"
     "@dpg/types": "workspace:packages/types"
+    "@dpg/utils": "workspace:packages/utils"
     "@nestjs/cli": ^8.0.0
     "@nestjs/common": ^8.0.0
     "@nestjs/core": ^8.0.0
@@ -2139,6 +2140,15 @@ __metadata:
     class-validator: ^0.13.1
     prettier: ^2.3.2
     reflect-metadata: ^0.1.13
+    typescript: ^4.4.2
+  languageName: unknown
+  linkType: soft
+
+"@dpg/utils@workspace:packages/utils":
+  version: 0.0.0-use.local
+  resolution: "@dpg/utils@workspace:packages/utils"
+  dependencies:
+    prettier: ^2.3.2
     typescript: ^4.4.2
   languageName: unknown
   linkType: soft

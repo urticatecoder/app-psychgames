@@ -1,4 +1,4 @@
-import { LobbyModel } from "@dpg/types";
+import { GameModel, LobbyModel, PlayerModel } from "@dpg/types";
 import { GameOne } from "./game-one.js";
 import { AGame, GameInstance } from "./game.js";
 
@@ -19,9 +19,13 @@ export class Lobby implements GameInstance {
     );
   }
 
-  submitAction(playerID: string, action: LobbyModel.AvatarRequest): void {
-    this.game.playerMap.set(playerID, {
-      id: playerID,
+  getState(player: PlayerModel.Id): GameModel.GameState {
+    return this.state;
+  }
+
+  submitAction(playerId: string, action: LobbyModel.AvatarRequest): void {
+    this.game.playerMap.set(playerId, {
+      id: playerId,
       avatar: action.avatar,
     });
 

@@ -67,7 +67,8 @@ export class GameManagerService {
     const gameID = uuidv4();
     const newGame = new ManagedGame(
       this.gameFactory.create(
-        (state: GameModel.State) => this.emitStateTo(gameID, state),
+        (player: PlayerModel.Id, state: GameModel.State) =>
+          this.emitPlayerStateTo(gameID, player, state),
         () => this.endGame(gameID),
         // Here is where we can change game parameters per game
         DefaultGameConstants
@@ -106,11 +107,30 @@ export class GameManagerService {
     this.games = this.games.filter((game: ManagedGame) => game.id !== gameID);
   }
 
-  private emitStateTo(
-    filter: GameID | PlayerModel.Id,
+  private emitStateTo(filter: GameID | SocketID, state: GameModel.State): void {
+    this.server?.to(filter).emit(AppEvents.STATE_UPDATE, state);
+  }
+
+  private emitPlayerStateTo(
+    gameId: GameID,
+    player: PlayerModel.Id,
     state: GameModel.State
   ): void {
-    this.server?.to(filter).emit(AppEvents.STATE_UPDATE, state);
+    const game = this.getGameById(gameId);
+    if (!game) {
+      throw new Error("Game not found in state emit callback");
+    }
+
+    const socket = game.activePlayers.getR(player);
+    if (!socket) {
+      throw new Error("Could not find socket for requested player");
+    }
+
+    this.server?.to(socket).emit(AppEvents.STATE_UPDATE, state);
+  }
+
+  private getGameById(gameId: GameID) {
+    return this.games.find((game) => game.id === gameId);
   }
 
   private getSocketGame(socketID: SocketID): ManagedGame | undefined {
@@ -142,7 +162,7 @@ export class GameManagerService {
     // join socket to game room
     this.server?.in(socketID).socketsJoin(game.id);
     // emit state
-    this.emitStateTo(socketID, game.instance.state);
+    this.emitStateTo(socketID, game.instance.getState(playerID));
   }
 
   private findAvailablePlayerID(game: ManagedGame): PlayerModel.Id | undefined {

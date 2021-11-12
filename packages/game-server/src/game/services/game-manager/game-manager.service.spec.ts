@@ -1,5 +1,5 @@
 import { AppEvents, PLAYERS_PER_GAME } from "@dpg/constants";
-import { GameModel } from "@dpg/types";
+import { GameModel, PlayerModel } from "@dpg/types";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Server } from "socket.io";
 import { GameFactory } from "../game-factory/game-factory.js";
@@ -9,7 +9,7 @@ import { GameManagerService, ManagedGame } from "./game-manager.service.js";
 
 jest.mock("./game-logic/game.js");
 
-let emitCallback: (state: any) => void;
+let emitCallback: (player: PlayerModel.Id, state: any) => void;
 let endCallback: () => void;
 let server: Server;
 
@@ -23,7 +23,7 @@ describe("GameManagerService", () => {
   beforeEach(async () => {
     const gameFactory: GameFactory = {
       create: (
-        emitState: (state: GameModel.State) => void,
+        emitState: (player: PlayerModel.Id, state: GameModel.State) => void,
         endGame: () => void,
         constants: GameConstants
       ) => {
@@ -109,8 +109,8 @@ describe("GameManagerService", () => {
       doThe: "jiggy",
     };
 
-    const expectGameStateEmitted = (state: any, game: ManagedGame) => {
-      expect(server.to).toHaveBeenLastCalledWith(game.id);
+    const expectSocketStateEmitted = (socket: string, state: any) => {
+      expect(server.to).toHaveBeenLastCalledWith(socket);
       expect(server.emit).toHaveBeenLastCalledWith(
         AppEvents.STATE_UPDATE,
         state
@@ -120,32 +120,37 @@ describe("GameManagerService", () => {
     it("emits state on callback", () => {
       gameM.attachSocket("socket-one");
       const game = gameM.getGames()[0];
-      emitCallback(testState);
-      expectGameStateEmitted(testState, game);
+      const player = game.activePlayers.get("socket-one")!;
+      emitCallback(player, testState);
+      expectSocketStateEmitted("socket-one", testState);
     });
 
-    it("emits state to correct game", () => {
+    it("emits state to correct player", () => {
       const players = PLAYERS_PER_GAME + 1;
-      gameM.attachSocket("socket-1");
+      const player1 = gameM.attachSocket("socket-1");
       const gameOneCallback = emitCallback;
-      for (let i = 1; i < players; i++) {
+      for (let i = 2; i < players; i++) {
         gameM.attachSocket(`socket-${i}`);
       }
+      const socket2 = `socket-${players}`;
+      const player2 = gameM.attachSocket(socket2);
       const gameTwoCallback = emitCallback;
 
-      const game1 = gameM.getGames()[0];
       const state1 = {
         game: "1",
       };
-      gameOneCallback(state1);
-      expectGameStateEmitted(state1, game1);
+      gameOneCallback(player1, state1);
+      expectSocketStateEmitted("socket-1", state1);
 
-      const game2 = gameM.getGames()[1];
       const state2 = {
         game: "2",
       };
-      gameTwoCallback(state2);
-      expectGameStateEmitted(state2, game2);
+      gameTwoCallback(player2, state2);
+      expectSocketStateEmitted(socket2, state2);
+
+      // Emitting state to a player not in the game should fail
+      expect(() => gameOneCallback(socket2, state1)).toThrow();
+      expect(() => gameTwoCallback("socket-1", state2)).toThrow();
     });
   });
 

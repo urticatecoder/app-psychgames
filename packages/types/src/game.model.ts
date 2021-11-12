@@ -120,20 +120,27 @@ export namespace GameTwoModel {
     roundEndTime: Date | string;
     investCoefficient: number;
     competeCoefficient: number;
-    previousRoundResults?: PreviousRoundResults;
+    teamResults?: TeamResults;
   };
 
-  export type PreviousRoundResults = {
+  export type PlayerState = State & {
+    playerResults?: PlayerResults;
+  };
+
+  export type TeamResults = {
     winnerTeam: TeamEarnings;
     loserTeam: TeamEarnings;
+  };
+
+  export type PlayerResults = {
+    netTokens: number;
+    netMoney: number;
   };
 
   export type TeamEarnings = {
     totalTokenDistribution: TokenDistribution;
     investBonus: number;
     competePenalty: number;
-    netTokens: number;
-    netMoney: number;
   };
 
   export type TokenDistribution = {

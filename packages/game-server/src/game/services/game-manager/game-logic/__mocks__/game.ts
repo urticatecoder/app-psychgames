@@ -66,10 +66,11 @@ const GameInstance: AGame = {
   players: [...testPlayerMap.keys()],
   playerData: [...testPlayerMap.values()],
   playerMap: testPlayerMap,
-  state: <GameModel.State>(<unknown>gameState),
+  getState: jest.fn().mockReturnValue(gameState),
   isJoinable: jest.fn().mockReturnValue(true),
   submitAction: jest.fn(),
-  goToNextGame: jest.fn(),
+  goToGame: jest.fn(),
+  endGame: jest.fn(),
   emitState: jest.fn(),
 };
 
