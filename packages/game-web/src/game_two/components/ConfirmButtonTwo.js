@@ -50,7 +50,7 @@ function ConfirmButtonTwo(props) {
     <Button
       className={classes.confirmButton}
       style={{marginLeft: margin, width: width}}
-      variant={Variants.CONTAINED}
+      variant={"h3"}
       color={PRIMARY_COLOR}
       disabled={props.disabled}
       onClick={() => handleSubmission(props.disableButton, props.setNoteTime, props.showWaitingDiv)}

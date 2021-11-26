@@ -17,7 +17,7 @@ function ContinueButton(props) {
 
   return (
     <Button
-      variant={Variants.CONTAINED}
+      variant={"h3"}
       color={BUTTON_COLOR}
       onClick={() => props.history.push(props.route)}
       disabled={props.disabled}

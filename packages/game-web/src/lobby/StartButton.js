@@ -33,7 +33,7 @@ function StartButton(props) {
       <Button
         id={BUTTON_ID}
         className={classes.startButton}
-        variant={Variants.CONTAINED}
+        variant={"h3"}
         disabled={!props.startStatus}
         color={props.startStatus ? PRIMARY_COLOR : SECONDARY_COLOR}
         onClick={() => props.history.push(GAME_ONE_INTRO_ROUTE)}

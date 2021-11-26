@@ -140,7 +140,7 @@ function StartTimer(props) {
       </Typography>
       <Typography
         className={classes.timerInstruction}
-        variant={Variants.NORMAL_TEXT}
+        variant={"h3"}
       >
         {WELCOME_MESSAGE}
       </Typography>
@@ -155,7 +155,7 @@ function StartTimer(props) {
         {({reset, setTime}) => (
           <React.Fragment>
             {checkForReset(resetter, setResetter, setTime, timeLeft)}
-            <Typography variant={Variants.NORMAL_TEXT}>
+            <Typography variant={"h3"}>
               <br />
               <Timer.Minutes /> {MINUTES}
               <br />

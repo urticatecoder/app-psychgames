@@ -205,7 +205,7 @@ function getResourceResults(classes, groupOneResults, groupTwoResults, windowWid
   return (
     <div>
       <div className={classes.resultsText}>
-        <Typography variant={Variants.NORMAL_TEXT}>
+        <Typography variant={"h3"}>
           {END_TURN_TEXT}
         </Typography>
       </div>

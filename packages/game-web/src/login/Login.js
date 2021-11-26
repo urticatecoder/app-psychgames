@@ -30,7 +30,8 @@ const styles = {
 }
 
 /**
- * Login page that is shown on the '/' route. Allows users to enter login codes; sends them to the server; and moves into the game if the code is valid.
+ * Login page that is shown on the '/' route. 
+ * Allows users to enter login codes; sends them to the server; and moves into the game if the code is valid.
  *
  * @author Eric Doppelt
  */

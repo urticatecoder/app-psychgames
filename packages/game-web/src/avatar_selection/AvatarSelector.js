@@ -3,7 +3,7 @@ import { Typography, Box, withStyles } from "@material-ui/core";
 import '../util/stylings/FullScreenDiv.css';
 import OptionButton from '../icons/components/OptionButton';
 import ContinueButton from '../util/components/ContinueButton';
-import { Variants } from "../util/constants/stylings/StylingsBundler";
+import Variants from "../util/constants/stylings/Variants";
 
 const FULL_DIV = "fullDiv";
 const PLAYER_OPTION_NUMBERS = Array.from(Array(24).keys());
@@ -102,9 +102,9 @@ function AvatarSelector(props) {
 
 function getVariant(windowWidth) {
   if (windowWidth >= LARGE_TEXT_THRESHOLD) {
-    return Variants.LARGE_TEXT;
+    return "h2";
   } else if (windowWidth >= MEDIUM_TEXT_THRESHOLD) {
-    return Variants.NORMAL_TEXT;
+    return "h3";
   } else return Variants.SMALL_TEXT;
 }
 

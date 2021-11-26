@@ -72,7 +72,7 @@ function ProlificScreen(props) {
 
       <Typography
         className={classes.payoutText}
-        variant={Variants.NORMAL_TEXT}
+        variant={"h3"}
         style={{marginTop: marginSmaller, fontSize: secondFontSize}}
       >
         <Box fontStyle={ITALIC_FONT}>
@@ -82,7 +82,7 @@ function ProlificScreen(props) {
       <Payout style={{}} windowWidth={props.windowWidth} windowHeight={props.windowHeight} experimentID={props.experimentID} code={props.code}/>
       <Button
         disabled={disableButton}
-        variant={Variants.CONTAINED}
+        variant={"h3"}
         color={BUTTON_COLOR}
         onClick={() => setOpenDialogue(OPEN_DIALOGUE)}
         style={{height: '50px', width: '250px', marginTop: marginButton, positive: 'relative', opacity: BUTTON_OPACITY}}

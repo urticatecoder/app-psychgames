@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "./App.css";
 import { BrowserRouter as Router, Route} from "react-router-dom";
+import "./App.css";
 
 import RefreshChecker from "./util/components/RefreshChecker";
 import WindowChecker from './util/components/WindowChecker';
@@ -58,7 +58,7 @@ function App() {
         <Router>
   
           {/* Add components which check that the user does not refresh the page; shrink the window too small; or use an incorrect browswer. */}
-          <RefreshChecker loginCode={loginCode}/>
+          {/* <RefreshChecker loginCode={loginCode}/> */}
           <WindowChecker setWindowWidth={setWindowWidth} setWindowHeight={setWindowHeight}/>
           <BrowserChecker/>
 
@@ -178,10 +178,10 @@ function App() {
           />
 
           {/* ADMIN PAGE -- USES PRIVATE ROUTE TO REDIRECT IF NOT ADMIN LOGIN.*/}
-          <PrivateAdminRoute exact path={Routes.ADMIN_PRIVATE} />
+          {/* <PrivateAdminRoute exact path={Routes.ADMIN_PRIVATE} /> */}
         </Router>
     </div>
   );
 }
 
-export default (App);
+export default App;

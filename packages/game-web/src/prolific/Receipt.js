@@ -118,7 +118,7 @@ function getGameOne(won, amount, classes, windowHeight) {
 
             <FadeIn delay={GAME_ONE_DELAY}>
                 <span>
-                    <Typography className={classes.game} style={{ marginTop: marginGame }} variant={Variants.NORMAL_TEXT}>
+                    <Typography className={classes.game} style={{ marginTop: marginGame }} variant={"h3"}>
                         <Box fontStyle={ITALIC_FONT}>
                             {GAME_ONE}
                         </Box>
@@ -128,7 +128,7 @@ function getGameOne(won, amount, classes, windowHeight) {
 
                 <div className={classes.description}>
                     <span>
-                        <Typography style={{ fontSize: ITEM_FONT_SIZE, marginTop: marginResource }} variant={Variants.NORMAL_TEXT}>
+                        <Typography style={{ fontSize: ITEM_FONT_SIZE, marginTop: marginResource }} variant={"h3"}>
                             <Box fontStyle={ITALIC_FONT}>
                                 {getGameOneResultText(won)}
                             </Box>
@@ -138,7 +138,7 @@ function getGameOne(won, amount, classes, windowHeight) {
 
                 <div className={classes.amount}>
                     <span>
-                        <Typography variant={Variants.NORMAL_TEXT} style={{ fontSize: ITEM_FONT_SIZE, color: getColor(amount) }}>
+                        <Typography variant={"h3"} style={{ fontSize: ITEM_FONT_SIZE, color: getColor(amount) }}>
                             {getSign(amount) + amount.toFixed(DECIMAL_PLACES)}
                         </Typography>
                     </span>
@@ -157,7 +157,7 @@ function getGameTwo(turn, classes, windowHeight) {
     let margin = getGameTwoMargin(windowHeight);
     return (
         <FadeIn className={classes.gameTwoFade} delay={GAME_TWO_DELAY}>
-            <Typography className={classes.game} style={{ marginTop: margin }} variant={Variants.NORMAL_TEXT}>
+            <Typography className={classes.game} style={{ marginTop: margin }} variant={"h3"}>
                 <Box fontStyle={ITALIC_FONT}>
                     {GAME_TWO_PREFIX + turn}
                 </Box>
@@ -173,7 +173,7 @@ function getGameTwoResource(tokens, resource, rate, amount, delay, classes, wind
         <div>
             <FadeIn delay={delay}>
                 <div className={classes.resourceDescription}>
-                    <Typography style={{ fontSize: RESOURCE_FONT_SIZE, marginTop: marginTop }} variant={Variants.NORMAL_TEXT}>
+                    <Typography style={{ fontSize: RESOURCE_FONT_SIZE, marginTop: marginTop }} variant={"h3"}>
                         <Box fontStyle={ITALIC_FONT}>
                             {tokens + TOKENS + resource + getRate(rate)}
                         </Box>
@@ -182,7 +182,7 @@ function getGameTwoResource(tokens, resource, rate, amount, delay, classes, wind
             </FadeIn>
             <FadeIn delay={delay + AMOUNT_DELAY}>
                 <div className={classes.resourceAmount}>
-                    <Typography style={{ fontSize: ITEM_FONT_SIZE, color: getColor(amount) }} variant={Variants.NORMAL_TEXT}>
+                    <Typography style={{ fontSize: ITEM_FONT_SIZE, color: getColor(amount) }} variant={"h3"}>
                         {getSign(amount) + amount.toFixed(DECIMAL_PLACES)}
                     </Typography>
                 </div>

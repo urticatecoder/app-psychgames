@@ -15,6 +15,12 @@ const styles = {
     },
 }
 
+/**
+ * Login button that sends the user's ID to the backend.
+ * Moves to the lobby if the code is successful.
+ *
+ * @author Eric Doppelt
+ */
 function LoginButton(props) {
     return(
         <div>
