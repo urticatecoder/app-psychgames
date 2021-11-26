@@ -1,6 +1,5 @@
 import React from "react";
 import { Typography, withStyles } from "@material-ui/core";
-import Variants from "../../util/constants/stylings/Variants";
 
 const GROUP = "Group ";
 const GROUP_ONE = "One";
@@ -41,7 +40,7 @@ function GroupBox(props) {
       style={{ backgroundColor: groupColor, width: props.width, top: marginTop}}
     >
       <div className={classes.innerDiv}>
-        <Typography className={classes.innerDiv} variant={Variants.SMALL_TEXT}>
+        <Typography className={classes.innerDiv} variant={"h4"}>
           {GROUP} {getGroupLabel(props.groupNumber)}
         </Typography>
       </div>

@@ -14,7 +14,6 @@ import "./results/DelayedBar";
 import DelayedBar from "./results/DelayedBar";
 import GroupBox from "../game_one/components/GroupBox";
 import { ResourceNames } from "../util/constants/game_two/GameTwoBundler";
-import { Variants } from '../util/constants/stylings/StylingsBundler';
 import getAlerts from './components/getAlerts';
 import WaitingDiv from "../util/components/WaitingDiv";
 import PayoffHelp from "./components/PayoffHelp";

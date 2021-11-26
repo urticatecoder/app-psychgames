@@ -1,6 +1,6 @@
 import React from "react";
 import PlayerImages from "./PlayerImages";
-import PlayerOptions from "./PlayerOptions";
+import MainPlayerImages from "./MainPlayerImages";
 import GameImage from './GameImage';
 import { withStyles } from "@material-ui/core";
 
@@ -79,9 +79,7 @@ function getImage(playerNumber, selectedIndex, windowWidth, frontendIndex) {
   } else {
     return (
         <GameImage
-          image={PlayerOptions[IMAGE + selectedIndex]}
-          id={PlayerOptions[NAME + selectedIndex]}
-          alt={PlayerOptions[LABEL + selectedIndex]}
+          image={MainPlayerImages.image[selectedIndex]}
           width={getSize(windowWidth)}
           height={getSize(windowWidth)}
         />

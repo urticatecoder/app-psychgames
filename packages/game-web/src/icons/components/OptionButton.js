@@ -1,5 +1,5 @@
 import React from "react";
-import PlayerOptions from "./PlayerOptions";
+import MainPlayerImages from "./MainPlayerImages";
 
 const SELECTED = "#32a852";
 const NOT_SELECTED = "#0093f542";
@@ -34,9 +34,7 @@ function OptionButton(props) {
       onClick={() => props.onSelect()}
       >
       <img
-        src={PlayerOptions[IMAGE + props.player]}
-        id={PlayerOptions[NAME + props.player]}
-        alt={[LABEL + props.player]}
+        src={MainPlayerImages.images[props.player]}
         width={size}
         height={size}
       />

@@ -1,15 +1,7 @@
 import React from "react";
 
 import Typography from '@mui/material/Typography';
-import Variants from "../util/constants/stylings/Variants";
-import PlayerOptions from '../icons/components/PlayerOptions';
-
-const PLAYER_DESCRIPTION = "You are the following avatar!";
-const IMAGE_HEIGHT = 250;
-const IMAGE_WIDTH = 250;
-
-const NUMBER_OF_PLAYERS = 24;
-const IMAGE = 'image';
+import MainPlayerImages from "../icons/components/MainPlayerImages";
 
 const styles = {
   playerDescription: {
@@ -35,16 +27,16 @@ function MainAvatar(props) {
     <div>
       <Typography
         sx={{...styles.playerDescription}}
-        variant={Variants.LARGE_TEXT}
+        variant={"h2"}
       >
-        {PLAYER_DESCRIPTION}
+        {"You are the following avatar!"}
       </Typography>
 
       <div style={{...styles.playerProfile}}>
         <img
           src={getSelectedAvatar(props.selectedIndex, props.setSelectedIndex)}
-          width={IMAGE_HEIGHT}
-          height={IMAGE_WIDTH}
+          width={250}
+          height={250}
         />
       </div>
 
@@ -56,10 +48,11 @@ function MainAvatar(props) {
 function getSelectedAvatar(selectedIndex, setSelectedIndex) {
   // No avatar has been selected.
   if (selectedIndex < 0) {
-    let randomIndex = Math.floor(Math.random() * NUMBER_OF_PLAYERS);
+    let randomIndex = Math.floor(Math.random() * 24);
     setSelectedIndex(randomIndex);
-    return PlayerOptions[IMAGE + randomIndex];
-  } else return PlayerOptions[IMAGE + selectedIndex];
+    return MainPlayerImages.images[randomIndex];
+    // Images
+  } else return MainPlayerImages.images[selectedIndex];
 }
 
 export default MainAvatar;

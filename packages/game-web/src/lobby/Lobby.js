@@ -2,9 +2,8 @@ import React from "react";
 
 import StartTimer from "./StartTimer";
 import ContinueButton from "../util/components/ContinueButton";
+import Routes from '../util/constants/routes'
 
-const AVATAR_BUTTON_MESSAGE = "Choose Avatar";
-const AVATAR_SELECTION_ROUTE = "/avatar-selection";
 const NOT_DISABLED = false;
 
 const styles = {
@@ -21,7 +20,6 @@ const styles = {
 function Lobby(props) {
   return (
     <div>
-
       <StartTimer
         code={props.code}
         setAllLoginCodes={props.setAllLoginCodes}
@@ -35,8 +33,8 @@ function Lobby(props) {
 
       <div style={{...styles.avatarButton}}>
         <ContinueButton
-          message={AVATAR_BUTTON_MESSAGE} 
-          route={AVATAR_SELECTION_ROUTE} 
+          message={"Choose Avatar"} 
+          route={Routes.AVATAR_SELECTION_ROUTE} 
           disabled={NOT_DISABLED}
           height='60px' 
           width='300px'

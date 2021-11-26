@@ -1,7 +1,6 @@
 import React from "react";
 import { Typography, withStyles, Box} from "@material-ui/core";
 import Loader from "./Loader";
-import { Variants } from "../constants/stylings/StylingsBundler";
 
 const WAITING_MESSAGE = "Waiting on others..."
 
@@ -35,7 +34,7 @@ function WaitingDiv(props) {
   if (props.show) {
     return (
       <div className={classes.waitingDiv} style={{marginLeft: margin, width: width}} >
-        <Typography className={classes.text} style={{fontSize: 18}} variant={Variants.BODY}>
+        <Typography className={classes.text} style={{fontSize: 18}} variant={"body1"}>
         <Box fontStyle={ITALIC_FONT}>
             {WAITING_MESSAGE}
           </Box>

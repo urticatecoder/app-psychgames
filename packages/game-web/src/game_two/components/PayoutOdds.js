@@ -1,6 +1,5 @@
 import { Box, Typography, withStyles } from "@material-ui/core";
 import React from "react";
-import Variants from "../../util/constants/stylings/Variants";
 
 const INVEST_ODDS_LABEL = "Invest Payoffs: ";
 const COMPETE_ODDS_LABEL = "Compete Payoffs: ";
@@ -55,7 +54,7 @@ function PayoutOdds(props) {
       <Typography
         className={classes.investText}
         style={{ fontSize: font, top: marginTop }}
-        variant={Variants.LARGE_TEXT}
+        variant={"h2"}
       >
         <Box fontStyle={ITALIC_FONT} fontWeight={BOLD_FONT}>
           {INVEST_ODDS_LABEL + props.investOdds}
@@ -64,7 +63,7 @@ function PayoutOdds(props) {
       <Typography
         className={classes.competeText}
         style={{ fontSize: font, marginTop: secondMarginTop }}
-        variant={Variants.LARGE_TEXT}
+        variant={"h2"}
       >
         <Box fontStyle={ITALIC_FONT} fontWeight={BOLD_FONT}>
           {COMPETE_ODDS_LABEL + props.competeOdds}

@@ -1,7 +1,6 @@
 import React from "react";
 import { Typography, withStyles } from "@material-ui/core";
 import Timer from "react-compound-timer";
-import { Variants } from "../constants/stylings/StylingsBundler";
 import { withRouter } from "react-router-dom";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -61,13 +60,13 @@ function IntroTimer(props) {
           <div className={classes.timerMargin}>
 
             <React.Fragment>
-            <Typography style={{fontSize: '22px'}} variant={Variants.LARGE_TEXT}>
+            <Typography style={{fontSize: '22px'}} variant={"h2"}>
                 {props.message}
             </Typography>
-              <Typography style={{fontSize: '55px'}} variant={Variants.LARGEST_TEXT}>
+              <Typography style={{fontSize: '55px'}} variant={"h1"}>
                 <Timer.Seconds />
               </Typography>
-            <Typography style={{fontSize: '22px'}} variant={Variants.LARGE_TEXT}>
+            <Typography style={{fontSize: '22px'}} variant={"h2"}>
                 {COUNTDOWN}
             </Typography>
             </React.Fragment>

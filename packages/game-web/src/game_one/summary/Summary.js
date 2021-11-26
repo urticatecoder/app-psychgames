@@ -3,7 +3,6 @@ import PlayerGroup from "../../icons/components/PlayerGroup";
 import { Typography, withStyles } from "@material-ui/core";
 import DelayedConfetti from "./DelayedConfetti";
 import ContinueButton from "../../util/components/ContinueButton";
-import { Variants } from "../../util/constants/stylings/StylingsBundler";
 
 const FULL_DIV = "fullDiv";
 const WINNING_HEADER = "Winning Players";
@@ -70,7 +69,7 @@ function Summary(props) {
 function getGroup(divClassName, groupClassName, headerText, playersShown, textID, selectedIndex, frontendIndex) {
   return (
     <div className={divClassName}>
-      <Typography id={textID} variant={Variants.LARGE_TEXT}>
+      <Typography id={textID} variant={"h2"}>
         {headerText}
       </Typography>
       <div className={groupClassName}>

@@ -1,6 +1,6 @@
 import React from "react";
 import PlayerImages from "./PlayerImages";
-import PlayerOptions from "./PlayerOptions";
+import AvatarImages from "./MainPlayerImages";
 import GameImage from './GameImage';
 
 const IMAGE = 'image';
@@ -25,9 +25,7 @@ function getImage(playerNumber, selectedIndex, frontendIndex) {
     } else {
       return (
         <GameImage
-          image={PlayerOptions[IMAGE + selectedIndex]}
-          id={PlayerOptions[NAME + selectedIndex]}
-          alt={PlayerOptions[NAME + selectedIndex]}
+          image={AvatarImages.images[selectedIndex]}
           width={IMAGE_HEIGHT}
           height={IMAGE_WIDTH}
         />

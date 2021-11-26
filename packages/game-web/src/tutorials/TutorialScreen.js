@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { withStyles } from "@material-ui/core/styles";
 import { Typography, Box, Button } from "@material-ui/core";
-import { Variants } from "../util/constants/stylings/StylingsBundler";
 
 const PLAY_VIDEO = true;
 const PAUSE_VIDEO = false;
@@ -57,7 +56,7 @@ function TutorialScreen(props) {
   return (
     <div>
       <div className={classes.headerDiv}>
-        <Typography variant={Variants.LARGE_TEXT}>
+        <Typography variant={"h2"}>
           <Box fontStyle={ITALIC_FONT}>{props.text}</Box>
         </Typography>
       </div>

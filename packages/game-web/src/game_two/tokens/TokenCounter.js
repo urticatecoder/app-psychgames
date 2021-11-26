@@ -1,7 +1,6 @@
 import { Box, Typography, withStyles } from '@material-ui/core';
 import React from 'react';
 import Token from './tokens.png'
-import Variants from "../../util/constants/stylings/Variants";
 
 const IMAGE_HEIGHT = '45vh';
 const IMAGE_WIDTH = '45vh';
@@ -56,7 +55,7 @@ function TokenCounter(props) {
           {getTokenIcon()}
         </div>
         <div className={classes.tokenText}>
-          <Typography style={{fontSize: getFontSize(props.windowWidth)}} variant={Variants.LARGE_TEXT}>
+          <Typography style={{fontSize: getFontSize(props.windowWidth)}} variant={"h2"}>
             <Box fontStyle={ITALIC_FONT} fontWeight={BOLD_FONT}>
               {TOKENS_LABEL + props.tokens}
             </Box>

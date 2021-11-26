@@ -1,11 +1,10 @@
 import React from "react";
 
+// TODO: Delete this.
 function GameImage(props) {
   return (
     <img
       src={props.image}
-      id={props.id}
-      alt={props.id}
       width={props.width}
       height={props.height}
     />

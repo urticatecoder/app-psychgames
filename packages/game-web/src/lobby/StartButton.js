@@ -2,7 +2,6 @@ import React from "react";
 import { Button } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import { Variants } from "../util/constants/stylings/StylingsBundler";
 
 const BUTTON_MESSAGE = "Begin Experiment";
 const BUTTON_ID = "timerButton";
@@ -33,7 +32,7 @@ function StartButton(props) {
       <Button
         id={BUTTON_ID}
         className={classes.startButton}
-        variant={"h3"}
+        variant={"contained"}
         disabled={!props.startStatus}
         color={props.startStatus ? PRIMARY_COLOR : SECONDARY_COLOR}
         onClick={() => props.history.push(GAME_ONE_INTRO_ROUTE)}

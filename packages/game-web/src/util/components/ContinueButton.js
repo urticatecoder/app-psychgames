@@ -2,7 +2,6 @@ import React from "react";
 import { Button } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import { Variants } from "../constants/stylings/StylingsBundler";
 
 const BUTTON_COLOR = "primary";
 const BUTTON_OPACITY = .85
@@ -17,7 +16,7 @@ function ContinueButton(props) {
 
   return (
     <Button
-      variant={"h3"}
+      variant={"contained"}
       color={BUTTON_COLOR}
       onClick={() => props.history.push(props.route)}
       disabled={props.disabled}

@@ -1,7 +1,6 @@
 import React from "react";
 import { Typography, withStyles } from "@material-ui/core";
 import Timer from "react-compound-timer";
-import { Variants } from "../constants/stylings/StylingsBundler";
 
 const TURN_TIME = 30 * 1000;
 const LAST_TIME_UNIT = "h";
@@ -76,10 +75,10 @@ function GameTimer(props) {
                 props.setResetTimer
               )}
               {checkForPause(props.pauseTimer, pause, start)}
-              <Typography style={{fontSize: '25px'}} variant={Variants.LARGEST_TEXT}>
+              <Typography style={{fontSize: '25px'}} variant={"h1"}>
               {TIMER_MESSAGE_P1} <br/> {TIMER_MESSAGE_P2}
               </Typography>
-              <Typography variant={Variants.LARGEST_TEXT}>
+              <Typography variant={"h1"}>
                 <Timer.Seconds />
               </Typography>
             </React.Fragment>

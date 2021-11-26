@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Typography, Box, Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import "../util/stylings/FullScreenDiv.css";
-import { Variants } from "../util/constants/stylings/StylingsBundler";
 import Payout from "./Payout";
 import ProlificDialogues from "./ProlificDialogues";
 
@@ -64,7 +63,7 @@ function ProlificScreen(props) {
     <div className={FULL_DIV}>
       <Typography
         className={classes.thankYouText}
-        variant={Variants.LARGE_TEXT}
+        variant={"h2"}
         style={{marginTop: margin, fontSize: mainFontSize}}
       >
         {THANK_YOU_MESSAGE}
@@ -82,7 +81,7 @@ function ProlificScreen(props) {
       <Payout style={{}} windowWidth={props.windowWidth} windowHeight={props.windowHeight} experimentID={props.experimentID} code={props.code}/>
       <Button
         disabled={disableButton}
-        variant={"h3"}
+        variant={"contained"}
         color={BUTTON_COLOR}
         onClick={() => setOpenDialogue(OPEN_DIALOGUE)}
         style={{height: '50px', width: '250px', marginTop: marginButton, positive: 'relative', opacity: BUTTON_OPACITY}}

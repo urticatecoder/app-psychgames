@@ -3,7 +3,6 @@ import Timer from "react-compound-timer";
 import { Typography, Box } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import socket from "../socketClient";
-import { Variants } from "../util/constants/stylings/StylingsBundler";
 import {withRouter} from 'react-router-dom';
 
 const INITIAL_START_TIME = 1 * 6000;
@@ -132,7 +131,7 @@ function StartTimer(props) {
       <Typography
         className={classes.welcomeInstruction}
         id={TEXT_ID}
-        variant={Variants.SMALL_TEXT}
+        variant={"h4"}
       >
         <Box fontStyle={ITALIC_FONT}>
           {INSTRUCTIONS_MESSAGE(waitingOnPlayerCounter)}

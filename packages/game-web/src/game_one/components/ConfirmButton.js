@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, withStyles } from "@material-ui/core";
 import socket from "../../socketClient";
-import Variants from "../../util/constants/stylings/Variants";
 
 const CONFIRM_CHOICES_TEXT = "Confirm!";
 const NUM_PLAYERS = 6;
@@ -48,7 +47,7 @@ function ConfirmButton(props) {
     <Button
       className={classes.confirmButton}
       style={{marginLeft: margin, width: width}}
-      variant={"h3"}
+      variant={"contained"}
       color={PRIMARY_COLOR}
       disabled = {props.disabled}
       onClick={() => handleSubmission(props.disableButton, props.showWaitingDiv, props.setNoteTime)}
