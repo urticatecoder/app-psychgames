@@ -141,6 +141,9 @@ export class GameOne implements GameInstance {
 
   private advanceRound() {
     this.handleInactivePlayers();
+    if (this.roundTimeout) {
+      clearTimeout(this.roundTimeout);
+    }
     const bonusGroups = makeBonusGroups(
       this.selections,
       this.currentPositions,

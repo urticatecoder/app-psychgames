@@ -118,6 +118,9 @@ export class GameTwo implements GameInstance {
 
   private advanceRound() {
     this.handleInactivePlayers();
+    if (this.roundTimeout) {
+      clearTimeout(this.roundTimeout);
+    }
     const teamResults = calculateTeamResults(this.state, this.selections);
     const playerResults = this.calculatePlayerResults(teamResults);
 
