@@ -62,6 +62,7 @@ export class GameOne implements GameInstance {
    */
   private validateAction(playerId: string, action: GameOneModel.Turn): void {
     // The action should be of the correct type
+    // TODO: Factor out this common functionality
     if (action.type != "game-one_turn") {
       throw new GameError(
         `The action type ${action.type} does not match the expected type game-one_turn`,
@@ -70,6 +71,7 @@ export class GameOne implements GameInstance {
     }
 
     // The action must be for the current round
+    // TODO: Factor out this common functionality
     if (action.round !== this.state.round) {
       throw new GameError(
         `Expected an action for round ${this.state.round}, recieved ${action.round}. 
@@ -119,6 +121,7 @@ export class GameOne implements GameInstance {
     return state;
   }
 
+  // TODO: Factor out this common pattern
   private beginRound() {
     const roundStartTime = new Date();
     const roundEndTime = new Date(
@@ -167,10 +170,11 @@ export class GameOne implements GameInstance {
   /**
    * For any players that did not submit an action, we will perform a bot move.
    *
-   * TODO: Integrate this with GameManager passivity
+   * TODO: Integrate this with GameManager passivity. The GameManager should
+   * recieve all the inactive players and decide if they are actual bots, or if
+   * they are players that need to be kicked.
    *
-   * The GameManager should recieve all the inactive players and decide if they are
-   * actual bots, or if they are players that need to be kicked.
+   * TODO: Factor out this common functionality
    */
   private handleInactivePlayers() {
     this.game.players.forEach((player) => {
@@ -386,13 +390,10 @@ function limitPosition(position: number) {
   return limit(position, LOSE_POSITION, WIN_POSITION);
 }
 
-// The following functions are overcomplicated and specific.
-// Could I write an algorithm that detects hyper connected groups
-// of a specific size? Yes. Am I going to do that? No.
-// You can blame me when this is used for some experiment
-// that wants to do larger games and you have to rewrite this.
-// I really don't want to make a whole graph implementation right now.
-
+// The following functions are overcomplicated and specific. Could I
+// theoretically write an algorithm that detects complete graphs of a specific
+// size? Yes. Am I going to do that? No. You can blame me when this is used for
+// some experiment that wants to do larger games and you have to rewrite this.
 function makeDoubleGroups(selections: Selections) {
   const doubleGroups: PlayerModel.Id[][] = [];
 

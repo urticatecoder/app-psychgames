@@ -12,6 +12,13 @@ export type GameOneConstants = {
   roundTime: (round: number) => number;
   maxRounds: number;
   positionChange: {
+    /*
+     * TODO: This can run into a pathological situation where 1 or 2 players
+     * have much higher/lower scores than the rest, so players are not split
+     * evenly above/below the origin. This should probably use distance from
+     * the average position, rather than absolute position, to introduce a
+     * bias.
+     */
     single: (round: number, position: number) => number;
     double: (round: number, position: number) => number;
     triple: (round: number, position: number) => number;
@@ -35,13 +42,13 @@ const s = 1000;
 export const DefaultGameConstants: GameConstants = {
   lobbyTime: 120 * s,
   gameOne: {
+    // TODO: change these to something sensible
     roundTime: (round: number) => {
       if (round === 0) return 30 * s;
       if (round === 1) return 20 * s;
       else return 15 * s;
     },
     maxRounds: 10,
-    // TODO: change these to something sensible
     positionChange: {
       // we arbitrarily bias position by 30% of their distance from the origin
       single: (round, position) => 0.05 * round * round + 0.1 + bias(position),

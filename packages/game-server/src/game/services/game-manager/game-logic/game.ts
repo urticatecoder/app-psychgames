@@ -58,7 +58,7 @@ export class Game extends AGame {
      * - We currently don't even support mid-game player changes
      * - As long as we don't allow two players with the same ID to connect at
      *   once, the old player won't be able to initiate a connection while the
-     *   old player is playing
+     *   new player is playing
      * - Allowing an old player to join in if the new one disconnects might even
      *   be beneficial behavior
      *

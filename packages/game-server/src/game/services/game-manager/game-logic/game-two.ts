@@ -41,6 +41,7 @@ export class GameTwo implements GameInstance {
 
   private validateAction(playerId: string, action: GameTwoModel.Turn) {
     // The action should be of the correct type
+    // TODO: Factor out this common validation
     if (action.type != "game-two_turn") {
       throw new GameError(
         `The action type ${action.type} does not match the expected type game-two_turn`,
@@ -49,6 +50,7 @@ export class GameTwo implements GameInstance {
     }
 
     // The action must be for the current round
+    // TODO: Factor out this common validation
     if (action.round !== this.state.round) {
       throw new GameError(
         `Expected an action for round ${this.state.round}, recieved ${action.round}. 
@@ -59,6 +61,7 @@ export class GameTwo implements GameInstance {
     }
 
     // The submitted number of tokens must be <= the tokens given per round
+    // TODO: Validate that each token value is positive
     const numTokens =
       action.tokenDistribution.compete +
       action.tokenDistribution.invest +
@@ -96,6 +99,7 @@ export class GameTwo implements GameInstance {
     return getRandomItem(this.constants.possibleCompeteCoefficients);
   }
 
+  // TODO: Factor out this common pattern
   private beginRound() {
     const roundStartTime = new Date();
     const roundEndTime = new Date(
@@ -117,6 +121,7 @@ export class GameTwo implements GameInstance {
   }
 
   private advanceRound() {
+    // TODO: Factor out this common functionality
     this.handleInactivePlayers();
     if (this.roundTimeout) {
       clearTimeout(this.roundTimeout);
@@ -165,10 +170,11 @@ export class GameTwo implements GameInstance {
   /**
    * For any players that did not submit an action, we will perform a bot move.
    *
-   * TODO: Integrate this with GameManager passivity
+   * TODO: Integrate this with GameManager passivity. The GameManager should
+   * recieve all the inactive players and decide if they are actual bots, or if
+   * they are players that need to be kicked.
    *
-   * The GameManager should recieve all the inactive players and decide if they are
-   * actual bots, or if they are players that need to be kicked.
+   * TODO: Factor out this common functionality
    */
   private handleInactivePlayers() {
     this.game.players.forEach((player) => {
