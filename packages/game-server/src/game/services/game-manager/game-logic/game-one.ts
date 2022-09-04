@@ -274,8 +274,8 @@ function makeBonusGroups(
     selectionGroups: PlayerModel.Id[][],
     bonusFn: (round: number, position: number) => number,
     turnBonus: GameOneModel.TurnBonus
-  ) =>
-    selectionGroups.map((group) =>
+  ) => {
+    return selectionGroups.map((group) =>
       group.map((id) => {
         const currentPosition = getCurrentPosition(id, currentPositions);
         const newPosition = currentPosition + bonusFn(round, currentPosition);
@@ -291,6 +291,7 @@ function makeBonusGroups(
         return posObj;
       })
     );
+  };
 
   const singleBonusGroup: BonusGroup = [];
   singleSelectionMap.forEach((timesSelected, id) => {
