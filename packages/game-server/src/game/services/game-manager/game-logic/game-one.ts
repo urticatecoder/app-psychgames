@@ -1,7 +1,7 @@
 import { GameModel, GameOneModel, PlayerModel } from "@dpg/types";
-import { GameOneConstants } from "../constants";
-import { AGame, GameError, GameInstance } from "./game";
-import { GameTwo } from "./game-two";
+import { GameOneConstants } from "../constants.js";
+import { AGame, GameError, GameInstance } from "./game.js";
+import { GameTwo } from "./game-two.js";
 import { getRandomItem } from "@dpg/utils";
 
 // These constants are here for readability, but modifying them

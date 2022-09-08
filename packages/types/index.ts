@@ -1,3 +1,3 @@
-export * from "./src/game.model";
-export * from "./src/player.model";
-export * from "./src/game-requests";
+export * from "./src/game.model.js";
+export * from "./src/player.model.js";
+export * from "./src/game-requests.js";

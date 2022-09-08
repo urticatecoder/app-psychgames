@@ -1,7 +1,7 @@
 import { PLAYERS_PER_GAME } from "@dpg/constants";
 import { GameOneModel, PlayerModel } from "@dpg/types";
-import { Game } from "./game";
-import { GameOne } from "./game-one";
+import { Game } from "./game.js";
+import { GameOne } from "./game-one.js";
 
 jest.mock("./game");
 jest.useFakeTimers();
@@ -21,7 +21,7 @@ describe("game one", () => {
   const getPlayerPosition: (
     player: PlayerModel.Id
   ) => GameOneModel.PlayerPosition = (player) =>
-    playerPositions(gameOne).find((position) => position.id === player)!;
+      playerPositions(gameOne).find((position) => position.id === player)!;
 
   const maxBonus: (player: PlayerModel.Id) => GameOneModel.TurnBonus = (
     player
