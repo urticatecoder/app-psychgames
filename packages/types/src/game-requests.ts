@@ -1,6 +1,6 @@
 import { ClassConstructor, Type } from "class-transformer";
 import {
-  Allow,
+  Equals,
   IsInt,
   IsOptional,
   IsPositive,
@@ -38,49 +38,49 @@ export class StartGameRequest {
 
 /** Game actions **/
 export class LobbyAvatarRequest {
-  @Allow()
-  type: "lobby_avatar";
+  @Equals("lobby")
+  type!: "lobby_avatar";
 
   @IsInt()
   @IsPositive()
-  avatar: number;
+  avatar!: number;
 }
 
 class Round {
   @IsInt()
   @IsPositive()
-  round: number;
+  round!: number;
 }
 
 export class GameOneTurnRequest extends Round {
-  @Allow()
-  type: "game-one_turn";
+  @Equals("game-one_turn")
+  type!: "game-one_turn";
 
   @IsUUID("4", { each: true })
-  playersSelected: PlayerModel.Id[];
+  playersSelected!: PlayerModel.Id[];
 }
 
 class TokenDistribution implements GameTwoModel.TokenDistribution {
   @IsInt()
   @IsPositive()
-  compete: number;
+  compete!: number;
 
   @IsInt()
   @IsPositive()
-  invest: number;
+  invest!: number;
 
   @IsInt()
   @IsPositive()
-  keep: number;
+  keep!: number;
 }
 
 export class GameTwoTurnRequest extends Round {
-  @Allow()
-  type: "game-two_turn";
+  @Equals("game-two_turn")
+  type!: "game-two_turn";
 
   @ValidateNested()
   @Type(() => TokenDistribution)
-  tokenDistribution: TokenDistribution;
+  tokenDistribution!: TokenDistribution;
 }
 
 export const requestTypes: { [key: string]: ClassConstructor<unknown> } = {
