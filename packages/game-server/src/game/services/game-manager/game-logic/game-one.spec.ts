@@ -21,7 +21,7 @@ describe("game one", () => {
   const getPlayerPosition: (
     player: PlayerModel.Id
   ) => GameOneModel.PlayerPosition = (player) =>
-      playerPositions(gameOne).find((position) => position.id === player)!;
+    playerPositions(gameOne).find((position) => position.id === player)!;
 
   const maxBonus: (player: PlayerModel.Id) => GameOneModel.TurnBonus = (
     player
