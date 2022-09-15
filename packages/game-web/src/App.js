@@ -139,7 +139,6 @@ function App() {
                 selectedIndex={selectedIndex}
                 losers={losers}
                 allLoginCodes={allLoginCodes}
-                selectedIndex={selectedIndex}
                 frontendIndex={frontendIndex}
               />
             }
