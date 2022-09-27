@@ -2,8 +2,8 @@ import type {
   GameOneTurnRequest,
   GameTwoTurnRequest,
   LobbyAvatarRequest,
-} from "./game-requests";
-import type { PlayerModel } from "./player.model";
+} from "./game-requests.js";
+import type { PlayerModel } from "./player.model.js";
 
 type IdObj = { id: PlayerModel.Id };
 export namespace GameModel {

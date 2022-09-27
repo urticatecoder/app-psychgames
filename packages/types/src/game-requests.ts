@@ -8,8 +8,8 @@ import {
   IsUUID,
   ValidateNested,
 } from "class-validator";
-import type { GameTwoModel } from "./game.model";
-import type { PlayerModel } from "./player.model";
+import type { GameTwoModel } from "./game.model.js";
+import type { PlayerModel } from "./player.model.js";
 
 /** Game negotiation requests **/
 

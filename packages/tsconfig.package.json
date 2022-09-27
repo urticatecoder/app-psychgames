@@ -2,8 +2,8 @@
   "extends": "@tsconfig/recommended",
   "compilerOptions": {
     "target": "ES2019",
-    "module": "ES2020",
-    "lib": ["ES2020", "DOM"],
+    "module": "CommonJS",
+    "lib": ["ES2019"],
     "moduleResolution": "node",
     "declaration": true,
     "importsNotUsedAsValues": "error",
