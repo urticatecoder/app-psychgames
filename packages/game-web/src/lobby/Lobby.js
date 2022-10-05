@@ -1,6 +1,7 @@
 import React from "react";
 
 import StartTimer from "./StartTimer";
+import StartTimerRefactor from "./StartTimerRefactor";
 import ContinueButton from "../util/components/ContinueButton";
 import Routes from '../util/constants/routes'
 
@@ -18,9 +19,13 @@ const styles = {
  * @author Eric Doppelt
  */
 function Lobby(props) {
+  console.log("prop lobby state: ", props.currentState);
+
   return (
     <div>
-      <StartTimer
+      {/* render time based on lobbyEndTime in currentState prop */}
+
+      {/* <StartTimer
         code={props.code}
         setAllLoginCodes={props.setAllLoginCodes}
         loggedIn={props.loggedIn}
@@ -29,7 +34,13 @@ function Lobby(props) {
         setFrontendIndex = {props.setFrontendIndex}
         setExperimentID = {props.setExperimentID}
         experimentID = {props.experimentID}
-      />
+      /> */}
+
+      <StartTimerRefactor
+        currentState={props.currentState}
+        setCurrentState={props.setCurrentState}
+      >
+      </StartTimerRefactor>
 
       <div style={{...styles.avatarButton}}>
         <ContinueButton
