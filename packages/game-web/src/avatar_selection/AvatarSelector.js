@@ -51,7 +51,7 @@ const styles = {
 function AvatarSelector(props) {
   const { classes } = props;
 
-  const [selectedPlayers, setSelectedPlayers] = useState(getUpdatedSelectionArray(props.selectedIndex));
+  const [selectedPlayers, setSelectedPlayers] = useState(getUpdatedSelectionArray(props.avatar));
 
   return (
     <div className={FULL_DIV}>
@@ -76,7 +76,7 @@ function AvatarSelector(props) {
             <OptionButton
               player={player}
               selected={selectedPlayers[player]}
-              onSelect={() => selectPlayer(player, setSelectedPlayers, props.setSelectedIndex)}
+              onSelect={() => selectPlayer(player, setSelectedPlayers, props.setAvatar)}
               windowWidth={props.windowWidth}
               windowHeight={props.windowHeight}
             />
@@ -107,22 +107,22 @@ function getVariant(windowWidth) {
   } else return "h4";
 }
 
-function selectPlayer(index, setSelectedPlayers, setSelectedIndex) {
+function selectPlayer(index, setSelectedPlayers, setAvatar) {
   let selectedPlayers = getFalseArray();
   selectedPlayers[index] = SELECTED;
   setSelectedPlayers(selectedPlayers);
-  setSelectedIndex(index);
+  setAvatar(index);
 }
 
 function getFalseArray() {
   return new Array(NUMBER_OPTIONS).fill(NOT_SELECTED);
 }
 
-function getUpdatedSelectionArray(selectedIndex) {
+function getUpdatedSelectionArray(avatar) {
   let selectedPlayers = getFalseArray();
-  if (selectedIndex < 0) return selectedPlayers;
+  if (avatar < 0) return selectedPlayers;
   else {
-    selectedPlayers[selectedIndex] = true;
+    selectedPlayers[avatar] = true;
   }
   return selectedPlayers;
 }
