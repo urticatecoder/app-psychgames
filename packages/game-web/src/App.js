@@ -12,6 +12,8 @@ import PassiveDialog from './passivity/PassiveDialogue';
 import Login from "./login/Login";
 import Lobby from "./lobby/Lobby";
 import AvatarSelector from "../src/avatar_selection/AvatarSelector";
+import GameOne from "./game_one/GameOne";
+import GameOneIntro from "./game_one/intro/GameOneIntro";
 
 import Routes from './util/constants/routes';
 import { getThemeProps } from '@material-ui/styles';
@@ -20,7 +22,7 @@ const INITIAL_CODE = null;
 const DEFAULT_EXPERIMENT_ID = -1;
 const INITIAL_ID = null;
 const INITIAL_GAME_STATE = null;
-const INITIAL_AVATAR = 0;
+const INITIAL_AVATAR = -1;
 
 const INITIAL_WINDOW_WIDTH = window.innerWidth;
 const INITIAL_WINDOW_HEIGHT = window.innerHeight;
@@ -82,6 +84,16 @@ function App(props) {
     }
   }, [currentState]);
 
+  useEffect(() => {
+    console.log("avatar: ", avatar);
+    // send avatar selection request to server
+    const lobbyAvatarRequest = {
+      type: "lobby_avatar",
+      avatar: avatar
+    };
+    socket.emit("game_action", lobbyAvatarRequest);
+  }, [avatar]);
+
   return (
     <div className="app">
       <Router history={props.history}>
@@ -129,9 +141,38 @@ function App(props) {
           <Route
             path={Routes.AVATAR_SELECTION}
             exact
-            render={() => <AvatarSelector avatar={avatar} setAvatar={setAvatar} windowWidth={windowWidth} windowHeight={windowHeight}/>}
+            render={() => (
+              <AvatarSelector
+                avatar={avatar}
+                setAvatar={setAvatar}
+                windowWidth={windowWidth}
+                windowHeight={windowHeight}
+              />
+            )}
           />
 
+        {/* GAME ONE INTRO PAGE */}
+          <Route
+            path={Routes.GAME_ONE_INTRO}
+            render={() => (
+              <GameOneIntro/>
+            )}
+          />
+
+        {/* GAME ONE PAGE */}
+          <Route
+            path={Routes.GAME_ONE}
+            render={() => (
+              <GameOne
+                loginCode={loginCode}
+                windowWidth={windowWidth}
+                windowHeight={windowHeight}
+                experimentID={experimentID}
+                currentState={currentState}
+                setCurrentState={setCurrentState}
+              />
+            )}
+          />
       </Router>
     </div>
   )
