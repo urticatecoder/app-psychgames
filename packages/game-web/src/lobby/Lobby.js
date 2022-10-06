@@ -45,7 +45,7 @@ function Lobby(props) {
       <div style={{...styles.avatarButton}}>
         <ContinueButton
           message={"Choose Avatar"} 
-          route={Routes.AVATAR_SELECTION_ROUTE} 
+          route={Routes.AVATAR_SELECTION} 
           disabled={NOT_DISABLED}
           height='60px' 
           width='300px'
