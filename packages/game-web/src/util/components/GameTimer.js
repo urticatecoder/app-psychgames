@@ -47,11 +47,12 @@ function GameTimer(props) {
   const { classes } = props;
   let margin = getMarginLeft(props.windowWidth);
   let width = getWidth(props.windowWidth);
+  // console.log("round length: ", roundLength);
 
   return (
     <div style={{marginLeft: margin, width: width}} className={classes.timerInstruction}>
       <Timer
-        initialTime={TURN_TIME}
+        initialTime={props.roundLength}
         lastUnit={LAST_TIME_UNIT}
         direction={TIME_DIRECTION}
         timeToUpdate={TIMER_UPDATE}
@@ -112,7 +113,7 @@ function checkUpdateSeconds(noteTime, setNoteTime, setTimeLeft, setSubmitDecisio
 
 function handleTimeOver(setSubmitDecisions, setTimeLeft) {
   setTimeLeft(TIME_OVER);
-  setSubmitDecisions(SUBMIT_DECISIONS);
+  // setSubmitDecisions(SUBMIT_DECISIONS);
 }
 
 function checkForReset(reset, resetTimer, setResetTimer) {
