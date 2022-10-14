@@ -21,10 +21,12 @@ function PlayerColumn(props) {
       mass: 8,
     },
   });
+
   return (
     <animated.div style={{ ...spring, display: IN_LINE}}>
       <PlayerButton
         player={props.player}
+        avatar={props.avatar}
         onSelect={props.onSelect}
         double={props.double}
         triple={props.triple}
