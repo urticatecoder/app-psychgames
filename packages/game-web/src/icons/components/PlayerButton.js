@@ -52,7 +52,7 @@ function PlayerButton(props) {
     >
       <div
       className={classes.glowingDiv} style={{boxShadow: boxShadowStyle}}>
-        {getImage(props.player, props.selectedIndex, props.windowWidth, props.frontendIndex)}
+        {getImage(props.avatar, props.selectedIndex, props.windowWidth, props.frontendIndex)}
       </div>
     </div>
   );
@@ -64,9 +64,9 @@ function getImage(playerNumber, selectedIndex, windowWidth, frontendIndex) {
   
   // If the player is the main player, return the selection.
   if (playerNumber != frontendIndex) {
-    if (playerNumber > frontendIndex) {
-      playerNumber -= 1
-    } 
+    // if (playerNumber > frontendIndex) {
+    //   playerNumber -= 1
+    // } 
     return (
       <GameImage
         image={PlayerImages[IMAGE + playerNumber]}
