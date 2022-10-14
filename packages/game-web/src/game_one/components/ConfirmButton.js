@@ -50,7 +50,10 @@ function ConfirmButton(props) {
       variant={"contained"}
       color={PRIMARY_COLOR}
       disabled = {props.disabled}
-      onClick={() => handleSubmission(props.disableButton, props.showWaitingDiv, props.setNoteTime)}
+      onClick={() => {
+        handleSubmission(props.disableButton, props.showWaitingDiv, props.setNoteTime);
+        props.setSubmit(true);
+      }}
     >
       {CONFIRM_CHOICES_TEXT}
     </Button>
@@ -76,19 +79,32 @@ function getMarginLeft(windowWidth) {
 }
 
 function sendDecisions(props) {
-  if (props.loginCode != null) {
-    socket.emit(SEND_DECISIONS_WEBSOCKET, props.experimentID, props.loginCode, getSelectedIDs(props.selected, props.allLoginCodes), props.timeLeft);
+  console.log("send decision");
+  if (props.id != null) {
+    // add ids of selected players to array
+    const selectedIds = [];
+    for (var i = 0; i < props.selected.length; i++) {
+      if (props.selected[i]) {
+        selectedIds.push(props.currentState.bonusGroups[0][i].idObj);
+      }
+    }
+    socket.emit("game-one_turn", selectedIds);
     props.clearSelected();
     props.clearSubmission();
   }
+  // if (props.loginCode != null) {
+  //   socket.emit(SEND_DECISIONS_WEBSOCKET, props.experimentID, props.loginCode, getSelectedIDs(props.selected, props.allLoginCodes), props.timeLeft);
+  //   props.clearSelected();
+  //   props.clearSubmission();
+  // }
 }
 
-function getSelectedIDs(selected, allIDs) {
-  let selectedIDs = [];
-  for (let i = 0; i < NUM_PLAYERS; i++) {
-    if (selected[i]) selectedIDs.push(allIDs[i]);
-  }
-  return selectedIDs;
-}
+// function getSelectedIDs(selected, allIDs) {
+//   let selectedIDs = [];
+//   for (let i = 0; i < NUM_PLAYERS; i++) {
+//     if (selected[i]) selectedIDs.push(allIDs[i]);
+//   }
+//   return selectedIDs;
+// }
 
 export default withStyles(styles)(ConfirmButton);
