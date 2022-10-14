@@ -14,6 +14,7 @@ import Lobby from "./lobby/Lobby";
 import AvatarSelector from "../src/avatar_selection/AvatarSelector";
 import GameOne from "./game_one/GameOne";
 import GameOneIntro from "./game_one/intro/GameOneIntro";
+import GameOneRefactor from './game_one/GameOneRefactor';
 
 import Routes from './util/constants/routes';
 import { getThemeProps } from '@material-ui/styles';
@@ -22,7 +23,7 @@ const INITIAL_CODE = null;
 const DEFAULT_EXPERIMENT_ID = -1;
 const INITIAL_ID = null;
 const INITIAL_GAME_STATE = null;
-const INITIAL_AVATAR = -1;
+const INITIAL_AVATAR = 1;
 
 const INITIAL_WINDOW_WIDTH = window.innerWidth;
 const INITIAL_WINDOW_HEIGHT = window.innerHeight;
@@ -155,7 +156,10 @@ function App(props) {
           <Route
             path={Routes.GAME_ONE_INTRO}
             render={() => (
-              <GameOneIntro/>
+              <GameOneIntro
+                avatar={avatar}
+                setAvatar={setAvatar}
+              />
             )}
           />
 
@@ -163,13 +167,15 @@ function App(props) {
           <Route
             path={Routes.GAME_ONE}
             render={() => (
-              <GameOne
+              <GameOneRefactor
                 loginCode={loginCode}
                 windowWidth={windowWidth}
                 windowHeight={windowHeight}
                 experimentID={experimentID}
                 currentState={currentState}
                 setCurrentState={setCurrentState}
+                id={id}
+                avatar={avatar}
               />
             )}
           />
