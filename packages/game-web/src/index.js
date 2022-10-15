@@ -3,15 +3,18 @@ import ReactDOM from 'react-dom';
 import { Router } from 'react-router-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { CookiesProvider } from 'react-cookie'; // see: https://www.npmjs.com/package/react-cookie
 
 import { createBrowserHistory } from 'history';
 const history = createBrowserHistory();
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router history={history}>
-      <App />
-    </Router>
+      <Router history={history}>
+        <CookiesProvider>
+          <App />
+        </CookiesProvider>
+      </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );
