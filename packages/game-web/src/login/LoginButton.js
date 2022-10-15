@@ -43,7 +43,7 @@ function handleLogin(props) {
     const startGameRequest = {
         "prolificId": props.code
     };
-    socket.emit("start-game_request", startGameRequest);
+    socket.emit("start-game", startGameRequest);
     // axios.get(HTTP_Routes.LOGIN_CODE, {
     //     params: {
     //         loginCode: props.code
