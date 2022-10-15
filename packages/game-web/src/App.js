@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "./App.css";
 import { Router, Route, withRouter, useHistory } from "react-router-dom";
 import socket from "./socketClient";
+import { withCookies, useCookies } from "react-cookie";
 
 import RefreshChecker from "./util/components/RefreshChecker";
 import WindowChecker from './util/components/WindowChecker';
@@ -46,6 +47,13 @@ function App(props) {
   useEffect(() => {
     socket.on("connect", () => console.log(socket.id));
     console.log("connecting");
+    if (props.cookies.get("id")) {
+      console.log("id: ", props.cookies.get("id"));
+      setId(props.cookies.get("id"));
+      const enterGameRequest = {id: props.cookies.get("id")};
+      socket.emit("enter-game", enterGameRequest);
+    }
+
     socket.on("connect_error", () => {
       setTimeout(() => socket.connect(), 3001);
     });
@@ -58,13 +66,19 @@ function App(props) {
       console.log("received start game response: ", startGameResponse.id);
       // store id in frontend state
       setId(startGameResponse.id);
-    })
+      if (!props.cookies.get("id")) {
+        console.log("set new id");
+        props.cookies.set("id", startGameResponse.id, { path: "/" });
+      } else {
+        console.log("old id: ", props.cookies.get("id"));
+      }
+    });
 
     socket.on("state-update", (gameState) => {
       console.log("received state update: ", gameState.state);
       // store state in frontend
       setCurrentState(gameState.state);
-    })
+    });
 
     socket.on("disconnect",() => console.log("server disconnected"));
   }, []);
@@ -92,7 +106,7 @@ function App(props) {
       type: "lobby_avatar",
       avatar: avatar
     };
-    socket.emit("game_action", lobbyAvatarRequest);
+    socket.emit("game-action", lobbyAvatarRequest);
   }, [avatar]);
 
   return (
@@ -183,7 +197,7 @@ function App(props) {
     </div>
   )
 }
-export default withRouter(App);
+export default withCookies(withRouter(App));
 
 // import React, { useState } from "react";
 // import { BrowserRouter as Router, Route} from "react-router-dom";
