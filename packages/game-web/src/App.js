@@ -16,6 +16,9 @@ import AvatarSelector from "../src/avatar_selection/AvatarSelector";
 import GameOne from "./game_one/GameOne";
 import GameOneIntro from "./game_one/intro/GameOneIntro";
 import GameOneRefactor from './game_one/GameOneRefactor';
+import GameTwoIntro from "./game_two/intro/GameTwoIntro";
+import GameTwo from "./game_two/GameTwo";
+import GameTwoRefactor from "./game_two/GameTwoRefactor";
 
 import Routes from './util/constants/routes';
 import { getThemeProps } from '@material-ui/styles';
@@ -45,17 +48,24 @@ function App(props) {
   const [avatar, setAvatar] = useState(INITIAL_AVATAR);
 
   useEffect(() => {
-    socket.on("connect", () => console.log(socket.id));
-    console.log("connecting");
-    if (props.cookies.get("id")) {
-      console.log("id: ", props.cookies.get("id"));
-      setId(props.cookies.get("id"));
-      const enterGameRequest = {id: props.cookies.get("id")};
-      socket.emit("enter-game", enterGameRequest);
-    }
-
     socket.on("connect_error", () => {
       setTimeout(() => socket.connect(), 3001);
+    });
+
+    socket.on("connect", () => {
+      console.log("connected: ", socket.id);
+      if (props.cookies.get("id")) {
+        console.log("already has id: ", props.cookies.get("id"));
+        setId(props.cookies.get("id"));
+        const enterGameRequest = {id: props.cookies.get("id")};
+        socket.emit("enter-game", enterGameRequest);
+      }
+    });
+
+    socket.on("state-update", (gameState) => {
+      console.log("received state update: ", gameState.state);
+      // store state in frontend
+      setCurrentState(gameState.state);
     });
 
     socket.on("enter-game_response", (enterGameResponse) => {
@@ -74,13 +84,10 @@ function App(props) {
       }
     });
 
-    socket.on("state-update", (gameState) => {
-      console.log("received state update: ", gameState.state);
-      // store state in frontend
-      setCurrentState(gameState.state);
+    socket.on("disconnect",() => {
+      console.log("server disconnected");
+      
     });
-
-    socket.on("disconnect",() => console.log("server disconnected"));
   }, []);
 
   // listener for when the current game state is updated
@@ -188,6 +195,41 @@ function App(props) {
                 experimentID={experimentID}
                 currentState={currentState}
                 setCurrentState={setCurrentState}
+                id={id}
+                avatar={avatar}
+              />
+            )}
+          />
+
+        {/* GAME TWO INTRO PAGE */}
+          <Route
+            path={Routes.GAME_TWO_INTRO}
+            render={() => 
+              <GameTwoIntro
+                winners={winners}
+                selectedIndex={selectedIndex}
+                losers={losers}
+                allLoginCodes={allLoginCodes}
+                frontendIndex={frontendIndex}
+              />
+            }
+          />   
+
+          {/* GAME TWO PAGE */}
+          <Route
+            path={Routes.GAME_TWO}
+            render={() => (
+              <GameTwoRefactor
+                // loginCode={loginCode}
+                // winners={winners}
+                // losers={losers}
+                // allLoginCodes={allLoginCodes}
+                // selectedIndex={selectedIndex}
+                windowWidth={windowWidth}
+                windowHeight={windowHeight}
+                // experimentID={experimentID}
+                // frontendIndex={frontendIndex}
+                currentState={currentState}
                 id={id}
                 avatar={avatar}
               />
