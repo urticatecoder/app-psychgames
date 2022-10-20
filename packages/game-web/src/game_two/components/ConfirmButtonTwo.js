@@ -62,7 +62,7 @@ function ConfirmButtonTwo(props) {
 function handleSubmission(disableButton, setNoteTime, showWaitingDiv) {
   disableButton();
   setNoteTime(NOTE_TIME);
-  showWaitingDiv()
+  showWaitingDiv();
 }
 
 function getWidth(windowWidth) {
@@ -78,11 +78,29 @@ function getMarginLeft(windowWidth) {
 }
 
 function sendDecisions(props) {
-  if (props.loginCode != null) {
-    socket.emit(SEND_DECISION_WEBSOCKET, props.experimentID, props.loginCode, props.resources[COMPETE_INDEX], props.resources[KEEP_INDEX], props.resources[INVEST_INDEX], props.timeLeft);
-    props.clearSelected();
-    props.clearSubmission();
+  if (props.id != null) {
+      const competeCount = props.resources[COMPETE_INDEX];
+      const investCount = props.resources[INVEST_INDEX];
+      const keepCount = props.resources[KEEP_INDEX];
+      const gameTwoTurnRequest = {
+        type: "game-two_turn",
+        tokenDistribution: {
+          compete: competeCount,
+          invest: investCount,
+          keep: keepCount
+        }
+      };
+      console.log("client send game two request: ", gameTwoTurnRequest);
+      socket.emit("game-two_turn", gameTwoTurnRequest);
+      props.clearSelected();
+      props.clearSubmission();
   }
+
+  // if (props.loginCode != null) {
+  //   socket.emit(SEND_DECISION_WEBSOCKET, props.experimentID, props.loginCode, props.resources[COMPETE_INDEX], props.resources[KEEP_INDEX], props.resources[INVEST_INDEX], props.timeLeft);
+  //   props.clearSelected();
+  //   props.clearSubmission();
+  // }
 }
 
 export default withStyles(styles)(ConfirmButtonTwo);
