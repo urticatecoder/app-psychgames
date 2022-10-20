@@ -11,6 +11,8 @@ import getAlerts from './components/getAlerts';
 import BonusShower from './components/BonusShower';
 import WaitingDiv from "../util/components/WaitingDiv";
 
+import Routes from '../util/constants/routes';
+
 const FULL_DIV = "fullDiv";
 const GAME_TWO_INTRO_ROUTE = "/game-two-intro";
 const MAX_HEIGHT = 100;
@@ -141,6 +143,12 @@ function GameOne(props) {
     const [bonusType, setBonusType] = useState(DOUBLE_BONUS);
     const [openBonusShower, setOpenBonusShower] = useState(CLOSED);
 
+    if (!props.currentState) {
+        console.log("push to login");
+        props.history.push(Routes.LOGIN);
+        return (<div></div>);
+    }
+
     const currentState = props.currentState;
     const [round, setRound] = useState(0);
     const [roundStartTime, setRoundStartTime] = useState(0);
@@ -259,76 +267,6 @@ function GameOne(props) {
             pauseSubmitButton(allMovementPause, setDisableButton);
             // setCurrentHeight(scaledNewHeights);
         }
-
-        // socket.on(END_TURN_WEBSOCKET, (heights, tripleBonuses, tripleIncrease, doubleBonuses, doubleIncrease) => {
-        //     console.log('TURN RESULTS: ' + heights)
-        //     reIndexHeights(heights, props.backendIndex, props.frontendIndex);
-        //     console.log('REINDEXED TURN RESULTS: ' + heights)
-        //     setShowWaitingDiv(HIDE_DIV)
-        //     let posAfterTriple = handleTripleBonuses(
-        //         tripleBonuses,
-        //         tripleIncrease,
-        //         props.allLoginCodes,
-        //         setStartHeights,
-        //         setEndHeights,
-        //         currentHeight,
-        //         setTriples,
-        //         setBonusType,
-        //         setOpenBonusShower
-        //     );
-            
-        //     let tripleBonusPause = tripleBonuses.length * PAUSE_BETWEEN_ANIMATIONS;
-        //     clearBonusArray(setTriples, tripleBonusPause);
-    
-        //     let posAfterDouble = handleDoubleBonuses(
-        //         doubleBonuses,
-        //         doubleIncrease,
-        //         props.allLoginCodes,
-        //         setStartHeights,
-        //         setEndHeights,
-        //         posAfterTriple,
-        //         setDoubles,
-        //         tripleBonuses.length,
-        //         setBonusType, 
-        //         setOpenBonusShower
-        //     );
-    
-        //     let allBonusPause = (tripleBonuses.length + doubleBonuses.length) * PAUSE_BETWEEN_ANIMATIONS;
-        //     clearBonusArray(setDoubles, allBonusPause);
-        //     setTimeout(() => setOpenBonusShower(CLOSED), allBonusPause);
-            
-        //     let scaledNewHeights = scaleHeights(heights)
-        //     updateHeightsDelayed(
-        //         posAfterDouble,
-        //         scaledNewHeights,
-        //         setStartHeights,
-        //         setEndHeights,
-        //         allBonusPause,
-        //         SINGLE_BONUS,
-        //         setBonusType,
-        //         setOpenBonusShower,
-        //         CLOSED);
-            
-        //     let allMovementPause = allBonusPause + PAUSE_BETWEEN_ANIMATIONS;
-    
-        //     handleDisablePlayers(allMovementPause, setDisabledPlayers);
-        //     handleGameTimer(allMovementPause, setResetTimer, setPauseTimer);
-        //     pauseSubmitButton(allMovementPause, setDisableButton);
-        //     setCurrentHeight(scaledNewHeights);
-        // });
-  
-        // socket.on(END_GAME_WEBSOCKET, (winners, losers, doubleBonuses, tripleBonuses) => {
-        //     props.setWinners(winners);
-        //     props.setLosers(losers);
-        //     let finalPause = (doubleBonuses + tripleBonuses + NORMAL_ANIMATION_OFFSET) * PAUSE_BETWEEN_ANIMATIONS
-        //     setTimeout(
-        //     () => moveToSummary(props), finalPause);
-        // });
-    
-        // return () => {
-        //     socket.off(END_TURN_WEBSOCKET);
-        //     socket.off(END_GAME_WEBSOCKET);
-        // };
     }, [props.currentState]);
 
     useEffect(() => {
