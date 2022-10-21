@@ -145,65 +145,57 @@ function GameTwo(props) {
     const [investCoefficient, setInvestCoefficient] = useState(0);
 
     useEffect(() => {
-        if (!props.currentState) {
-            // setCompeteCoefficient(0);
-            // setInvestCoefficient(0);
-            // setShowWaitingDiv(HIDE_DIV);
-            // setCompetePayoff(competeCoefficient);
-            // setInvestPayoff(investCoefficient);
-            // setResetTimer(RESET_TIMER);
-            // setCurrentResources(INITIAL_RESOURCE_DISTRIBUTION);
-        } else {
-            console.log("current state updated: ", props.currentState);
-            
-            if (props.currentState.round > 0) {
-                setShowWaitingDiv(HIDE_DIV);
-                setCompetePayoff(props.currentState.competeCoefficient);
-                setInvestPayoff(props.currentState.investCoefficient);
-                setResetTimer(RESET_TIMER);
-                setCurrentResources(INITIAL_RESOURCE_DISTRIBUTION);
-                setShowResults(SHOW_RESULTS);
-                setWinners(props.currentState.winners);
-                setLosers(props.currentState.losers);
-                setRound(props.currentState.round);
-                // show resourceResultsView first, and then go to resourceChoiceView
-                setGroupOneResults([
-                    props.currentState.teamResults.winnerTeam.totalTokenDistribution.compete,
-                    props.currentState.teamResults.winnerTeam.totalTokenDistribution.keep,
-                    props.currentState.teamResults.winnerTeam.totalTokenDistribution.invest
-                ]);
-                setGroupTwoResults([
-                    props.currentState.teamResults.loserTeam.totalTokenDistribution.compete,
-                    props.currentState.teamResults.loserTeam.totalTokenDistribution.keep,
-                    props.currentState.teamResults.loserTeam.totalTokenDistribution.invest
-                ]);
-                setTimeout(() => {
-                    setDisableButton(DO_NOT_DISABLE_BUTTON);
-                    setShowResults(DO_NOT_SHOW_RESULTS);
-                }, TIME_TO_SHOW_RESULTS);
-            } else {
-                setCompeteCoefficient(props.currentState.competeCoefficient);
-                setInvestCoefficient(props.currentState.investCoefficient);
-                setShowWaitingDiv(HIDE_DIV);
-                setCompetePayoff(competeCoefficient);
-                setInvestPayoff(investCoefficient);
-                setResetTimer(RESET_TIMER);
-                setCurrentResources(INITIAL_RESOURCE_DISTRIBUTION);
-            }
-        }
+      console.log("current state updated: ", props.currentState);
+      
+      if (props.currentState.round > 0) {
+          setShowWaitingDiv(HIDE_DIV);
+          setCompetePayoff(props.currentState.competeCoefficient);
+          setInvestPayoff(props.currentState.investCoefficient);
+          setResetTimer(RESET_TIMER);
+          setCurrentResources(INITIAL_RESOURCE_DISTRIBUTION);
+          setShowResults(SHOW_RESULTS);
+          setWinners(props.currentState.winners);
+          setLosers(props.currentState.losers);
+          setRound(props.currentState.round);
+          // show resourceResultsView first, and then go to resourceChoiceView
+          setGroupOneResults([
+              props.currentState.teamResults.winnerTeam.totalTokenDistribution.compete,
+              props.currentState.teamResults.winnerTeam.totalTokenDistribution.keep,
+              props.currentState.teamResults.winnerTeam.totalTokenDistribution.invest
+          ]);
+          setGroupTwoResults([
+              props.currentState.teamResults.loserTeam.totalTokenDistribution.compete,
+              props.currentState.teamResults.loserTeam.totalTokenDistribution.keep,
+              props.currentState.teamResults.loserTeam.totalTokenDistribution.invest
+          ]);
+          setTimeout(() => {
+              setDisableButton(DO_NOT_DISABLE_BUTTON);
+              setShowResults(DO_NOT_SHOW_RESULTS);
+          }, TIME_TO_SHOW_RESULTS);
+      } else {
+          setCompeteCoefficient(props.currentState.competeCoefficient);
+          setInvestCoefficient(props.currentState.investCoefficient);
+          setShowWaitingDiv(HIDE_DIV);
+          setCompetePayoff(competeCoefficient);
+          setInvestPayoff(investCoefficient);
+          setResetTimer(RESET_TIMER);
+          setCurrentResources(INITIAL_RESOURCE_DISTRIBUTION);
+      }
     }, [props.currentState]);
 
     const { classes } = props;
+    
+    console.log("winners: ", props.currentState.winners);
+    console.log("losers: ", props.currentState.losers);
 
-    const time = new Date();
     const roundLength = currentState.roundEndTime - currentState.roundStartTime;
 
     let resourceResultsView = getResourceResults(classes, groupOneResults, groupTwoResults, props.windowWidth);
 
     let resourceChoiceView = getResourceChoices(
         roundLength,
-        winners,
-        losers,
+        props.currentState.winners,
+        props.currentState.losers,
         props,
         setFromResources,
         setToResources,
@@ -324,6 +316,7 @@ function getResourceChoices(roundLength, winners, losers, props, setFromResource
           windowHeight={props.windowHeight}
           windowWidth={props.windowWidth}
         //   frontendIndex={props.frontendIndex}
+          playerData={props.playerData}
         />
         <VerticalPlayerGroup
           type={GROUP_TWO}
@@ -333,6 +326,7 @@ function getResourceChoices(roundLength, winners, losers, props, setFromResource
           windowHeight={props.windowHeight}
           windowWidth={props.windowWidth}
         //   frontendIndex={props.frontendIndex}
+          playerData={props.playerData}
         />
         {getResourceButton(ResourceNames.KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
           setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources, props.windowWidth)}
