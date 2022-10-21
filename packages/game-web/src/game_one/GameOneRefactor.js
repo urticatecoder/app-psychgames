@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "../util/stylings/FullScreenDiv.css";
 import PlayerColumn from "./components/PlayerColumn";
 import { Grid, withStyles } from "@material-ui/core";
-import socket from "../socketClient";
 import ConfirmButton from "./components/ConfirmButton";
 import { withRouter } from "react-router-dom";
 import GroupBox from "./components/GroupBox";
@@ -116,10 +115,6 @@ const styles = {
  */
 function GameOne(props) {
     const [startHeights, setStartHeights] = useState(createPlayerArray(BOTTOM_OF_SCREEN));
-    // let initialHeights = createPlayerArray(scaleHeight(INITIAL_HEIGHT));
-    let initialHeights = createPlayerArray(INITIAL_HEIGHT);
-    // const [endHeights, setEndHeights] = useState(initialHeights);
-    // const [currentHeight, setCurrentHeight] = useState(initialHeights);
     const [endHeights, setEndHeights] = useState(createPlayerArray(INITIAL_HEIGHT));
     const [currentHeight, setCurrentHeight] = useState(createPlayerArray(INITIAL_HEIGHT));
   
@@ -279,7 +274,6 @@ function GameOne(props) {
   
     const { classes } = props;
 
-    const time = new Date();
     const roundLength = currentState.roundEndTime - currentState.roundStartTime;
   
     return (
@@ -318,7 +312,6 @@ function GameOne(props) {
                 timeLeft = {timeLeft}
                 setNoteTime = {setNoteTime}
                 windowWidth={props.windowWidth}
-                // experimentID = {props.experimentID}
                 showWaitingDiv = {() => setShowWaitingDiv(SHOW_DIV)}
             />
     
@@ -332,22 +325,23 @@ function GameOne(props) {
                     style={{ height: {ANIMATED_COLUMNS_HEIGHT} }}
                 >
                     {PLAYERS.map((player) => {
-                    return getColumn(
-                        props.avatar,
-                        props.currentState.bonusGroups,
-                        player,
-                        selected,
-                        setSelected,
-                        setSelectedSelf,
-                        setTooManySelects,
-                        startHeights,
-                        endHeights,
-                        props.id,
-                        doubles,
-                        triples,
-                        disabledPlayers,
-                        props.windowWidth,
-                    );
+                        return getColumn(
+                            props.id,
+                            props.playerData,
+                            props.currentState.bonusGroups,
+                            player,
+                            selected,
+                            setSelected,
+                            setSelectedSelf,
+                            setTooManySelects,
+                            startHeights,
+                            endHeights,
+                            player,
+                            doubles,
+                            triples,
+                            disabledPlayers,
+                            props.windowWidth,
+                        );
                     })}
                 </Grid>
                 <div className={classes.groupTwoBox}>
@@ -394,23 +388,28 @@ function setFinalHeight(animationPause, setHeights, heights) {
     }, animationPause);
 }
 
-function getColumn(avatar, bonusGroups, playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, myID, doubles, triples, disabledPlayers, windowWidth) {
-    var avatarIndex = AVATARS[playerNumber];
-    if (bonusGroups[0][playerNumber].idObj == myID) {
-        avatarIndex = avatar;
-    }
+function getColumn(id, playerData, bonusGroups, playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, myID, doubles, triples, disabledPlayers, windowWidth) {
+    // myID is player index in array
+    // get idObj from playerData array
+    // console.log("player data: ", playerData);
+    const idObj = playerData[myID].idObj;
+    console.log("id: ", idObj);
+    const avatarIndex = playerData[myID].data.avatar;
+    console.log("avatar: ", avatarIndex);
+
     return (
     <Grid item>
         <PlayerColumn
             onSelect={() =>
             selectPlayer(
+                playerData,
                 bonusGroups,
                 playerNumber,
                 selected,
                 setSelected,
                 setSelectedSelf,
                 setTooManySelections,
-                myID
+                id
             )}
             selected={selected[playerNumber]}
             double={doubles[playerNumber]}
@@ -533,8 +532,9 @@ function createPlayerArray(height) {
     return heights;
 }
 
-function selectPlayer(bonusGroups, player, selected, setSelected, setSelectedSelf, setTooManySelections, myID) {    
-    if (bonusGroups[0][player].idObj == myID) {
+function selectPlayer(playerData, bonusGroups, player, selected, setSelected, setSelectedSelf, setTooManySelections, myID) {    
+    console.log("select player: ", player);
+    if (playerData[player].idObj == myID) {
         console.log("selected self");
         setSelectedSelf(SELECTED_SELF);
         return;
