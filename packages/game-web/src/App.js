@@ -43,9 +43,12 @@ function App(props) {
   const [windowWidth, setWindowWidth] = useState(INITIAL_WINDOW_WIDTH);
   const [windowHeight, setWindowHeight] = useState(INITIAL_WINDOW_HEIGHT);
 
+  // new state vars from refactored server
   const [id, setId] = useState(INITIAL_ID);
   const [currentState, setCurrentState] = useState(INITIAL_GAME_STATE);
   const [avatar, setAvatar] = useState(INITIAL_AVATAR);
+  const [page, setPage] = useState(null);
+  const [playerData, setPlayerData] = useState([]);
 
   useEffect(() => {
     socket.on("connect_error", () => {
@@ -62,10 +65,12 @@ function App(props) {
       }
     });
 
-    socket.on("state-update", (gameState) => {
-      console.log("received state update: ", gameState.state);
+    socket.on("state-update", (state) => {
+      console.log("received state update: ", state.gameState);
       // store state in frontend
-      setCurrentState(gameState.state);
+      setCurrentState(state.gameState.state);
+      setPage(state.gameState.type);
+      setPlayerData(state.playerData);
     });
 
     socket.on("enter-game_response", (enterGameResponse) => {
@@ -85,8 +90,7 @@ function App(props) {
     });
 
     socket.on("disconnect",() => {
-      console.log("server disconnected");
-      
+      console.log("server disconnected"); 
     });
   }, []);
 
@@ -96,15 +100,15 @@ function App(props) {
       return;
     }
     console.log("current state updated ", currentState);
-    if (currentState.type == "lobby") {
+    if (page == "lobby") {
       console.log("go to lobby");
       props.history.push(Routes.LOBBY);
-    } else if (currentState.type == "game-one_state") {
+    } else if (page == "game-one_state") {
       props.history.push(Routes.GAME_ONE);
-    } else if (currentState.type == "game-two_state") {
+    } else if (page == "game-two_state") {
       props.history.push(Routes.GAME_TWO);
     }
-  }, [currentState]);
+  }, [page]);
 
   useEffect(() => {
     console.log("avatar: ", avatar);
@@ -155,6 +159,7 @@ function App(props) {
                 setCurrentState={setCurrentState}
                 avatar={avatar}
                 setAvatar={setAvatar}
+                playerData={playerData}
               />
             )}
           />
@@ -169,6 +174,8 @@ function App(props) {
                 setAvatar={setAvatar}
                 windowWidth={windowWidth}
                 windowHeight={windowHeight}
+                playerData={playerData}
+                setPlayerData={setPlayerData}
               />
             )}
           />
@@ -197,6 +204,7 @@ function App(props) {
                 setCurrentState={setCurrentState}
                 id={id}
                 avatar={avatar}
+                playerData={playerData}
               />
             )}
           />
@@ -232,6 +240,7 @@ function App(props) {
                 currentState={currentState}
                 id={id}
                 avatar={avatar}
+                playerData={playerData}
               />
             )}
           />
