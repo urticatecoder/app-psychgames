@@ -139,60 +139,84 @@ function GameOne(props) {
     const [openBonusShower, setOpenBonusShower] = useState(CLOSED);
 
     if (!props.currentState) {
-        console.log("push to login");
         props.history.push(Routes.LOGIN);
         return (<div></div>);
     }
 
-    const currentState = props.currentState;
-    const [round, setRound] = useState(0);
-    const [roundStartTime, setRoundStartTime] = useState(0);
-    const [roundEndTime, setRoundEndTime] = useState(0);
-    const [bonusGroups, setBonusGroups] = useState([]);
+    // const roundLength = props.currentState.roundEndTime - props.currentState.roundStartTime;
+    const roundEndTime = Date.parse(props.currentState.roundEndTime);
+    // console.log("round end time: ", roundEndTime);
+    const time = new Date();
+    // console.log("current time: ", time.getTime());
+    const roundLength = roundEndTime - time.getTime();
   
     useEffect(() => {
-        console.log("game one state updated: ", props.currentState);
-        setRound(currentState.round);
-        setRoundStartTime(currentState.roundStartTime);
-        setRoundEndTime(currentState.roundEndTime);
-        setBonusGroups(currentState.bonusGroups);
+        console.log("game one state: ", props.currentState);
 
-        const idsFromState = [];
-        for (var i = 0; i < props.currentState.bonusGroups[0].length; i++) {
-            idsFromState.push(props.currentState.bonusGroups[0][i].idObj);
+        const ids = [];
+        for (var i = 0; i < props.playerData.length; i++) {
+            ids.push(props.playerData[i].idObj);
         }
 
-        // render initial state
         if (props.currentState.bonusGroups.length == 1) {
-            console.log("render initial state");
-            const heightsFromState = [];
+            var heightsFromState = [];
             for (var i = 0; i < props.currentState.bonusGroups[0].length; i++) {
-                heightsFromState.push(props.currentState.bonusGroups[0][i].position);
+                const scaledPosition = props.currentState.bonusGroups[0][i].position * 40 + 30;
+                heightsFromState.push(scaledPosition);
             }
             console.log("heights from state: ", heightsFromState);
             setEndHeights(heightsFromState);
             setCurrentHeight(heightsFromState);
-            console.log("height after initial render: ", currentHeight);
         } else {
-            console.log("render state after turn");
-            const heightsFromState = [];
+            // go to initial heights
+            var heightsFromState = [];
+            for (var i = 0; i < props.currentState.bonusGroups[0].length; i++) {
+                const scaledPosition = props.currentState.bonusGroups[0][i].position * 40 + 30;
+                heightsFromState.push(scaledPosition);
+            }
+            console.log("heights from state: ", heightsFromState);
+            setEndHeights(heightsFromState);
+            setCurrentHeight(heightsFromState);
+
+            // handle bonuses
             const tripleBonusArray = [];
             const doubleBonusArray = [];
+            const singleBonusArray = [];
             const length = props.currentState.bonusGroups.length;
             for (var bonusIndex = 1; bonusIndex < length - 1; bonusIndex++) {
-                if (props.currentState.bonusGroups[bonusIndex].length == 3) {
-                    const triple = [];
-                    for (var j = 0; j < 3; j++) {
-                        triple.push(props.currentState.bonusGroups[bonusIndex][j].idObj);
+                if (props.currentState.bonusGroups[bonusIndex][0].turnBonus == "single") {
+                    var singleGroup = [];
+                    for (var player = 0; player < props.currentState.bonusGroups[bonusIndex].length; player++) {
+                        singleGroup.push(props.currentState.bonusGroups[bonusIndex][player].id);
                     }
-                    tripleBonusArray.push(triple);
-                } else if (props.currentState.bonusGroups[bonusIndex].length == 2) {
-                    const double = [];
-                    for (var j = 0; j < 2; j++) {
-                        double.push(props.currentState.bonusGroups[bonusIndex][j].idObj);
+                    singleBonusArray.push(singleGroup);
+                } else if (props.currentState.bonusGroups[bonusIndex][0].turnBonus == "double") {
+                    var doubleGroup = [];
+                    for (var player = 0; player < props.currentState.bonusGroups[bonusIndex].length; player++) {
+                        doubleGroup.push(props.currentState.bonusGroups[bonusIndex][player].id);
                     }
-                    doubleBonusArray.push(double);
+                    doubleBonusArray.push(doubleGroup);
+                } else if (props.currentState.bonusGroups[bonusIndex][0].turnBonus == "triple") {
+                    var tripleGroup = [];
+                    for (var player = 0; player < props.currentState.bonusGroups[bonusIndex].length; player++) {
+                        tripleGroup.push(props.currentState.bonusGroups[bonusIndex][player].id);
+                    }
+                    tripleBonusArray.push(tripleGroup);
                 }
+                // TODO: change from length to turnbonus type
+                // if (props.currentState.bonusGroups[bonusIndex].length == 3) {
+                //     const triple = [];
+                //     for (var j = 0; j < 3; j++) {
+                //         triple.push(props.currentState.bonusGroups[bonusIndex][j].idObj);
+                //     }
+                //     tripleBonusArray.push(triple);
+                // } else if (props.currentState.bonusGroups[bonusIndex].length == 2) {
+                //     const double = [];
+                //     for (var j = 0; j < 2; j++) {
+                //         double.push(props.currentState.bonusGroups[bonusIndex][j].idObj);
+                //     }
+                //     doubleBonusArray.push(double);
+                // }
             }
             console.log("triple bonus array: ", tripleBonusArray);
             console.log("current heights: ", currentHeight);
@@ -202,7 +226,7 @@ function GameOne(props) {
                 setCurrentHeight,
                 tripleBonusArray,
                 tripleIncrease,
-                idsFromState,
+                ids,
                 setStartHeights,
                 setEndHeights,
                 currentHeight,
@@ -216,12 +240,14 @@ function GameOne(props) {
             let tripleBonusPause = tripleBonusArray.length * PAUSE_BETWEEN_ANIMATIONS;
             clearBonusArray(setTriples, tripleBonusPause);
 
+            console.log("double bonus array: ", doubleBonusArray);
+
             const doubleIncrease = 10;
             let posAfterDouble = handleDoubleBonuses(
                 setCurrentHeight,
                 doubleBonusArray,
                 doubleIncrease,
-                idsFromState,
+                ids,
                 setStartHeights,
                 setEndHeights,
                 posAfterTriple,
@@ -238,10 +264,12 @@ function GameOne(props) {
             setTimeout(() => setOpenBonusShower(CLOSED), allBonusPause);
 
             // go to final heights
+            heightsFromState = [];
             for (var i = 0; i < props.currentState.bonusGroups[length - 1].length; i++) {
-                heightsFromState.push(props.currentState.bonusGroups[length - 1][i].position);
+                const scaledPosition = props.currentState.bonusGroups[0][i].position * 40 + 30;
+                heightsFromState.push(scaledPosition);
             }
-            console.log("heights from state: ", heightsFromState);
+            console.log("final heights from state: ", heightsFromState);
 
             let scaledNewHeights = heightsFromState;
             updateHeightsDelayed(
@@ -257,25 +285,17 @@ function GameOne(props) {
                 CLOSED);
 
             let allMovementPause = allBonusPause + PAUSE_BETWEEN_ANIMATIONS;
-            handleDisablePlayers(allMovementPause, setDisabledPlayers);
-            handleGameTimer(allMovementPause, setResetTimer, setPauseTimer);
-            pauseSubmitButton(allMovementPause, setDisableButton);
-            // setCurrentHeight(scaledNewHeights);
+            const time = new Date();
+            const receiveTime = time.getTime();
+            const waitTime = receiveTime - props.currentState.roundStartTime;
+            handleDisablePlayers(allMovementPause, setDisabledPlayers, waitTime);
+            handleGameTimer(allMovementPause, setResetTimer, setPauseTimer, waitTime);
+            pauseSubmitButton(allMovementPause, setDisableButton, waitTime);
         }
     }, [props.currentState]);
-
-    useEffect(() => {
-        console.log("selection updated: ", selected);
-    }, [selected]);
-
-    useEffect(() => {
-        console.log("current height final update: ", currentHeight);
-    }, [currentHeight]);
   
-    const { classes } = props;
+    const { classes } = props; 
 
-    const roundLength = currentState.roundEndTime - currentState.roundStartTime;
-  
     return (
         <div className={FULL_DIV}>
             {getAlerts(
@@ -287,7 +307,7 @@ function GameOne(props) {
             
             <WaitingDiv show={showWaitingDiv} windowWidth={props.windowWidth}/>
             <BonusShower bonus={bonusType} open={openBonusShower} windowWidth={props.windowWidth}/>
-            <GameTimer
+            <GameTimer // just display end minus current time, needs to end at correct time
                 roundLength={roundLength}
                 setSubmitDecisions={setSubmitDecisions}
                 resetTimer={resetTimer}
@@ -297,6 +317,8 @@ function GameOne(props) {
                 setNoteTime={setNoteTime}
                 setTimeLeft={setTimeLeft}
                 windowWidth={props.windowWidth}
+                disabled={disableButton}
+                disableButton={() => setDisableButton(DISABLE_BUTTON)}
             />
     
             <ConfirmButton
@@ -352,7 +374,7 @@ function GameOne(props) {
     );
 }
 
-function handleDisablePlayers(animationPause, setDisabledPlayers) {
+function handleDisablePlayers(animationPause, setDisabledPlayers, waitTime) {
     setDisabledPlayers(DISABLE_PLAYERS);
     setTimeout(() => {
       setDisabledPlayers(ENABLE_PLAYERS);
@@ -367,24 +389,19 @@ function getSpacing(windowWidth) {
     return SMALLEST_SPACING;
 }
 
-function handleGameTimer(animationPause, setResetTimer, setPauseTimer) {
+function handleGameTimer(animationPause, setResetTimer, setPauseTimer, waitTime) {
+    console.log("wait time: ", waitTime);
     setResetTimer(RESET_TIMER);
     setPauseTimer(PAUSE_TIMER);
     setTimeout(() => {
         setPauseTimer(DO_NOT_PAUSE_TIMER);
-    }, animationPause);
+    }, 0);
 }
 
-function pauseSubmitButton(animationPause, setDisableButton) {
+function pauseSubmitButton(animationPause, setDisableButton, waitTime) {
     setDisableButton(DISABLE_BUTTON);
     setTimeout(() => {
         setDisableButton(DO_NOT_DISABLE_BUTTON);
-    }, animationPause);
-}
-
-function setFinalHeight(animationPause, setHeights, heights) {
-    setTimeout(() => {
-        setHeights(heights);
     }, animationPause);
 }
 
@@ -392,10 +409,12 @@ function getColumn(id, playerData, bonusGroups, playerNumber, selected, setSelec
     // myID is player index in array
     // get idObj from playerData array
     // console.log("player data: ", playerData);
-    const idObj = playerData[myID].idObj;
-    console.log("id: ", idObj);
-    const avatarIndex = playerData[myID].data.avatar;
-    console.log("avatar: ", avatarIndex);
+    const idObj = playerData[myID].id;
+    const avatarIndex = playerData[myID].avatar;
+    var isSelf = false;
+    if (idObj == id) {
+        isSelf = true;
+    }
 
     return (
     <Grid item>
@@ -420,6 +439,7 @@ function getColumn(id, playerData, bonusGroups, playerNumber, selected, setSelec
             avatar={avatarIndex}
             disabled={disabledPlayers[playerNumber]}
             windowWidth={windowWidth}
+            isSelf={isSelf}
         />
     </Grid>
 );
@@ -434,7 +454,8 @@ function handleTripleBonuses(setCurrentHeights, tripleArray, tripleIncrease, all
         let firstIndex = getPlayerIndex(loginCodes[FIRST_CODE], allLoginCodes);
         let secondIndex = getPlayerIndex(loginCodes[SECOND_CODE], allLoginCodes);
         let thirdIndex = getPlayerIndex(loginCodes[THIRD_CODE], allLoginCodes);
-        let scaledBonus = scaleBonus(tripleIncrease);
+        // let scaledBonus = scaleBonus(tripleIncrease);
+        let scaledBonus = 0;
         newHeights[firstIndex] += scaledBonus;
         newHeights[secondIndex] += scaledBonus;
         newHeights[thirdIndex] += scaledBonus;
@@ -458,7 +479,12 @@ function handleDoubleBonuses(setCurrentHeights, doubleArray, doubleIncrease, all
         newHeights = oldHeights.slice(0);
         let firstIndex = getPlayerIndex(loginCodes[FIRST_CODE], allLoginCodes);
         let secondIndex = getPlayerIndex(loginCodes[SECOND_CODE], allLoginCodes);
-        let scaledBonus = scaleBonus(doubleIncrease);
+        let bonusGroupIndices = [];
+        for (let j = 0; j < loginCodes.length; j++) {
+            bonusGroupIndices.push(getPlayerIndex(loginCodes[j], allLoginCodes));
+        }
+        // let scaledBonus = scaleBonus(doubleIncrease);
+        let scaledBonus = 0;
         newHeights[firstIndex] += scaledBonus;
         newHeights[secondIndex] += scaledBonus;
         updateHeightsDelayed(setCurrentHeights, oldHeights, newHeights, setOldHeights, setNewHeights, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS, DOUBLE_BONUS, setBonusType, setOpenBonusShower, OPEN);
@@ -487,14 +513,6 @@ function updateHeightsDelayed(setCurrentHeights, oldHeights, newHeights, setOldH
 function updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights) {
     setOldHeights(oldHeights);
     setNewHeights(newHeights);
-    console.log(setNewHeights);
-}
-
-// We want to take the backend heights and move the main player's height to his frontend index.
-function reIndexHeights(heights, backendIndex, frontendIndex) {
-    let myHeight = heights[backendIndex];
-    heights.splice(backendIndex, 1);
-    heights.splice(frontendIndex, 0, myHeight)
 }
 
 function clearBonusArray(setBonus, delay) {
@@ -513,19 +531,6 @@ function clearSelected(setSelected) {
     setSelected(createPlayerArray(NOT_SELECTED));
 }
 
-function scaleBonus(bonus) {
-    return NEGATIVE_ONE * VERTICAL_SCALAR * bonus;
-}
-
-// function scaleHeight(height) {
-//     let invertedHeight = invertHeight(height);
-//     return invertedHeight * VERTICAL_SCALAR + VERTICAL_CONSTANT;
-// }
-
-// function scaleHeights(heightArray) {
-//     return heightArray.map((height) => scaleHeight(height));
-// }
-
 function createPlayerArray(height) {
     let heights = new Array(NUM_PLAYERS);
     heights.fill(height);
@@ -533,8 +538,9 @@ function createPlayerArray(height) {
 }
 
 function selectPlayer(playerData, bonusGroups, player, selected, setSelected, setSelectedSelf, setTooManySelections, myID) {    
-    console.log("select player: ", player);
-    if (playerData[player].idObj == myID) {
+    console.log("select player index: ", player);
+    console.log("select player id: ", playerData[player].id);
+    if (playerData[player].id == myID) {
         console.log("selected self");
         setSelectedSelf(SELECTED_SELF);
         return;
@@ -544,7 +550,6 @@ function selectPlayer(playerData, bonusGroups, player, selected, setSelected, se
         let updatedSelection = selected.slice(0);
         updatedSelection[player] = !updatedSelection[player];
         setSelected(updatedSelection);
-        console.log("selected: ", selected);
         return;
     }
 
@@ -552,7 +557,6 @@ function selectPlayer(playerData, bonusGroups, player, selected, setSelected, se
         let updatedSelection = selected.slice(0);
         updatedSelection[player] = !updatedSelection[player];
         setSelected(updatedSelection);
-        console.log("selected: ", selected);
     } else {
         console.log("too many selections");
         setTooManySelections(TOO_MANY_SELECTIONS);
@@ -569,10 +573,6 @@ function getSelectedPlayers(selected) {
         if (selected[i]) selectedPlayers.push(selected[i]);
     }
     return selectedPlayers;
-}
-
-function invertHeight(height) {
-    return MAX_HEIGHT - height;
 }
 
 function getPlayerIndex(loginCode, allLoginCodes) {
