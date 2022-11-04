@@ -8,6 +8,7 @@ const SELECTED = "#32a852";
 const NOT_SELECTED = "#0093f542";
 const DOUBLE_BONUS = "#fca103";
 const TRIPLE_BONUS = "#0010f5";
+const SELF = "#faf3b1";
 
 const BORDER_RADIUS = 30;
 const IMAGE = 'image';
@@ -38,9 +39,9 @@ const styles = {
 function PlayerButton(props) {
 
   const { classes } = props
-  let background = getBackgroundColor(props.double, props.triple, props.selected);
+  let background = getBackgroundColor(props.double, props.triple, props.selected, props.isSelf);
 
-  if (props.player == props.frontendIndex && !props.double && !props.triple) {
+  if (props.player == props.frontendIndex && !props.double && !props.triple && !props.isSelf) {
     background = SELECTED
   }
   
@@ -64,9 +65,6 @@ function getImage(playerNumber, selectedIndex, windowWidth, frontendIndex) {
   
   // If the player is the main player, return the selection.
   if (playerNumber != frontendIndex) {
-    // if (playerNumber > frontendIndex) {
-    //   playerNumber -= 1
-    // } 
     return (
       <GameImage
         image={PlayerImages[IMAGE + playerNumber]}
@@ -97,10 +95,11 @@ function handleSelect(disabled, onSelect) {
   if (!disabled) onSelect();
 }
 
-function getBackgroundColor(isDouble, isTriple, isSelected) {
+function getBackgroundColor(isDouble, isTriple, isSelected, isSelf) {
   if (isDouble) return DOUBLE_BONUS;
   else if (isTriple) return TRIPLE_BONUS;
   else if (isSelected) return SELECTED;
+  else if (isSelf) return SELF;
   else return NOT_SELECTED;
 }
 
