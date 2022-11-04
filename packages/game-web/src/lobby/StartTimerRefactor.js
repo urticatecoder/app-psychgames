@@ -25,13 +25,10 @@ const styles = {
 
 function StartTimerRefactor(props) {
     const { classes } = props;
-    console.log("prop start timer refactor state: ", props.currentState);
-    const lobbyEndTime = props.currentState.lobbyEndTime;
+    const lobbyEndTime = Date.parse(props.currentState.lobbyEndTime);
+    console.log("lobby end time: ", lobbyEndTime);
     const time = new Date();
-    // const lobbyEnterTime = time.getTime();
-    const lobbyEnterTime = 0;
-    const timeToEnd = lobbyEndTime - lobbyEnterTime;
-    console.log(timeToEnd);
+    const timeToEnd = lobbyEndTime - time.getTime();
 
     return (
         <div className={classes.startTimerRefactor} id={DIV_ID}>
