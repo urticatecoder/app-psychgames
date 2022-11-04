@@ -69,6 +69,8 @@ function Login(props) {
                 invalidCode={invalidCode} 
                 setInvalidCode={setInvalidCode} 
                 setShowWarnings={props.setShowWarnings}
+                id={props.id}
+                setId={props.setId}
             />
         </div>
     );
