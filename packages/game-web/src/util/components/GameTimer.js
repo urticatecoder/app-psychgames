@@ -47,7 +47,7 @@ function GameTimer(props) {
   const { classes } = props;
   let margin = getMarginLeft(props.windowWidth);
   let width = getWidth(props.windowWidth);
-  // console.log("round length: ", roundLength);
+  console.log("round length: ", props.roundLength);
 
   return (
     <div style={{marginLeft: margin, width: width}} className={classes.timerInstruction}>
@@ -59,7 +59,7 @@ function GameTimer(props) {
         checkpoints={[
           {
             time: TIME_OVER,
-            callback: () => handleTimeOver(props.setSubmitDecisions, props.setTimeLeft),
+            callback: () => handleTimeOver(props.setSubmitDecisions, props.setTimeLeft, props.disableButton),
           },
         ]}
       >
@@ -113,6 +113,7 @@ function checkUpdateSeconds(noteTime, setNoteTime, setTimeLeft, setSubmitDecisio
 
 function handleTimeOver(setSubmitDecisions, setTimeLeft) {
   setTimeLeft(TIME_OVER);
+  disableButton();
   // setSubmitDecisions(SUBMIT_DECISIONS);
 }
 
