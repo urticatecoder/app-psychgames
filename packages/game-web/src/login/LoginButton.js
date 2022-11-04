@@ -1,10 +1,7 @@
 
 import React from 'react';
 import { withRouter } from "react-router-dom";
-import axios from 'axios';
 import Button from '@mui/material/Button';
-import HTTP_Routes from '../util/constants/httpRoutes';
-
 import socket from "../socketClient";
 
 const INVALID_CODE = true;
@@ -41,20 +38,16 @@ function LoginButton(props) {
 
 function handleLogin(props) {
     const startGameRequest = {
-        "prolificId": props.code
+        "playerMetadata": {
+            "prolificId": props.code
+        }
     };
-    socket.emit("start-game", startGameRequest);
-    // axios.get(HTTP_Routes.LOGIN_CODE, {
-    //     params: {
-    //         loginCode: props.code
-    //     }
-    // }).then(function (res) {
-    //     let isValid = res.data.isValid;
-    //     if (isValid) {
-    //         props.history.push("/lobby");
-    //     }
-    //     else props.setInvalidCode(INVALID_CODE);
-    // });  
+    console.log("login button pressed with code: ", props.code);
+    socket.emit("start-game", startGameRequest, (response) => {
+        console.log("start game response: ", response);
+        props.setId(response.id);
+        // props.cookies.set("id", response.id, { path: "/" });
+    });
 }
 
 export default withRouter(LoginButton);
