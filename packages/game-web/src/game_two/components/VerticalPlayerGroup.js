@@ -7,9 +7,9 @@ const GROUP_ONE = 1;
 const GROUP_ONE_COLOR = "#FF9133";
 const GROUP_TWO_COLOR = "#9933FF";
 
-const FIRST_PLAYER_INDEX = 0;
-const SECOND_PLAYER_INDEX = 1;
-const THIRD_PLAYER_INDEX = 2;
+var FIRST_PLAYER_INDEX = 0;
+var SECOND_PLAYER_INDEX = 1;
+var THIRD_PLAYER_INDEX = 2;
 
 const styles = {
   groupBox: {
@@ -59,13 +59,29 @@ function VerticalPlayerGroup(props) {
   let firstMargin = getFirstMarginTop(props.windowHeight);
   let boxWidth = getBoxWidth(props.windowWidth);
 
+  console.log("players: ", props.players);
+  console.log("playerdata: ", props.playerData);
+  for (var i = 0; i < props.playerData.length; i++) {
+    if (props.playerData[i].idObj == props.players[0]) {
+      FIRST_PLAYER_INDEX = i;
+    } else if (props.playerData[i].idObj == props.players[1]) {
+      SECOND_PLAYER_INDEX = i;
+    } else if (props.playerData[i].idObj == props.players[2]) {
+      THIRD_PLAYER_INDEX = i;
+    }
+  }
+
+  console.log("first player index: ", FIRST_PLAYER_INDEX);
+  console.log("second player index: ", SECOND_PLAYER_INDEX);
+  console.log("third player index: ", THIRD_PLAYER_INDEX);
+
   return (
     <div className={formattingName}>
       <div className={classes.groupBox} style={{ backgroundColor: groupColor, width: boxWidth}}>
         <div className={classes.innerDiv}>
           <div className={classes.firstImageDiv} style={{marginTop: firstMargin}}>
             {getFormattedImage(
-              props.players[FIRST_PLAYER_INDEX],
+              props.playerData[FIRST_PLAYER_INDEX].data.avatar,
               props.allLoginCodes,
               props.selectedIndex,
               props.frontendIndex
@@ -73,7 +89,7 @@ function VerticalPlayerGroup(props) {
           </div>
           <div className={classes.imageDiv} style={{marginTop: margin}}>
             {getFormattedImage(
-              props.players[SECOND_PLAYER_INDEX],
+              props.playerData[SECOND_PLAYER_INDEX].data.avatar,
               props.allLoginCodes,
               props.selectedIndex,
               props.frontendIndex
@@ -81,7 +97,7 @@ function VerticalPlayerGroup(props) {
           </div>
           <div className={classes.imageDiv} style={{marginTop: margin}}>
             {getFormattedImage(
-              props.players[THIRD_PLAYER_INDEX],
+              props.playerData[THIRD_PLAYER_INDEX].data.avatar,
               props.allLoginCodes,
               props.selectedIndex,
               props.frontendIndex
@@ -132,7 +148,9 @@ function getMarginTop(windowHeight) {
 }
 
 function getFormattedImage(code, allLoginCodes, selectedIndex, frontendIndex) {
-  let codeIndex = allLoginCodes.indexOf(code);
+  // let codeIndex = allLoginCodes.indexOf(code);
+  let codeIndex = code;
+  console.log("code: ", codeIndex);
   return (
     <PlayerProfile player={codeIndex} selectedIndex={selectedIndex} frontendIndex={frontendIndex}/>
   );
