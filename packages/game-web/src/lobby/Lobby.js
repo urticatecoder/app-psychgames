@@ -19,23 +19,9 @@ const styles = {
  * @author Eric Doppelt
  */
 function Lobby(props) {
-  console.log("prop lobby state: ", props.currentState);
-
   return (
     <div>
       {/* render time based on lobbyEndTime in currentState prop */}
-
-      {/* <StartTimer
-        code={props.code}
-        setAllLoginCodes={props.setAllLoginCodes}
-        loggedIn={props.loggedIn}
-        setLoggedIn={props.setLoggedIn}
-        setBackendIndex = {props.setBackendIndex}
-        setFrontendIndex = {props.setFrontendIndex}
-        setExperimentID = {props.setExperimentID}
-        experimentID = {props.experimentID}
-      /> */}
-
       <StartTimerRefactor
         currentState={props.currentState}
         setCurrentState={props.setCurrentState}
