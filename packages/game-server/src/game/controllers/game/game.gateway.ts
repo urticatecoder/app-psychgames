@@ -28,7 +28,13 @@ function createValidationPipe() {
     forbidNonWhitelisted: true,
   });
 }
-@WebSocketGateway({ namespace: "game" })
+@WebSocketGateway({
+  allowEIO3: true, // needed for compatibility between socket.io and socket.io-client
+  cors: {
+      origin: "http://localhost:3000",
+      credentials: true
+  }
+})
 export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
   constructor(private gameManager: GameManagerService) {}
 
@@ -69,6 +75,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     @MessageBody() data: EnterGameRequest,
     @ConnectedSocket() socket: Socket
   ): PlayerModel.EnterGameResponse {
+    console.log("received enter game request");
+    console.log("socket id: ", socket.id);
     if (!data.id) {
       return {
         inGame: false,
@@ -110,6 +118,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     @MessageBody() data: StartGameRequest,
     @ConnectedSocket() socket: Socket
   ): PlayerModel.StartGameResponse {
+    console.log("received start game request");
+    console.log("socket id: ", socket.id);
     const id = this.gameManager.attachSocket(socket.id, data.playerMetadata);
 
     return { id };
