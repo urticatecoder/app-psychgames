@@ -54,8 +54,8 @@ function GameOneIntro(props) {
 function getMainAvatar(props) {
     return(
         <MainAvatar 
-            selectedIndex={props.selectedIndex} 
-            setSelectedIndex={props.setSelectedIndex}
+            selectedIndex={props.avatar} 
+            setSelectedIndex={props.setAvatar}
         />
     );
 }
