@@ -1,0 +1,43 @@
+.lane-bg-container {
+    position: relative;
+    overflow-y: hidden;
+    /* overflow-x: visible; */
+    height: 550px;
+    /* margin-top: 5px; */
+    margin-bottom: 5px;
+}
+
+.lane-bg {
+    background: url("./lane-line-transparent.png") repeat-y;
+    height: 1000px;
+    /* width: 1000px; */
+    position: absolute;
+    z-index: 0;
+    top: -400px;
+    margin-left: 7px;
+}
+
+.lane-bg[animation="1"] {
+    background: url("./lane-line-transparent.png") repeat-y;
+    height: 1000px;
+    /* width: 1000px; */
+    animation: slide 1s linear;
+    position: absolute;
+    z-index: 0;
+    top: -400px;
+    margin-left: 7px;
+}
+
+.player-icon {
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes slide {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(+300px);
+    }
+}
