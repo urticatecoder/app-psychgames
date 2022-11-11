@@ -84,7 +84,7 @@ function sendDecisions(props) {
     const selectedIds = [];
     for (var i = 0; i < props.selected.length; i++) {
       if (props.selected[i]) {
-        selectedIds.push(props.currentState.bonusGroups[0][i].idObj);
+        selectedIds.push(props.currentState.bonusGroups[0][i].id);
       }
     }
     socket.emit("game-one_turn", selectedIds);
