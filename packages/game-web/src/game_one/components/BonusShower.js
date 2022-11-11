@@ -2,10 +2,13 @@ import React from "react";
 import { withStyles } from "@material-ui/core";
 import MovingComponent from 'react-moving-text';
 
+const SINGLE = "Single";
 const DOUBLE = "Double ";
 const TRIPLE = "Triple ";
 const BONUS = "Bonus!";
 
+const SINGLE_BONUS_COLOR = "#f26b78"
+const SINGLE_BONUS_TEXT_COLOR = "#d4d4d4"
 const DOUBLE_BONUS_COLOR = "#fca103";
 const DOUBLE_BONUS_TEXT_COLOR = "#242424";
 const TRIPLE_BONUS_COLOR = "#0010f5";
@@ -41,9 +44,27 @@ function BonusShower(props) {
   const { classes } = props;
 
   let isDoubleBonus = (props.bonus == 'double');
-  let bonusText = (isDoubleBonus) ? DOUBLE : TRIPLE;
-  let backgroundColor = (isDoubleBonus) ? DOUBLE_BONUS_COLOR : TRIPLE_BONUS_COLOR;
-  let textColor = (isDoubleBonus) ? DOUBLE_BONUS_TEXT_COLOR : TRIPLE_BONUS_TEXT_COLOR;
+  let backgroundColor = SINGLE_BONUS_COLOR;
+  let textColor = SINGLE_BONUS_TEXT_COLOR;
+
+  let bonusText = 'single';
+  if (props.bonus == 'single') {
+    bonusText = SINGLE;
+    backgroundColor = SINGLE_BONUS_COLOR;
+    textColor = SINGLE_BONUS_TEXT_COLOR;
+  } else if (props.bonus == 'double') {
+    bonusText = DOUBLE;
+    backgroundColor = DOUBLE_BONUS_COLOR;
+    textColor = DOUBLE_BONUS_TEXT_COLOR;
+  } else {
+    bonusText = TRIPLE;
+    backgroundColor = TRIPLE_BONUS_COLOR;
+    textColor = TRIPLE_BONUS_TEXT_COLOR;
+  }
+
+  // let bonusText = (isDoubleBonus) ? DOUBLE : TRIPLE;
+  // let backgroundColor = (isDoubleBonus) ? DOUBLE_BONUS_COLOR : TRIPLE_BONUS_COLOR;
+  // let textColor = (isDoubleBonus) ? DOUBLE_BONUS_TEXT_COLOR : TRIPLE_BONUS_TEXT_COLOR;
   let width = getWidth(props.windowWidth);
   let marginLeft = getMarginLeft(props.windowWidth);
 
