@@ -122,6 +122,7 @@ function GameOne(props) {
     const [selected, setSelected] = useState(initialSelections);
     const [doubles, setDoubles] = useState(initialSelections);
     const [triples, setTriples] = useState(initialSelections);
+    const [singles, setSingles] = useState(initialSelections);
   
     const [disabledPlayers, setDisabledPlayers] = useState(createPlayerArray())
     const [selectedSelf, setSelectedSelf] = useState(DID_NOT_SELECT_SELF);
@@ -155,13 +156,13 @@ function GameOne(props) {
 
         const ids = [];
         for (var i = 0; i < props.playerData.length; i++) {
-            ids.push(props.playerData[i].idObj);
+            ids.push(props.playerData[i].id);
         }
 
         if (props.currentState.bonusGroups.length == 1) {
             var heightsFromState = [];
             for (var i = 0; i < props.currentState.bonusGroups[0].length; i++) {
-                const scaledPosition = props.currentState.bonusGroups[0][i].position * 40 + 30;
+                const scaledPosition = -1 * (props.currentState.bonusGroups[0][i].position * 30) + 30;
                 heightsFromState.push(scaledPosition);
             }
             console.log("heights from state: ", heightsFromState);
@@ -171,10 +172,10 @@ function GameOne(props) {
             // go to initial heights
             var heightsFromState = [];
             for (var i = 0; i < props.currentState.bonusGroups[0].length; i++) {
-                const scaledPosition = props.currentState.bonusGroups[0][i].position * 40 + 30;
+                const scaledPosition = -1 * (props.currentState.bonusGroups[0][i].position * 30) + 30;
                 heightsFromState.push(scaledPosition);
             }
-            console.log("heights from state: ", heightsFromState);
+            // console.log("heights from state: ", heightsFromState);
             setEndHeights(heightsFromState);
             setCurrentHeight(heightsFromState);
 
@@ -182,70 +183,72 @@ function GameOne(props) {
             const tripleBonusArray = [];
             const doubleBonusArray = [];
             const singleBonusArray = [];
+            const tripleHeightArray = [];
+            const doubleHeightArray = [];
+            const singleHeightArray = [];
             const length = props.currentState.bonusGroups.length;
+            console.log("length: ", length);
             for (var bonusIndex = 1; bonusIndex < length - 1; bonusIndex++) {
                 if (props.currentState.bonusGroups[bonusIndex][0].turnBonus == "single") {
                     var singleGroup = [];
+                    var singleGroupHeight = [];
                     for (var player = 0; player < props.currentState.bonusGroups[bonusIndex].length; player++) {
                         singleGroup.push(props.currentState.bonusGroups[bonusIndex][player].id);
+                        singleGroupHeight.push(-1 * (props.currentState.bonusGroups[bonusIndex][player].position * 30) + 30);
                     }
                     singleBonusArray.push(singleGroup);
+                    singleHeightArray.push(singleGroupHeight);
                 } else if (props.currentState.bonusGroups[bonusIndex][0].turnBonus == "double") {
                     var doubleGroup = [];
+                    var doubleGroupHeight = [];
                     for (var player = 0; player < props.currentState.bonusGroups[bonusIndex].length; player++) {
                         doubleGroup.push(props.currentState.bonusGroups[bonusIndex][player].id);
+                        doubleGroupHeight.push(-1 * (props.currentState.bonusGroups[bonusIndex][player].position * 30) + 30);
                     }
                     doubleBonusArray.push(doubleGroup);
+                    doubleHeightArray.push(doubleGroupHeight);
                 } else if (props.currentState.bonusGroups[bonusIndex][0].turnBonus == "triple") {
                     var tripleGroup = [];
+                    var tripleGroupHeight = [];
                     for (var player = 0; player < props.currentState.bonusGroups[bonusIndex].length; player++) {
                         tripleGroup.push(props.currentState.bonusGroups[bonusIndex][player].id);
+                        tripleGroupHeight.push(-1 * (props.currentState.bonusGroups[bonusIndex][player].position * 30) + 30);
                     }
+                    // doubleBonusArray.push(tripleGroup);
+                    // doubleHeightArray.push(tripleGroupHeight);
                     tripleBonusArray.push(tripleGroup);
+                    tripleHeightArray.push(tripleGroupHeight);
                 }
-                // TODO: change from length to turnbonus type
-                // if (props.currentState.bonusGroups[bonusIndex].length == 3) {
-                //     const triple = [];
-                //     for (var j = 0; j < 3; j++) {
-                //         triple.push(props.currentState.bonusGroups[bonusIndex][j].idObj);
-                //     }
-                //     tripleBonusArray.push(triple);
-                // } else if (props.currentState.bonusGroups[bonusIndex].length == 2) {
-                //     const double = [];
-                //     for (var j = 0; j < 2; j++) {
-                //         double.push(props.currentState.bonusGroups[bonusIndex][j].idObj);
-                //     }
-                //     doubleBonusArray.push(double);
-                // }
             }
-            console.log("triple bonus array: ", tripleBonusArray);
-            console.log("current heights: ", currentHeight);
+            // console.log("current heights: ", currentHeight);
             const tripleIncrease = 20;
             setShowWaitingDiv(HIDE_DIV);
             let posAfterTriple = handleTripleBonuses(
                 setCurrentHeight,
                 tripleBonusArray,
+                tripleHeightArray,
                 tripleIncrease,
                 ids,
                 setStartHeights,
                 setEndHeights,
-                currentHeight,
+                heightsFromState,
                 setTriples,
                 setBonusType,
                 setOpenBonusShower
             );
 
-            console.log("pos after triple: ", posAfterTriple);
+            // console.log("pos after triple: ", posAfterTriple);
 
             let tripleBonusPause = tripleBonusArray.length * PAUSE_BETWEEN_ANIMATIONS;
             clearBonusArray(setTriples, tripleBonusPause);
 
             console.log("double bonus array: ", doubleBonusArray);
-
+            // console.log("ids: ", ids);
             const doubleIncrease = 10;
             let posAfterDouble = handleDoubleBonuses(
                 setCurrentHeight,
                 doubleBonusArray,
+                doubleHeightArray,
                 doubleIncrease,
                 ids,
                 setStartHeights,
@@ -256,22 +259,43 @@ function GameOne(props) {
                 setBonusType, 
                 setOpenBonusShower
             );
+
+            let tripleDoubleBonusPause = (tripleBonusArray.length + doubleBonusArray.length) * PAUSE_BETWEEN_ANIMATIONS;
+            clearBonusArray(setDoubles, tripleDoubleBonusPause);
+
+            // handle single bonuses
+            const singleIncrease = 5;
+            console.log("single bonus array: ", singleBonusArray);
+            let posAfterSingle = handleSingleBonuses(
+                setCurrentHeight,
+                singleBonusArray,
+                singleHeightArray,
+                singleIncrease,
+                ids,
+                setStartHeights,
+                setEndHeights,
+                posAfterDouble,
+                setSingles,
+                doubleBonusArray.length + tripleBonusArray.length,
+                setBonusType,
+                setOpenBonusShower
+            );
             
-            console.log("posAfterDouble: ", posAfterDouble);
+            // console.log("posAfterDouble: ", posAfterDouble);
             
-            let allBonusPause = (tripleBonusArray.length + doubleBonusArray.length) * PAUSE_BETWEEN_ANIMATIONS;
-            clearBonusArray(setDoubles, allBonusPause);
+            let allBonusPause = (tripleBonusArray.length + doubleBonusArray.length + singleBonusArray.length) * PAUSE_BETWEEN_ANIMATIONS;
+            clearBonusArray(setSingles, allBonusPause);
             setTimeout(() => setOpenBonusShower(CLOSED), allBonusPause);
 
             // go to final heights
-            heightsFromState = [];
+            let finalHeights = [];
             for (var i = 0; i < props.currentState.bonusGroups[length - 1].length; i++) {
-                const scaledPosition = props.currentState.bonusGroups[0][i].position * 40 + 30;
-                heightsFromState.push(scaledPosition);
+                const scaledPosition = -1 * (props.currentState.bonusGroups[length - 1][i].position * 30) + 30;
+                finalHeights.push(scaledPosition);
             }
-            console.log("final heights from state: ", heightsFromState);
+            // console.log("final heights from state: ", finalHeights);
 
-            let scaledNewHeights = heightsFromState;
+            let scaledNewHeights = finalHeights;
             updateHeightsDelayed(
                 setCurrentHeight,
                 posAfterDouble,
@@ -359,6 +383,7 @@ function GameOne(props) {
                             startHeights,
                             endHeights,
                             player,
+                            singles,
                             doubles,
                             triples,
                             disabledPlayers,
@@ -390,7 +415,7 @@ function getSpacing(windowWidth) {
 }
 
 function handleGameTimer(animationPause, setResetTimer, setPauseTimer, waitTime) {
-    console.log("wait time: ", waitTime);
+    // console.log("wait time: ", waitTime);
     setResetTimer(RESET_TIMER);
     setPauseTimer(PAUSE_TIMER);
     setTimeout(() => {
@@ -405,7 +430,7 @@ function pauseSubmitButton(animationPause, setDisableButton, waitTime) {
     }, animationPause);
 }
 
-function getColumn(id, playerData, bonusGroups, playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, myID, doubles, triples, disabledPlayers, windowWidth) {
+function getColumn(id, playerData, bonusGroups, playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, myID, singles, doubles, triples, disabledPlayers, windowWidth) {
     // myID is player index in array
     // get idObj from playerData array
     // console.log("player data: ", playerData);
@@ -414,6 +439,13 @@ function getColumn(id, playerData, bonusGroups, playerNumber, selected, setSelec
     var isSelf = false;
     if (idObj == id) {
         isSelf = true;
+    }
+
+    let doAnimate = false;
+    for (let i = 0; i <= 5; i++) {
+        if (toHeights[i] > fromHeights[i]) {
+            doAnimate = true;
+        }
     }
 
     return (
@@ -431,6 +463,7 @@ function getColumn(id, playerData, bonusGroups, playerNumber, selected, setSelec
                 id
             )}
             selected={selected[playerNumber]}
+            single={singles[playerNumber]}
             double={doubles[playerNumber]}
             triple={triples[playerNumber]}
             from={fromHeights[playerNumber]}
@@ -440,69 +473,157 @@ function getColumn(id, playerData, bonusGroups, playerNumber, selected, setSelec
             disabled={disabledPlayers[playerNumber]}
             windowWidth={windowWidth}
             isSelf={isSelf}
+            doAnimate={doAnimate}
         />
     </Grid>
 );
 }
 
-function handleTripleBonuses(setCurrentHeights, tripleArray, tripleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setTriples, setBonusType, setOpenBonusShower) {
+function handleTripleBonuses(setCurrentHeights, tripleArray, tripleHeightArray, tripleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setTriples, setBonusType, setOpenBonusShower) {
     let oldHeights = originalHeights.slice(0);
-    let newHeights = originalHeights.slice(0);
+    // let newHeights = originalHeights.slice(0);
+    // console.log("old heights: ", oldHeights);
+    let newHeights = [];
+    for (let i = 0; i < originalHeights.length; i++) {
+        newHeights.push(originalHeights[i]);
+    }
     for (let i = 0; i < tripleArray.length; i++) {
         let loginCodes = tripleArray[i];
         newHeights = oldHeights.slice(0);
-        let firstIndex = getPlayerIndex(loginCodes[FIRST_CODE], allLoginCodes);
-        let secondIndex = getPlayerIndex(loginCodes[SECOND_CODE], allLoginCodes);
-        let thirdIndex = getPlayerIndex(loginCodes[THIRD_CODE], allLoginCodes);
-        // let scaledBonus = scaleBonus(tripleIncrease);
-        let scaledBonus = 0;
-        newHeights[firstIndex] += scaledBonus;
-        newHeights[secondIndex] += scaledBonus;
-        newHeights[thirdIndex] += scaledBonus;
+        // let firstIndex = getPlayerIndex(loginCodes[FIRST_CODE], allLoginCodes);
+        // let secondIndex = getPlayerIndex(loginCodes[SECOND_CODE], allLoginCodes);
+        // let thirdIndex = getPlayerIndex(loginCodes[THIRD_CODE], allLoginCodes);
+        let bonusGroupIndices = [];
+        for (let j = 0; j < loginCodes.length; j++) {
+            const playerIndex = getPlayerIndex(loginCodes[j], allLoginCodes);
+            bonusGroupIndices.push(playerIndex);
+            newHeights[playerIndex] = tripleHeightArray[i][j];
+        }
+        // // let scaledBonus = scaleBonus(tripleIncrease);
+        // let scaledBonus = 0;
+        // newHeights[firstIndex] += scaledBonus;
+        // newHeights[secondIndex] += scaledBonus;
+        // newHeights[thirdIndex] += scaledBonus;
         updateHeightsDelayed(setCurrentHeights, oldHeights, newHeights, setOldHeights, setNewHeights, i * PAUSE_BETWEEN_ANIMATIONS, TRIPLE_BONUS, setBonusType, setOpenBonusShower, OPEN);
-        markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, i * PAUSE_BETWEEN_ANIMATIONS);
+        // markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, i * PAUSE_BETWEEN_ANIMATIONS);
+        markTripleDelayed(bonusGroupIndices, setTriples, i * PAUSE_BETWEEN_ANIMATIONS);
         oldHeights = newHeights;
     }
     if (newHeights == null) return originalHeights.splice(0);
     else return newHeights;
 }
 
-function markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, delay) {
-    updateBonusArray([firstIndex, secondIndex, thirdIndex], setTriples, delay);
+// function markTripleDelayed(firstIndex, secondIndex, thirdIndex, setTriples, delay) {
+//     updateBonusArray([firstIndex, secondIndex, thirdIndex], setTriples, delay);
+// }
+function markTripleDelayed(bonusGroupIndices, setTriples, delay) {
+    updateBonusArray(bonusGroupIndices, setTriples, delay);
 }
 
-function handleDoubleBonuses(setCurrentHeights, doubleArray, doubleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setDoubles, animationOffset, setBonusType, setOpenBonusShower) {
+function handleDoubleBonuses(setCurrentHeights, doubleArray, doubleHeightArray, doubleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setDoubles, animationOffset, setBonusType, setOpenBonusShower) {
     let oldHeights = originalHeights.slice(0);
-    let newHeights;
+    // console.log("old heights: ", oldHeights);
+    let newHeights = [];
+    for (let i = 0; i < originalHeights.length; i++) {
+        newHeights.push(originalHeights[i]);
+    }
     for (let i = 0; i < doubleArray.length; i++) {
         let loginCodes = doubleArray[i];
         newHeights = oldHeights.slice(0);
-        let firstIndex = getPlayerIndex(loginCodes[FIRST_CODE], allLoginCodes);
-        let secondIndex = getPlayerIndex(loginCodes[SECOND_CODE], allLoginCodes);
+        console.log("old heights slice: ", newHeights);
+        // let firstIndex = getPlayerIndex(loginCodes[FIRST_CODE], allLoginCodes);
+        // let secondIndex = getPlayerIndex(loginCodes[SECOND_CODE], allLoginCodes);
         let bonusGroupIndices = [];
+        // console.log("ids in double bonus group: ", loginCodes)
         for (let j = 0; j < loginCodes.length; j++) {
-            bonusGroupIndices.push(getPlayerIndex(loginCodes[j], allLoginCodes));
+            // console.log("id: ", loginCodes[j]);
+            // console.log("all login codes: ", allLoginCodes);
+            // console.log("index: ", getPlayerIndex(loginCodes[j], allLoginCodes));
+            const playerIndex = getPlayerIndex(loginCodes[j], allLoginCodes);
+            console.log("player index: ", playerIndex);
+            bonusGroupIndices.push(playerIndex);
+            newHeights[playerIndex] = doubleHeightArray[i][j];
+            // newHeights[getPlayerIndex(loginCodes[j], allLoginCodes)] = 
         }
+        // for (let j = 0; j < newHeights.length; j++) {
+        //     if (!newHeights[j]) {
+        //         newHeights[j] = originalHeights[j];
+        //     }
+        // }
+        console.log("handle doubles -> new heights: ", newHeights);
         // let scaledBonus = scaleBonus(doubleIncrease);
-        let scaledBonus = 0;
-        newHeights[firstIndex] += scaledBonus;
-        newHeights[secondIndex] += scaledBonus;
+        // let scaledBonus = 0;
+        // newHeights[firstIndex] += scaledBonus;
+        // newHeights[secondIndex] += scaledBonus;
         updateHeightsDelayed(setCurrentHeights, oldHeights, newHeights, setOldHeights, setNewHeights, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS, DOUBLE_BONUS, setBonusType, setOpenBonusShower, OPEN);
-        markDoubleDelayed(firstIndex, secondIndex, setDoubles, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS);
+        // markDoubleDelayed(firstIndex, secondIndex, setDoubles, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS);
+        markDoubleDelayed(bonusGroupIndices, setDoubles, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS);
         oldHeights = newHeights;
     }
     if (newHeights == null) return originalHeights;
     else return newHeights;
 }
 
-function markDoubleDelayed(firstIndex, secondIndex, setDoubles, delay) {
-    updateBonusArray([firstIndex, secondIndex], setDoubles, delay);
+// function markDoubleDelayed(firstIndex, secondIndex, setDoubles, delay) {
+//     updateBonusArray([firstIndex, secondIndex], setDoubles, delay);
+// }
+function markDoubleDelayed(bonusGroupIndices, setDoubles, delay) {
+    // console.log("mark double delayed on group: ", bonusGroupIndices)
+    updateBonusArray(bonusGroupIndices, setDoubles, delay);
 }
 
+function handleSingleBonuses(setCurrentHeights, singleArray, singleHeightArray, singleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setSingles, animationOffset, setBonusType, setOpenBonusShower) {
+    let oldHeights = originalHeights.slice(0);
+    // console.log("old heights: ", oldHeights);
+    let newHeights = originalHeights.slice(0);
+    for (let i = 0; i < singleArray.length; i++) {
+        let loginCodes = singleArray[i];
+        newHeights = oldHeights.slice(0);
+        let bonusGroupIndices = [];
+        // console.log("ids in single bonus group: ", loginCodes)
+        for (let j = 0; j < loginCodes.length; j++) {
+            // console.log("id: ", loginCodes[j]);
+            // console.log("all login codes: ", allLoginCodes);
+            // console.log("index: ", getPlayerIndex(loginCodes[j], allLoginCodes));
+            const playerIndex = getPlayerIndex(loginCodes[j], allLoginCodes);
+            bonusGroupIndices.push(playerIndex);
+            newHeights[playerIndex] = singleHeightArray[i][j];
+        }
+        // let scaledBonus = scaleBonus(doubleIncrease);
+        // let scaledBonus = 0;
+        // newHeights[firstIndex] += scaledBonus;
+        // newHeights[secondIndex] += scaledBonus;
+        updateHeightsDelayed(setCurrentHeights, oldHeights, newHeights, setOldHeights, setNewHeights, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS, SINGLE_BONUS, setBonusType, setOpenBonusShower, OPEN);
+        markSingleDelayed(bonusGroupIndices, setSingles, (i + animationOffset) * PAUSE_BETWEEN_ANIMATIONS);
+        oldHeights = newHeights;
+    }
+    if (newHeights == null) return originalHeights;
+    else return newHeights;
+}
+
+function markSingleDelayed(bonusGroupIndices, setSingles, delay) {
+    updateBonusArray(bonusGroupIndices, setSingles, delay);
+}
+
+/**
+ * Update the heights with a delay.
+ * 
+ * @param {String} setCurrentHeights 
+ * @param {boolean} oldHeights 
+ * @param {*} newHeights 
+ * @param {*} setOldHeights 
+ * @param {*} setNewHeights 
+ * @param {*} delay 
+ * @param {*} bonusType 
+ * @param {*} setBonusType 
+ * @param {*} setOpenBonusShower 
+ * @param {*} openBonus 
+ */
 function updateHeightsDelayed(setCurrentHeights, oldHeights, newHeights, setOldHeights, setNewHeights, delay, bonusType, setBonusType, setOpenBonusShower, openBonus) {
     setTimeout(() => {
         updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights);
         setBonusType(bonusType);
+        console.log("bonus type: ", bonusType);
         setOpenBonusShower(openBonus);
         if (bonusType == SINGLE_BONUS) {
             setCurrentHeights(newHeights);
