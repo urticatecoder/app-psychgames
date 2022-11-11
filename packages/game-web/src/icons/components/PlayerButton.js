@@ -6,6 +6,7 @@ import { withStyles } from "@material-ui/core";
 
 const SELECTED = "#32a852";
 const NOT_SELECTED = "#0093f542";
+const SINGLE_BONUS = "#f26b78";
 const DOUBLE_BONUS = "#fca103";
 const TRIPLE_BONUS = "#0010f5";
 const SELF = "#faf3b1";
@@ -39,9 +40,9 @@ const styles = {
 function PlayerButton(props) {
 
   const { classes } = props
-  let background = getBackgroundColor(props.double, props.triple, props.selected, props.isSelf);
+  let background = getBackgroundColor(props.single, props.double, props.triple, props.selected, props.isSelf);
 
-  if (props.player == props.frontendIndex && !props.double && !props.triple && !props.isSelf) {
+  if (props.player == props.frontendIndex && !props.single && !props.double && !props.triple && !props.isSelf) {
     background = SELECTED
   }
   
@@ -95,8 +96,9 @@ function handleSelect(disabled, onSelect) {
   if (!disabled) onSelect();
 }
 
-function getBackgroundColor(isDouble, isTriple, isSelected, isSelf) {
-  if (isDouble) return DOUBLE_BONUS;
+function getBackgroundColor(isSingle, isDouble, isTriple, isSelected, isSelf) {
+  if (isSingle) return SINGLE_BONUS;
+  else if (isDouble) return DOUBLE_BONUS;
   else if (isTriple) return TRIPLE_BONUS;
   else if (isSelected) return SELECTED;
   else if (isSelf) return SELF;
