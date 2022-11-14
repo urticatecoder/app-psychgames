@@ -72,6 +72,7 @@ const GameInstance: AGame = {
   goToGame: jest.fn(),
   endGame: jest.fn(),
   emitState: jest.fn(),
+  pushToDatabase: jest.fn(),
 };
 
 export function Game() {

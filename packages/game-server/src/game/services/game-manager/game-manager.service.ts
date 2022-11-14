@@ -1,11 +1,15 @@
 import { AppEvents } from "@dpg/constants";
-import { GameModel, PlayerModel } from "@dpg/types";
+import { GameModel, PlayerModel, GameTwoModel } from "@dpg/types";
 import { Injectable } from "@nestjs/common";
 import { Server } from "socket.io";
 import { DefaultGameConstants } from "./constants.js";
 import { v4 as uuidv4 } from "uuid";
 import { GameFactory } from "../game-factory/game-factory.js";
 import { AGame } from "./game-logic/game.js";
+import mongoose from "mongoose";
+import { GameOneDataModel, GameTwoDataModel } from "./database-models.js";
+import { NONAME } from "dns";
+import { stat } from "fs";
 
 // TODO: test and clean up this mess; I was too tired on the first write
 type GameID = string;
@@ -71,7 +75,8 @@ export class GameManagerService {
           this.emitPlayerStateTo(gameID, player, state),
         () => this.endGame(gameID),
         // Here is where we can change game parameters per game
-        DefaultGameConstants
+        DefaultGameConstants,
+        (selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults) => this.pushToDatabase(gameID, selections, teamResults)
       ),
       gameID
     );
@@ -171,6 +176,80 @@ export class GameManagerService {
     }
     return undefined;
   }
+
+  private pushToDatabase(gameID: string, selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults) {
+    const managedGame = this.getGameById(gameID);
+    if (!managedGame) {
+      throw new Error(
+        `attempted to push to data base for gameID ${gameID}, but that is not a currently managed game`
+      )
+    }
+    const experimentTime = managedGame.gameCreationTime;
+    const game = managedGame.instance;
+    const players = game.players;
+    const activePlayersList = Array.from(managedGame.activePlayers.values());
+    const botMap = new Map<PlayerModel.Id, string>();
+    let botCount = 1;
+    for (let i = 0; i < activePlayersList.length; i++) {
+      if (!activePlayersList.includes(players[i])) {
+        botMap.set(players[i], "bot" + botCount);
+        botCount++;
+      } else {
+        botMap.set(players[i], "not bot");
+      }
+    }
+    
+    players.forEach(async (playerId) => {
+      let state = game.getState(playerId);
+
+      if (state.type == "game-one_state") {
+        await GameOneDataModel.create({
+          experimentID: managedGame.id,
+          experimentStartTime: experimentTime,
+          roundStartTime: state.roundStartTime,
+          roundEndTime: state.roundEndTime,
+          playerID: playerId,
+          turnNumber: state.round,
+          selectedIDOne: Array.from(<Set<PlayerModel.Id>>selections.get(playerId))[0] ? Array.from(<Set<PlayerModel.Id>>selections.get(playerId))[0] : "none",
+          selectedIDTwo: Array.from(<Set<PlayerModel.Id>>selections.get(playerId))[1] ? Array.from(<Set<PlayerModel.Id>>selections.get(playerId))[1] : "none",
+          madeByBot: botMap.get(playerId) == "not bot"? false : true,
+          oldLocation: state.bonusGroups[0].filter(player => player.id == playerId)[0].position,
+          newLocation: state.bonusGroups[state.bonusGroups.length - 1].filter(player => player.id == playerId)[0].position,
+          doubleBonusCount: state.bonusGroups.filter(group => {
+            group.filter(player => {
+              player.turnBonus != "double" && player.id == playerId
+            }).length > 0
+          }).length,
+          tripleBonusCount: state.bonusGroups.filter(group => {
+            group.filter(player => {
+              player.turnBonus != "triple" && player.id == playerId
+            }).length > 0
+          }).length,
+        })
+      } else if (state.type == "game-two_state") {
+        await GameTwoDataModel.create({
+          experimentID: managedGame.id,
+          experimentStartTime: experimentTime,
+          roundStartTime: state.roundStartTime,
+          roundEndTime: state.roundEndTime,
+          playerID: playerId,
+          turnNumber: state.round,
+          keepTokens: (<GameTwoModel.TokenDistribution> selections.get(playerId)!).keep,
+          investTokens: (<GameTwoModel.TokenDistribution> selections.get(playerId)!).invest,
+          competeTokens: (<GameTwoModel.TokenDistribution> selections.get(playerId)!).compete,
+          investPayoff: state.investCoefficient,
+          competePayoff: state.competeCoefficient,
+          madeByBot: botMap.get(playerId) == "not bot"? false : true,
+          teamKeepTotal: state.winners.includes(playerId) ? teamResults?.winnerTeam.totalTokenDistribution.keep : teamResults?.loserTeam.totalTokenDistribution.keep,
+          teamInvestTotal: state.winners.includes(playerId) ? teamResults?.winnerTeam.totalTokenDistribution.invest : teamResults?.loserTeam.totalTokenDistribution.invest,
+          teamCompeteTotal: state.winners.includes(playerId) ? teamResults?.winnerTeam.totalTokenDistribution.compete : teamResults?.loserTeam.totalTokenDistribution.compete,
+          teamInvestPayoff: state.winners.includes(playerId) ? teamResults?.winnerTeam.investBonus : teamResults?.loserTeam.investBonus,
+          teamCompetePenalty: state.winners.includes(playerId) ? teamResults?.winnerTeam.competePenalty : teamResults?.loserTeam.competePenalty,
+        })
+      }
+    })
+
+  }
 }
 
 export class ManagedGame {
@@ -178,6 +257,7 @@ export class ManagedGame {
   humanID: string;
   id: string;
   activePlayers: OneToOneMap<SocketID, PlayerModel.Id>;
+  gameCreationTime: string | Date;
 
   constructor(game: AGame, id: string) {
     this.instance = game;
@@ -185,6 +265,7 @@ export class ManagedGame {
     this.activePlayers = new OneToOneMap();
     // TODO: create human-readable ids
     this.humanID = "";
+    this.gameCreationTime = new Date();
   }
 }
 

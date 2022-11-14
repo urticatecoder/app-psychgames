@@ -1,0 +1,8 @@
+At the end of each turn, players move up or down the screen. 
+These movements aredetermined by:
+The amount of times the player has been chosen by other players.
+Cooperation bonuses (described in detail below), the player’s current position–
+players closer to the top will find it easier to move upward.
+Luck–sometimes you will travel greater distances upward.
+or downward, simply by chance.
+In this game, individuals who choose each other will tend to move up and perform better overall.

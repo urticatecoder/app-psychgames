@@ -1,5 +1,6 @@
 import { PLAYERS_PER_GAME } from "@dpg/constants";
-import { GameModel, PlayerModel } from "@dpg/types";
+import { GameModel, PlayerModel, GameTwoModel } from "@dpg/types";
+import { UnsupportedMediaTypeException } from "@nestjs/common";
 import { WsException } from "@nestjs/websockets";
 import { v4 as uuidv4 } from "uuid";
 import { GameConstants } from "../constants.js";
@@ -12,6 +13,8 @@ export abstract class AGame {
   abstract get playerMap(): Map<PlayerModel.Id, GameModel.Player>;
 
   abstract getState(player: PlayerModel.Id): GameModel.State;
+
+  abstract pushToDatabase(selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults): void;
 
   abstract submitAction(
     playerID: PlayerModel.Id,
@@ -36,7 +39,8 @@ export class Game extends AGame {
       state: GameModel.State
     ) => void,
     private destroyGame: () => void,
-    public constants: GameConstants
+    public constants: GameConstants,
+    public databaseStoreCallback: (selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults) => void
   ) {
     super();
     /**
@@ -84,8 +88,11 @@ export class Game extends AGame {
   }
 
   submitAction(playerID: PlayerModel.Id, action: GameModel.Action): void {
-    // TODO: validate playerID
-    // TODO: validate action data
+    // validate playerID
+    if (!this.playerMap.has(playerID)) {
+      throw new Error(`Tried to submit action for player ${playerID} but that player is not in this game.`)
+    }
+    // Action data validation is handled in the current game submitAction method
     this.currentGame.submitAction(playerID, action);
   }
 
@@ -99,6 +106,10 @@ export class Game extends AGame {
 
   get playerData(): GameModel.Player[] {
     return [...this.playerMap.values()];
+  }
+
+  pushToDatabase(selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults) {
+    this.databaseStoreCallback(selections, teamResults);
   }
 
   emitState() {
@@ -128,9 +139,9 @@ export class Game extends AGame {
 }
 
 export class GameError extends WsException {
-  playerID: PlayerModel.Id;
+  private playerID: PlayerModel.Id;
 
-  constructor(message: string, playerId: PlayerModel.Id) {
+  constructor(message: string, playerId: string) {
     super(`${playerId}: ${message}`);
     this.playerID = playerId;
   }

@@ -1,5 +1,5 @@
 import { AppEvents, PLAYERS_PER_GAME } from "@dpg/constants";
-import { GameModel, PlayerModel } from "@dpg/types";
+import { GameModel, PlayerModel, GameTwoModel } from "@dpg/types";
 import { Test, TestingModule } from "@nestjs/testing";
 import { Server } from "socket.io";
 import { GameFactory } from "../game-factory/game-factory.js";
@@ -25,11 +25,12 @@ describe("GameManagerService", () => {
       create: (
         emitState: (player: PlayerModel.Id, state: GameModel.State) => void,
         endGame: () => void,
-        constants: GameConstants
+        constants: GameConstants,
+        databaseStore: (selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults) => void
       ) => {
         emitCallback = emitState;
         endCallback = endGame;
-        return new Game(emitState, endGame, constants);
+        return new Game(emitState, endGame, constants, databaseStore);
       },
     };
 

@@ -1,9 +1,10 @@
 import { GameTwoModel, PlayerModel } from "@dpg/types";
 import { getRandomItem } from "@dpg/utils";
-import { AGame, GameError, GameInstance } from "./game.js";
+import { AGame, GameInstance, GameError } from "./game.js";
 
 type Selections = Map<PlayerModel.Id, GameTwoModel.TokenDistribution>;
 type PlayerResults = Map<PlayerModel.Id, GameTwoModel.PlayerResults>;
+
 export class GameTwo implements GameInstance {
   public state: GameTwoModel.State;
   public playerResults?: PlayerResults;
@@ -17,6 +18,7 @@ export class GameTwo implements GameInstance {
   ) {
     this.selections = new Map();
     this.state = this.createInitialState(losers, winners);
+    this.beginRound();
   }
 
   getState(player: PlayerModel.Id): GameTwoModel.PlayerState {
@@ -32,6 +34,10 @@ export class GameTwo implements GameInstance {
 
   private get constants() {
     return this.game.constants.gameTwo;
+  }
+  
+  public getSelections(): Selections {
+    return this.selections;
   }
 
   submitAction(playerId: string, action: GameTwoModel.Turn): void {
@@ -61,7 +67,6 @@ export class GameTwo implements GameInstance {
     }
 
     // The submitted number of tokens must be <= the tokens given per round
-    // TODO: Validate that each token value is positive
     const numTokens =
       action.tokenDistribution.compete +
       action.tokenDistribution.invest +
@@ -128,6 +133,12 @@ export class GameTwo implements GameInstance {
     }
     const teamResults = calculateTeamResults(this.state, this.selections);
     const playerResults = this.calculatePlayerResults(teamResults);
+
+    // This is called before state is updated here because when state is updated the invest and compete
+    // coefficients are reset to new random values. Since they need to be stored, I push to the database
+    // before the state update, and I also have to pass teamResults since it hasn't been added to state
+    // yet.
+    this.game.pushToDatabase(this.selections, teamResults);
 
     this.state = {
       ...this.state,
@@ -250,8 +261,7 @@ function calculateTeamResults(
     loserTeam: {
       totalTokenDistribution: loserTokenDistribution,
       investBonus: loserTokenDistribution.invest * state.investCoefficient,
-      competePenalty:
-        winnerTokenDistribution.compete * state.competeCoefficient,
+      competePenalty: winnerTokenDistribution.compete * state.competeCoefficient,
     },
   };
 }
@@ -280,3 +290,5 @@ function calculateTeamTokenDistribution(
     keep: totalKeepTokens,
   };
 }
+
+

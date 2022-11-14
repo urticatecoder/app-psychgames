@@ -45,6 +45,7 @@ export class GameOne implements GameInstance {
   }
 
   submitAction(playerId: string, action: GameOneModel.Turn): void {
+    // Add database stuff here to store current selections before they are updated/overriden
     this.validateAction(playerId, action);
     this.selections.set(playerId, new Set(action.playersSelected));
   }
@@ -159,6 +160,8 @@ export class GameOne implements GameInstance {
       round: this.state.round + 1,
       bonusGroups,
     };
+
+    this.game.pushToDatabase(this.selections);
 
     if (this.isGameOver()) {
       this.endGame();
@@ -278,7 +281,8 @@ function makeBonusGroups(
     return selectionGroups.map((group) =>
       group.map((id) => {
         const currentPosition = getCurrentPosition(id, currentPositions);
-        const newPosition = currentPosition + bonusFn(round, currentPosition);
+        const previousPosition = getPreviousPosition(id, previousPositions);
+        const newPosition = currentPosition + bonusFn(round, previousPosition);
         const displayedPosition = limitPosition(newPosition);
         currentPositions.set(id, newPosition);
 
@@ -380,6 +384,19 @@ function getCurrentPosition(
   return position;
 }
 
+function getPreviousPosition(
+  id: PlayerModel.Id,
+  previousPositions: GameOneModel.PlayerPosition[]
+) {
+  for (let i = 0; i < previousPositions.length; i++) {
+    if (previousPositions[i].id == id) {
+      return previousPositions[i].position;
+    }
+  }
+
+  throw new Error(`Player ${id} not found in previous positions`);
+}
+
 function limit(num: number, lim1: number, lim2: number) {
   const max = Math.max(lim1, lim2);
   const min = Math.min(lim1, lim2);
@@ -395,6 +412,8 @@ function limitPosition(position: number) {
 // theoretically write an algorithm that detects complete graphs of a specific
 // size? Yes. Am I going to do that? No. You can blame me when this is used for
 // some experiment that wants to do larger games and you have to rewrite this.
+
+// This returns an array of arrays of length 2; it contains the doubles formed from selections.
 function makeDoubleGroups(selections: Selections) {
   const doubleGroups: PlayerModel.Id[][] = [];
 
@@ -420,6 +439,7 @@ function makeDoubleGroups(selections: Selections) {
   return doubleGroups;
 }
 
+// This returns an array of arrays of length 3; it contains the triples formed from selections.
 function makeTripleGroups(selections: Selections) {
   const tripleGroups: PlayerModel.Id[][] = [];
 
@@ -451,6 +471,8 @@ function makeTripleGroups(selections: Selections) {
   return tripleGroups;
 }
 
+// This function returns a map whose keys are all the players that were selected,
+// and whose values are the number of times they were selected.
 function countSingleSelections(selections: Selections) {
   const singleSelectionMap = new Map<PlayerModel.Id, number>();
 
@@ -459,7 +481,7 @@ function countSingleSelections(selections: Selections) {
       // increment the count of the player selected
       singleSelectionMap.set(
         playerSelected,
-        singleSelectionMap.get(playerSelected) ?? 0 + 1
+        (singleSelectionMap.get(playerSelected) ?? 0) + 1
       );
     });
   });
