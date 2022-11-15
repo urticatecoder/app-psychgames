@@ -27,7 +27,9 @@ export namespace GameModel {
   export type GameState =
     | LobbyModel.State
     | GameOneModel.State
-    | GameTwoModel.State;
+    | GameTwoModel.State
+    | GameOneTutorialModel.State
+    | GameTwoTutorialModel.State;
 
   /**
    * Encodes the entire game state; the client should render
@@ -52,6 +54,22 @@ export namespace LobbyModel {
     type: "lobby";
     lobbyEndTime: Date | string;
   };
+}
+
+export namespace GameOneTutorialModel {
+  export type State = {
+    type: "game-one-tutorial";
+    tutorialEndTime: Date | string;
+  }
+}
+
+export namespace GameTwoTutorialModel {
+  export type State = {
+    type: "game-two-tutorial";
+    tutorialEndTime: Date | string;
+    winners: PlayerModel.Id[];
+    losers: PlayerModel.Id[];
+  }
 }
 
 export namespace GameOneModel {

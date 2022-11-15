@@ -3,6 +3,8 @@
  */
 export type GameConstants = {
   lobbyTime: number;
+  gameOneTutorialTime: number;
+  gameTwoTutorialTime: number;
   gameOne: GameOneConstants;
   gameTwo: GameTwoConstants;
 };
@@ -41,6 +43,8 @@ const s = 1000;
 
 export const DefaultGameConstants: GameConstants = {
   lobbyTime: 120 * s,
+  gameOneTutorialTime: 120 * s,
+  gameTwoTutorialTime: 195 * s,
   gameOne: {
     // TODO: change these to something sensible
     roundTime: (round: number) => {

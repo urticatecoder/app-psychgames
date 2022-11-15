@@ -1,7 +1,7 @@
 import { GameModel, GameOneModel, PlayerModel } from "@dpg/types";
 import { GameOneConstants } from "../constants.js";
 import { AGame, GameError, GameInstance } from "./game.js";
-import { GameTwo } from "./game-two.js";
+import { GameTwoTutorial } from "./game-two-tutorial.js";
 import { getRandomItem } from "@dpg/utils";
 
 // These constants are here for readability, but modifying them
@@ -225,7 +225,7 @@ export class GameOne implements GameInstance {
       .slice(sortedPositions.length / 2)
       .map((pos) => pos.id);
 
-    this.game.goToGame(new GameTwo(this.game, losers, winners));
+    this.game.goToGame(new GameTwoTutorial(this.game, losers, winners));
   }
 }
 

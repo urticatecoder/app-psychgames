@@ -1,5 +1,5 @@
 import { GameModel, LobbyModel, PlayerModel } from "@dpg/types";
-import { GameOne } from "./game-one.js";
+import { GameOneTutorial } from "./game-one-tutorial.js";
 import { AGame, GameInstance } from "./game.js";
 
 export class Lobby implements GameInstance {
@@ -14,7 +14,7 @@ export class Lobby implements GameInstance {
     };
 
     setTimeout(
-      () => this.game.goToGame(new GameOne(this.game)),
+      () => this.game.goToGame(new GameOneTutorial(this.game)),
       game.constants.lobbyTime
     );
   }
