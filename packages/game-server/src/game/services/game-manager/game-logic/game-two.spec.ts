@@ -278,6 +278,26 @@ describe("game 2", () => {
             jest.runOnlyPendingTimers();
 
             expect(verifyPlayerResults(gameTwo, actionList)).toEqual(true);
-        });  
+        });
+
+        it("pushes to the database", () => {
+            let firstAction = buildAction(buildRandomTokenDistribution());
+            let secondAction = buildAction(buildRandomTokenDistribution());
+            let thirdAction = buildAction(buildRandomTokenDistribution());
+            let fourthAction = buildAction(buildRandomTokenDistribution());
+            let fifthAction = buildAction(buildRandomTokenDistribution());
+            let sixthAction = buildAction(buildRandomTokenDistribution());
+
+            gameTwo.submitAction(winners[0], firstAction);
+            gameTwo.submitAction(winners[1], secondAction);
+            gameTwo.submitAction(winners[2], thirdAction);
+            gameTwo.submitAction(losers[0], fourthAction);
+            gameTwo.submitAction(losers[1], fifthAction);
+            gameTwo.submitAction(losers[2], sixthAction);
+
+            jest.runOnlyPendingTimers();
+
+            expect(game.pushToDatabase).toHaveBeenCalledWith(gameTwo.getSelections(), gameTwo.state.teamResults, gameTwo.receiptRoundNumber);
+        })
     })
 });
