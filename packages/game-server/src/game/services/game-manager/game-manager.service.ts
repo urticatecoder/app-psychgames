@@ -76,7 +76,9 @@ export class GameManagerService {
         () => this.endGame(gameID),
         // Here is where we can change game parameters per game
         DefaultGameConstants,
-        (selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: Number) => this.pushToDatabase(gameID, selections, teamResults, receiptTurnNumber)
+        (selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) => 
+          this.pushToDatabase(gameID, selections, teamResults, receiptTurnNumber),
+        (inactivePlayersList: PlayerModel.Id[]) => this.handleBots(gameID, inactivePlayersList)
       ),
       gameID
     );
@@ -177,7 +179,11 @@ export class GameManagerService {
     return undefined;
   }
 
-  private pushToDatabase(gameID: string, selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: Number) {
+  private handleBots(gameID: string, inactivePlayersList: PlayerModel.Id[]) {
+    // Handle inactive players and reset active ones
+  }
+
+  private pushToDatabase(gameID: string, selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) {
     const managedGame = this.getGameById(gameID);
     if (!managedGame) {
       throw new Error(
@@ -256,9 +262,10 @@ export class GameManagerService {
 export class ManagedGame {
   instance: AGame;
   humanID: string;
+  gameCreationTime: string | Date;
   id: string;
   activePlayers: OneToOneMap<SocketID, PlayerModel.Id>;
-  gameCreationTime: string | Date;
+  inactivityMap: Map<PlayerModel.Id, Number>; // Tracks the number of consecutive rounds each player has been inactive
 
   constructor(game: AGame, id: string) {
     this.instance = game;
@@ -267,6 +274,14 @@ export class ManagedGame {
     // TODO: create human-readable ids
     this.humanID = "";
     this.gameCreationTime = new Date();
+    this.inactivityMap = new Map<PlayerModel.Id, number>();
+    this.initializeInactivityMap();
+  }
+
+  private initializeInactivityMap() {
+    this.instance.players.forEach((playerId) => {
+      this.inactivityMap.set(playerId, 0);
+    });
   }
 }
 

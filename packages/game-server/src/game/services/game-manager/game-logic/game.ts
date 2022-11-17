@@ -14,7 +14,9 @@ export abstract class AGame {
 
   abstract getState(player: PlayerModel.Id): GameModel.State;
 
-  abstract pushToDatabase(selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: Number): void;
+  abstract pushToDatabase(selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number): void;
+  
+  abstract handleBots(inactivePlayersList: PlayerModel.Id[]): void;
 
   abstract submitAction(
     playerID: PlayerModel.Id,
@@ -40,7 +42,8 @@ export class Game extends AGame {
     ) => void,
     private destroyGame: () => void,
     public constants: GameConstants,
-    public databaseStoreCallback: (selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: Number) => void
+    public databaseStoreCallback: (selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) => void,
+    public handleBotsCallback: (inactivePlayersList: PlayerModel.Id[]) => void
   ) {
     super();
     /**
@@ -108,7 +111,7 @@ export class Game extends AGame {
     return [...this.playerMap.values()];
   }
 
-  pushToDatabase(selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: Number) {
+  pushToDatabase(selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) {
     this.databaseStoreCallback(selections, teamResults, receiptTurnNumber);
   }
 
@@ -125,6 +128,10 @@ export class Game extends AGame {
   endGame() {
     // TODO: do cleanup, database stuff, etc. here
     this.destroyGame();
+  }
+
+  handleBots(inactivePlayersList: PlayerModel.Id[]) {
+    this.handleBotsCallback(inactivePlayersList);
   }
 
   private makeState(gameState: GameModel.GameState) {
