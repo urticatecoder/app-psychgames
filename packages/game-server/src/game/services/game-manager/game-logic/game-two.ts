@@ -1,5 +1,6 @@
 import { GameTwoModel, PlayerModel } from "@dpg/types";
 import { getRandomItem } from "@dpg/utils";
+import { FinalResults } from "./final-results.js";
 import { AGame, GameInstance, GameError } from "./game.js";
 
 type Selections = Map<PlayerModel.Id, GameTwoModel.TokenDistribution>;
@@ -8,6 +9,8 @@ type PlayerResults = Map<PlayerModel.Id, GameTwoModel.PlayerResults>;
 export class GameTwo implements GameInstance {
   public state: GameTwoModel.State;
   public playerResults?: PlayerResults;
+  public finalPlayerResults?: PlayerResults;
+  public receiptRoundNumber: Number;
   private selections: Selections;
   private roundTimeout: NodeJS.Timeout | undefined;
 
@@ -17,6 +20,7 @@ export class GameTwo implements GameInstance {
     winners: PlayerModel.Id[]
   ) {
     this.selections = new Map();
+    this.receiptRoundNumber = Math.floor(Math.random() * (this.game.constants.gameTwo.maxRounds - 1)) + 1;
     this.state = this.createInitialState(losers, winners);
     this.beginRound();
   }
@@ -138,7 +142,11 @@ export class GameTwo implements GameInstance {
     // coefficients are reset to new random values. Since they need to be stored, I push to the database
     // before the state update, and I also have to pass teamResults since it hasn't been added to state
     // yet.
-    this.game.pushToDatabase(this.selections, teamResults);
+    this.game.pushToDatabase(this.selections, teamResults, this.receiptRoundNumber);
+
+    if (this.state.round == this.receiptRoundNumber) {
+      this.finalPlayerResults = playerResults;
+    }
 
     this.state = {
       ...this.state,
@@ -226,7 +234,7 @@ export class GameTwo implements GameInstance {
   }
 
   private endGame() {
-    this.game.endGame();
+    this.game.goToGame(new FinalResults(this.game, this.finalPlayerResults!));
   }
 }
 

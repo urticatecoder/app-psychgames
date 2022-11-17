@@ -10,7 +10,7 @@ export class GameFactoryService extends GameFactory {
     emitState: (player: PlayerModel.Id, state: GameModel.State) => void,
     endGame: () => void,
     constants: GameConstants,
-    databaseStoreCallback: (selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>) => void
+    databaseStoreCallback: (selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: Number) => void
   ): Game {
     return new Game(emitState, endGame, constants, databaseStoreCallback);
   }

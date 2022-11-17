@@ -76,7 +76,7 @@ export class GameManagerService {
         () => this.endGame(gameID),
         // Here is where we can change game parameters per game
         DefaultGameConstants,
-        (selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults) => this.pushToDatabase(gameID, selections, teamResults)
+        (selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: Number) => this.pushToDatabase(gameID, selections, teamResults, receiptTurnNumber)
       ),
       gameID
     );
@@ -177,7 +177,7 @@ export class GameManagerService {
     return undefined;
   }
 
-  private pushToDatabase(gameID: string, selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults) {
+  private pushToDatabase(gameID: string, selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: Number) {
     const managedGame = this.getGameById(gameID);
     if (!managedGame) {
       throw new Error(
@@ -240,6 +240,7 @@ export class GameManagerService {
           investPayoff: state.investCoefficient,
           competePayoff: state.competeCoefficient,
           madeByBot: botMap.get(playerId) == "not bot"? false : true,
+          receiptTurnNum: receiptTurnNumber,
           teamKeepTotal: state.winners.includes(playerId) ? teamResults?.winnerTeam.totalTokenDistribution.keep : teamResults?.loserTeam.totalTokenDistribution.keep,
           teamInvestTotal: state.winners.includes(playerId) ? teamResults?.winnerTeam.totalTokenDistribution.invest : teamResults?.loserTeam.totalTokenDistribution.invest,
           teamCompeteTotal: state.winners.includes(playerId) ? teamResults?.winnerTeam.totalTokenDistribution.compete : teamResults?.loserTeam.totalTokenDistribution.compete,

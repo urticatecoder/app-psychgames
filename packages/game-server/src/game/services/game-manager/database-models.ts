@@ -36,7 +36,7 @@ const gameTwoSchema = new mongoose.Schema({
     investPayoff: Number,
     competePayoff: Number,
     madeByBot: Boolean,
-    //receiptTurnNum: Number,
+    receiptTurnNum: Number,
     teamKeepTotal: Number,
     teamInvestTotal: Number,
     teamCompeteTotal: Number,
