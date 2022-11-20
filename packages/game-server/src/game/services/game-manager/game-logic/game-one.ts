@@ -37,7 +37,6 @@ export class GameOne implements GameInstance {
   constructor(private game: AGame) {
     this.selections = new Map();
     this.state = this.createInitialState();
-    this.beginRound();
   }
 
   getState(player: PlayerModel.Id): GameModel.GameState {
@@ -123,7 +122,7 @@ export class GameOne implements GameInstance {
   }
 
   // TODO: Factor out this common pattern
-  private beginRound() {
+  public beginRound() {
     const roundStartTime = new Date();
     const roundEndTime = new Date(
       roundStartTime.getTime() + this.constants.roundTime(this.state.round)
@@ -180,12 +179,16 @@ export class GameOne implements GameInstance {
    * TODO: Factor out this common functionality
    */
   private handleInactivePlayers() {
+    let inactivePlayers: PlayerModel.Id[] = [];
+
     this.game.players.forEach((player) => {
       if (!this.selections.has(player)) {
         this.performBotMove(player);
-        // TODO: GameManager integration here
+        inactivePlayers.push(player);
       }
     });
+
+    this.game.handleBots(inactivePlayers);
   }
 
   private performBotMove(player: PlayerModel.Id) {

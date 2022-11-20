@@ -10,7 +10,7 @@ export class GameTwo implements GameInstance {
   public state: GameTwoModel.State;
   public playerResults?: PlayerResults;
   public finalPlayerResults?: PlayerResults;
-  public receiptRoundNumber: Number;
+  public receiptRoundNumber: number;
   private selections: Selections;
   private roundTimeout: NodeJS.Timeout | undefined;
 
@@ -22,7 +22,6 @@ export class GameTwo implements GameInstance {
     this.selections = new Map();
     this.receiptRoundNumber = Math.floor(Math.random() * (this.game.constants.gameTwo.maxRounds - 1)) + 1;
     this.state = this.createInitialState(losers, winners);
-    this.beginRound();
   }
 
   getState(player: PlayerModel.Id): GameTwoModel.PlayerState {
@@ -53,20 +52,18 @@ export class GameTwo implements GameInstance {
     // The action should be of the correct type
     // TODO: Factor out this common validation
     if (action.type != "game-two_turn") {
-      throw new GameError(
-        `The action type ${action.type} does not match the expected type game-two_turn`,
-        playerId
+      throw new Error(
+        `The action type ${action.type} does not match the expected type game-two_turn`
       );
     }
 
     // The action must be for the current round
     // TODO: Factor out this common validation
     if (action.round !== this.state.round) {
-      throw new GameError(
+      throw new Error(
         `Expected an action for round ${this.state.round}, recieved ${action.round}. 
         This may be because you submitted an action just as the round advanced, 
-        in which case this error is safe.`,
-        playerId
+        in which case this error is safe.`
       );
     }
 
@@ -76,10 +73,9 @@ export class GameTwo implements GameInstance {
       action.tokenDistribution.invest +
       action.tokenDistribution.keep;
     if (numTokens > this.constants.tokensPerRound) {
-      throw new GameError(
+      throw new Error(
         `The number of submitted tokens ${numTokens} is greater than the maximum 
-        number of tokens per round, ${this.constants.tokensPerRound}`,
-        playerId
+        number of tokens per round, ${this.constants.tokensPerRound}`
       );
     }
   }
@@ -109,7 +105,7 @@ export class GameTwo implements GameInstance {
   }
 
   // TODO: Factor out this common pattern
-  private beginRound() {
+  public beginRound() {
     const roundStartTime = new Date();
     const roundEndTime = new Date(
       roundStartTime.getTime() + this.constants.roundTime(this.state.round)
@@ -196,12 +192,16 @@ export class GameTwo implements GameInstance {
    * TODO: Factor out this common functionality
    */
   private handleInactivePlayers() {
+    let inactivePlayers: PlayerModel.Id[] = [];
+
     this.game.players.forEach((player) => {
       if (!this.selections.has(player)) {
         this.performBotMove(player);
-        // TODO: GameManager integration here
+        inactivePlayers.push(player);
       }
     });
+
+    this.game.handleBots(inactivePlayers);
   }
 
   private performBotMove(player: PlayerModel.Id) {

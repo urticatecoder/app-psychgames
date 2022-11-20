@@ -154,6 +154,19 @@ export class GameManagerService {
     return undefined;
   }
 
+  private getPlayerSocket(gameId: string, playerId: PlayerModel.Id): SocketID | undefined {
+    let game = this.getGameById(gameId);
+    let sockets = game?.activePlayers.keys();
+    
+    for (const key of sockets!) {
+      if (game?.activePlayers.get(key) == playerId) {
+        return key;
+      }
+    }
+
+    return undefined;
+  }
+
   private addPlayerToGame(
     socketID: SocketID,
     playerID: PlayerModel.Id,
@@ -180,7 +193,33 @@ export class GameManagerService {
   }
 
   private handleBots(gameID: string, inactivePlayersList: PlayerModel.Id[]) {
-    // Handle inactive players and reset active ones
+    let managedGame = this.getGameById(gameID);
+
+    if (!managedGame) {
+      throw new Error(`Couldn't find managed game with ID ${gameID}`);
+    }
+
+    let game = managedGame.instance;
+    let activePlayersList = game.players.filter((player) => {
+      !inactivePlayersList.includes(player);
+    });
+
+    for (let i = 0; i < activePlayersList.length; i++) {
+      managedGame.inactivityMap.set(activePlayersList[i], 0);
+    }
+
+    for (let i = 0; i < inactivePlayersList.length; i++) {
+      let inactiveRounds = managedGame.inactivityMap.get(inactivePlayersList[i])!;
+      managedGame.inactivityMap.set(inactivePlayersList[i], inactiveRounds + 1);
+
+      // Kick the player if they were inactive for more than 5 (consecutive) rounds and are not already a bot.
+      if (managedGame.activePlayers.has(inactivePlayersList[i]) && inactiveRounds + 1 > 5) {
+        let socketId = this.getPlayerSocket(gameID, inactivePlayersList[i]);
+        let socket = this.server?.sockets.sockets.get(<string> socketId);
+        socket?.disconnect();
+        this.discardSocket(<string> socketId);
+      }
+    }
   }
 
   private pushToDatabase(gameID: string, selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) {
@@ -265,7 +304,7 @@ export class ManagedGame {
   gameCreationTime: string | Date;
   id: string;
   activePlayers: OneToOneMap<SocketID, PlayerModel.Id>;
-  inactivityMap: Map<PlayerModel.Id, Number>; // Tracks the number of consecutive rounds each player has been inactive
+  inactivityMap: Map<PlayerModel.Id, number>; // Tracks the number of consecutive rounds each player has been inactive
 
   constructor(game: AGame, id: string) {
     this.instance = game;

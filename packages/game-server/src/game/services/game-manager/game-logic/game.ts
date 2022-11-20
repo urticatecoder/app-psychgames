@@ -5,6 +5,8 @@ import { WsException } from "@nestjs/websockets";
 import { v4 as uuidv4 } from "uuid";
 import { GameConstants } from "../constants.js";
 import { Lobby } from "./lobby.js";
+import { GameOne } from "./game-one.js";
+import { GameTwo } from "./game-two.js";
 
 export abstract class AGame {
   abstract get constants(): GameConstants;
@@ -88,6 +90,9 @@ export class Game extends AGame {
 
   goToGame(game: GameInstance): void {
     this.currentGame = game;
+    if (this.currentGame instanceof GameOne || this.currentGame instanceof GameTwo) { 
+      this.currentGame.beginRound();
+    }
   }
 
   submitAction(playerID: PlayerModel.Id, action: GameModel.Action): void {
