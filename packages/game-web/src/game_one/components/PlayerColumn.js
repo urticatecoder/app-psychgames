@@ -35,37 +35,19 @@ function PlayerColumn(props) {
   let doAnimate = props.doAnimate;
 
   useEffect(() => {
-    console.log("do animate state change");
     if (doAnimate === true) {
       setAnimation(1);
     }
     const timer = setTimeout(() => {
       setAnimation(0);
-    }, 1500);
-  }, [doAnimate]);
+    }, 1000);
+  }, [props.doAnimate]);
 
-  const size = getSize(props.windowWidth) * 0.8;
+  var size = getSize(props.windowWidth) * 0.8;
+  var height = props.windowHeight * 72 / 100;
 
   return (
-    // <div className="lane-bg-container">
-    //   <div className="lane-bg" style={{backgroundSize: size, width: size}} animation={animation}></div>
-    //   <animated.div className="player-icon" style={{ ...spring, display: IN_LINE}}>
-    //     <PlayerButton
-    //       player={props.player}
-    //       onSelect={props.onSelect}
-    //       double={props.double}
-    //       triple={props.triple}
-    //       selected={props.selected}
-    //       disabled={props.disabled}
-    //       selectedIndex={props.selectedIndex}
-    //       windowWidth={props.windowWidth}
-    //       frontendIndex={props.frontendIndex}
-    //     />
-    //   </animated.div>
-    // </div>
-
-
-    <div className="lane-bg-container">
+    <div className="lane-bg-container" style={{height:height}}>
       <div className="lane-bg" style={{backgroundSize: size, width: size}} animation={animation}></div>
       <animated.div className="player-icon" style={{ ...spring, display: IN_LINE}}>
         <PlayerButton
