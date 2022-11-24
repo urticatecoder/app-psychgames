@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import MainAvatar from '../../lobby/MainAvatar';
 import TutorialScreen from '../../tutorials/TutorialScreen';
 import IntroTimer from "../../util/components/IntroTimer";
+import Routes from '../../util/constants/routes';
+import { withRouter } from "react-router-dom";
 
 const SHOW_TUTORIAL = true;
 
@@ -28,6 +30,10 @@ function GameOneIntro(props) {
 
   const [showTutorial, setShowTutorial] = useState(SHOW_TUTORIAL);
 
+  if (!props.currentState) {
+    props.history.push(Routes.LOGIN);
+    return (<div></div>);
+  }
   let tutorialScreen = getTutorial(setShowTutorial);
   let avatarScreen = getMainAvatar(props);
   var display = showTutorial ? tutorialScreen : avatarScreen;
@@ -46,6 +52,7 @@ function GameOneIntro(props) {
           message={TIMER_MESSAGE}
           length={INTRO_LENGTH}
           nextRoute={GAME_ONE_ROUTE}
+          currentState={props.currentState}
         />
         {display}
       </div>);
@@ -74,4 +81,4 @@ function getTutorial(setShowTutorial) {
     );
 }
 
-export default (GameOneIntro);
+export default withRouter(GameOneIntro);
