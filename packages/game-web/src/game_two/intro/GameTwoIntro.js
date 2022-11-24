@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import TutorialScreen from '../../tutorials/TutorialScreen';
 import IntroTimer from "../../util/components/IntroTimer";
 import Summary from '../../game_one/summary/Summary';
+import Routes from '../../util/constants/routes';
+import { withRouter } from "react-router-dom";
 
 const SHOW_TUTORIAL = true;
 
@@ -30,7 +32,12 @@ function GameTwoIntro(props) {
 
   const [showTutorial, setShowTutorial] = useState(HIDE_TUTORIAL);
 
-  let tutorialScreen = getTutorial();
+  if (!props.currentState) {
+    props.history.push(Routes.LOGIN);
+    return (<div></div>);
+  }
+
+  let tutorialScreen = getTutorial(props);
   let summaryScreen = getSummary(props);
 
   var display = showTutorial ? tutorialScreen : summaryScreen;
@@ -48,6 +55,7 @@ function GameTwoIntro(props) {
           // length={TIMER_LENGTH}
           length={TIMER_LENGTH}
           nextRoute={GAME_TWO_ROUTE}
+          currentState={props.currentState}
         />
         {display}
       </div>);
@@ -56,17 +64,17 @@ function GameTwoIntro(props) {
 function getSummary(props) {
     return(
         <Summary
-          winners={props.winners}
+          // winners={props.winners}
           selectedIndex={props.selectedIndex}
-          losers={props.losers}
+          // losers={props.losers}
           allLoginCodes={props.allLoginCodes}
-          selectedIndex={props.selectedIndex}
           frontendIndex={props.frontendIndex}
+          currentState={props.currentState}
         />
     );
 }
 
-function getTutorial() {
+function getTutorial(props) {
     return(
         <TutorialScreen
             URL={GAME_TWO_TUTORIAL_FILEPATH}
@@ -74,8 +82,9 @@ function getTutorial() {
             initialPause={500}
             videoLength={GAME_TWO_TUTORIAL_LENGTH}
             text={GAME_TWO_TUTORIAL_TEXT}
+            currentState={props.currentState}
         />
     );
 }
 
-export default (GameTwoIntro);
+export default withRouter(GameTwoIntro);
