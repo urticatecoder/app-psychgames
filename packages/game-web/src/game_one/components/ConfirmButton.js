@@ -79,6 +79,7 @@ function getMarginLeft(windowWidth) {
 }
 
 function sendDecisions(props) {
+  props.setMadeMove(true);
   console.log("send decision");
   if (props.id != null) {
     const selectedIds = [];
@@ -87,7 +88,11 @@ function sendDecisions(props) {
         selectedIds.push(props.currentState.bonusGroups[0][i].id);
       }
     }
-    socket.emit("game-one_turn", selectedIds);
+    const gameOneTurn = {
+      type: "game-one_turn",
+      playersSelected: selectedIds
+    }
+    socket.emit("game-action", gameOneTurn);
     props.clearSelected();
     props.clearSubmission();
   }
