@@ -79,21 +79,22 @@ function getMarginLeft(windowWidth) {
 
 function sendDecisions(props) {
   if (props.id != null) {
-      const competeCount = props.resources[COMPETE_INDEX];
-      const investCount = props.resources[INVEST_INDEX];
-      const keepCount = props.resources[KEEP_INDEX];
-      const gameTwoTurnRequest = {
-        type: "game-two_turn",
-        tokenDistribution: {
-          compete: competeCount,
-          invest: investCount,
-          keep: keepCount
-        }
-      };
-      console.log("client send game two request: ", gameTwoTurnRequest);
-      socket.emit("game-two_turn", gameTwoTurnRequest);
-      props.clearSelected();
-      props.clearSubmission();
+    props.setMadeMove(true);
+    const competeCount = props.resources[COMPETE_INDEX];
+    const investCount = props.resources[INVEST_INDEX];
+    const keepCount = props.resources[KEEP_INDEX];
+    const gameTwoTurnRequest = {
+      type: "game-two_turn",
+      tokenDistribution: {
+        compete: competeCount,
+        invest: investCount,
+        keep: keepCount
+      }
+    };
+    console.log("client send game two request: ", gameTwoTurnRequest);
+    socket.emit("game-action", gameTwoTurnRequest);
+    props.clearSelected();
+    props.clearSubmission();
   }
 
   // if (props.loginCode != null) {
