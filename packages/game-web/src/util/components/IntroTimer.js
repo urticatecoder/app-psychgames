@@ -41,17 +41,22 @@ const styles = {
 function IntroTimer(props) {
   const { classes } = props;
 
+  const gameOneIntroEndTime = Date.parse(props.currentState.tutorialEndTime);
+  const time = new Date();
+  const timeToEnd = gameOneIntroEndTime - time.getTime();
+  // const timeToEnd = 200000;
+
   return (
     <div className={classes.timerInstruction}>
       <Timer
-        initialTime={props.length}
+        initialTime={timeToEnd}
         lastUnit={LAST_TIME_UNIT}
         direction={TIME_DIRECTION}
         timeToUpdate={TIMER_UPDATE}
         checkpoints={[
           {
             time: TIME_OVER,
-            callback: () => moveToGame(props),
+            // callback: () => moveToGame(props),
           },
         ]}
       >
