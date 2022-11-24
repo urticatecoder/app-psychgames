@@ -139,6 +139,8 @@ function GameOne(props) {
     const [bonusType, setBonusType] = useState(DOUBLE_BONUS);
     const [openBonusShower, setOpenBonusShower] = useState(CLOSED);
 
+    const [madeMove, setMadeMove] = useState(true);
+
     if (!props.currentState) {
         props.history.push(Routes.LOGIN);
         return (<div></div>);
@@ -146,13 +148,33 @@ function GameOne(props) {
 
     // const roundLength = props.currentState.roundEndTime - props.currentState.roundStartTime;
     const roundEndTime = Date.parse(props.currentState.roundEndTime);
+    
     // console.log("round end time: ", roundEndTime);
     const time = new Date();
     // console.log("current time: ", time.getTime());
     const roundLength = roundEndTime - time.getTime();
+    // console.log("round length: ", roundLength);
+
+    useEffect(() => {
+        console.log("selected self changed to: ", selectedSelf);
+    }, [selectedSelf]);
+
+    useEffect(() => {
+        console.log("made move: ", madeMove);
+    }, [madeMove]);
   
     useEffect(() => {
+        if (props.currentState.type != "game-one_state") {
+            return;
+        }
         console.log("game one state: ", props.currentState);
+
+        if (!madeMove) {
+            console.log("didn't make move");
+            props.setPassiveDialogueOpen(true);
+        }
+
+        setMadeMove(false);
 
         const ids = [];
         for (var i = 0; i < props.playerData.length; i++) {
@@ -298,12 +320,12 @@ function GameOne(props) {
             let scaledNewHeights = finalHeights;
             updateHeightsDelayed(
                 setCurrentHeight,
-                posAfterDouble,
+                posAfterSingle,
                 scaledNewHeights,
                 setStartHeights,
                 setEndHeights,
                 allBonusPause,
-                SINGLE_BONUS,
+                'none',
                 setBonusType,
                 setOpenBonusShower,
                 CLOSED);
@@ -343,6 +365,7 @@ function GameOne(props) {
                 windowWidth={props.windowWidth}
                 disabled={disableButton}
                 disableButton={() => setDisableButton(DISABLE_BUTTON)}
+                setPassiveDialogueOpen={props.setPassiveDialogueOpen}
             />
     
             <ConfirmButton
@@ -359,6 +382,8 @@ function GameOne(props) {
                 setNoteTime = {setNoteTime}
                 windowWidth={props.windowWidth}
                 showWaitingDiv = {() => setShowWaitingDiv(SHOW_DIV)}
+                madeMove={madeMove}
+                setMadeMove={setMadeMove}
             />
     
             <div className={classes.animatedColumns}>
@@ -388,6 +413,7 @@ function GameOne(props) {
                             triples,
                             disabledPlayers,
                             props.windowWidth,
+                            props.windowHeight
                         );
                     })}
                 </Grid>
@@ -430,10 +456,11 @@ function pauseSubmitButton(animationPause, setDisableButton, waitTime) {
     }, animationPause);
 }
 
-function getColumn(id, playerData, bonusGroups, playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, myID, singles, doubles, triples, disabledPlayers, windowWidth) {
+function getColumn(id, playerData, bonusGroups, playerNumber, selected, setSelected, setSelectedSelf, setTooManySelections, fromHeights, toHeights, myID, singles, doubles, triples, disabledPlayers, windowWidth, windowHeight) {
     // myID is player index in array
     // get idObj from playerData array
     // console.log("player data: ", playerData);
+    // console.log("get column called")
     const idObj = playerData[myID].id;
     const avatarIndex = playerData[myID].avatar;
     var isSelf = false;
@@ -442,10 +469,13 @@ function getColumn(id, playerData, bonusGroups, playerNumber, selected, setSelec
     }
 
     let doAnimate = false;
-    for (let i = 0; i <= 5; i++) {
-        if (toHeights[i] > fromHeights[i]) {
-            doAnimate = true;
-        }
+    // for (let i = 0; i <= 5; i++) {
+    //     if (toHeights[i] > fromHeights[i]) {
+    //         doAnimate = true;
+    //     }
+    // }
+    if (toHeights[myID] != fromHeights[myID]) {
+        doAnimate = true;
     }
 
     return (
@@ -471,6 +501,7 @@ function getColumn(id, playerData, bonusGroups, playerNumber, selected, setSelec
             player={playerNumber}
             avatar={avatarIndex}
             disabled={disabledPlayers[playerNumber]}
+            windowHeight={windowHeight}
             windowWidth={windowWidth}
             isSelf={isSelf}
             doAnimate={doAnimate}
@@ -536,20 +567,11 @@ function handleDoubleBonuses(setCurrentHeights, doubleArray, doubleHeightArray, 
         let bonusGroupIndices = [];
         // console.log("ids in double bonus group: ", loginCodes)
         for (let j = 0; j < loginCodes.length; j++) {
-            // console.log("id: ", loginCodes[j]);
-            // console.log("all login codes: ", allLoginCodes);
-            // console.log("index: ", getPlayerIndex(loginCodes[j], allLoginCodes));
             const playerIndex = getPlayerIndex(loginCodes[j], allLoginCodes);
             console.log("player index: ", playerIndex);
             bonusGroupIndices.push(playerIndex);
             newHeights[playerIndex] = doubleHeightArray[i][j];
-            // newHeights[getPlayerIndex(loginCodes[j], allLoginCodes)] = 
         }
-        // for (let j = 0; j < newHeights.length; j++) {
-        //     if (!newHeights[j]) {
-        //         newHeights[j] = originalHeights[j];
-        //     }
-        // }
         console.log("handle doubles -> new heights: ", newHeights);
         // let scaledBonus = scaleBonus(doubleIncrease);
         // let scaledBonus = 0;
@@ -605,27 +627,13 @@ function markSingleDelayed(bonusGroupIndices, setSingles, delay) {
     updateBonusArray(bonusGroupIndices, setSingles, delay);
 }
 
-/**
- * Update the heights with a delay.
- * 
- * @param {String} setCurrentHeights 
- * @param {boolean} oldHeights 
- * @param {*} newHeights 
- * @param {*} setOldHeights 
- * @param {*} setNewHeights 
- * @param {*} delay 
- * @param {*} bonusType 
- * @param {*} setBonusType 
- * @param {*} setOpenBonusShower 
- * @param {*} openBonus 
- */
 function updateHeightsDelayed(setCurrentHeights, oldHeights, newHeights, setOldHeights, setNewHeights, delay, bonusType, setBonusType, setOpenBonusShower, openBonus) {
     setTimeout(() => {
         updateHeights(oldHeights, newHeights, setOldHeights, setNewHeights);
         setBonusType(bonusType);
         console.log("bonus type: ", bonusType);
         setOpenBonusShower(openBonus);
-        if (bonusType == SINGLE_BONUS) {
+        if (bonusType == "none") {
             setCurrentHeights(newHeights);
         }
     }, delay);
@@ -664,6 +672,9 @@ function selectPlayer(playerData, bonusGroups, player, selected, setSelected, se
     if (playerData[player].id == myID) {
         console.log("selected self");
         setSelectedSelf(SELECTED_SELF);
+        setTimeout(() => {
+            setSelectedSelf(false);
+        }, 3000);
         return;
     }
 
@@ -680,7 +691,11 @@ function selectPlayer(playerData, bonusGroups, player, selected, setSelected, se
         setSelected(updatedSelection);
     } else {
         console.log("too many selections");
+        setSelectedSelf(false);
         setTooManySelections(TOO_MANY_SELECTIONS);
+        setTimeout(() => {
+            setTooManySelections(false);
+        }, 3000);
     }
 }
 
