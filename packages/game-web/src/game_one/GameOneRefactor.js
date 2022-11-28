@@ -181,7 +181,20 @@ function GameOne(props) {
             ids.push(props.playerData[i].id);
         }
 
-        if (props.currentState.bonusGroups.length == 1) {
+        if (props.rejoined) {
+            console.log("rejoined, render without animation");
+            // render heights without animation
+            var length = props.currentState.bonusGroups.length;
+            var heightsFromState = [];
+            for (var i = 0; i < props.currentState.bonusGroups[length - 1].length; i++) {
+                const scaledPosition = -1 * (props.currentState.bonusGroups[length - 1][i].position * 30) + 30;
+                heightsFromState.push(scaledPosition);
+            }
+            console.log("heights from state: ", heightsFromState);
+            setEndHeights(heightsFromState);
+            setCurrentHeight(heightsFromState);
+            props.setRejoined(false);
+        } else if (props.currentState.bonusGroups.length == 1) {
             var heightsFromState = [];
             for (var i = 0; i < props.currentState.bonusGroups[0].length; i++) {
                 const scaledPosition = -1 * (props.currentState.bonusGroups[0][i].position * 30) + 30;
@@ -367,6 +380,9 @@ function GameOne(props) {
                 disableButton={() => setDisableButton(DISABLE_BUTTON)}
                 setPassiveDialogueOpen={props.setPassiveDialogueOpen}
             />
+
+            {/* <GameTimerRefactor
+            /> */}
     
             <ConfirmButton
                 id={props.id}
