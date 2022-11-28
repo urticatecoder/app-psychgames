@@ -61,29 +61,39 @@ function PlayerButton(props) {
 }
 
 function getImage(playerNumber, selectedIndex, windowWidth, frontendIndex) {
+  // console.log("player number: ", playerNumber);
    // Adjust the player number if it is greater than the frontendIndex.
    // Ex: player 4 is player 3, if frontend index is 1. This is done to map to avatars correctly.
   
   // If the player is the main player, return the selection.
-  if (playerNumber != frontendIndex) {
-    return (
-      <GameImage
-        image={PlayerImages[IMAGE + playerNumber]}
-        id={PlayerImages[NAME + playerNumber]}
-        alt={PlayerImages[LABEL + playerNumber]}
-        width={getSize(windowWidth)}
-        height={getSize(windowWidth)}
-      />
-    );
-  } else {
-    return (
-        <GameImage
-          image={MainPlayerImages.image[selectedIndex]}
-          width={getSize(windowWidth)}
-          height={getSize(windowWidth)}
-        />
-    );
-  }
+  // if (playerNumber != frontendIndex) {
+  //   return (
+  //     <GameImage
+  //       image={PlayerImages[IMAGE + playerNumber]}
+  //       id={PlayerImages[NAME + playerNumber]}
+  //       alt={PlayerImages[LABEL + playerNumber]}
+  //       width={getSize(windowWidth)}
+  //       height={getSize(windowWidth)}
+  //     />
+  //   );
+  // } else {
+  //   return (
+  //       <GameImage
+  //         image={MainPlayerImages.image[selectedIndex]}
+  //         width={getSize(windowWidth)}
+  //         height={getSize(windowWidth)}
+  //       />
+  //   );
+  // }
+  return (
+    <GameImage
+      image={MainPlayerImages.images[playerNumber]}
+      // id={MainPlayerImages.[NAME + playerNumber]}
+      // alt={PlayerImages[LABEL + playerNumber]}
+      width={getSize(windowWidth)}
+      height={getSize(windowWidth)}
+    />
+  );
 }
 
 function getSize(windowWidth) {
