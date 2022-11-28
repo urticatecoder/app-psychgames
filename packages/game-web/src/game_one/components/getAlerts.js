@@ -7,7 +7,7 @@ const TOO_MANY_SELETIONS_MESSAGE = "You cannot choose more than 2 players!";
 const ALERT_LEVEL = "error";
 const OPEN_MESSAGE = true;
 const CLOSED_MESSAGE = false;
-const ERROR_MESSAGE_LENGTH = 2000;
+const ERROR_MESSAGE_LENGTH = 10000;
 const ERROR_VERTICALITY = "top";
 const ERROR_HORIZONTAL = "left";
 
@@ -23,19 +23,20 @@ const ERROR_HORIZONTAL = "left";
  */
 function getAlerts(selectedSelf, setSelectedSelf, tooManySelections, setTooManySelections) {
     if (selectedSelf) {
-      return getAlertComponent(SELF_SELECTION_MESSAGE, setSelectedSelf);
+      console.log("selected self, return alert component");
+      return getAlertComponent(SELF_SELECTION_MESSAGE, setSelectedSelf, true);
     } else if (tooManySelections) {
-      return getAlertComponent(TOO_MANY_SELETIONS_MESSAGE, setTooManySelections);
+      return getAlertComponent(TOO_MANY_SELETIONS_MESSAGE, setTooManySelections, true);
     }
   }
   
 
-function getAlertComponent(text, setClosed) {
+function getAlertComponent(text, setClosed, open) {
     return (
       <Snackbar
-        open={OPEN_MESSAGE}
-        autoHideDuration={ERROR_MESSAGE_LENGTH}
-        onClose={() => setClosed(CLOSED_MESSAGE)}
+        open={open}
+        autoHideDuration={5000}
+        // onClose={() => setClosed(false)}
         anchorOrigin={{
           vertical: ERROR_VERTICALITY,
           horizontal: ERROR_HORIZONTAL,
