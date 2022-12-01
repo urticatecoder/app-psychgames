@@ -4,9 +4,11 @@ import { AGame, GameInstance } from "./game.js";
 export class FinalResults implements GameInstance {
   public state: FinalResultsModel.State;
 
-  constructor(private game: AGame, private playerEarnings: Map<PlayerModel.Id, GameTwoModel.PlayerResults>) {
+  constructor(private game: AGame, private playerEarnings: Map<PlayerModel.Id, GameTwoModel.PlayerResults>, winners: PlayerModel.Id[], losers: PlayerModel.Id[]) {
     this.state = {
       type: "final-results",
+      winners: winners,
+      losers: losers,
     };
 
     this.submitAction();

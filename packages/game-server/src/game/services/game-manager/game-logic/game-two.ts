@@ -234,7 +234,7 @@ export class GameTwo implements GameInstance {
   }
 
   private endGame() {
-    this.game.goToGame(new FinalResults(this.game, this.finalPlayerResults!));
+    this.game.goToGame(new FinalResults(this.game, this.finalPlayerResults!, this.state.winners, this.state.losers));
   }
 }
 
