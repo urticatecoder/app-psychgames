@@ -9,6 +9,7 @@ export class FinalResults implements GameInstance {
       type: "final-results",
       winners: winners,
       losers: losers,
+      prolificCode: this.game.constants.finalResultsProlificCode,
     };
 
     this.submitAction();

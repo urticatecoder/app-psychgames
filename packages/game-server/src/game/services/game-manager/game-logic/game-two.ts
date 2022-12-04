@@ -153,6 +153,8 @@ export class GameTwo implements GameInstance {
     };
     this.playerResults = playerResults;
 
+    //this.selections.clear();
+
     if (this.isGameOver()) {
       this.endGame();
     } else {

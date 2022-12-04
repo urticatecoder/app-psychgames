@@ -153,6 +153,7 @@ describe("game 2", () => {
         winners = game.players.slice(0, 3);
         losers = game.players.slice(3, 6);
         gameTwo = new GameTwo(game, losers, winners);
+        gameTwo.beginRound();
     });
 
     it("emits state to players on creation", () => {

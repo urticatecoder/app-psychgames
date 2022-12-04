@@ -44,7 +44,7 @@ export class GameManagerService {
       if (!game.instance.isJoinable()) continue;
       const availablePlayerID = this.findAvailablePlayerID(game);
       if (availablePlayerID) {
-        this.addPlayerToGame(socketID, availablePlayerID, game);
+        this.addPlayerToGame(socketID, availablePlayerID, game, playerInfo?.prolificId);
         return availablePlayerID;
       }
     }
@@ -170,7 +170,8 @@ export class GameManagerService {
   private addPlayerToGame(
     socketID: SocketID,
     playerID: PlayerModel.Id,
-    game: ManagedGame
+    game: ManagedGame,
+    prolificID?: string
   ) {
     // Sanity check
     if (!game.instance.playerMap.has(playerID)) {
@@ -179,6 +180,10 @@ export class GameManagerService {
       );
     }
     game.activePlayers.set(socketID, playerID);
+    if (prolificID) {
+      game.prolificMap.set(playerID, prolificID);
+    }
+    
     // join socket to game room
     this.server?.in(socketID).socketsJoin(game.id);
     // emit state
@@ -254,6 +259,7 @@ export class GameManagerService {
           roundStartTime: state.roundStartTime,
           roundEndTime: state.roundEndTime,
           playerID: playerId,
+          prolificID: managedGame.prolificMap.get(playerId),
           turnNumber: state.round,
           selectedIDOne: Array.from(<Set<PlayerModel.Id>>selections.get(playerId))[0] ? Array.from(<Set<PlayerModel.Id>>selections.get(playerId))[0] : "none",
           selectedIDTwo: Array.from(<Set<PlayerModel.Id>>selections.get(playerId))[1] ? Array.from(<Set<PlayerModel.Id>>selections.get(playerId))[1] : "none",
@@ -278,6 +284,7 @@ export class GameManagerService {
           roundStartTime: state.roundStartTime,
           roundEndTime: state.roundEndTime,
           playerID: playerId,
+          prolificID: managedGame.prolificMap.get(playerId),
           turnNumber: state.round,
           keepTokens: (<GameTwoModel.TokenDistribution> selections.get(playerId)!).keep,
           investTokens: (<GameTwoModel.TokenDistribution> selections.get(playerId)!).invest,
@@ -305,6 +312,7 @@ export class ManagedGame {
   id: string;
   activePlayers: OneToOneMap<SocketID, PlayerModel.Id>;
   inactivityMap: Map<PlayerModel.Id, number>; // Tracks the number of consecutive rounds each player has been inactive
+  prolificMap: Map<PlayerModel.Id, string>;
 
   constructor(game: AGame, id: string) {
     this.instance = game;
@@ -315,6 +323,7 @@ export class ManagedGame {
     this.gameCreationTime = new Date();
     this.inactivityMap = new Map<PlayerModel.Id, number>();
     this.initializeInactivityMap();
+    this.prolificMap = new Map<PlayerModel.Id, string>();
   }
 
   private initializeInactivityMap() {

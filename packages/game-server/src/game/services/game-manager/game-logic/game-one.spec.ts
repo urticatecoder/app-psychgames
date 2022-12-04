@@ -61,6 +61,7 @@ describe("game one", () => {
   beforeEach(() => {
     game = <Game>new (<any>Game)();
     gameOne = new GameOne(game);
+    gameOne.beginRound();
   });
 
   it("emits state to players on creation", () => {

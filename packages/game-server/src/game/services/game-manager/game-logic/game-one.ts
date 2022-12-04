@@ -162,6 +162,8 @@ export class GameOne implements GameInstance {
 
     this.game.pushToDatabase(this.selections);
 
+    //this.selections.clear();
+
     if (this.isGameOver()) {
       this.endGame();
     } else {

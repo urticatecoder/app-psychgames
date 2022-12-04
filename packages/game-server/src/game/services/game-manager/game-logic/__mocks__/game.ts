@@ -73,6 +73,7 @@ const GameInstance: AGame = {
   endGame: jest.fn(),
   emitState: jest.fn(),
   pushToDatabase: jest.fn(),
+  handleBots: jest.fn(),
 };
 
 export function Game() {
