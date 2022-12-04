@@ -77,6 +77,9 @@ export namespace FinalResultsModel {
   export type State = {
     type: "final-results";
     playerResults?: GameTwoModel.PlayerResults;
+    winners: PlayerModel.Id[];
+    losers: PlayerModel.Id[];
+    prolificCode: string;
   }
 }
 
