@@ -9,6 +9,7 @@ import WindowChecker from './util/components/WindowChecker';
 import BrowserChecker from './util/components/BrowserChecker';
 import RulesDialog from "./util/components/RulesDialog";
 import PassiveDialog from './passivity/PassiveDialogue';
+import RemoveDialog from './passivity/RemoveDialogue'
 
 import Login from "./login/Login";
 import Lobby from "./lobby/Lobby";
@@ -19,6 +20,7 @@ import GameOneRefactor from './game_one/GameOneRefactor';
 import GameTwoIntro from "./game_two/intro/GameTwoIntro";
 import GameTwo from "./game_two/GameTwo";
 import GameTwoRefactor from "./game_two/GameTwoRefactor";
+import Compensation from "./prolific/Compensation";
 
 import Routes from './util/constants/routes';
 import { getThemeProps } from '@material-ui/styles';
@@ -47,6 +49,9 @@ function App(props) {
   const [avatar, setAvatar] = useState(INITIAL_AVATAR);
   const [page, setPage] = useState(null);
   const [playerData, setPlayerData] = useState([]);
+  const [passiveDialogueOpen, setPassiveDialogueOpen] = useState(false);
+  const [removeDialogueOpen, setRemoveDialogueOpen] = useState(false);
+  const [rejoined, setRejoined] = useState(false);
 
   useEffect(() => {
     socket.on("connect_error", () => {
@@ -58,6 +63,7 @@ function App(props) {
         console.log("already had id: ", props.cookies.get("id"));
         setId(props.cookies.get("id"));
         const enterGameRequest = {id: props.cookies.get("id")};
+        setRejoined(true);
         socket.emit("enter-game", enterGameRequest, (response) => {
           console.log("enter game response: ", response);
         });
@@ -70,22 +76,17 @@ function App(props) {
 
     socket.on("state-update", (state) => {
       console.log("received state update: ", state);
-      if (state.type == "lobby") {
-        setCurrentState(state);
-        setPlayerData(state.playerData);
-        setPage(state.type);
-      } else if (state.type == "game-one_state") {
-        setCurrentState(state);
-        setPage(state.type);
-        setPlayerData(state.playerData);
-      } else if (state.type == "game-two_state") {
-        setCurrentState(state);
-        setPage(state.type);
+      setCurrentState(state);
+      setPage(state.type);
+      if (state.type == "lobby" || state.type == "game-one_state" || state.type == "game-two_state") {
         setPlayerData(state.playerData);
       }
     });
 
-    socket.on("disconnect",() => {
+    socket.on("disconnect", () => {
+      setRemoveDialogueOpen(true);
+      setPassiveDialogueOpen(false);
+      props.history.push(Routes.LOGIN);
       console.log("disconnected"); 
     });
   }, []);
@@ -94,12 +95,20 @@ function App(props) {
     if (!currentState) {
       return;
     }
-    if (page == "lobby") {
+    if (currentState.type == "lobby") {
+      console.log("push to lobby")
       props.history.push(Routes.LOBBY);
-    } else if (page == "game-one_state") {
+    } else if (currentState.type == "game-one_state") {
       props.history.push(Routes.GAME_ONE);
-    } else if (page == "game-two_state") {
+    } else if (currentState.type == "game-two_state") {
       props.history.push(Routes.GAME_TWO);
+    } else if (currentState.type == "game-one-tutorial") {
+      props.history.push(Routes.GAME_ONE_INTRO);
+    } else if (currentState.type == "game-two-tutorial") {
+      props.history.push(Routes.GAME_TWO_INTRO);
+    } else if (currentState.type == "final-results") {
+      console.log("push to compensation");
+      props.history.push(Routes.COMPENSATION);
     }
   }, [page]);
 
@@ -114,7 +123,7 @@ function App(props) {
   useEffect(() => {
     console.log("id updated: ", id);
     if (id) {
-      // props.cookies.set("id", id, { path: "/" });
+      props.cookies.set("id", id, { path: "/" });
     }
   }, [id]);
 
@@ -126,7 +135,9 @@ function App(props) {
 
         {/* Add components which show the rules when selected or to prompt the user to ensure they are still playing.*/}
         <RulesDialog/>
-        <PassiveDialog loginCode={loginCode}/>
+        <PassiveDialog loginCode={loginCode} passiveDialogueOpen={passiveDialogueOpen} setPassiveDialogueOpen={setPassiveDialogueOpen}/>
+
+        <RemoveDialog removeDialogueOpen={removeDialogueOpen} setRemoveDialogueOpen={setRemoveDialogueOpen}/>
 
         {/* Add routes for the pages in the web app below.*/}
 
@@ -185,6 +196,8 @@ function App(props) {
               <GameOneIntro
                 avatar={avatar}
                 setAvatar={setAvatar}
+                currentState={currentState}
+                setCurrentState={setCurrentState}
               />
             )}
           />
@@ -200,6 +213,10 @@ function App(props) {
                 playerData={playerData}
                 windowWidth={windowWidth}
                 windowHeight={windowHeight}
+                passiveDialogueOpen={passiveDialogueOpen}
+                setPassiveDialogueOpen={setPassiveDialogueOpen}
+                rejoined={rejoined}
+                setRejoined={setRejoined}
               />
             )}
           />
@@ -209,11 +226,10 @@ function App(props) {
             path={Routes.GAME_TWO_INTRO}
             render={() => 
               <GameTwoIntro
-                winners={winners}
-                selectedIndex={selectedIndex}
-                losers={losers}
-                allLoginCodes={allLoginCodes}
-                frontendIndex={frontendIndex}
+                id={id}
+                currentState={currentState}
+                setCurrentState={setCurrentState}
+                playerData={playerData}
               />
             }
           />   
@@ -229,9 +245,28 @@ function App(props) {
                 playerData={playerData}
                 windowWidth={windowWidth}
                 windowHeight={windowHeight}
+                setPassiveDialogueOpen={setPassiveDialogueOpen}
+                rejoined={rejoined}
+                setRejoined={setRejoined}
               />
             )}
           />
+
+          {/* COMPENSATION PAGE */}
+          <Route
+            path={Routes.COMPENSATION}
+            render={() => (
+              <Compensation
+                // experimentID={experimentID}
+                // code={loginCode}
+                currentState={currentState}
+                windowHeight={windowHeight}
+                windowWidth={windowWidth}
+                id={id}
+              />
+            )}
+          />
+
       </Router>
     </div>
   )
