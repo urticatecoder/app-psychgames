@@ -131,23 +131,55 @@ function GameTwo(props) {
 
     const [disableButton, setDisableButton] = useState(DO_NOT_DISABLE_BUTTON);
 
+    const [madeMove, setMadeMove] = useState(true);
+
     if (!props.currentState) {
       console.log("push to login");
       props.history.push(Routes.LOGIN);
       return (<div></div>);
-  }
+    }
+
     // new state variables based on server state object
     const currentState = props.currentState;
-    const [winners, setWinners] = useState([0, 0, 0]);
-    const [losers, setLosers] = useState([0, 0, 0]);
+    const [winners, setWinners] = useState(["n/a", "n/a", "n/a"]);
+    const [losers, setLosers] = useState(["n/a", "n/a", "n/a"]);
     const [round, setRound] = useState(0);
     const [competeCoefficient, setCompeteCoefficient] = useState(0);
     const [investCoefficient, setInvestCoefficient] = useState(0);
 
     useEffect(() => {
+      console.log("made move: ", madeMove);
+    }, [madeMove]);
+
+    useEffect(() => {
       console.log("current state updated: ", props.currentState);
+      if (props.currentState.type != "game-two_state") {
+        console.log("not game two");
+        return;
+      }
+
+      if (!madeMove) {
+        console.log("didn't make move");
+        props.setPassiveDialogueOpen(true);
+      }
+
+      setMadeMove(false);
       
-      if (props.currentState.round > 0) {
+      if (props.rejoined) {
+        setWinners(props.currentState.winners);
+        setLosers(props.currentState.losers);
+        setRound(props.currentState.round);
+        setCompeteCoefficient(props.currentState.competeCoefficient);
+        setInvestCoefficient(props.currentState.investCoefficient);
+        setShowWaitingDiv(HIDE_DIV);
+        setCompetePayoff(competeCoefficient);
+        setInvestPayoff(investCoefficient);
+        setResetTimer(RESET_TIMER);
+        setCurrentResources(INITIAL_RESOURCE_DISTRIBUTION);
+        props.setRejoined(false);
+        setDisableButton(true);
+      } else if (props.currentState.round > 0) {
+          clearResources(setFromResources, setToResources, toResources, setTokensSpent)
           setShowWaitingDiv(HIDE_DIV);
           setCompetePayoff(props.currentState.competeCoefficient);
           setInvestPayoff(props.currentState.investCoefficient);
@@ -173,6 +205,9 @@ function GameTwo(props) {
               setShowResults(DO_NOT_SHOW_RESULTS);
           }, TIME_TO_SHOW_RESULTS);
       } else {
+          setWinners(props.currentState.winners);
+          setLosers(props.currentState.losers);
+          setRound(props.currentState.round);
           setCompeteCoefficient(props.currentState.competeCoefficient);
           setInvestCoefficient(props.currentState.investCoefficient);
           setShowWaitingDiv(HIDE_DIV);
@@ -184,18 +219,21 @@ function GameTwo(props) {
     }, [props.currentState]);
 
     const { classes } = props;
-    
-    console.log("winners: ", props.currentState.winners);
-    console.log("losers: ", props.currentState.losers);
+    // console.log("state: ", props.currentState);
+    // console.log("winners: ", props.currentState.winners);
+    // console.log("losers: ", props.currentState.losers);
 
-    const roundLength = currentState.roundEndTime - currentState.roundStartTime;
+    // const roundLength = props.currentState.roundStartTime - props.currentState.roundEndTime;
+    const roundEndTime = Date.parse(props.currentState.roundEndTime);
+    const time = new Date();
+    const roundLength = roundEndTime - time.getTime();
 
     let resourceResultsView = getResourceResults(classes, groupOneResults, groupTwoResults, props.windowWidth);
 
     let resourceChoiceView = getResourceChoices(
         roundLength,
-        props.currentState.winners,
-        props.currentState.losers,
+        winners,
+        losers,
         props,
         setFromResources,
         setToResources,
@@ -221,7 +259,9 @@ function GameTwo(props) {
         disableButton, 
         setDisableButton,
         showWaitingDiv, 
-        setShowWaitingDiv
+        setShowWaitingDiv,
+        madeMove,
+        setMadeMove
     );
 
     let resourceView = showResults ? resourceResultsView : resourceChoiceView;
@@ -274,7 +314,11 @@ function getDelayedBar(resource, group, delay, tokens, windowWidth) {
 
 function getResourceChoices(roundLength, winners, losers, props, setFromResources, setToResources, fromResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, 
     tokensSpent, setTokensSpent, setCurrentResources, currentResources, payoffInvest, payoffCompete, resetTimer, setResetTimer, setSubmitDecisions, submitDecisions,
-    noteTime, setNoteTime, timeLeft, setTimeLeft, disableButton, setDisableButton, showWaitingDiv, setShowWaitingDiv) {
+    noteTime, setNoteTime, timeLeft, setTimeLeft, disableButton, setDisableButton, showWaitingDiv, setShowWaitingDiv, madeMove, setMadeMove) {
+    var animationPause = TIME_TO_SHOW_RESULTS;
+    if (props.rejoined || props.currentState.round == 0) {
+      animationPause = 0;
+    }
     return (
       <div>
         <PayoffHelp/>
@@ -307,26 +351,26 @@ function getResourceChoices(roundLength, winners, losers, props, setFromResource
             windowHeight={props.windowHeight}
             experimentID={props.experimentID}
             showWaitingDiv = {() => setShowWaitingDiv(SHOW_DIV)}
+            madeMove={madeMove}
+            setMadeMove={setMadeMove}
+            roundStartTime={props.currentState.roundStartTime}
+            animationPause={animationPause}
         />
         <VerticalPlayerGroup
           type={GROUP_ONE}
-        //   allLoginCodes={props.allLoginCodes}
           players={winners}
-        //   selectedIndex={props.selectedIndex}
           windowHeight={props.windowHeight}
           windowWidth={props.windowWidth}
-        //   frontendIndex={props.frontendIndex}
           playerData={props.playerData}
+          id={props.id}
         />
         <VerticalPlayerGroup
           type={GROUP_TWO}
-        //   allLoginCodes={props.allLoginCodes}
           players={losers}
-        //   selectedIndex={props.selectedIndex}
           windowHeight={props.windowHeight}
           windowWidth={props.windowWidth}
-        //   frontendIndex={props.frontendIndex}
           playerData={props.playerData}
+          id={props.id}
         />
         {getResourceButton(ResourceNames.KEEP, KEEP_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
           setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources, props.windowWidth)}
