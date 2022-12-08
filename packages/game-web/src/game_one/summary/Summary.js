@@ -41,15 +41,17 @@ function Summary(props) {
   // let loserIndices = getAvatarIndices(props.losers, props.allLoginCodes);
   let winnerIndices = getAvatarIndices(props.currentState.winners, props.currentState.playerData);
   let loserIndices = getAvatarIndices(props.currentState.losers, props.currentState.playerData);
-
-  console.log("winners: ", props.currentState.winners);
-  console.log("losers: ", props.currentState.losers);
-  console.log("winnerIndices: ", winnerIndices);
-  console.log("loserIndices: ", loserIndices);
+  // console.log("winners: ", props.currentState.winners);
+  // console.log("losers: ", props.currentState.losers);
+  // console.log("winnerIndices: ", winnerIndices);
+  // console.log("loserIndices: ", loserIndices);
+  // console.log("id: ", props.id);
   return (
     <div>
       <DelayedConfetti />
       {getGroup(
+        props.currentState.playerData,
+        props.currentState.winners,
         classes.winners,
         classes.playerGroup,
         WINNING_HEADER,
@@ -60,6 +62,8 @@ function Summary(props) {
         props
       )}
       {getGroup(
+        props.currentState.playerData,
+        props.currentState.losers,
         classes.losers,
         classes.playerGroup,
         LOSING_HEADER,
@@ -73,14 +77,14 @@ function Summary(props) {
   );
 }
 
-function getGroup(divClassName, groupClassName, headerText, playersShown, textID, selectedIndex, frontendIndex, props) {
+function getGroup(playerData, groupIds, divClassName, groupClassName, headerText, playersShown, textID, selectedIndex, frontendIndex, props) {
   return (
     <div className={divClassName}>
       <Typography id={textID} variant={"h2"}>
         {headerText}
       </Typography>
       <div className={groupClassName}>
-        <PlayerGroup players={playersShown} selectedIndex={selectedIndex} frontendIndex={frontendIndex} id={props.id}/>
+        <PlayerGroup players={playersShown} selectedIndex={selectedIndex} frontendIndex={frontendIndex} id={props.id} playerData={playerData} groupIds={groupIds}/>
       </div>
     </div>
   );
@@ -89,8 +93,8 @@ function getGroup(divClassName, groupClassName, headerText, playersShown, textID
 function getAvatarIndices(groupIds, playerData) {
   var indices = [];
   
-  console.log("group ids: ", groupIds);
-  console.log("player data: ", playerData);
+  // console.log("group ids: ", groupIds);
+  // console.log("player data: ", playerData);
   for (let i = 0; i < playerData.length; i++) {
     for (let j = 0; j < groupIds.length; j++) {
       if (groupIds[j] === playerData[i].id) {
