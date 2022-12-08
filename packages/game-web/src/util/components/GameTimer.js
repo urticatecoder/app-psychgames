@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Typography, withStyles } from "@material-ui/core";
 import Timer from "react-compound-timer";
 
@@ -45,21 +45,31 @@ const styles = {
  */
 function GameTimer(props) {
   const { classes } = props;
+  const [initialTime, setInitialTime] = useState(10000);
   let margin = getMarginLeft(props.windowWidth);
   let width = getWidth(props.windowWidth);
-  console.log("round length: ", props.roundLength);
+
+  // console.log("round length: ", props.roundLength);
+
+  useEffect(() => {
+    setInitialTime(props.roundLength);
+  }, [props.roundLength]);
+
+  // const[resetTimeCounter, setResetTimeCounter] = useState(0);
+
+// see: https://github.com/volkov97/react-compound-timer/issues/31
 
   return (
-    <div style={{marginLeft: margin, width: width}} className={classes.timerInstruction}>
+    <div key={initialTime} style={{marginLeft: margin, width: width}} className={classes.timerInstruction}>
       <Timer
-        initialTime={props.roundLength}
+        initialTime={initialTime}
         lastUnit={LAST_TIME_UNIT}
         direction={TIME_DIRECTION}
         timeToUpdate={TIMER_UPDATE}
         checkpoints={[
           {
             time: TIME_OVER,
-            callback: () => handleTimeOver(props.setSubmitDecisions, props.setTimeLeft, props.disableButton),
+            callback: () => handleTimeOver(props.setSubmitDecisions, props.setTimeLeft, props.disableButton, props.setPassiveDialogueOpen),
           },
         ]}
       >
@@ -73,7 +83,9 @@ function GameTimer(props) {
               {checkForReset(
                 reset,
                 props.resetTimer,
-                props.setResetTimer
+                props.setResetTimer,
+                props.roundLength,
+                pause
               )}
               {checkForPause(props.pauseTimer, pause, start)}
               <Typography style={{fontSize: '25px'}} variant={"h1"}>
@@ -111,14 +123,16 @@ function checkUpdateSeconds(noteTime, setNoteTime, setTimeLeft, setSubmitDecisio
   }
 }
 
-function handleTimeOver(setSubmitDecisions, setTimeLeft) {
+function handleTimeOver(setSubmitDecisions, setTimeLeft, disableButton, setPassiveDialogueOpen) {
   setTimeLeft(TIME_OVER);
-  disableButton();
+  disableButton;
+  // setPassiveDialogueOpen(true);
   // setSubmitDecisions(SUBMIT_DECISIONS);
 }
 
-function checkForReset(reset, resetTimer, setResetTimer) {
+function checkForReset(reset, resetTimer, setResetTimer, roundLength) {
   if (resetTimer) {
+    console.log("reset timer with roundlength: ", roundLength);
     reset();
     setResetTimer(RESET_TIMER);
   }
