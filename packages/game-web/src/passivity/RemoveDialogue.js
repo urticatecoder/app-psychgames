@@ -10,10 +10,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import socket from "../socketClient";
 import { withRouter } from 'react-router-dom';
 
-const MESSAGE = 'Are you still there?';
-const SUBMESSAGE= 'Please indicate whether you plan to keep participating in the games. Note that you will not be compensated unless you complete the experiment.'
+const MESSAGE = 'You have been removed from the game.';
+const SUBMESSAGE = ''//'Insert message about what to do.'
 const BUTTON_VARIANT = 'contained';
-const YES = 'Yes';
+const OK = 'Ok';
 const YES_COLOR = 'primary';
 const NO = 'No';
 const NO_COLOR = 'secondary';
@@ -58,18 +58,18 @@ function PassiveAlert(props) {
 
     return(
         <Dialog
-            open={props.passiveDialogueOpen}
+            open={props.removeDialogueOpen}
         >
             <DialogTitle>{MESSAGE}</DialogTitle>
             <DialogContent>
                 <DialogContentText>{SUBMESSAGE}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => exitGame(INACTIVE_PLAYER_WEBSOCKET, props.experimentID, props.loginCode, props.setPassiveDialogueOpen, setResponded, props)} variant={BUTTON_VARIANT} color={NO_COLOR}>
+                {/* <Button onClick={() => exitGame(INACTIVE_PLAYER_WEBSOCKET, props.experimentID, props.loginCode, setOpen, setResponded, props)} variant={BUTTON_VARIANT} color={NO_COLOR}>
                     {NO}
-                </Button>
-                <Button onClick={() => emitSocket(ACTIVE_PLAYER_WEBSOCKET, props.experimentID, props.loginCode, props.setPassiveDialogueOpen, setResponded)} variant={BUTTON_VARIANT} color={YES_COLOR}>
-                    {YES}
+                </Button> */}
+                <Button onClick={() => props.setRemoveDialogueOpen(false)} variant={BUTTON_VARIANT} color={YES_COLOR}>
+                    {OK}
                 </Button>
             </DialogActions>
         </Dialog>
@@ -77,19 +77,16 @@ function PassiveAlert(props) {
 }
 
 function exitGame(webSocket, experimentID, loginCode, setOpen, setResponded, props) {
-    // emitSocket(webSocket, experimentID, loginCode, setOpen, setResponded);
-    setOpen(CLOSE_DIALOGUE)
-    socket.close()
+    emitSocket(webSocket, experimentID, loginCode, setOpen, setResponded);
     props.history.push('/');
 }
 
 function emitSocket(webSocket, experimentID, loginCode, setOpen, setResponded) {
-    // if (loginCode != null) {
-    //     socket.emit(webSocket, experimentID, loginCode);
-    //     setOpen(CLOSE_DIALOGUE);
-    //     setResponded(RESPONDED);
-    // }
-    setOpen(CLOSE_DIALOGUE)
+    if (loginCode != null) {
+        socket.emit(webSocket, experimentID, loginCode);
+        setOpen(CLOSE_DIALOGUE);
+        setResponded(RESPONDED);
+    }
 }
 
 export default withRouter(withStyles(styles)(PassiveAlert));
