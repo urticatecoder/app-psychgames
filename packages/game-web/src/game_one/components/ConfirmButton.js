@@ -88,9 +88,17 @@ function sendDecisions(props) {
         selectedIds.push(props.currentState.bonusGroups[0][i].id);
       }
     }
+
+    const time = new Date();
+    const roundStartTime = Date.parse(props.roundStartTime);
+    const decisionTime = time.getTime() - roundStartTime - props.animationPause;
+    console.log("received time: ", roundStartTime);
+    console.log("animation pause time: ", props.animationPause);
+    console.log("decision time: ", decisionTime);
     const gameOneTurn = {
       type: "game-one_turn",
-      playersSelected: selectedIds
+      playersSelected: selectedIds,
+      decisionTime: decisionTime
     }
     socket.emit("game-action", gameOneTurn);
     props.clearSelected();
