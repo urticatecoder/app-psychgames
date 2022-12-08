@@ -13,6 +13,9 @@ const GRID_SPACING = 10;
  * @author Eric Doppelt
  */
 function PlayerGroup(props) {
+  console.log("players: ", props.players); // props.players has avatar indices of players in the group
+  console.log("ids: ", props.groupIds);
+  console.log("player data: ", props.playerData);
   return (
     <Grid
       container
@@ -20,10 +23,10 @@ function PlayerGroup(props) {
       justify={GRID_JUSTIFY}
       spacing={GRID_SPACING}
     >
-      {props.players.map((element) => {
+      {props.groupIds.map((element) => {
         return (
           <Grid item>
-            <PlayerProfile player={element} selectedIndex={props.selectedIndex} frontendIndex={props.frontendIndex}/>
+            <PlayerProfile playerId={element} selectedIndex={props.selectedIndex} frontendIndex={props.frontendIndex} id={props.id} playerData={props.playerData}/>
           </Grid>
         );
       })}
