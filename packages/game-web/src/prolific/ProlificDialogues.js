@@ -41,22 +41,27 @@ function ProlificDialogues(props) {
   const [prolificCode, setProlificCode] = useState(DEFAULT_CODE);
   const [validPlayer, setValidPlayer] = useState(INVALID_PLAYER);
 
-  useEffect(() => {
-    axios.get(VERIFICATION_CODE_ROUTE, {
-        params: {
-          loginCode: props.code,
-          experimentID: props.experimentID
-        }
-      }).then((res) => {
-        if (res.data.success == 'true') {
-          console.log('RESPONSE')
-          console.log(res)
-          setProlificCode(res.data.code);
-          setValidPlayer(VALID_PLAYER);
-        }
-      });
+  // useEffect(() => {
+  //   axios.get(VERIFICATION_CODE_ROUTE, {
+  //       params: {
+  //         loginCode: props.code,
+  //         experimentID: props.experimentID
+  //       }
+  //     }).then((res) => {
+  //       if (res.data.success == 'true') {
+  //         console.log('RESPONSE')
+  //         console.log(res)
+  //         setProlificCode(res.data.code);
+  //         setValidPlayer(VALID_PLAYER);
+  //       }
+  //     });
 
-    }, [props.code, prolificCode]);
+  //   }, [props.code, prolificCode]);
+
+  useEffect(() => {
+    setProlificCode(props.code);
+    setValidPlayer(true);
+  }, [props.code]);
 
     var currentDialogue;
     if (validPlayer) currentDialogue = getValidDialogue(prolificCode, props.open, props.setOpen);

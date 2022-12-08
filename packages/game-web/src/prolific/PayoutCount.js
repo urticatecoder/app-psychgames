@@ -11,7 +11,9 @@ const NUM_DECIMALS = 2;
 const DECIMAL = ".";
 const PREFIX = "$";
 
-const GAME_ONE_PAUSE = 2000;
+const GAME_ONE_PAUSE = 3000;
+
+const GAME_TWO_PAUSE = 8000;
 
 const KEEP_PAUSE = 15000;
 
@@ -42,50 +44,37 @@ const styles = {
  * @author Eric Doppelt
  */
 function PayoutCount(props) {
-  const { classes } = props;
+    const { classes } = props;
 
-  const [lastPayout, setLastPayout] = useState(INITIAL_PAYOUT);
-  const [newPayout, setNewPayout] = useState(INITIAL_PAYOUT);
-  const [textColor, setTextColor] = useState(BLACK);
+    const [lastPayout, setLastPayout] = useState(INITIAL_PAYOUT);
+    const [newPayout, setNewPayout] = useState(INITIAL_PAYOUT);
+    const [textColor, setTextColor] = useState(BLACK);
 
-  const [readiedDelays, setReadiedDelay] = useState(HAVENT_READIED_DELAYS);
-  
-  useEffect(() => {
-
-    if (props.recievedResults && !readiedDelays) {
-        const AFTER_GAME_ONE = props.gameOneAmount;
-        const AFTER_INVEST = AFTER_GAME_ONE + props.investAmount;
-        const AFTER_KEEP = AFTER_INVEST + props.keepAmount;
-        const AFTER_COMPETE = AFTER_KEEP + props.competeAmount;
-        setTimeout(() => {
-            updateTextColor(lastPayout, AFTER_GAME_ONE, setTextColor);
-            setNewPayout(AFTER_GAME_ONE);
-        }, GAME_ONE_PAUSE);
-        setTimeout(() => {
-            updateTextColor(AFTER_GAME_ONE, AFTER_INVEST, setTextColor);
-            setLastPayout(AFTER_GAME_ONE);
-            setNewPayout(AFTER_INVEST);
-        }, INVEST_PAUSE);
-        setTimeout(() => {
-            updateTextColor(AFTER_INVEST, AFTER_KEEP, setTextColor);
-            setLastPayout(AFTER_INVEST);
-            setNewPayout(AFTER_KEEP);
-        }, KEEP_PAUSE);
-        setTimeout(() => {
-            updateTextColor(AFTER_KEEP, AFTER_COMPETE, setTextColor);
-            setLastPayout(AFTER_KEEP);
-            setNewPayout(AFTER_COMPETE);
-        }, COMPETE_PAUSE);
-        setTimeout(() => {
-            setTextColor(GREEN);
-            var finalPayout = (AFTER_COMPETE < 0) ? BASE_PAYOUT : AFTER_COMPETE;
-            setLastPayout(finalPayout);
-            setNewPayout(finalPayout);
-        }, FINAL_PAUSE);
-
-        setReadiedDelay(READIED_DELAYS);
+    const [readiedDelays, setReadiedDelay] = useState(HAVENT_READIED_DELAYS);
+    
+    useEffect(() => {
+        console.log("state in payout count: ", props.currentState);
+        if (props.recievedResults && !readiedDelays) {
+            var AFTER_GAME_ONE = 0;
+            if (props.isGameOneWinner) {
+                AFTER_GAME_ONE = 3;
+            }
+            console.log("net money: ", props.currentState.playerResults.netMoney);
+            var AFTER_GAME_TWO = AFTER_GAME_ONE + Number.parseFloat(props.currentState.playerResults.netMoney);
+            console.log("after game two: ", AFTER_GAME_TWO);
+            setTimeout(() => {
+                console.log("animate after game two");
+                updateTextColor(lastPayout, AFTER_GAME_ONE, setTextColor);
+                setNewPayout(AFTER_GAME_ONE);
+            }, GAME_ONE_PAUSE);
+            setTimeout(() => {
+                updateTextColor(AFTER_GAME_ONE, AFTER_GAME_TWO, setTextColor);
+                setLastPayout(AFTER_GAME_ONE);
+                setNewPayout(AFTER_GAME_TWO);
+            }, GAME_TWO_PAUSE);
+            setReadiedDelay(READIED_DELAYS);
         }
-    });
+    }, [props.currentState]);
 
 
   return (

@@ -3,9 +3,10 @@ import { withStyles } from "@material-ui/core";
 import PayoutCount from "./PayoutCount";
 import Receipt from "./Receipt";
 import socket from '../socketClient';
+import ReceiptRefactor from "./ReceiptRefactor";
 
 const DEFAULT_GAME_ONE_RESULT = true;
-const DEFAULT_GAME_ONE_AMOUNT = 3.00;
+const DEFAULT_GAME_ONE_AMOUNT = 0;
 const DEFAULT_GAME_TWO_TURN = 0;
 
 const DEFAULT_KEEP_TOKENS = 8;
@@ -64,36 +65,21 @@ function Payout(props) {
 
   const [askedForResults, setAskedForResults] = useState(DID_NOT_ASK_FOR_RESULTS);
 
-  // useEffect(() => {
-  //   if (props.code != null && !askedForResults) {
-  //     setAskedForResults(ASKED_FOR_RESULTS);
-  //     socket.emit(GET_RESULTS_SOCKET, props.experimentID, props.code);
-  //   }
-
-  //   socket.on(RECIEVE_RESULTS_SOCKET, (gameOneResult, gameOneAmount, gameTwoTurn, keepTokens, keepAmount, investTokens, investRate, investAmount, competeTokens, competeRate, competeAmount) => {
-  //       setGameOneResult(gameOneResult);
-  //       setGameOneAmount(gameOneAmount);
-  //       setGameTwoTurn(gameTwoTurn);
-  //       setKeepTokens(keepTokens);
-  //       setKeepAmount(keepAmount);
-  //       setInvestTokens(investTokens);
-  //       setInvestRate(investRate);
-  //       setInvestAmount(investAmount);
-  //       setCompeteTokens(competeTokens);
-  //       setCompeteRate(competeRate);
-  //       setCompeteAmount(competeAmount);
-  //       setRecievedResults(RECIEVED_RESULTS);
-  //     });
-  
-  //     return () => {
-  //       socket.off(RECIEVE_RESULTS_SOCKET);
-  //     };
-
-  // }, [props]);
-
   let margin = getMarginLeft(props.windowWidth);
   let marginTop = getMarginTop(props.windowHeight);
   let height = getReceiptHeight(props.windowHeight);
+
+  let isGameOneWinner = false;
+  let gameOnePay = 0;
+
+  for (var i = 0; i < props.currentState.winners.length; i++) {
+    console.log("id: ", props.id, " winner id: ", props.currentState.winners[i]);
+    if (props.currentState.winners[i] == props.id) {
+        isGameOneWinner = true;
+        gameOnePay = 3.00;
+        // setGameOneAmount(3.00);
+    }
+  }
 
   return (
     <div className={classes.wrapperDiv} style={{marginLeft: margin, top: marginTop, height: height}}>
@@ -102,12 +88,14 @@ function Payout(props) {
           keepAmount={keepAmount}
           investAmount={investAmount}
           competeAmount={competeAmount}
-          recievedResults={recievedResults}
+          recievedResults={true}
           windowHeight={props.windowHeight}
+          currentState={props.currentState}
+          isGameOneWinner={isGameOneWinner}
         />
-        <Receipt
+        <ReceiptRefactor
           gameOneResult={gameOneResult}
-          gameOneAmount={gameOneAmount}
+          gameOneAmount={gameOnePay}
           gameTwoTurn={gameTwoTurn}
           keepTokens={keepTokens}
           keepAmount={keepAmount}
@@ -118,6 +106,8 @@ function Payout(props) {
           competeRate={competeRate}
           competeAmount={competeAmount}
           windowHeight={props.windowHeight}
+          currentState={props.currentState}
+          isGameOneWinner={isGameOneWinner}
         />
     </div>
   );
