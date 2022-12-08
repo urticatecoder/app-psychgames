@@ -81,26 +81,29 @@ function VerticalPlayerGroup(props) {
         <div className={classes.innerDiv}>
           <div className={classes.firstImageDiv} style={{marginTop: firstMargin}}>
             {getFormattedImage(
-              props.playerData[FIRST_PLAYER_INDEX].avatar,
+              props.playerData[FIRST_PLAYER_INDEX].id,
               props.allLoginCodes,
               props.selectedIndex,
-              props.frontendIndex
+              props.frontendIndex,
+              props
           )}
           </div>
           <div className={classes.imageDiv} style={{marginTop: margin}}>
             {getFormattedImage(
-              props.playerData[SECOND_PLAYER_INDEX].avatar,
+              props.playerData[SECOND_PLAYER_INDEX].id,
               props.allLoginCodes,
               props.selectedIndex,
-              props.frontendIndex
+              props.frontendIndex,
+              props
             )}
           </div>
           <div className={classes.imageDiv} style={{marginTop: margin}}>
             {getFormattedImage(
-              props.playerData[THIRD_PLAYER_INDEX].avatar,
+              props.playerData[THIRD_PLAYER_INDEX].id,
               props.allLoginCodes,
               props.selectedIndex,
-              props.frontendIndex
+              props.frontendIndex,
+              props
             )}
           </div>
         </div>
@@ -147,12 +150,11 @@ function getMarginTop(windowHeight) {
   else return '6.5vh';
 }
 
-function getFormattedImage(code, allLoginCodes, selectedIndex, frontendIndex) {
+function getFormattedImage(playerId, allLoginCodes, selectedIndex, frontendIndex, props) {
   // let codeIndex = allLoginCodes.indexOf(code);
-  let codeIndex = code;
-  // console.log("code: ", codeIndex);
+  // console.log("id: ", playerId);
   return (
-    <PlayerProfile player={codeIndex} selectedIndex={selectedIndex} frontendIndex={frontendIndex}/>
+    <PlayerProfile playerId={playerId} selectedIndex={selectedIndex} frontendIndex={frontendIndex} id={props.id} playerData={props.playerData}/>
   );
 }
 
