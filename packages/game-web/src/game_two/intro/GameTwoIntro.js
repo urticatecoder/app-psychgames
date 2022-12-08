@@ -70,6 +70,8 @@ function getSummary(props) {
           allLoginCodes={props.allLoginCodes}
           frontendIndex={props.frontendIndex}
           currentState={props.currentState}
+          id={props.id}
+          playerData={props.playerData}
         />
     );
 }
