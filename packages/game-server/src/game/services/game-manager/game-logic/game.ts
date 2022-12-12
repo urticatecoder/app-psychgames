@@ -16,7 +16,11 @@ export abstract class AGame {
 
   abstract getState(player: PlayerModel.Id): GameModel.State;
 
-  abstract pushToDatabase(selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number): void;
+  abstract pushToDatabase(
+    selections: Map<string, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number} | (GameTwoModel.TokenDistribution & {decisionTime: number})>, 
+    teamResults?: GameTwoModel.TeamResults, 
+    receiptTurnNumber?: number
+  ): void;
   
   abstract handleBots(inactivePlayersList: PlayerModel.Id[]): void;
 
@@ -44,7 +48,11 @@ export class Game extends AGame {
     ) => void,
     private destroyGame: () => void,
     public constants: GameConstants,
-    public databaseStoreCallback: (selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) => void,
+    public databaseStoreCallback: (
+      selections: Map<string, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number} | (GameTwoModel.TokenDistribution & {decisionTime: number})>, 
+      teamResults?: GameTwoModel.TeamResults, 
+      receiptTurnNumber?: number
+    ) => void,
     public handleBotsCallback: (inactivePlayersList: PlayerModel.Id[]) => void
   ) {
     super();
@@ -116,7 +124,11 @@ export class Game extends AGame {
     return [...this.playerMap.values()];
   }
 
-  pushToDatabase(selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) {
+  pushToDatabase(
+    selections: Map<string, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number} | (GameTwoModel.TokenDistribution & {decisionTime: number})>, 
+    teamResults?: GameTwoModel.TeamResults, 
+    receiptTurnNumber?: number
+  ) {
     this.databaseStoreCallback(selections, teamResults, receiptTurnNumber);
   }
 

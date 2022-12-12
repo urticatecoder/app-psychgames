@@ -56,6 +56,7 @@ describe("game one", () => {
     type: "game-one_turn",
     round: 0,
     playersSelected: selectedPlayers,
+    decisionTime: -1,
   });
 
   beforeEach(() => {

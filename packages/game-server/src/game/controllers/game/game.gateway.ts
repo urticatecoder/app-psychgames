@@ -28,7 +28,13 @@ function createValidationPipe() {
     forbidNonWhitelisted: true,
   });
 }
-@WebSocketGateway({ namespace: "game" })
+@WebSocketGateway({ 
+  allowEIO3: true, // needed for compatibility between socket.io and socket.io-client
+  cors: {
+      origin: "http://localhost:3000/",
+      credentials: true
+  }
+})
 export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
   constructor(private gameManager: GameManagerService) {}
 

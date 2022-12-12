@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const gameOneSchema = new mongoose.Schema({
     experimentID: String,
     experimentStartTime: String,
-    //submissionTime: String,
+    decisionTime: String,
     roundStartTime: String,
     roundEndTime: String,
     playerID: String,
@@ -24,7 +24,7 @@ const gameOneSchema = new mongoose.Schema({
 const gameTwoSchema = new mongoose.Schema({
     experimentID: String,
     experimentStartTime: String,
-    //submissionTime: String,
+    decisionTime: String,
     roundStartTime: String,
     roundEndTime: String,
     playerID: String,

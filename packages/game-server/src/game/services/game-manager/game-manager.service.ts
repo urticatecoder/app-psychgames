@@ -14,6 +14,9 @@ import { stat } from "fs";
 // TODO: test and clean up this mess; I was too tired on the first write
 type GameID = string;
 type SocketID = string;
+type GameOneSelection = {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number};
+type GameTwoSelection = GameTwoModel.TokenDistribution & {decisionTime: number};
+
 @Injectable()
 export class GameManagerService {
   private games: ManagedGame[];
@@ -76,7 +79,7 @@ export class GameManagerService {
         () => this.endGame(gameID),
         // Here is where we can change game parameters per game
         DefaultGameConstants,
-        (selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) => 
+        (selections: Map<string, GameOneSelection | GameTwoSelection>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) => 
           this.pushToDatabase(gameID, selections, teamResults, receiptTurnNumber),
         (inactivePlayersList: PlayerModel.Id[]) => this.handleBots(gameID, inactivePlayersList)
       ),
@@ -227,7 +230,7 @@ export class GameManagerService {
     }
   }
 
-  private pushToDatabase(gameID: string, selections: Map<string, Set<PlayerModel.Id> | GameTwoModel.TokenDistribution>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) {
+  private pushToDatabase(gameID: string, selections: Map<string, GameOneSelection | GameTwoSelection>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) {
     const managedGame = this.getGameById(gameID);
     if (!managedGame) {
       throw new Error(
@@ -256,13 +259,14 @@ export class GameManagerService {
         await GameOneDataModel.create({
           experimentID: managedGame.id,
           experimentStartTime: experimentTime,
+          decisionTime: selections.get(playerId)?.decisionTime,
           roundStartTime: state.roundStartTime,
           roundEndTime: state.roundEndTime,
           playerID: playerId,
           prolificID: managedGame.prolificMap.get(playerId),
           turnNumber: state.round,
-          selectedIDOne: Array.from(<Set<PlayerModel.Id>>selections.get(playerId))[0] ? Array.from(<Set<PlayerModel.Id>>selections.get(playerId))[0] : "none",
-          selectedIDTwo: Array.from(<Set<PlayerModel.Id>>selections.get(playerId))[1] ? Array.from(<Set<PlayerModel.Id>>selections.get(playerId))[1] : "none",
+          selectedIDOne: Array.from((<GameOneSelection> selections.get(playerId)).selectedPlayers)[0] ? Array.from((<GameOneSelection> selections.get(playerId)).selectedPlayers)[0] : "none",
+          selectedIDTwo: Array.from((<GameOneSelection> selections.get(playerId)).selectedPlayers)[1] ? Array.from((<GameOneSelection> selections.get(playerId)).selectedPlayers)[1] : "none",
           madeByBot: botMap.get(playerId) == "not bot"? false : true,
           oldLocation: state.bonusGroups[0].filter(player => player.id == playerId)[0].position,
           newLocation: state.bonusGroups[state.bonusGroups.length - 1].filter(player => player.id == playerId)[0].position,
@@ -281,14 +285,15 @@ export class GameManagerService {
         await GameTwoDataModel.create({
           experimentID: managedGame.id,
           experimentStartTime: experimentTime,
+          decisionTime: selections.get(playerId)?.decisionTime,
           roundStartTime: state.roundStartTime,
           roundEndTime: state.roundEndTime,
           playerID: playerId,
           prolificID: managedGame.prolificMap.get(playerId),
           turnNumber: state.round,
-          keepTokens: (<GameTwoModel.TokenDistribution> selections.get(playerId)!).keep,
-          investTokens: (<GameTwoModel.TokenDistribution> selections.get(playerId)!).invest,
-          competeTokens: (<GameTwoModel.TokenDistribution> selections.get(playerId)!).compete,
+          keepTokens: (<GameTwoSelection> selections.get(playerId)!).keep,
+          investTokens: (<GameTwoSelection> selections.get(playerId)!).invest,
+          competeTokens: (<GameTwoSelection> selections.get(playerId)!).compete,
           investPayoff: state.investCoefficient,
           competePayoff: state.competeCoefficient,
           madeByBot: botMap.get(playerId) == "not bot"? false : true,

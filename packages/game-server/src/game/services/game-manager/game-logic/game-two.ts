@@ -3,7 +3,7 @@ import { getRandomItem } from "@dpg/utils";
 import { FinalResults } from "./final-results.js";
 import { AGame, GameInstance, GameError } from "./game.js";
 
-type Selections = Map<PlayerModel.Id, GameTwoModel.TokenDistribution>;
+type Selections = Map<PlayerModel.Id, GameTwoModel.TokenDistribution & {decisionTime: number}>;
 type PlayerResults = Map<PlayerModel.Id, GameTwoModel.PlayerResults>;
 
 export class GameTwo implements GameInstance {
@@ -45,7 +45,13 @@ export class GameTwo implements GameInstance {
 
   submitAction(playerId: string, action: GameTwoModel.Turn): void {
     this.validateAction(playerId, action);
-    this.selections.set(playerId, action.tokenDistribution);
+    let actionWithTime = {
+      keep: action.tokenDistribution.keep,
+      invest: action.tokenDistribution.invest,
+      compete: action.tokenDistribution.compete,
+      decisionTime: action.decisionTime,
+    }
+    this.selections.set(playerId, actionWithTime);
   }
 
   private validateAction(playerId: string, action: GameTwoModel.Turn) {
@@ -153,11 +159,12 @@ export class GameTwo implements GameInstance {
     };
     this.playerResults = playerResults;
 
-    //this.selections.clear();
+    
 
     if (this.isGameOver()) {
       this.endGame();
     } else {
+      this.selections.clear();
       this.beginRound();
     }
   }
@@ -228,6 +235,7 @@ export class GameTwo implements GameInstance {
         invest: tokens[1],
         keep: tokens[2],
       },
+      decisionTime: -1,
     });
   }
 

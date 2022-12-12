@@ -35,6 +35,7 @@ describe("game 2", () => {
         type: "game-two_turn",
         round: 0,
         tokenDistribution: tokenDist,
+        decisionTime: -1,
     });
 
     // Generate a random distribution of tokens for a TokenDistribution object
@@ -50,23 +51,55 @@ describe("game 2", () => {
         };
     }
 
+    const areEquivalentActions: (actionOne: GameTwoModel.Turn, actionTwo: GameTwoModel.TokenDistribution) => boolean = (actionOne: GameTwoModel.Turn, actionTwo: GameTwoModel.TokenDistribution) => {
+        if (actionOne.tokenDistribution.keep != actionTwo.keep) {
+            return false;
+        }  else if (actionOne.tokenDistribution.compete != actionTwo.compete) {
+            return false;
+        } else if (actionOne.tokenDistribution.invest != actionTwo.invest) {
+            return false;
+        }
+
+        return true;
+    }
+
     // isWellFormed() checks if gameTwo.selections is properly formed after submitting actions for each of the six players 
     const isWellFormed = (actions: GameTwoModel.Turn[]) => {
         let selections = gameTwo.getSelections();
 
         if (selections.size != PLAYERS_PER_GAME) {
+            console.log("qwert");
             return false;
         }
 
         for (let i = 0; i < 3; i++) {
-            if (selections.get(winners[i]) != actions[i].tokenDistribution) {
-                return false
+            let playerAction = selections.get(winners[i])!;
+            let tokens = {
+                compete: playerAction.compete,
+                keep: playerAction.keep,
+                invest: playerAction.invest,
+            }
+                
+            if (!areEquivalentActions(actions[i], tokens)) {
+                console.log(tokens);
+                console.log(actions[i].tokenDistribution);
+                
+                console.log("1234");
+                return false;
             }
         }
         
         for (let i = 0; i < 3; i++) {
-            if (selections.get(losers[i]) != actions[i + 3].tokenDistribution) {
-                return false
+            let playerAction = selections.get(losers[i])!;
+            let tokens = {
+                compete: playerAction.compete,
+                keep: playerAction.keep,
+                invest: playerAction.invest,
+            }
+
+            if (!areEquivalentActions(actions[i + 3], tokens)) {
+                console.log("asdf");
+                return false;
             }
         }
 
@@ -90,7 +123,6 @@ describe("game 2", () => {
                 }
             } else {
                 if (game.getState(losers[i - 3]).teamResults?.loserTeam.competePenalty != winningTeamCompeteTotal * competeCoeff) {
-                    console.log("b");
                     return false;
                 }
             }
@@ -172,7 +204,7 @@ describe("game 2", () => {
             jest.runOnlyPendingTimers();
             
             expect(
-                gameTwo.getSelections().size
+                gameTwo.playerResults?.size
             ).not.toEqual(0);
         });
     

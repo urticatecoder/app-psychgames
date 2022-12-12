@@ -12,7 +12,7 @@ const LOSE_POSITION = -1;
 const START_POSITION = 0;
 const MAX_SELECTIONS = 2;
 
-type Selections = Map<PlayerModel.Id, Set<PlayerModel.Id>>;
+type Selections = Map<PlayerModel.Id, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number}>;
 type BonusGroup = GameOneModel.PlayerPosition[];
 
 /**
@@ -46,7 +46,14 @@ export class GameOne implements GameInstance {
   submitAction(playerId: string, action: GameOneModel.Turn): void {
     // Add database stuff here to store current selections before they are updated/overriden
     this.validateAction(playerId, action);
-    this.selections.set(playerId, new Set(action.playersSelected));
+    let playersSelected = new Set(action.playersSelected);
+    let playersSelectedWithTime = {
+      selectedPlayers: playersSelected,
+      decisionTime: action.decisionTime,
+    }
+
+
+    this.selections.set(playerId, playersSelectedWithTime);
   }
 
   private get currentPositions() {
@@ -162,11 +169,10 @@ export class GameOne implements GameInstance {
 
     this.game.pushToDatabase(this.selections);
 
-    //this.selections.clear();
-
     if (this.isGameOver()) {
       this.endGame();
     } else {
+      this.selections.clear();
       this.beginRound();
     }
   }
@@ -203,6 +209,7 @@ export class GameOne implements GameInstance {
       type: "game-one_turn",
       round: this.state.round,
       playersSelected: [p1, p2],
+      decisionTime: -1,
     });
   }
 
@@ -422,10 +429,12 @@ function limitPosition(position: number) {
 function makeDoubleGroups(selections: Selections) {
   const doubleGroups: PlayerModel.Id[][] = [];
 
-  selections.forEach((playersSelected, playerID) => {
+  selections.forEach((action, playerID) => {
     // Check each player selection to see if it was reciprocated
+    let playersSelected = action.selectedPlayers;
+
     playersSelected.forEach((otherPlayerID) => {
-      if (selections.get(otherPlayerID)?.has(playerID)) {
+      if (selections.get(otherPlayerID)?.selectedPlayers.has(playerID)) {
         // If it was, we have a doublet with this player and the other player
         const doublet = [playerID, otherPlayerID];
 
@@ -448,17 +457,19 @@ function makeDoubleGroups(selections: Selections) {
 function makeTripleGroups(selections: Selections) {
   const tripleGroups: PlayerModel.Id[][] = [];
 
-  selections.forEach((playersSelected, playerID) => {
+  selections.forEach((action, playerID) => {
+    let playersSelected = action.selectedPlayers;
+
     // Check for a strongly connected triple
     const otherPlayers = Array.from(playersSelected.values());
     const op1 = otherPlayers[0];
     const op2 = otherPlayers[1];
 
     const isTriple =
-      selections.get(op1)?.has(playerID) &&
-      selections.get(op1)?.has(op2) &&
-      selections.get(op2)?.has(playerID) &&
-      selections.get(op2)?.has(op1);
+      selections.get(op1)?.selectedPlayers.has(playerID) &&
+      selections.get(op1)?.selectedPlayers.has(op2) &&
+      selections.get(op2)?.selectedPlayers.has(playerID) &&
+      selections.get(op2)?.selectedPlayers.has(op1);
 
     if (isTriple) {
       const triplet = [playerID, op1, op2];
@@ -481,7 +492,10 @@ function makeTripleGroups(selections: Selections) {
 function countSingleSelections(selections: Selections) {
   const singleSelectionMap = new Map<PlayerModel.Id, number>();
 
-  selections.forEach((playersSelected) => {
+  selections.forEach((action) => {
+
+    let playersSelected = action.selectedPlayers;
+
     playersSelected.forEach((playerSelected) => {
       // increment the count of the player selected
       singleSelectionMap.set(

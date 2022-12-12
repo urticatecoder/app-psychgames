@@ -58,6 +58,8 @@ export class GameOneTurnRequest extends Round {
 
   @IsUUID("4", { each: true })
   playersSelected!: PlayerModel.Id[];
+
+  decisionTime: number;
 }
 
 class TokenDistribution implements GameTwoModel.TokenDistribution {
@@ -81,6 +83,8 @@ export class GameTwoTurnRequest extends Round {
   @ValidateNested()
   @Type(() => TokenDistribution)
   tokenDistribution!: TokenDistribution;
+
+  decisionTime: number;
 }
 
 export const requestTypes: { [key: string]: ClassConstructor<unknown> } = {
