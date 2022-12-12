@@ -5,7 +5,7 @@
   "author": "Dominic Martinez",
   "private": true,
   "license": "UNLICENSED",
-  "type": "module",
+  "type": "commonjs",
   "exports": {
     ".": "./dist/index.js",
     "./package.json": "./package.json"

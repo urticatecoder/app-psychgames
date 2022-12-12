@@ -234,7 +234,7 @@ export class GameManagerService {
     const managedGame = this.getGameById(gameID);
     if (!managedGame) {
       throw new Error(
-        `attempted to push to data base for gameID ${gameID}, but that is not a currently managed game`
+        `attempted to push to database for gameID ${gameID}, but that is not a currently managed game`
       )
     }
     const experimentTime = managedGame.gameCreationTime;
