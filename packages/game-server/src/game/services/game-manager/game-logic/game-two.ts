@@ -179,8 +179,13 @@ export class GameTwo implements GameInstance {
       const teamResult = isWinner
         ? teamResults.winnerTeam
         : teamResults.loserTeam;
+
+      const otherTeamResult = isWinner
+        ? teamResults.loserTeam
+        : teamResults.winnerTeam;
+      
       const playerTokens =
-        selection.keep + teamResult.investBonus - teamResult.competePenalty;
+        selection.keep + teamResult.investBonus + otherTeamResult.competePenalty - teamResult.competePenalty;
       const playerResult = {
         netTokens: playerTokens,
         netMoney: playerTokens * this.constants.tokenDollarValue,

@@ -167,11 +167,11 @@ describe("game 2", () => {
         
         for (let i = 0; i < PLAYERS_PER_GAME; i++) {
             if (i < 3) {
-                if (listOfActions[i].tokenDistribution.keep + winningTeamTotal!.investBonus - winningTeamTotal!.competePenalty != game.getState(winners[i]).playerResults?.netTokens) {
+                if (listOfActions[i].tokenDistribution.keep + winningTeamTotal!.investBonus + losingTeamTotal!.competePenalty - winningTeamTotal!.competePenalty != game.getState(winners[i]).playerResults?.netTokens) {
                     return false;
                 }
             } else {
-                if (listOfActions[i].tokenDistribution.keep + losingTeamTotal!.investBonus - losingTeamTotal!.competePenalty != game.getState(losers[i-3]).playerResults?.netTokens) {
+                if (listOfActions[i].tokenDistribution.keep + losingTeamTotal!.investBonus + winningTeamTotal!.competePenalty - losingTeamTotal!.competePenalty != game.getState(losers[i-3]).playerResults?.netTokens) {
                     return false;
                 }
             }
