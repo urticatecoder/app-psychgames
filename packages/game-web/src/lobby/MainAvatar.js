@@ -48,7 +48,9 @@ function MainAvatar(props) {
 function getSelectedAvatar(selectedIndex, setSelectedIndex) {
   // No avatar has been selected.
   if (selectedIndex < 0) {
-    let randomIndex = Math.floor(Math.random() * 24);
+    console.log("no avatar selected");
+    // let randomIndex = Math.floor(Math.random() * 24);
+    let randomIndex = 1;
     setSelectedIndex(randomIndex);
     return MainPlayerImages.images[randomIndex];
     // Images
