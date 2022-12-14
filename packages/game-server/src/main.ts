@@ -8,4 +8,4 @@ async function bootstrap() {
 }
 bootstrap();
 
-mongoose.connect("mongodb+srv://keatonh:absolutelynot@cluster0.lw9inwu.mongodb.net/?retryWrites=true&w=majority");
+//mongoose.connect("mongodb+srv://keatonh:absolutelynot@cluster0.lw9inwu.mongodb.net/?retryWrites=true&w=majority");
