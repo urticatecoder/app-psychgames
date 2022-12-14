@@ -60,12 +60,13 @@ function App(props) {
 
     socket.on("connect", () => {
       if (props.cookies.get("id")) {
+        setRejoined(true);
         console.log("already had id: ", props.cookies.get("id"));
         setId(props.cookies.get("id"));
         const enterGameRequest = {id: props.cookies.get("id")};
         socket.emit("enter-game", enterGameRequest, (response) => {
           console.log("enter game response: ", response);
-          setRejoined(response.inGame);
+          // setRejoined(response.inGame);
         });
       } else {
         socket.emit("enter-game", null, (response) => {
