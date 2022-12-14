@@ -1,19 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.fef282dd.chunk.css",
-    "main.js": "/static/js/main.0f470e7e.chunk.js",
-    "main.js.map": "/static/js/main.0f470e7e.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.ece1a8b8.js",
-    "runtime-main.js.map": "/static/js/runtime-main.ece1a8b8.js.map",
-    "static/css/2.c8271910.chunk.css": "/static/css/2.c8271910.chunk.css",
-    "static/js/2.ca2efe51.chunk.js": "/static/js/2.ca2efe51.chunk.js",
-    "static/js/2.ca2efe51.chunk.js.map": "/static/js/2.ca2efe51.chunk.js.map",
+    "main.css": "/static/css/main.17680c87.chunk.css",
+    "main.js": "/static/js/main.25d6a3a7.chunk.js",
+    "main.js.map": "/static/js/main.25d6a3a7.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.8b4515ca.js",
+    "runtime-main.js.map": "/static/js/runtime-main.8b4515ca.js.map",
+    "static/js/2.0c214c14.chunk.js": "/static/js/2.0c214c14.chunk.js",
+    "static/js/2.0c214c14.chunk.js.map": "/static/js/2.0c214c14.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.5e0b0d134da9455c14751990673b9a34.js": "/precache-manifest.5e0b0d134da9455c14751990673b9a34.js",
+    "precache-manifest.4617445f0d467a004c89f00b68e4dd5f.js": "/precache-manifest.4617445f0d467a004c89f00b68e4dd5f.js",
     "service-worker.js": "/service-worker.js",
-    "static/css/2.c8271910.chunk.css.map": "/static/css/2.c8271910.chunk.css.map",
-    "static/css/main.fef282dd.chunk.css.map": "/static/css/main.fef282dd.chunk.css.map",
-    "static/js/2.ca2efe51.chunk.js.LICENSE.txt": "/static/js/2.ca2efe51.chunk.js.LICENSE.txt",
+    "static/css/main.17680c87.chunk.css.map": "/static/css/main.17680c87.chunk.css.map",
+    "static/js/2.0c214c14.chunk.js.LICENSE.txt": "/static/js/2.0c214c14.chunk.js.LICENSE.txt",
     "static/media/beige-triangle.png": "/static/media/beige-triangle.5c4ad83e.png",
     "static/media/black-eye.png": "/static/media/black-eye.696cd106.png",
     "static/media/blue-arrows.png": "/static/media/blue-arrows.e5870f16.png",
@@ -45,10 +43,9 @@
     "static/media/yellow-crosshair.png": "/static/media/yellow-crosshair.881a915c.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.ece1a8b8.js",
-    "static/css/2.c8271910.chunk.css",
-    "static/js/2.ca2efe51.chunk.js",
-    "static/css/main.fef282dd.chunk.css",
-    "static/js/main.0f470e7e.chunk.js"
+    "static/js/runtime-main.8b4515ca.js",
+    "static/js/2.0c214c14.chunk.js",
+    "static/css/main.17680c87.chunk.css",
+    "static/js/main.25d6a3a7.chunk.js"
   ]
 }

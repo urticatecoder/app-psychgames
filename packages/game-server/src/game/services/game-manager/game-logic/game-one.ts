@@ -237,7 +237,7 @@ export class GameOne implements GameInstance {
       .slice(sortedPositions.length / 2)
       .map((pos) => pos.id);
 
-    this.game.goToGame(new GameTwoTutorial(this.game, losers, winners));
+    this.game.goToGame(new GameTwoTutorial(this.game, winners, losers));
   }
 }
 
