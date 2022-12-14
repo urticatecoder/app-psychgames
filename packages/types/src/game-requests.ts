@@ -8,8 +8,8 @@ import {
   IsUUID,
   ValidateNested,
 } from "class-validator";
-import type { GameTwoModel } from "./game.model";
-import type { PlayerModel } from "./player.model";
+import type { GameTwoModel } from "./game.model.js";
+import type { PlayerModel } from "./player.model.js";
 
 /** Game negotiation requests **/
 
@@ -58,6 +58,8 @@ export class GameOneTurnRequest extends Round {
 
   @IsUUID("4", { each: true })
   playersSelected!: PlayerModel.Id[];
+
+  decisionTime!: number;
 }
 
 class TokenDistribution implements GameTwoModel.TokenDistribution {
@@ -81,6 +83,8 @@ export class GameTwoTurnRequest extends Round {
   @ValidateNested()
   @Type(() => TokenDistribution)
   tokenDistribution!: TokenDistribution;
+
+  decisionTime!: number;
 }
 
 export const requestTypes: { [key: string]: ClassConstructor<unknown> } = {

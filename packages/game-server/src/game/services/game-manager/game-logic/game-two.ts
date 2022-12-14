@@ -1,12 +1,16 @@
 import { GameTwoModel, PlayerModel } from "@dpg/types";
 import { getRandomItem } from "@dpg/utils";
-import { AGame, GameError, GameInstance } from "./game.js";
+import { FinalResults } from "./final-results.js";
+import { AGame, GameInstance, GameError } from "./game.js";
 
-type Selections = Map<PlayerModel.Id, GameTwoModel.TokenDistribution>;
+type Selections = Map<PlayerModel.Id, GameTwoModel.TokenDistribution & {decisionTime: number}>;
 type PlayerResults = Map<PlayerModel.Id, GameTwoModel.PlayerResults>;
+
 export class GameTwo implements GameInstance {
   public state: GameTwoModel.State;
   public playerResults?: PlayerResults;
+  public finalPlayerResults?: PlayerResults;
+  public receiptRoundNumber: number;
   private selections: Selections;
   private roundTimeout: NodeJS.Timeout | undefined;
 
@@ -16,6 +20,7 @@ export class GameTwo implements GameInstance {
     winners: PlayerModel.Id[]
   ) {
     this.selections = new Map();
+    this.receiptRoundNumber = Math.floor(Math.random() * (this.game.constants.gameTwo.maxRounds - 1)) + 1;
     this.state = this.createInitialState(losers, winners);
   }
 
@@ -33,44 +38,50 @@ export class GameTwo implements GameInstance {
   private get constants() {
     return this.game.constants.gameTwo;
   }
+  
+  public getSelections(): Selections {
+    return this.selections;
+  }
 
   submitAction(playerId: string, action: GameTwoModel.Turn): void {
     this.validateAction(playerId, action);
-    this.selections.set(playerId, action.tokenDistribution);
+    let actionWithTime = {
+      keep: action.tokenDistribution.keep,
+      invest: action.tokenDistribution.invest,
+      compete: action.tokenDistribution.compete,
+      decisionTime: action.decisionTime,
+    }
+    this.selections.set(playerId, actionWithTime);
   }
 
   private validateAction(playerId: string, action: GameTwoModel.Turn) {
     // The action should be of the correct type
     // TODO: Factor out this common validation
     if (action.type != "game-two_turn") {
-      throw new GameError(
-        `The action type ${action.type} does not match the expected type game-two_turn`,
-        playerId
+      throw new Error(
+        `The action type ${action.type} does not match the expected type game-two_turn`
       );
     }
 
     // The action must be for the current round
     // TODO: Factor out this common validation
     if (action.round !== this.state.round) {
-      throw new GameError(
+      throw new Error(
         `Expected an action for round ${this.state.round}, recieved ${action.round}. 
         This may be because you submitted an action just as the round advanced, 
-        in which case this error is safe.`,
-        playerId
+        in which case this error is safe.`
       );
     }
 
     // The submitted number of tokens must be <= the tokens given per round
-    // TODO: Validate that each token value is positive
     const numTokens =
       action.tokenDistribution.compete +
       action.tokenDistribution.invest +
       action.tokenDistribution.keep;
     if (numTokens > this.constants.tokensPerRound) {
-      throw new GameError(
+      throw new Error(
         `The number of submitted tokens ${numTokens} is greater than the maximum 
-        number of tokens per round, ${this.constants.tokensPerRound}`,
-        playerId
+        number of tokens per round, ${this.constants.tokensPerRound}`
       );
     }
   }
@@ -100,7 +111,7 @@ export class GameTwo implements GameInstance {
   }
 
   // TODO: Factor out this common pattern
-  private beginRound() {
+  public beginRound() {
     const roundStartTime = new Date();
     const roundEndTime = new Date(
       roundStartTime.getTime() + this.constants.roundTime(this.state.round)
@@ -129,6 +140,16 @@ export class GameTwo implements GameInstance {
     const teamResults = calculateTeamResults(this.state, this.selections);
     const playerResults = this.calculatePlayerResults(teamResults);
 
+    // This is called before state is updated here because when state is updated the invest and compete
+    // coefficients are reset to new random values. Since they need to be stored, I push to the database
+    // before the state update, and I also have to pass teamResults since it hasn't been added to state
+    // yet.
+    this.game.pushToDatabase(this.selections, teamResults, this.receiptRoundNumber);
+
+    if (this.state.round == this.receiptRoundNumber) {
+      this.finalPlayerResults = playerResults;
+    }
+
     this.state = {
       ...this.state,
       round: this.state.round + 1,
@@ -138,9 +159,12 @@ export class GameTwo implements GameInstance {
     };
     this.playerResults = playerResults;
 
+    
+
     if (this.isGameOver()) {
       this.endGame();
     } else {
+      this.selections.clear();
       this.beginRound();
     }
   }
@@ -155,8 +179,13 @@ export class GameTwo implements GameInstance {
       const teamResult = isWinner
         ? teamResults.winnerTeam
         : teamResults.loserTeam;
+
+      const otherTeamResult = isWinner
+        ? teamResults.loserTeam
+        : teamResults.winnerTeam;
+      
       const playerTokens =
-        selection.keep + teamResult.investBonus - teamResult.competePenalty;
+        selection.keep + teamResult.investBonus + otherTeamResult.competePenalty - teamResult.competePenalty;
       const playerResult = {
         netTokens: playerTokens,
         netMoney: playerTokens * this.constants.tokenDollarValue,
@@ -177,12 +206,16 @@ export class GameTwo implements GameInstance {
    * TODO: Factor out this common functionality
    */
   private handleInactivePlayers() {
+    let inactivePlayers: PlayerModel.Id[] = [];
+
     this.game.players.forEach((player) => {
       if (!this.selections.has(player)) {
         this.performBotMove(player);
-        // TODO: GameManager integration here
+        inactivePlayers.push(player);
       }
     });
+
+    this.game.handleBots(inactivePlayers);
   }
 
   private performBotMove(player: PlayerModel.Id) {
@@ -207,6 +240,7 @@ export class GameTwo implements GameInstance {
         invest: tokens[1],
         keep: tokens[2],
       },
+      decisionTime: -1,
     });
   }
 
@@ -215,7 +249,7 @@ export class GameTwo implements GameInstance {
   }
 
   private endGame() {
-    this.game.endGame();
+    this.game.goToGame(new FinalResults(this.game, this.finalPlayerResults!, this.state.winners, this.state.losers));
   }
 }
 
@@ -250,8 +284,7 @@ function calculateTeamResults(
     loserTeam: {
       totalTokenDistribution: loserTokenDistribution,
       investBonus: loserTokenDistribution.invest * state.investCoefficient,
-      competePenalty:
-        winnerTokenDistribution.compete * state.competeCoefficient,
+      competePenalty: winnerTokenDistribution.compete * state.competeCoefficient,
     },
   };
 }
@@ -280,3 +313,5 @@ function calculateTeamTokenDistribution(
     keep: totalKeepTokens,
   };
 }
+
+

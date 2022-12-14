@@ -1,9 +1,12 @@
 import { PLAYERS_PER_GAME } from "@dpg/constants";
-import { GameModel, PlayerModel } from "@dpg/types";
+import { GameModel, PlayerModel, GameTwoModel } from "@dpg/types";
+import { UnsupportedMediaTypeException } from "@nestjs/common";
 import { WsException } from "@nestjs/websockets";
 import { v4 as uuidv4 } from "uuid";
 import { GameConstants } from "../constants.js";
 import { Lobby } from "./lobby.js";
+import { GameOne } from "./game-one.js";
+import { GameTwo } from "./game-two.js";
 
 export abstract class AGame {
   abstract get constants(): GameConstants;
@@ -12,6 +15,14 @@ export abstract class AGame {
   abstract get playerMap(): Map<PlayerModel.Id, GameModel.Player>;
 
   abstract getState(player: PlayerModel.Id): GameModel.State;
+
+  abstract pushToDatabase(
+    selections: Map<string, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number} | (GameTwoModel.TokenDistribution & {decisionTime: number})>, 
+    teamResults?: GameTwoModel.TeamResults, 
+    receiptTurnNumber?: number
+  ): void;
+  
+  abstract handleBots(inactivePlayersList: PlayerModel.Id[]): void;
 
   abstract submitAction(
     playerID: PlayerModel.Id,
@@ -36,7 +47,13 @@ export class Game extends AGame {
       state: GameModel.State
     ) => void,
     private destroyGame: () => void,
-    public constants: GameConstants
+    public constants: GameConstants,
+    public databaseStoreCallback: (
+      selections: Map<string, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number} | (GameTwoModel.TokenDistribution & {decisionTime: number})>, 
+      teamResults?: GameTwoModel.TeamResults, 
+      receiptTurnNumber?: number
+    ) => void,
+    public handleBotsCallback: (inactivePlayersList: PlayerModel.Id[]) => void
   ) {
     super();
     /**
@@ -81,11 +98,17 @@ export class Game extends AGame {
 
   goToGame(game: GameInstance): void {
     this.currentGame = game;
+    if (this.currentGame instanceof GameOne || this.currentGame instanceof GameTwo) { 
+      this.currentGame.beginRound();
+    }
   }
 
   submitAction(playerID: PlayerModel.Id, action: GameModel.Action): void {
-    // TODO: validate playerID
-    // TODO: validate action data
+    // validate playerID
+    if (!this.playerMap.has(playerID)) {
+      throw new Error(`Tried to submit action for player ${playerID} but that player is not in this game.`)
+    }
+    // Action data validation is handled in the current game submitAction method
     this.currentGame.submitAction(playerID, action);
   }
 
@@ -99,6 +122,14 @@ export class Game extends AGame {
 
   get playerData(): GameModel.Player[] {
     return [...this.playerMap.values()];
+  }
+
+  pushToDatabase(
+    selections: Map<string, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number} | (GameTwoModel.TokenDistribution & {decisionTime: number})>, 
+    teamResults?: GameTwoModel.TeamResults, 
+    receiptTurnNumber?: number
+  ) {
+    this.databaseStoreCallback(selections, teamResults, receiptTurnNumber);
   }
 
   emitState() {
@@ -116,6 +147,10 @@ export class Game extends AGame {
     this.destroyGame();
   }
 
+  handleBots(inactivePlayersList: PlayerModel.Id[]) {
+    this.handleBotsCallback(inactivePlayersList);
+  }
+
   private makeState(gameState: GameModel.GameState) {
     const state: GameModel.State = {
       timestamp: new Date(),
@@ -128,9 +163,9 @@ export class Game extends AGame {
 }
 
 export class GameError extends WsException {
-  playerID: PlayerModel.Id;
+  private playerID: PlayerModel.Id;
 
-  constructor(message: string, playerId: PlayerModel.Id) {
+  constructor(message: string, playerId: string) {
     super(`${playerId}: ${message}`);
     this.playerID = playerId;
   }

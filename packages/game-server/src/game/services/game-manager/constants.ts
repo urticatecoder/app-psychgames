@@ -3,8 +3,11 @@
  */
 export type GameConstants = {
   lobbyTime: number;
+  gameOneTutorialTime: number;
+  gameTwoTutorialTime: number;
   gameOne: GameOneConstants;
   gameTwo: GameTwoConstants;
+  finalResultsProlificCode: string;
 };
 
 export type GameOneConstants = {
@@ -41,6 +44,8 @@ const s = 1000;
 
 export const DefaultGameConstants: GameConstants = {
   lobbyTime: 120 * s,
+  gameOneTutorialTime: 120 * s,
+  gameTwoTutorialTime: 195 * s,
   gameOne: {
     // TODO: change these to something sensible
     roundTime: (round: number) => {
@@ -48,7 +53,7 @@ export const DefaultGameConstants: GameConstants = {
       if (round === 1) return 20 * s;
       else return 15 * s;
     },
-    maxRounds: 10,
+    maxRounds: 35,
     positionChange: {
       // we arbitrarily bias position by 30% of their distance from the origin
       single: (round, position) => 0.05 * round * round + 0.1 + bias(position),
@@ -62,10 +67,12 @@ export const DefaultGameConstants: GameConstants = {
       if (round === 1) return 20 * s;
       else return 15 * s;
     },
-    maxRounds: 15,
+    maxRounds: 30,
     possibleInvestCoefficients: [0, 0.5, 1, 1.5, 2],
     possibleCompeteCoefficients: [0, 0.5, 1, 1.5, 2],
     tokensPerRound: 10,
     tokenDollarValue: 0.25,
   },
+
+  finalResultsProlificCode: "abcdefg",
 };

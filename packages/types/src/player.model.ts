@@ -1,7 +1,7 @@
 import type {
   EnterGameRequest as EGRClass,
   StartGameRequest as SGRClass,
-} from "./game-requests";
+} from "./game-requests.js";
 
 export namespace PlayerModel {
   /**

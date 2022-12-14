@@ -1,7 +1,7 @@
 import { GameModel, GameOneModel, PlayerModel } from "@dpg/types";
 import { GameOneConstants } from "../constants.js";
 import { AGame, GameError, GameInstance } from "./game.js";
-import { GameTwo } from "./game-two.js";
+import { GameTwoTutorial } from "./game-two-tutorial.js";
 import { getRandomItem } from "@dpg/utils";
 
 // These constants are here for readability, but modifying them
@@ -12,7 +12,7 @@ const LOSE_POSITION = -1;
 const START_POSITION = 0;
 const MAX_SELECTIONS = 2;
 
-type Selections = Map<PlayerModel.Id, Set<PlayerModel.Id>>;
+type Selections = Map<PlayerModel.Id, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number}>;
 type BonusGroup = GameOneModel.PlayerPosition[];
 
 /**
@@ -37,7 +37,6 @@ export class GameOne implements GameInstance {
   constructor(private game: AGame) {
     this.selections = new Map();
     this.state = this.createInitialState();
-    this.beginRound();
   }
 
   getState(player: PlayerModel.Id): GameModel.GameState {
@@ -45,8 +44,16 @@ export class GameOne implements GameInstance {
   }
 
   submitAction(playerId: string, action: GameOneModel.Turn): void {
+    // Add database stuff here to store current selections before they are updated/overriden
     this.validateAction(playerId, action);
-    this.selections.set(playerId, new Set(action.playersSelected));
+    let playersSelected = new Set(action.playersSelected);
+    let playersSelectedWithTime = {
+      selectedPlayers: playersSelected,
+      decisionTime: action.decisionTime,
+    }
+
+
+    this.selections.set(playerId, playersSelectedWithTime);
   }
 
   private get currentPositions() {
@@ -72,14 +79,14 @@ export class GameOne implements GameInstance {
 
     // The action must be for the current round
     // TODO: Factor out this common functionality
-    if (action.round !== this.state.round) {
+    /*if (action.round !== this.state.round) {
       throw new GameError(
         `Expected an action for round ${this.state.round}, recieved ${action.round}. 
         This may be because you submitted an action just as the round advanced, 
         in which case this error is safe.`,
         playerId
       );
-    }
+    }*/
 
     // The action must contain a maximum number of selections
     if (action.playersSelected.length > MAX_SELECTIONS) {
@@ -122,7 +129,7 @@ export class GameOne implements GameInstance {
   }
 
   // TODO: Factor out this common pattern
-  private beginRound() {
+  public beginRound() {
     const roundStartTime = new Date();
     const roundEndTime = new Date(
       roundStartTime.getTime() + this.constants.roundTime(this.state.round)
@@ -160,9 +167,12 @@ export class GameOne implements GameInstance {
       bonusGroups,
     };
 
+    this.game.pushToDatabase(this.selections);
+
     if (this.isGameOver()) {
       this.endGame();
     } else {
+      this.selections.clear();
       this.beginRound();
     }
   }
@@ -177,12 +187,16 @@ export class GameOne implements GameInstance {
    * TODO: Factor out this common functionality
    */
   private handleInactivePlayers() {
+    let inactivePlayers: PlayerModel.Id[] = [];
+
     this.game.players.forEach((player) => {
       if (!this.selections.has(player)) {
         this.performBotMove(player);
-        // TODO: GameManager integration here
+        inactivePlayers.push(player);
       }
     });
+
+    this.game.handleBots(inactivePlayers);
   }
 
   private performBotMove(player: PlayerModel.Id) {
@@ -195,6 +209,7 @@ export class GameOne implements GameInstance {
       type: "game-one_turn",
       round: this.state.round,
       playersSelected: [p1, p2],
+      decisionTime: -1,
     });
   }
 
@@ -222,7 +237,7 @@ export class GameOne implements GameInstance {
       .slice(sortedPositions.length / 2)
       .map((pos) => pos.id);
 
-    this.game.goToGame(new GameTwo(this.game, losers, winners));
+    this.game.goToGame(new GameTwoTutorial(this.game, losers, winners));
   }
 }
 
@@ -278,7 +293,8 @@ function makeBonusGroups(
     return selectionGroups.map((group) =>
       group.map((id) => {
         const currentPosition = getCurrentPosition(id, currentPositions);
-        const newPosition = currentPosition + bonusFn(round, currentPosition);
+        const previousPosition = getPreviousPosition(id, previousPositions);
+        const newPosition = currentPosition + bonusFn(round, previousPosition);
         const displayedPosition = limitPosition(newPosition);
         currentPositions.set(id, newPosition);
 
@@ -380,6 +396,19 @@ function getCurrentPosition(
   return position;
 }
 
+function getPreviousPosition(
+  id: PlayerModel.Id,
+  previousPositions: GameOneModel.PlayerPosition[]
+) {
+  for (let i = 0; i < previousPositions.length; i++) {
+    if (previousPositions[i].id == id) {
+      return previousPositions[i].position;
+    }
+  }
+
+  throw new Error(`Player ${id} not found in previous positions`);
+}
+
 function limit(num: number, lim1: number, lim2: number) {
   const max = Math.max(lim1, lim2);
   const min = Math.min(lim1, lim2);
@@ -395,13 +424,17 @@ function limitPosition(position: number) {
 // theoretically write an algorithm that detects complete graphs of a specific
 // size? Yes. Am I going to do that? No. You can blame me when this is used for
 // some experiment that wants to do larger games and you have to rewrite this.
+
+// This returns an array of arrays of length 2; it contains the doubles formed from selections.
 function makeDoubleGroups(selections: Selections) {
   const doubleGroups: PlayerModel.Id[][] = [];
 
-  selections.forEach((playersSelected, playerID) => {
+  selections.forEach((action, playerID) => {
     // Check each player selection to see if it was reciprocated
+    let playersSelected = action.selectedPlayers;
+
     playersSelected.forEach((otherPlayerID) => {
-      if (selections.get(otherPlayerID)?.has(playerID)) {
+      if (selections.get(otherPlayerID)?.selectedPlayers.has(playerID)) {
         // If it was, we have a doublet with this player and the other player
         const doublet = [playerID, otherPlayerID];
 
@@ -420,20 +453,23 @@ function makeDoubleGroups(selections: Selections) {
   return doubleGroups;
 }
 
+// This returns an array of arrays of length 3; it contains the triples formed from selections.
 function makeTripleGroups(selections: Selections) {
   const tripleGroups: PlayerModel.Id[][] = [];
 
-  selections.forEach((playersSelected, playerID) => {
+  selections.forEach((action, playerID) => {
+    let playersSelected = action.selectedPlayers;
+
     // Check for a strongly connected triple
     const otherPlayers = Array.from(playersSelected.values());
     const op1 = otherPlayers[0];
     const op2 = otherPlayers[1];
 
     const isTriple =
-      selections.get(op1)?.has(playerID) &&
-      selections.get(op1)?.has(op2) &&
-      selections.get(op2)?.has(playerID) &&
-      selections.get(op2)?.has(op1);
+      selections.get(op1)?.selectedPlayers.has(playerID) &&
+      selections.get(op1)?.selectedPlayers.has(op2) &&
+      selections.get(op2)?.selectedPlayers.has(playerID) &&
+      selections.get(op2)?.selectedPlayers.has(op1);
 
     if (isTriple) {
       const triplet = [playerID, op1, op2];
@@ -451,15 +487,20 @@ function makeTripleGroups(selections: Selections) {
   return tripleGroups;
 }
 
+// This function returns a map whose keys are all the players that were selected,
+// and whose values are the number of times they were selected.
 function countSingleSelections(selections: Selections) {
   const singleSelectionMap = new Map<PlayerModel.Id, number>();
 
-  selections.forEach((playersSelected) => {
+  selections.forEach((action) => {
+
+    let playersSelected = action.selectedPlayers;
+
     playersSelected.forEach((playerSelected) => {
       // increment the count of the player selected
       singleSelectionMap.set(
         playerSelected,
-        singleSelectionMap.get(playerSelected) ?? 0 + 1
+        (singleSelectionMap.get(playerSelected) ?? 0) + 1
       );
     });
   });

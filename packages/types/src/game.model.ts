@@ -2,8 +2,8 @@ import type {
   GameOneTurnRequest,
   GameTwoTurnRequest,
   LobbyAvatarRequest,
-} from "./game-requests";
-import type { PlayerModel } from "./player.model";
+} from "./game-requests.js";
+import type { PlayerModel } from "./player.model.js";
 
 type IdObj = { id: PlayerModel.Id };
 export namespace GameModel {
@@ -27,7 +27,10 @@ export namespace GameModel {
   export type GameState =
     | LobbyModel.State
     | GameOneModel.State
-    | GameTwoModel.State;
+    | GameTwoModel.State
+    | GameOneTutorialModel.State
+    | GameTwoTutorialModel.State
+    | FinalResultsModel.State;
 
   /**
    * Encodes the entire game state; the client should render
@@ -52,6 +55,32 @@ export namespace LobbyModel {
     type: "lobby";
     lobbyEndTime: Date | string;
   };
+}
+
+export namespace GameOneTutorialModel {
+  export type State = {
+    type: "game-one-tutorial";
+    tutorialEndTime: Date | string;
+  }
+}
+
+export namespace GameTwoTutorialModel {
+  export type State = {
+    type: "game-two-tutorial";
+    tutorialEndTime: Date | string;
+    winners: PlayerModel.Id[];
+    losers: PlayerModel.Id[];
+  }
+}
+
+export namespace FinalResultsModel {
+  export type State = {
+    type: "final-results";
+    playerResults?: GameTwoModel.PlayerResults;
+    winners: PlayerModel.Id[];
+    losers: PlayerModel.Id[];
+    prolificCode: string;
+  }
 }
 
 export namespace GameOneModel {
