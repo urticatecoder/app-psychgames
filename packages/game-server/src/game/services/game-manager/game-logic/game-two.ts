@@ -65,13 +65,13 @@ export class GameTwo implements GameInstance {
 
     // The action must be for the current round
     // TODO: Factor out this common validation
-    if (action.round !== this.state.round) {
-      throw new Error(
-        `Expected an action for round ${this.state.round}, recieved ${action.round}. 
-        This may be because you submitted an action just as the round advanced, 
-        in which case this error is safe.`
-      );
-    }
+    // if (action.round !== this.state.round) {
+    //   throw new Error(
+    //     `Expected an action for round ${this.state.round}, recieved ${action.round}. 
+    //     This may be because you submitted an action just as the round advanced, 
+    //     in which case this error is safe.`
+    //   );
+    // }
 
     // The submitted number of tokens must be <= the tokens given per round
     const numTokens =
