@@ -11,6 +11,10 @@ const styles = {
     position: "absolute",
     bottom: "35vh",
   },
+  innerDiv: {
+    position: "relative",
+    fontSize: 25
+  },
   barFormatting: {
     position: "relative",
     borderRadius: 20,
@@ -43,14 +47,31 @@ function ResourceBar(props) {
   const { classes } = props;
   let background = getBackgroundColor(props.resource + BAR);
   let marginL = getMarginLeft(props.resource);
-  return (
-    <div className={classes.outerDiv}>
-      <animated.div
-        className={classes.barFormatting}
-        style={{ ...spring, backgroundColor: background, left: marginL }}
-      />
-    </div>
-  );
+
+  if (props.current == 0 || props.to == 0) {
+    return (
+      <div className={classes.outerDiv}>
+        <animated.div
+          className={classes.barFormatting}
+          style={{ ...spring, backgroundColor: background, left: marginL }}
+        >
+        </animated.div>
+      </div>
+    );
+  } else {
+    return (
+      <div className={classes.outerDiv}>
+        <animated.div
+          className={classes.barFormatting}
+          style={{ ...spring, backgroundColor: background, left: marginL }}
+        >
+          <div className={classes.innerDiv}>
+            {props.current}
+          </div>
+        </animated.div>
+      </div>
+    );
+  }
 }
 
 export default withStyles(styles)(ResourceBar);

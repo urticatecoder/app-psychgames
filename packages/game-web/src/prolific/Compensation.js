@@ -11,7 +11,7 @@ const FULL_DIV = "fullDiv";
 const ITALIC_FONT = "italic";
 const THANK_YOU_MESSAGE = "Thank you for participating!";
 
-const PAYOUT_MESSAGE = "Your receipt is shown below."
+const PAYOUT_MESSAGE = "You earned the following bonus money:"
 const BUTTON_MESSAGE = 'Get Prolific Code';
 
 const BUTTON_COLOR = "secondary";

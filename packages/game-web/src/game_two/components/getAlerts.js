@@ -2,8 +2,8 @@ import React from "react";
 import Alert from "@material-ui/lab/Alert";
 import { Snackbar } from "@material-ui/core";
 
-const NOT_ENOUGH_TOKENS_MESSAGE = "You do not have any tokens to invest.";
-const NEGATIVE_TOKENS_MESSAGE = "You cannot remove tokens before adding them.";
+const NOT_ENOUGH_TOKENS_MESSAGE = "You do not have any tokens left!";
+const NEGATIVE_TOKENS_MESSAGE = "You cannot remove tokens before adding them!";
 
 const OPEN_MESSAGE = true;
 const ERROR_MESSAGE_LENGTH = 2000;
@@ -23,15 +23,21 @@ const ALERT_LEVEL = "error";
  * @author Eric Doppelt
  */
 function getAlerts(
+    tokensRemaining,
+    notAllInvested,
+    setNotAllInvested,
     notEnoughTokens,
     setNotEnoughTokens,
     negativeTokens,
     setNegativeTokens
   ) {
     if (notEnoughTokens) {
+      console.log("not enough tokens, show alert");
       return getAlertComponent(NOT_ENOUGH_TOKENS_MESSAGE, setNotEnoughTokens);
     } else if (negativeTokens) {
       return getAlertComponent(NEGATIVE_TOKENS_MESSAGE, setNegativeTokens);
+    } else if (notAllInvested) {
+      return getAlertComponent(`You still have ${tokensRemaining} tokens left to distribute. Distribute them and press CONFIRM! before time's up!`, setNotAllInvested, true);
     }
   }
   
@@ -40,7 +46,7 @@ function getAlerts(
       <Snackbar
         open={OPEN_MESSAGE}
         autoHideDuration={ERROR_MESSAGE_LENGTH}
-        onClose={() => setClosed(CLOSED_MESSAGE)}
+        // onClose={() => setClosed(CLOSED_MESSAGE)}
         anchorOrigin={{
           vertical: ERROR_VERTICALITY,
           horizontal: ERROR_HORIZONTAL,

@@ -46,7 +46,6 @@ function handleLogin(props) {
     socket.emit("start-game", startGameRequest, (response) => {
         console.log("start game response: ", response);
         props.setId(response.id);
-        // props.cookies.set("id", response.id, { path: "/" });
     });
 }
 

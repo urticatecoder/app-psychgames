@@ -39,10 +39,6 @@ function ConfirmButton(props) {
   let margin = getMarginLeft(props.windowWidth);
   let width = getWidth(props.windowWidth);
 
-  if (props.submit) {
-    sendDecisions(props);
-  }
-
   return (
     <Button
       className={classes.confirmButton}
@@ -51,7 +47,7 @@ function ConfirmButton(props) {
       color={PRIMARY_COLOR}
       disabled = {props.disabled}
       onClick={() => {
-        handleSubmission(props.disableButton, props.showWaitingDiv, props.setNoteTime);
+        handleSubmission(props, props.disableButton, props.showWaitingDiv, props.setNoteTime);
         props.setSubmit(true);
       }}
     >
@@ -60,7 +56,26 @@ function ConfirmButton(props) {
   );
 }
 
-function handleSubmission(disableButton, showWaitingDiv, setNoteTime) {
+function handleSubmission(props, disableButton, showWaitingDiv, setNoteTime) {
+  console.log("selected: ", props.selected);
+  var selectCount = 0;
+  for (var i = 0; i < props.selected.length; i++) {
+    if (props.selected[i]) {
+      selectCount++;
+    }
+  }
+  if (selectCount != 2) {
+    props.setNotEnoughSelects(true);
+    console.log("invalid turn");
+    setTimeout(() => {
+      props.setNotEnoughSelects(false);
+    }, 3000);
+    return;
+  }
+
+  if (props.submit) {
+    sendDecisions(props);
+  }
   disableButton();
   showWaitingDiv();
   setNoteTime(NOTE_TIME);

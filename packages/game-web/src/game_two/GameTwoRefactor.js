@@ -114,6 +114,7 @@ function GameTwo(props) {
     const [toResources, setToResources] = useState(fromResources);
     const [currentResources, setCurrentResources] = useState(INITIAL_RESOURCE_DISTRIBUTION);
 
+    const [notAllInvested, setNotAllInvested] = useState(false); // determines whether alert is displayed if the player has not invested all of their tokens yet
     const [notEnoughTokens, setNotEnoughTokens] = useState(ENOUGH_TOKENS);
     const [negativeTokens, setNegativeTokens] = useState(NOT_NEGATIVE_TOKENS);
     const [tokensSpent, setTokensSpent] = useState(NO_TOKENS_SPENT);
@@ -150,6 +151,10 @@ function GameTwo(props) {
     useEffect(() => {
       console.log("made move: ", madeMove);
     }, [madeMove]);
+
+    useEffect(() => {
+      console.log("not all invested: ", notAllInvested);
+    }, [notAllInvested]);
 
     useEffect(() => {
       console.log("current state updated: ", props.currentState);
@@ -261,15 +266,18 @@ function GameTwo(props) {
         showWaitingDiv, 
         setShowWaitingDiv,
         madeMove,
-        setMadeMove
+        setMadeMove,
+        setNotAllInvested
     );
 
     let resourceView = showResults ? resourceResultsView : resourceChoiceView;
 
+    var tokensRemaining = 10 - currentResources[0] - currentResources[1] - currentResources[2];
+
     return (
         <div className={FULL_DIV}>
         {resourceView}
-        {getAlerts(notEnoughTokens, setNotEnoughTokens, negativeTokens, setNegativeTokens)}
+        {getAlerts(tokensRemaining, notAllInvested, setNotAllInvested, notEnoughTokens, setNotEnoughTokens, negativeTokens, setNegativeTokens)}
         </div>
     );
 }
@@ -314,8 +322,13 @@ function getDelayedBar(resource, group, delay, tokens, windowWidth) {
 
 function getResourceChoices(roundLength, winners, losers, props, setFromResources, setToResources, fromResources, toResources, totalTokens, setNotEnoughTokens, setNegativeTokens, 
     tokensSpent, setTokensSpent, setCurrentResources, currentResources, payoffInvest, payoffCompete, resetTimer, setResetTimer, setSubmitDecisions, submitDecisions,
-    noteTime, setNoteTime, timeLeft, setTimeLeft, disableButton, setDisableButton, showWaitingDiv, setShowWaitingDiv, madeMove, setMadeMove) {
+    noteTime, setNoteTime, timeLeft, setTimeLeft, disableButton, setDisableButton, showWaitingDiv, setShowWaitingDiv, madeMove, setMadeMove, setNotAllInvested) {
     var animationPause = TIME_TO_SHOW_RESULTS;
+
+    console.log("fromResources: ", fromResources);
+    console.log("toResources: ", toResources);
+    console.log("current resources: ", currentResources);
+
     if (props.rejoined || props.currentState.round == 0) {
       animationPause = 0;
     }
@@ -355,6 +368,7 @@ function getResourceChoices(roundLength, winners, losers, props, setFromResource
             setMadeMove={setMadeMove}
             roundStartTime={props.currentState.roundStartTime}
             animationPause={animationPause}
+            setNotAllInvested={setNotAllInvested}
         />
         <VerticalPlayerGroup
           type={GROUP_ONE}
@@ -379,9 +393,9 @@ function getResourceChoices(roundLength, winners, losers, props, setFromResource
         {getResourceButton(ResourceNames.COMPETE, COMPETE_INDEX, setFromResources, setToResources, toResources, totalTokens, setNotEnoughTokens,
           setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources, props.windowWidth)}
   
-        {getResourceBar(ResourceNames.KEEP, KEEP_INDEX, fromResources, toResources)}
-        {getResourceBar(ResourceNames.INVEST, INVEST_INDEX, fromResources, toResources)}
-        {getResourceBar(ResourceNames.COMPETE, COMPETE_INDEX, fromResources, toResources)}
+        {getResourceBar(ResourceNames.KEEP, KEEP_INDEX, fromResources, toResources, currentResources)}
+        {getResourceBar(ResourceNames.INVEST, INVEST_INDEX, fromResources, toResources, currentResources)}
+        {getResourceBar(ResourceNames.COMPETE, COMPETE_INDEX, fromResources, toResources, currentResources)}
       </div>
     );
 }
@@ -415,12 +429,13 @@ setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentReso
     );
 }
 
-function getResourceBar(resource, resourceIndex, fromResources, toResources) {
+function getResourceBar(resource, resourceIndex, fromResources, toResources, currentResources) {
     return (
         <ResourceBar
         resource={resource}
         from={fromResources[resourceIndex]}
         to={toResources[resourceIndex]}
+        current={currentResources[resourceIndex]}
         />
     );
 }
@@ -429,16 +444,28 @@ function updateResource(resourceIndex, setFromResources, setToResources, origina
     setNegativeTokens, tokensSpent, setTokensSpent, setCurrentResources, currentResources) {
     let addTokenOffset;
 
+    console.log("update resource");
+
     if (isIncreasing) {
+        console.log("increasing");
+        console.log("tokens spent: ", tokensSpent);
+        console.log("tokens total: ", totalTokens);
         if (tokensSpent >= totalTokens) {
-        setNotEnoughTokens(NOT_ENOUGH_TOKENS);
+          console.log("not enough!");
+          setNotEnoughTokens(NOT_ENOUGH_TOKENS);
+          setTimeout(() => {
+              setNotEnoughTokens(false);
+          }, 3000);
         return;
         }
         addTokenOffset = 1;
     } else {
         if (currentResources[resourceIndex] === 0) {
-        setNegativeTokens(NEGATIVE_TOKENS);
-        return;
+          setNegativeTokens(NEGATIVE_TOKENS);
+          setTimeout(() => {
+            setNegativeTokens(false);
+          }, 3000);
+          return;
         }
         addTokenOffset = -1;
     }

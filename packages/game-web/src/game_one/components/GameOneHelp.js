@@ -18,13 +18,13 @@ const HIDE = false;
 const BUTTON_VARIANT = 'contained';
 const OKAY_COLOR = 'primary';
 const MAIN_BUTTON_MESSAGE = "Help";
-const DIALOG_TITLE = "Select 0, 1, or 2 other players and click CONFIRM! to submit your turn.";
-const COMPETE_PRIMARY = "Single Bonus";
-const COMPETE_SECONDARY = "You receive a single bonus if another player selects you."
-const INVEST_PRIMARY = "Double Bonus";
-const INVEST_SECONDARY = "You receive a double bonus if both you and another player select each other."
-const KEEP_PRIMARY = "Triple Bonus";
-const KEEP_SECONDARY = "You receive a triple bonus if you and two other players all select each other."
+const DIALOG_TITLE = "Select 2 other players and click CONFIRM! to submit your turn.";
+const SINGLE_PRIMARY = "Single Bonus";
+const SINGLE_SECONDARY = "You receive a single bonus if another player selects you."
+const DOUBLE_PRIMARY = "Double Bonus";
+const DOUBLE_SECONDARY = "You receive a double bonus if both you and another player select each other."
+const TRIPLE_PRIMARY = "Triple Bonus";
+const TRIPLE_SECONDARY = "You receive a triple bonus if you and two other players all select each other."
 const FOOTER_MESSAGE_ONE = "The three players with the top scores will be placed in the winners group."
 const FOOTER_MESSAGE_TWO = ""
 const BUTTON_MESSAGE = "Got it!";
@@ -71,9 +71,9 @@ const styles = {
             <DialogTitle>{DIALOG_TITLE}</DialogTitle>
             <DialogContent>
                 <List className={classes.dialogue}>
-                        {getListItem(classes.avatar, ResourceNames.COLOR_COMPETE, COMPETE_PRIMARY, COMPETE_SECONDARY)}
-                        {getListItem(classes.avatar, ResourceNames.COLOR_KEEP, KEEP_PRIMARY, KEEP_SECONDARY)}
-                        {getListItem(classes.avatar, ResourceNames.COLOR_INVEST, INVEST_PRIMARY, INVEST_SECONDARY)}
+                        {getListItem(classes.avatar, ResourceNames.COLOR_COMPETE, SINGLE_PRIMARY, SINGLE_SECONDARY)}
+                        {getListItem(classes.avatar, ResourceNames.COLOR_KEEP, DOUBLE_PRIMARY, DOUBLE_SECONDARY)}
+                        {getListItem(classes.avatar, ResourceNames.COLOR_INVEST, TRIPLE_PRIMARY, TRIPLE_SECONDARY)}
                 </List>
                 <br/>
                 <DialogContentText>

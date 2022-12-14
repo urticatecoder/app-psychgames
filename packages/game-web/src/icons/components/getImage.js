@@ -10,7 +10,7 @@ const IMAGE_HEIGHT = '85vh';
 const IMAGE_WIDTH = '85vw';
 
 function getImage(playerNumber, selectedIndex, frontendIndex, isSelf) {
-  console.log("is self: ", isSelf);
+  // console.log("is self: ", isSelf);
   return (
     // <GameImage
     //   image={PlayerImages[IMAGE + playerNumber]}

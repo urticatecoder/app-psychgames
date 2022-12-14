@@ -128,6 +128,7 @@ function GameOne(props) {
     const [disabledPlayers, setDisabledPlayers] = useState(createPlayerArray())
     const [selectedSelf, setSelectedSelf] = useState(DID_NOT_SELECT_SELF);
     const [tooManySelects, setTooManySelects] = useState(NOT_TOO_MANY_SELECTS);
+    const [notEnoughSelects, setNotEnoughSelects] = useState(false); // alert for when the player clicks confirm without selecting two other players
   
     const [resetTimer, setResetTimer] = useState(DO_NOT_RESET_TIMER);
     const [pauseTimer, setPauseTimer] =  useState()
@@ -149,31 +150,17 @@ function GameOne(props) {
     }
 
     const roundEndTime = Date.parse(props.currentState.roundEndTime);
-    // console.log("round end time: ", roundEndTime);
     const time = new Date();
-    // console.log("current time: ", time.getTime());
     const roundLength = roundEndTime - time.getTime();
-    // console.log("round length: ", roundLength);
-
-    useEffect(() => {
-        console.log("selected self changed to: ", selectedSelf);
-    }, [selectedSelf]);
-
-    useEffect(() => {
-        console.log("made move: ", madeMove);
-    }, [madeMove]);
   
     useEffect(() => {
         if (props.currentState.type != "game-one_state") {
             return;
         }
-        console.log("game one state: ", props.currentState);
 
         if (!madeMove) {
-            console.log("didn't make move");
             props.setPassiveDialogueOpen(true);
         }
-
         setMadeMove(false);
 
         const ids = [];
@@ -353,12 +340,22 @@ function GameOne(props) {
             pauseSubmitButton(allMovementPause, setDisableButton);
         }
     }, [props.currentState]);
+
+    var selectRemaining = 2;
+    for (var i = 0; i < selected.length; i++) {
+        if (selected[i]) {
+            selectRemaining--;
+        }
+    }
   
     const { classes } = props; 
 
     return (
         <div className={FULL_DIV}>
             {getAlerts(
+                selectRemaining,
+                notEnoughSelects,
+                setNotEnoughSelects,
                 selectedSelf,
                 setSelectedSelf,
                 tooManySelects,
@@ -403,6 +400,7 @@ function GameOne(props) {
                 setMadeMove={setMadeMove}
                 roundStartTime={props.currentState.roundStartTime}
                 animationPause={animationPause}
+                setNotEnoughSelects={setNotEnoughSelects}
             />
     
             <div className={classes.animatedColumns}>
@@ -502,7 +500,6 @@ function getColumn(id, playerData, bonusGroups, playerNumber, selected, setSelec
             onSelect={() =>
             selectPlayer(
                 playerData,
-                bonusGroups,
                 playerNumber,
                 selected,
                 setSelected,
@@ -657,7 +654,7 @@ function createPlayerArray(height) {
     return heights;
 }
 
-function selectPlayer(playerData, bonusGroups, player, selected, setSelected, setSelectedSelf, setTooManySelections, myID) {    
+function selectPlayer(playerData, player, selected, setSelected, setSelectedSelf, setTooManySelections, myID) {    
     console.log("select player index: ", player);
     console.log("select player id: ", playerData[player].id);
     if (playerData[player].id == myID) {

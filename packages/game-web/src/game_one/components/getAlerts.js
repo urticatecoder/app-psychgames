@@ -21,12 +21,14 @@ const ERROR_HORIZONTAL = "left";
  * 
  * @author Eric Doppelt
  */
-function getAlerts(selectedSelf, setSelectedSelf, tooManySelections, setTooManySelections) {
+function getAlerts(selectRemaining, notEnoughSelects, setNotEnoughSelects, selectedSelf, setSelectedSelf, tooManySelections, setTooManySelections) {
     if (selectedSelf) {
       console.log("selected self, return alert component");
       return getAlertComponent(SELF_SELECTION_MESSAGE, setSelectedSelf, true);
     } else if (tooManySelections) {
       return getAlertComponent(TOO_MANY_SELETIONS_MESSAGE, setTooManySelections, true);
+    } else if (notEnoughSelects) {
+      return getAlertComponent(`You only selected ${2-selectRemaining} players. You still need to select ${selectRemaining} more players and click CONFIRM! before time's up!`, setNotEnoughSelects, true);
     }
   }
   

@@ -24,11 +24,16 @@ const styles = {
   buttonFormatting: {
     position: "absolute",
     top: "68vh",
-    borderRadius: 40,
+    borderRadius: 40
   },
   innerDiv: {
     position: "relative",
-    top: "15px",
+    top: "15px"
+  },
+  imageDiv: {
+    '&:hover': {
+      cursor: "pointer"
+    }
   },
   textDiv: {
     position: "relative",
@@ -40,6 +45,10 @@ const styles = {
     borderRadius: 20,
     height: "30px",
     backgroundColor: "#ff645c",
+    '&:hover': {
+      background: "#f74239",
+      cursor: "pointer"
+    }
   },
   reduceTextDiv: {
     position: "relative",
@@ -68,7 +77,7 @@ function ResourceButton(props) {
         style={{ backgroundColor: background, left: marginL, height: divSize, width: divSize}}
       >
         <div className={classes.innerDiv}>
-          <div onClick={() => props.addToken()}>
+          <div className={classes.imageDiv} onClick={() => props.addToken()}>
             {getImage(props.resource, props.windowWidth)}
           </div>
           <div className={classes.textDiv} style={{marginTop: textMarginTop}}>

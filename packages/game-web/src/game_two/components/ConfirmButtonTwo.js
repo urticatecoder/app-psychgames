@@ -52,14 +52,26 @@ function ConfirmButtonTwo(props) {
       variant={"contained"}
       color={PRIMARY_COLOR}
       disabled={props.disabled}
-      onClick={() => handleSubmission(props.disableButton, props.setNoteTime, props.showWaitingDiv)}
+      onClick={() => handleSubmission(props, props.disableButton, props.setNoteTime, props.showWaitingDiv)}
     >
       {CONFIRM_CHOICES_TEXT}
     </Button>
   );
 }
 
-function handleSubmission(disableButton, setNoteTime, showWaitingDiv) {
+function handleSubmission(props, disableButton, setNoteTime, showWaitingDiv) {
+  const competeCount = props.resources[COMPETE_INDEX];
+  const investCount = props.resources[INVEST_INDEX];
+  const keepCount = props.resources[KEEP_INDEX];
+
+  if (competeCount + investCount + keepCount != 10) {
+    console.log("invalid turn");
+    props.setNotAllInvested(true);
+    setTimeout(() => {
+      props.setNotAllInvested(false);
+    }, 3000);
+    return;
+  }
   disableButton();
   setNoteTime(NOTE_TIME);
   showWaitingDiv();
@@ -78,7 +90,6 @@ function getMarginLeft(windowWidth) {
 }
 
 function sendDecisions(props) {
-  props.setMadeMove(true);
   const competeCount = props.resources[COMPETE_INDEX];
   const investCount = props.resources[INVEST_INDEX];
   const keepCount = props.resources[KEEP_INDEX];
@@ -100,6 +111,7 @@ function sendDecisions(props) {
     decisionTime: decisionTime
   };
   console.log("client send game two request: ", gameTwoTurnRequest);
+  props.setMadeMove(true);
   socket.emit("game-action", gameTwoTurnRequest);
   props.clearSelected();
   props.clearSubmission();

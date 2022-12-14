@@ -22,11 +22,11 @@ const RULES = "Rules";
 
 const BUTTON_MESSAGE = "Got it!";
 
-const WIFI_PRIMARY = "Losing Wifi";
-const WIFI_SECONDARY = "If your internet connection goes out, you may not be able to rejoin the experiment."
+const WIFI_PRIMARY = "Losing Connection or Exiting Site";
+const WIFI_SECONDARY = "If your internet connection goes out, or you refresh or leave your page, you can rejoin the game."
 
-const EXIT_PRIMARY = "Exiting Site";
-const EXIT_SECONDARY = "If you refresh your page or travel to another site, you will be kicked out of the game."
+const EXIT_PRIMARY = "Inactivity";
+const EXIT_SECONDARY = "If you are inactive for five rounds or more, you will be removed from the game."
 
 const SCREEN_PRIMARY = "Shrinking Screen ";
 const SCREEN_SECONDARY = "If you change the screen dimensions, you may be prompted to expand the window. Doing so will remove this alert."
