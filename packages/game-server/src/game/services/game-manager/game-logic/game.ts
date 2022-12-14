@@ -7,6 +7,9 @@ import { GameConstants } from "../constants.js";
 import { Lobby } from "./lobby.js";
 import { GameOne } from "./game-one.js";
 import { GameTwo } from "./game-two.js";
+import { GameOneTutorial } from "./game-one-tutorial.js";
+import { GameTwoTutorial } from "./game-two-tutorial.js";
+import { FinalResults } from "./final-results.js";
 
 export abstract class AGame {
   abstract get constants(): GameConstants;
@@ -100,6 +103,12 @@ export class Game extends AGame {
     this.currentGame = game;
     if (this.currentGame instanceof GameOne || this.currentGame instanceof GameTwo) { 
       this.currentGame.beginRound();
+    }
+    if (this.currentGame instanceof GameOneTutorial || this.currentGame instanceof GameTwoTutorial) {
+      this.currentGame.beginTutorial();
+    }
+    if (this.currentGame instanceof FinalResults) {
+      this.currentGame.beginFinalResults();
     }
   }
 

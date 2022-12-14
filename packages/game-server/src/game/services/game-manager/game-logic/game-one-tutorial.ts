@@ -13,12 +13,25 @@ export class GameOneTutorial implements GameInstance {
       tutorialEndTime: tutorialEndTime,
     };
 
-    this.submitAction();
+    // this.submitAction();
 
     setTimeout(
       () => this.game.goToGame(new GameOne(this.game)),
       game.constants.gameOneTutorialTime
     );
+  }
+
+  public beginTutorial() {
+    const tutorialStartTime = new Date();
+    const tutorialEndTime = new Date(
+      tutorialStartTime.getTime() + this.game.constants.gameOneTutorialTime
+    );
+
+    this.state = {
+      ...this.state,
+      tutorialEndTime: tutorialEndTime,
+    };
+    this.game.emitState();
   }
 
   getState(player: PlayerModel.Id): GameModel.GameState {

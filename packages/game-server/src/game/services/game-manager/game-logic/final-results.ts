@@ -12,12 +12,16 @@ export class FinalResults implements GameInstance {
       prolificCode: this.game.constants.finalResultsProlificCode,
     };
 
-    this.submitAction();
+    // this.submitAction();
 
     setTimeout(
       () => this.game.endGame(),
       30000 //End the game after 30 seconds
     );
+  }
+
+  public beginFinalResults() {
+    this.game.emitState();
   }
 
   getState(player: PlayerModel.Id): GameModel.GameState {

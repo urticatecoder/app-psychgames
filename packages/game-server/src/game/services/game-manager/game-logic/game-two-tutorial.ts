@@ -15,12 +15,25 @@ export class GameTwoTutorial implements GameInstance {
       losers: losers,
     };
 
-    this.submitAction();
+    // this.submitAction();
 
     setTimeout(
       () => this.game.goToGame(new GameTwo(this.game, winners, losers)),
       game.constants.gameTwoTutorialTime
     );
+  }
+
+  public beginTutorial() {
+    const tutorialStartTime = new Date();
+    const tutorialEndTime = new Date(
+      tutorialStartTime.getTime() + this.game.constants.gameTwoTutorialTime
+    );
+
+    this.state = {
+      ...this.state,
+      tutorialEndTime: tutorialEndTime,
+    };
+    this.game.emitState();
   }
 
   getState(player: PlayerModel.Id): GameModel.GameState {
