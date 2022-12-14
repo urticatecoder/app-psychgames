@@ -79,14 +79,14 @@ export class GameOne implements GameInstance {
 
     // The action must be for the current round
     // TODO: Factor out this common functionality
-    if (action.round !== this.state.round) {
+    /*if (action.round !== this.state.round) {
       throw new GameError(
         `Expected an action for round ${this.state.round}, recieved ${action.round}. 
         This may be because you submitted an action just as the round advanced, 
         in which case this error is safe.`,
         playerId
       );
-    }
+    }*/
 
     // The action must contain a maximum number of selections
     if (action.playersSelected.length > MAX_SELECTIONS) {
