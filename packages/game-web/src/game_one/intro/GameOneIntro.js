@@ -12,7 +12,7 @@ const SHOW_BUTTON = true;
 
 const TIMER_MESSAGE = "Game One";
 const NO_PAUSE = 0;
-const GAME_ONE_TUTORIAL_FILEPATH = "Tutorials/GameOne.mp4";
+const GAME_ONE_TUTORIAL_FILEPATH = "Tutorials/game1_tutorial_221213.mp4";
 const GAME_ONE_TUTORIAL_LENGTH = 104000;
 const GAME_ONE_TUTORIAL_TEXT = "Game 1 Tutorial";
 const DEFAULT_ANIMATION_PAUSE = 1000;

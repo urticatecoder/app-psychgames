@@ -13,7 +13,7 @@ const HIDE_BUTTON = false;
 const TIMER_MESSAGE = "Game Two";
 const TIMER_LENGTH = 191000;
 
-const GAME_TWO_TUTORIAL_FILEPATH = "Tutorials/GameTwo.mp4";
+const GAME_TWO_TUTORIAL_FILEPATH = "Tutorials/game2_tutorial_221213.mp4";
 const GAME_TWO_TUTORIAL_LENGTH = 181000;
 const GAME_TWO_TUTORIAL_TEXT = "Game 2 Tutorial";
 const DEFAULT_ANIMATION_PAUSE = 1000;
