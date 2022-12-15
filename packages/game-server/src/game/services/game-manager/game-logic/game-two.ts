@@ -49,7 +49,8 @@ export class GameTwo implements GameInstance {
   }
 
   submitAction(playerId: string, action: GameTwoModel.Turn): void {
-    this.validateAction(playerId, action);
+    // XXX: Re-enable this when frontend is fixed
+    //this.validateAction(playerId, action);
     let actionWithTime = {
       keep: action.tokenDistribution.keep,
       invest: action.tokenDistribution.invest,

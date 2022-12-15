@@ -49,7 +49,8 @@ export class GameOne implements GameInstance {
 
   submitAction(playerId: string, action: GameOneModel.Turn): void {
     // Add database stuff here to store current selections before they are updated/overriden
-    this.validateAction(playerId, action);
+    // XXX: Re-enable this when frontend is fixed
+    //this.validateAction(playerId, action);
     let playersSelected = new Set(action.playersSelected);
     let playersSelectedWithTime = {
       selectedPlayers: playersSelected,
