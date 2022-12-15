@@ -26,7 +26,7 @@ describe("GameManagerService", () => {
         emitState: (player: PlayerModel.Id, state: GameModel.State) => void,
         endGame: () => void,
         constants: GameConstants,
-        databaseStore: (selections: Map<string, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number} | (GameTwoModel.TokenDistribution & {decisionTime: number})>, teamResults?: GameTwoModel.TeamResults) => void,
+        databaseStore: (selections: Map<string, { selectedPlayers: Set<PlayerModel.Id>, decisionTime: number } | (GameTwoModel.TokenDistribution & { decisionTime: number })>, teamResults?: GameTwoModel.TeamResults) => void,
         handleBotsCallback: (inactivePlayersList: PlayerModel.Id[]) => void
       ) => {
         emitCallback = emitState;
@@ -150,9 +150,9 @@ describe("GameManagerService", () => {
       gameTwoCallback(player2, state2);
       expectSocketStateEmitted(socket2, state2);
 
-      // Emitting state to a player not in the game should fail
-      expect(() => gameOneCallback(socket2, state1)).toThrow();
-      expect(() => gameTwoCallback("socket-1", state2)).toThrow();
+      // Emitting state to a player not in the game should be treated as a bot
+      expect(() => gameOneCallback(socket2, state1)).not.toThrow();
+      expect(() => gameTwoCallback("socket-1", state2)).not.toThrow();
     });
   });
 

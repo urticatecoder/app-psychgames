@@ -136,8 +136,7 @@ export class GameManagerService {
 
     const socket = game.activePlayers.getR(player);
     if (!socket) {
-      // TODO: also check if player is bot
-      console.error(`Could not find socket for player ${player}`);
+      // Player is a bot
       return;
     }
 
@@ -237,7 +236,9 @@ export class GameManagerService {
     }
   }
 
-  private pushToDatabase(gameID: string, selections: Map<string, GameOneSelection | GameTwoSelection>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) {
+  // XXX: Remove this mock once database is set up
+  private pushToDatabase(gameID: string, selections: Map<string, GameOneSelection | GameTwoSelection>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) { return; }
+  private pushToDatabase2(gameID: string, selections: Map<string, GameOneSelection | GameTwoSelection>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) {
     const managedGame = this.getGameById(gameID);
     if (!managedGame) {
       console.error(
