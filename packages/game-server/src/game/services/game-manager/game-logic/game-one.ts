@@ -1,6 +1,6 @@
 import { GameModel, GameOneModel, PlayerModel } from "@dpg/types";
 import { GameOneConstants } from "../constants.js";
-import { AGame, GameError, GameInstance } from "./game.js";
+import { AGame, GameException, GameInstance } from "./game.js";
 import { GameTwoTutorial } from "./game-two-tutorial.js";
 import { getRandomItem } from "@dpg/utils";
 
@@ -12,7 +12,7 @@ const LOSE_POSITION = -1;
 const START_POSITION = 0;
 const MAX_SELECTIONS = 2;
 
-type Selections = Map<PlayerModel.Id, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number}>;
+type Selections = Map<PlayerModel.Id, { selectedPlayers: Set<PlayerModel.Id>, decisionTime: number }>;
 type BonusGroup = GameOneModel.PlayerPosition[];
 
 /**
@@ -71,7 +71,7 @@ export class GameOne implements GameInstance {
     // The action should be of the correct type
     // TODO: Factor out this common functionality
     if (action.type != "game-one_turn") {
-      throw new GameError(
+      throw new GameException(
         `The action type ${action.type} does not match the expected type game-one_turn`,
         playerId
       );
@@ -79,18 +79,18 @@ export class GameOne implements GameInstance {
 
     // The action must be for the current round
     // TODO: Factor out this common functionality
-    /*if (action.round !== this.state.round) {
-      throw new GameError(
+    if (action.round !== this.state.round) {
+      throw new GameException(
         `Expected an action for round ${this.state.round}, recieved ${action.round}. 
         This may be because you submitted an action just as the round advanced, 
         in which case this error is safe.`,
         playerId
       );
-    }*/
+    }
 
     // The action must contain a maximum number of selections
     if (action.playersSelected.length > MAX_SELECTIONS) {
-      throw new GameError(
+      throw new GameException(
         `Expected a maximum of ${MAX_SELECTIONS} selected players, recieved ${action.playersSelected.length}`,
         playerId
       );
@@ -98,7 +98,7 @@ export class GameOne implements GameInstance {
 
     // A player may not select themselves
     if (action.playersSelected.includes(playerId)) {
-      throw new GameError(`Players cannot select themselves`, playerId);
+      throw new GameException(`Players cannot select themselves`, playerId);
     }
   }
 

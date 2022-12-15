@@ -75,15 +75,19 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     @MessageBody() data: EnterGameRequest,
     @ConnectedSocket() socket: Socket
   ): PlayerModel.EnterGameResponse {
-    console.log("received enter game request");
-    console.log("socket id: ", socket.id);
+    console.debug("Received enter game request");
+    console.debug("  socket id: ", socket.id);
     if (!data.id) {
+      console.debug("  no id sent");
+      console.debug("  not currently in game");
       return {
         inGame: false,
       };
     }
 
+    console.debug("  id sent");
     const ableToInitialize = this.gameManager.attachPlayer(socket.id, data.id);
+    console.debug(ableToInitialize ? "  in game; initializing" : "  not currently in game");
 
     return {
       inGame: ableToInitialize,
@@ -118,8 +122,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
     @MessageBody() data: StartGameRequest,
     @ConnectedSocket() socket: Socket
   ): PlayerModel.StartGameResponse {
-    console.log("received start game request");
-    console.log("socket id: ", socket.id);
+    console.debug("Received start game request");
+    console.debug("  socket id: ", socket.id);
     const id = this.gameManager.attachSocket(socket.id, data.playerMetadata);
 
     return { id };
@@ -153,6 +157,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
      * so we need to determine the correct class and validate it manually.
      */
     const type = typeof data["type"] === "string" ? data["type"] : undefined;
+    console.debug(`Recieved game action of type ${type} from socket ${socket.id}`);
+    console.debug(data);
+
     const requestClass = type ? requestTypes[type] : undefined;
     if (!requestClass) {
       throw new WsException(`invalid request type; ${type} was not recognized`);
@@ -162,6 +169,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
       plainToClass(requestClass, data)
     );
     if (!requestInstance) {
+      console.warn("failed to interpret action");
       throw new WsException(
         "the data could not be interpreted; please check your schema"
       );
@@ -173,6 +181,8 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
       this.gameManager.submitAction(socket.id, validatedData);
     } catch (errors) {
       if (errors instanceof ValidationError) {
+        console.warn(errors.toString(true));
+        throw new WsException(errors.toString(false));
       } else {
         throw new WsException("an unknown error occurred");
       }

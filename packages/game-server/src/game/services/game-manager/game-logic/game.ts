@@ -20,11 +20,11 @@ export abstract class AGame {
   abstract getState(player: PlayerModel.Id): GameModel.State;
 
   abstract pushToDatabase(
-    selections: Map<string, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number} | (GameTwoModel.TokenDistribution & {decisionTime: number})>, 
-    teamResults?: GameTwoModel.TeamResults, 
+    selections: Map<string, { selectedPlayers: Set<PlayerModel.Id>, decisionTime: number } | (GameTwoModel.TokenDistribution & { decisionTime: number })>,
+    teamResults?: GameTwoModel.TeamResults,
     receiptTurnNumber?: number
   ): void;
-  
+
   abstract handleBots(inactivePlayersList: PlayerModel.Id[]): void;
 
   abstract submitAction(
@@ -52,8 +52,8 @@ export class Game extends AGame {
     private destroyGame: () => void,
     public constants: GameConstants,
     public databaseStoreCallback: (
-      selections: Map<string, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number} | (GameTwoModel.TokenDistribution & {decisionTime: number})>, 
-      teamResults?: GameTwoModel.TeamResults, 
+      selections: Map<string, { selectedPlayers: Set<PlayerModel.Id>, decisionTime: number } | (GameTwoModel.TokenDistribution & { decisionTime: number })>,
+      teamResults?: GameTwoModel.TeamResults,
       receiptTurnNumber?: number
     ) => void,
     public handleBotsCallback: (inactivePlayersList: PlayerModel.Id[]) => void
@@ -101,7 +101,7 @@ export class Game extends AGame {
 
   goToGame(game: GameInstance): void {
     this.currentGame = game;
-    if (this.currentGame instanceof GameOne || this.currentGame instanceof GameTwo) { 
+    if (this.currentGame instanceof GameOne || this.currentGame instanceof GameTwo) {
       this.currentGame.beginRound();
     }
     if (this.currentGame instanceof GameOneTutorial || this.currentGame instanceof GameTwoTutorial) {
@@ -115,7 +115,7 @@ export class Game extends AGame {
   submitAction(playerID: PlayerModel.Id, action: GameModel.Action): void {
     // validate playerID
     if (!this.playerMap.has(playerID)) {
-      throw new Error(`Tried to submit action for player ${playerID} but that player is not in this game.`)
+      throw new GameException(`Tried to submit action for player ${playerID} but that player is not in this game.`, playerID)
     }
     // Action data validation is handled in the current game submitAction method
     this.currentGame.submitAction(playerID, action);
@@ -134,8 +134,8 @@ export class Game extends AGame {
   }
 
   pushToDatabase(
-    selections: Map<string, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number} | (GameTwoModel.TokenDistribution & {decisionTime: number})>, 
-    teamResults?: GameTwoModel.TeamResults, 
+    selections: Map<string, { selectedPlayers: Set<PlayerModel.Id>, decisionTime: number } | (GameTwoModel.TokenDistribution & { decisionTime: number })>,
+    teamResults?: GameTwoModel.TeamResults,
     receiptTurnNumber?: number
   ) {
     this.databaseStoreCallback(selections, teamResults, receiptTurnNumber);
@@ -171,7 +171,7 @@ export class Game extends AGame {
   }
 }
 
-export class GameError extends WsException {
+export class GameException extends WsException {
   private playerID: PlayerModel.Id;
 
   constructor(message: string, playerId: string) {

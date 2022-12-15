@@ -1,9 +1,9 @@
 import { GameTwoModel, PlayerModel } from "@dpg/types";
 import { getRandomItem } from "@dpg/utils";
 import { FinalResults } from "./final-results.js";
-import { AGame, GameInstance, GameError } from "./game.js";
+import { AGame, GameInstance, GameException } from "./game.js";
 
-type Selections = Map<PlayerModel.Id, GameTwoModel.TokenDistribution & {decisionTime: number}>;
+type Selections = Map<PlayerModel.Id, GameTwoModel.TokenDistribution & { decisionTime: number }>;
 type PlayerResults = Map<PlayerModel.Id, GameTwoModel.PlayerResults>;
 
 export class GameTwo implements GameInstance {
@@ -38,7 +38,7 @@ export class GameTwo implements GameInstance {
   private get constants() {
     return this.game.constants.gameTwo;
   }
-  
+
   public getSelections(): Selections {
     return this.selections;
   }
@@ -58,20 +58,22 @@ export class GameTwo implements GameInstance {
     // The action should be of the correct type
     // TODO: Factor out this common validation
     if (action.type != "game-two_turn") {
-      throw new Error(
-        `The action type ${action.type} does not match the expected type game-two_turn`
+      throw new GameException(
+        `The action type ${action.type} does not match the expected type game-two_turn`,
+        playerId
       );
     }
 
     // The action must be for the current round
     // TODO: Factor out this common validation
-    // if (action.round !== this.state.round) {
-    //   throw new Error(
-    //     `Expected an action for round ${this.state.round}, recieved ${action.round}. 
-    //     This may be because you submitted an action just as the round advanced, 
-    //     in which case this error is safe.`
-    //   );
-    // }
+    if (action.round !== this.state.round) {
+      throw new GameException(
+        `Expected an action for round ${this.state.round}, recieved ${action.round}.
+        This may be because you submitted an action just as the round advanced,
+        in which case this error is safe.`,
+        playerId
+      );
+    }
 
     // The submitted number of tokens must be <= the tokens given per round
     const numTokens =
@@ -79,9 +81,10 @@ export class GameTwo implements GameInstance {
       action.tokenDistribution.invest +
       action.tokenDistribution.keep;
     if (numTokens > this.constants.tokensPerRound) {
-      throw new Error(
+      throw new GameException(
         `The number of submitted tokens ${numTokens} is greater than the maximum 
-        number of tokens per round, ${this.constants.tokensPerRound}`
+        number of tokens per round, ${this.constants.tokensPerRound}`,
+        playerId
       );
     }
   }
@@ -159,7 +162,7 @@ export class GameTwo implements GameInstance {
     };
     this.playerResults = playerResults;
 
-    
+
 
     if (this.isGameOver()) {
       this.endGame();
@@ -183,7 +186,7 @@ export class GameTwo implements GameInstance {
       const otherTeamResult = isWinner
         ? teamResults.loserTeam
         : teamResults.winnerTeam;
-      
+
       const playerTokens =
         selection.keep + teamResult.investBonus + otherTeamResult.competePenalty - teamResult.competePenalty;
       const playerResult = {

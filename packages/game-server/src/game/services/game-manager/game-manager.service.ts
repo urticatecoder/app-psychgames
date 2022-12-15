@@ -5,11 +5,12 @@ import { Server } from "socket.io";
 import { DefaultGameConstants } from "./constants.js";
 import { v4 as uuidv4 } from "uuid";
 import { GameFactory } from "../game-factory/game-factory.js";
-import { AGame } from "./game-logic/game.js";
+import { AGame, GameException } from "./game-logic/game.js";
 import mongoose from "mongoose";
 import { GameOneDataModel, GameTwoDataModel } from "./database-models.js";
 import { NONAME } from "dns";
 import { stat } from "fs";
+import { WsException } from "@nestjs/websockets";
 
 // TODO: test and clean up this mess; I was too tired on the first write
 type GameID = string;
@@ -93,7 +94,7 @@ export class GameManagerService {
     const game = this.getSocketGame(socketID);
     const playerID = game?.activePlayers.get(socketID);
     if (!game || !playerID) {
-      throw new Error(
+      throw new WsException(
         `Attempted to submit action for socket ${socketID}, but an associated game was not found`
       );
     }
@@ -108,9 +109,10 @@ export class GameManagerService {
   endGame(gameID: GameID) {
     const game = this.games.find((game: ManagedGame) => game.id === gameID);
     if (!game) {
-      throw new Error(
+      console.error(
         `attempted to end game ${gameID} but game was not found.`
       );
+      return;
     }
 
     this.server?.in(gameID).disconnectSockets();
@@ -128,13 +130,14 @@ export class GameManagerService {
   ): void {
     const game = this.getGameById(gameId);
     if (!game) {
-      throw new Error("Game not found in state emit callback");
+      console.error("Game not found in state emit callback");
+      return;
     }
 
     const socket = game.activePlayers.getR(player);
     if (!socket) {
       // TODO: also check if player is bot
-      console.log(`Could not find socket for player {player}`);
+      console.error(`Could not find socket for player {player}`);
       return;
     }
 
@@ -180,8 +183,9 @@ export class GameManagerService {
   ) {
     // Sanity check
     if (!game.instance.playerMap.has(playerID)) {
-      throw new Error(
-        `attempted to add ${playerID} to game, but was not a valid player.`
+      throw new GameException(
+        `attempted to add ${playerID} to game, but was not a valid player.`,
+        playerID
       );
     }
     game.activePlayers.set(socketID, playerID);
@@ -206,7 +210,8 @@ export class GameManagerService {
     let managedGame = this.getGameById(gameID);
 
     if (!managedGame) {
-      throw new Error(`Couldn't find managed game with ID ${gameID}`);
+      console.error(`Couldn't find managed game with ID ${gameID}`);
+      return;
     }
 
     let game = managedGame.instance;
@@ -235,10 +240,12 @@ export class GameManagerService {
   private pushToDatabase(gameID: string, selections: Map<string, GameOneSelection | GameTwoSelection>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) {
     const managedGame = this.getGameById(gameID);
     if (!managedGame) {
-      throw new Error(
+      console.error(
         `attempted to push to database for gameID ${gameID}, but that is not a currently managed game`
-      )
+      );
+      return;
     }
+
     const experimentTime = managedGame.gameCreationTime;
     const game = managedGame.instance;
     const players = game.players;
