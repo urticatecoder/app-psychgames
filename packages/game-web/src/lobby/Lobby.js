@@ -19,6 +19,11 @@ const styles = {
  * @author Eric Doppelt
  */
 function Lobby(props) {
+
+  if (props.rejoined) {
+    props.setRejoined(false);
+  }
+
   return (
     <div>
       {/* render time based on lobbyEndTime in currentState prop */}

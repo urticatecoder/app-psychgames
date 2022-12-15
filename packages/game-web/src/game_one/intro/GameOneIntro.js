@@ -34,6 +34,11 @@ function GameOneIntro(props) {
     props.history.push(Routes.LOGIN);
     return (<div></div>);
   }
+
+  if (props.rejoined) {
+    props.setRejoined(false);
+  }
+
   let tutorialScreen = getTutorial(setShowTutorial);
   let avatarScreen = getMainAvatar(props);
   var display = showTutorial ? tutorialScreen : avatarScreen;
