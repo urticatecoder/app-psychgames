@@ -15,17 +15,20 @@ export type GameOneConstants = {
   roundTime: (round: number) => number;
   maxRounds: number;
   positionChange: {
-    /*
-     * TODO: This can run into a pathological situation where 1 or 2 players
-     * have much higher/lower scores than the rest, so players are not split
-     * evenly above/below the origin. This should probably use distance from
-     * the average position, rather than absolute position, to introduce a
-     * bias.
-     */
     single: (round: number, position: number) => number;
     double: (round: number, position: number) => number;
     triple: (round: number, position: number) => number;
   };
+  /*
+   * Bias is used to push the top half of players upwards, and the bottom half of players downwards.
+   * The end position formula is:
+   * - Winning: position + totalPositionChange * (1 + bias.multiplicative) + bias.absolute
+   * - Losing: position + totalPositionChange * (1 - bias.multiplicative) - bias.absolute
+   */
+  bias: (
+    round: number,
+    position: number
+  ) => { absolute: number; multiplicative: number };
 };
 
 export type GameTwoConstants = {
@@ -39,7 +42,6 @@ export type GameTwoConstants = {
   tokenDollarValue: number;
 };
 
-const bias = (position: number) => position * 0.3;
 const s = 1000;
 
 export const DefaultGameConstants: GameConstants = {
@@ -49,25 +51,30 @@ export const DefaultGameConstants: GameConstants = {
   gameOne: {
     // TODO: change these to something sensible
     roundTime: (round: number) => {
-      if (round === 0) return 30 * s;
-      if (round === 1) return 20 * s;
-      else return 15 * s;
+      let animationTime = 10 * s;
+      if (round === 0) return 30 * s + animationTime;
+      if (round === 1) return 20 * s + animationTime;
+      else return 15 * s + animationTime;
     },
     maxRounds: 35,
     positionChange: {
-      // we arbitrarily bias position by 30% of their distance from the origin
-      single: (round, position) => 0.05 * round * round + 0.1 + bias(position),
-      double: (round, position) => 0.05 * round * round + 0.1 + bias(position),
-      triple: (round, position) => 0.15 * round * round + 0.35 + bias(position),
+      single: (round, position) => 0.05,
+      double: (round, position) => 0.05,
+      triple: (round, position) => 0.1,
     },
+    bias: (round, position) => ({
+      absolute: .015 * round,
+      multiplicative: .1
+    })
   },
   gameTwo: {
     roundTime: (round: number) => {
-      if (round === 0) return 30 * s;
-      if (round === 1) return 20 * s;
-      else return 15 * s;
+      let animationTime = 10 * s;
+      if (round === 0) return 30 * s + animationTime;
+      if (round === 1) return 20 * s + animationTime;
+      else return 15 * s + animationTime;
     },
-    maxRounds: 30,
+    maxRounds: 10,
     possibleInvestCoefficients: [0, 0.5, 1, 1.5, 2],
     possibleCompeteCoefficients: [0, 0.5, 1, 1.5, 2],
     tokensPerRound: 10,

@@ -3,6 +3,7 @@ import { GameOneConstants } from "../constants.js";
 import { AGame, GameException, GameInstance } from "./game.js";
 import { GameTwoTutorial } from "./game-two-tutorial.js";
 import { getRandomItem } from "@dpg/utils";
+import { PLAYERS_PER_GAME } from "@dpg/constants";
 
 // These constants are here for readability, but modifying them
 // WILL BREAK THE GAME. The underlying math relies on these constants
@@ -339,20 +340,36 @@ function makeBonusGroups(
       "triple"
     );
 
-  // Calculate the average player movement
-  const averageMovement =
-    previousPositions.reduce(
-      (totalMovement, player) =>
-        totalMovement +
-        (getCurrentPosition(player.id, currentPositions) - player.position),
-      0
-    ) / previousPositions.length;
+  // Add bias
+  const sortedPositions = [...currentPositions].sort((a, b) => a[1] - b[1]);
+  for (let i = 0; i < sortedPositions.length; i++) {
+    const [id, position] = sortedPositions[i];
+    const isBottom = i < PLAYERS_PER_GAME / 2;
+    const previousPosition = getPreviousPosition(id, previousPositions);
+    const positionChange = position - previousPosition;
+    const bias = constants.bias(round, position);
 
-  // Normalize by subtracting the average movement from each player
+    if (isBottom) {
+      currentPositions.set(id, previousPosition + positionChange * (1 - bias.multiplicative) - bias.absolute);
+    } else {
+      currentPositions.set(id, previousPosition + positionChange * (1 + bias.multiplicative) + bias.absolute);
+    }
+  }
+
+  // Calculate the average player position
+  const positions = [...currentPositions];
+  const averagePosition =
+    positions.reduce(
+      (sum, [_, position]) =>
+        sum + position,
+      0
+    ) / positions.length;
+
+  // Normalize by subtracting the average position from each player
   // We also limit the actual positions here to be between -1, 1
   const normalizedBonusGroup: BonusGroup = [];
   currentPositions.forEach((position, id) => {
-    const newPosition = limitPosition(position - averageMovement);
+    const newPosition = limitPosition(position - averagePosition);
 
     normalizedBonusGroup.push({
       id,
