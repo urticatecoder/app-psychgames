@@ -24,10 +24,23 @@ import { GameManagerService } from "./../../services/game-manager/game-manager.s
 function createValidationPipe() {
   return new ValidationPipe({
     transform: true,
+    enableDebugMessages: true,
+    disableErrorMessages: false,
     whitelist: true,
     forbidNonWhitelisted: true,
+    exceptionFactory: (errors) => {
+      console.warn(`${errors}`);
+
+      let failedProps = [];
+      for (const e of errors) {
+        failedProps.push(e.property);
+      }
+
+      return new WsException(`properties ${failedProps} failed validation`);
+    }
   });
 }
+
 @WebSocketGateway({
   allowEIO3: true, // needed for compatibility between socket.io and socket.io-client
   cors: {
@@ -162,6 +175,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
 
     const requestClass = type ? requestTypes[type] : undefined;
     if (!requestClass) {
+      console.warn(`  request ${type} was not recognized`);
       throw new WsException(`invalid request type; ${type} was not recognized`);
     }
 

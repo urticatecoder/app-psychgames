@@ -38,7 +38,7 @@ export class StartGameRequest {
 
 /** Game actions **/
 export class LobbyAvatarRequest {
-  @Equals("lobby")
+  @Equals("lobby_avatar")
   type!: "lobby_avatar";
 
   @IsInt()

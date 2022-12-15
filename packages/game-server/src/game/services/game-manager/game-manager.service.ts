@@ -137,7 +137,7 @@ export class GameManagerService {
     const socket = game.activePlayers.getR(player);
     if (!socket) {
       // TODO: also check if player is bot
-      console.error(`Could not find socket for player {player}`);
+      console.error(`Could not find socket for player ${player}`);
       return;
     }
 
