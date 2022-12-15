@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 
 async function bootstrap() {
   const app = await NestFactory.create(GameModule, {
-    logger: console
+    logger: console,
   });
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(3001);

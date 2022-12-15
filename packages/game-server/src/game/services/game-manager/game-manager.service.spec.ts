@@ -26,12 +26,25 @@ describe("GameManagerService", () => {
         emitState: (player: PlayerModel.Id, state: GameModel.State) => void,
         endGame: () => void,
         constants: GameConstants,
-        databaseStore: (selections: Map<string, { selectedPlayers: Set<PlayerModel.Id>, decisionTime: number } | (GameTwoModel.TokenDistribution & { decisionTime: number })>, teamResults?: GameTwoModel.TeamResults) => void,
+        databaseStore: (
+          selections: Map<
+            string,
+            | { selectedPlayers: Set<PlayerModel.Id>; decisionTime: number }
+            | (GameTwoModel.TokenDistribution & { decisionTime: number })
+          >,
+          teamResults?: GameTwoModel.TeamResults
+        ) => void,
         handleBotsCallback: (inactivePlayersList: PlayerModel.Id[]) => void
       ) => {
         emitCallback = emitState;
         endCallback = endGame;
-        return new Game(emitState, endGame, constants, databaseStore, handleBotsCallback);
+        return new Game(
+          emitState,
+          endGame,
+          constants,
+          databaseStore,
+          handleBotsCallback
+        );
       },
     };
 

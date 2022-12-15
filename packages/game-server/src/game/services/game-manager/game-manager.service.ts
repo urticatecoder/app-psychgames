@@ -15,8 +15,13 @@ import { WsException } from "@nestjs/websockets";
 // TODO: test and clean up this mess; I was too tired on the first write
 type GameID = string;
 type SocketID = string;
-type GameOneSelection = { selectedPlayers: Set<PlayerModel.Id>, decisionTime: number };
-type GameTwoSelection = GameTwoModel.TokenDistribution & { decisionTime: number };
+type GameOneSelection = {
+  selectedPlayers: Set<PlayerModel.Id>;
+  decisionTime: number;
+};
+type GameTwoSelection = GameTwoModel.TokenDistribution & {
+  decisionTime: number;
+};
 
 @Injectable()
 export class GameManagerService {
@@ -48,7 +53,12 @@ export class GameManagerService {
       if (!game.instance.isJoinable()) continue;
       const availablePlayerID = this.findAvailablePlayerID(game);
       if (availablePlayerID) {
-        this.addPlayerToGame(socketID, availablePlayerID, game, playerInfo?.prolificId);
+        this.addPlayerToGame(
+          socketID,
+          availablePlayerID,
+          game,
+          playerInfo?.prolificId
+        );
         return availablePlayerID;
       }
     }
@@ -80,9 +90,19 @@ export class GameManagerService {
         () => this.endGame(gameID),
         // Here is where we can change game parameters per game
         DefaultGameConstants,
-        (selections: Map<string, GameOneSelection | GameTwoSelection>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) =>
-          this.pushToDatabase(gameID, selections, teamResults, receiptTurnNumber),
-        (inactivePlayersList: PlayerModel.Id[]) => this.handleBots(gameID, inactivePlayersList)
+        (
+          selections: Map<string, GameOneSelection | GameTwoSelection>,
+          teamResults?: GameTwoModel.TeamResults,
+          receiptTurnNumber?: number
+        ) =>
+          this.pushToDatabase(
+            gameID,
+            selections,
+            teamResults,
+            receiptTurnNumber
+          ),
+        (inactivePlayersList: PlayerModel.Id[]) =>
+          this.handleBots(gameID, inactivePlayersList)
       ),
       gameID
     );
@@ -109,9 +129,7 @@ export class GameManagerService {
   endGame(gameID: GameID) {
     const game = this.games.find((game: ManagedGame) => game.id === gameID);
     if (!game) {
-      console.error(
-        `attempted to end game ${gameID} but game was not found.`
-      );
+      console.error(`attempted to end game ${gameID} but game was not found.`);
       return;
     }
 
@@ -161,7 +179,10 @@ export class GameManagerService {
     return undefined;
   }
 
-  private getPlayerSocket(gameId: string, playerId: PlayerModel.Id): SocketID | undefined {
+  private getPlayerSocket(
+    gameId: string,
+    playerId: PlayerModel.Id
+  ): SocketID | undefined {
     let game = this.getGameById(gameId);
     let sockets = game?.activePlayers.keys();
 
@@ -223,11 +244,16 @@ export class GameManagerService {
     }
 
     for (let i = 0; i < inactivePlayersList.length; i++) {
-      let inactiveRounds = managedGame.inactivityMap.get(inactivePlayersList[i])!;
+      let inactiveRounds = managedGame.inactivityMap.get(
+        inactivePlayersList[i]
+      )!;
       managedGame.inactivityMap.set(inactivePlayersList[i], inactiveRounds + 1);
 
       // Kick the player if they were inactive for more than 5 (consecutive) rounds and are not already a bot.
-      if (managedGame.activePlayers.has(inactivePlayersList[i]) && inactiveRounds + 1 > 5) {
+      if (
+        managedGame.activePlayers.has(inactivePlayersList[i]) &&
+        inactiveRounds + 1 > 5
+      ) {
         let socketId = this.getPlayerSocket(gameID, inactivePlayersList[i]);
         let socket = this.server?.sockets.sockets.get(<string>socketId);
         socket?.disconnect();
@@ -237,8 +263,20 @@ export class GameManagerService {
   }
 
   // XXX: Remove this mock once database is set up
-  private pushToDatabase(gameID: string, selections: Map<string, GameOneSelection | GameTwoSelection>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) { return; }
-  private pushToDatabase2(gameID: string, selections: Map<string, GameOneSelection | GameTwoSelection>, teamResults?: GameTwoModel.TeamResults, receiptTurnNumber?: number) {
+  private pushToDatabase(
+    gameID: string,
+    selections: Map<string, GameOneSelection | GameTwoSelection>,
+    teamResults?: GameTwoModel.TeamResults,
+    receiptTurnNumber?: number
+  ) {
+    return;
+  }
+  private pushToDatabase2(
+    gameID: string,
+    selections: Map<string, GameOneSelection | GameTwoSelection>,
+    teamResults?: GameTwoModel.TeamResults,
+    receiptTurnNumber?: number
+  ) {
     const managedGame = this.getGameById(gameID);
     if (!managedGame) {
       console.error(
@@ -275,22 +313,38 @@ export class GameManagerService {
           playerID: playerId,
           prolificID: managedGame.prolificMap.get(playerId),
           turnNumber: state.round,
-          selectedIDOne: Array.from((<GameOneSelection>selections.get(playerId)).selectedPlayers)[0] ? Array.from((<GameOneSelection>selections.get(playerId)).selectedPlayers)[0] : "none",
-          selectedIDTwo: Array.from((<GameOneSelection>selections.get(playerId)).selectedPlayers)[1] ? Array.from((<GameOneSelection>selections.get(playerId)).selectedPlayers)[1] : "none",
+          selectedIDOne: Array.from(
+            (<GameOneSelection>selections.get(playerId)).selectedPlayers
+          )[0]
+            ? Array.from(
+                (<GameOneSelection>selections.get(playerId)).selectedPlayers
+              )[0]
+            : "none",
+          selectedIDTwo: Array.from(
+            (<GameOneSelection>selections.get(playerId)).selectedPlayers
+          )[1]
+            ? Array.from(
+                (<GameOneSelection>selections.get(playerId)).selectedPlayers
+              )[1]
+            : "none",
           madeByBot: botMap.get(playerId) == "not bot" ? false : true,
-          oldLocation: state.bonusGroups[0].filter(player => player.id == playerId)[0].position,
-          newLocation: state.bonusGroups[state.bonusGroups.length - 1].filter(player => player.id == playerId)[0].position,
-          doubleBonusCount: state.bonusGroups.filter(group => {
-            group.filter(player => {
-              player.turnBonus != "double" && player.id == playerId
-            }).length > 0
+          oldLocation: state.bonusGroups[0].filter(
+            (player) => player.id == playerId
+          )[0].position,
+          newLocation: state.bonusGroups[state.bonusGroups.length - 1].filter(
+            (player) => player.id == playerId
+          )[0].position,
+          doubleBonusCount: state.bonusGroups.filter((group) => {
+            group.filter((player) => {
+              player.turnBonus != "double" && player.id == playerId;
+            }).length > 0;
           }).length,
-          tripleBonusCount: state.bonusGroups.filter(group => {
-            group.filter(player => {
-              player.turnBonus != "triple" && player.id == playerId
-            }).length > 0
+          tripleBonusCount: state.bonusGroups.filter((group) => {
+            group.filter((player) => {
+              player.turnBonus != "triple" && player.id == playerId;
+            }).length > 0;
           }).length,
-        })
+        });
       } else if (state.type == "game-two_state") {
         await GameTwoDataModel.create({
           experimentID: managedGame.id,
@@ -308,15 +362,24 @@ export class GameManagerService {
           competePayoff: state.competeCoefficient,
           madeByBot: botMap.get(playerId) == "not bot" ? false : true,
           receiptTurnNum: receiptTurnNumber,
-          teamKeepTotal: state.winners.includes(playerId) ? teamResults?.winnerTeam.totalTokenDistribution.keep : teamResults?.loserTeam.totalTokenDistribution.keep,
-          teamInvestTotal: state.winners.includes(playerId) ? teamResults?.winnerTeam.totalTokenDistribution.invest : teamResults?.loserTeam.totalTokenDistribution.invest,
-          teamCompeteTotal: state.winners.includes(playerId) ? teamResults?.winnerTeam.totalTokenDistribution.compete : teamResults?.loserTeam.totalTokenDistribution.compete,
-          teamInvestPayoff: state.winners.includes(playerId) ? teamResults?.winnerTeam.investBonus : teamResults?.loserTeam.investBonus,
-          teamCompetePenalty: state.winners.includes(playerId) ? teamResults?.winnerTeam.competePenalty : teamResults?.loserTeam.competePenalty,
-        })
+          teamKeepTotal: state.winners.includes(playerId)
+            ? teamResults?.winnerTeam.totalTokenDistribution.keep
+            : teamResults?.loserTeam.totalTokenDistribution.keep,
+          teamInvestTotal: state.winners.includes(playerId)
+            ? teamResults?.winnerTeam.totalTokenDistribution.invest
+            : teamResults?.loserTeam.totalTokenDistribution.invest,
+          teamCompeteTotal: state.winners.includes(playerId)
+            ? teamResults?.winnerTeam.totalTokenDistribution.compete
+            : teamResults?.loserTeam.totalTokenDistribution.compete,
+          teamInvestPayoff: state.winners.includes(playerId)
+            ? teamResults?.winnerTeam.investBonus
+            : teamResults?.loserTeam.investBonus,
+          teamCompetePenalty: state.winners.includes(playerId)
+            ? teamResults?.winnerTeam.competePenalty
+            : teamResults?.loserTeam.competePenalty,
+        });
       }
-    })
-
+    });
   }
 }
 

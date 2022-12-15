@@ -171,7 +171,7 @@ describe("game one", () => {
         gameOne.submitAction("6", buildAction(["5"]));
 
         jest.runOnlyPendingTimers();
-        
+
         //Leave this commented out. Uncomment to see BonusGroups structure in terminal.
         //console.log(gameOne.state.bonusGroups);
         expect(isWellFormed(gameOne));
@@ -228,7 +228,7 @@ describe("game one", () => {
         gameOne.submitAction("6", buildAction(["4", "5"]));
 
         jest.runOnlyPendingTimers();
-        
+
         //Leave this commented out. Uncomment to see BonusGroups structure in terminal.
         //console.log(gameOne.state.bonusGroups);
         expect(isWellFormed(gameOne));

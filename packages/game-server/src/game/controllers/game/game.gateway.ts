@@ -37,7 +37,7 @@ function createValidationPipe() {
       }
 
       return new WsException(`properties ${failedProps} failed validation`);
-    }
+    },
   });
 }
 
@@ -45,8 +45,8 @@ function createValidationPipe() {
   allowEIO3: true, // needed for compatibility between socket.io and socket.io-client
   cors: {
     origin: "http://localhost:3000",
-    credentials: true
-  }
+    credentials: true,
+  },
 })
 export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
   constructor(private gameManager: GameManagerService) {}
@@ -100,7 +100,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
 
     console.debug("  id sent");
     const ableToInitialize = this.gameManager.attachPlayer(socket.id, data.id);
-    console.debug(ableToInitialize ? "  in game; initializing" : "  not currently in game");
+    console.debug(
+      ableToInitialize ? "  in game; initializing" : "  not currently in game"
+    );
 
     return {
       inGame: ableToInitialize,
@@ -170,7 +172,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayDisconnect {
      * so we need to determine the correct class and validate it manually.
      */
     const type = typeof data["type"] === "string" ? data["type"] : undefined;
-    console.debug(`Recieved game action of type ${type} from socket ${socket.id}`);
+    console.debug(
+      `Recieved game action of type ${type} from socket ${socket.id}`
+    );
     console.debug(data);
 
     const requestClass = type ? requestTypes[type] : undefined;

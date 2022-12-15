@@ -13,7 +13,10 @@ const LOSE_POSITION = -1;
 const START_POSITION = 0;
 const MAX_SELECTIONS = 2;
 
-type Selections = Map<PlayerModel.Id, { selectedPlayers: Set<PlayerModel.Id>, decisionTime: number }>;
+type Selections = Map<
+  PlayerModel.Id,
+  { selectedPlayers: Set<PlayerModel.Id>; decisionTime: number }
+>;
 type BonusGroup = GameOneModel.PlayerPosition[];
 
 /**
@@ -51,8 +54,7 @@ export class GameOne implements GameInstance {
     let playersSelectedWithTime = {
       selectedPlayers: playersSelected,
       decisionTime: action.decisionTime,
-    }
-
+    };
 
     this.selections.set(playerId, playersSelectedWithTime);
   }
@@ -350,20 +352,27 @@ function makeBonusGroups(
     const bias = constants.bias(round, position);
 
     if (isBottom) {
-      currentPositions.set(id, previousPosition + positionChange * (1 - bias.multiplicative) - bias.absolute);
+      currentPositions.set(
+        id,
+        previousPosition +
+          positionChange * (1 - bias.multiplicative) -
+          bias.absolute
+      );
     } else {
-      currentPositions.set(id, previousPosition + positionChange * (1 + bias.multiplicative) + bias.absolute);
+      currentPositions.set(
+        id,
+        previousPosition +
+          positionChange * (1 + bias.multiplicative) +
+          bias.absolute
+      );
     }
   }
 
   // Calculate the average player position
   const positions = [...currentPositions];
   const averagePosition =
-    positions.reduce(
-      (sum, [_, position]) =>
-        sum + position,
-      0
-    ) / positions.length;
+    positions.reduce((sum, [_, position]) => sum + position, 0) /
+    positions.length;
 
   // Normalize by subtracting the average position from each player
   // We also limit the actual positions here to be between -1, 1
@@ -510,7 +519,6 @@ function countSingleSelections(selections: Selections) {
   const singleSelectionMap = new Map<PlayerModel.Id, number>();
 
   selections.forEach((action) => {
-
     let playersSelected = action.selectedPlayers;
 
     playersSelected.forEach((playerSelected) => {

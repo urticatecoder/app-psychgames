@@ -63,9 +63,9 @@ export const DefaultGameConstants: GameConstants = {
       triple: (round, position) => 0.1,
     },
     bias: (round, position) => ({
-      absolute: .015 * round,
-      multiplicative: .1
-    })
+      absolute: 0.015 * round,
+      multiplicative: 0.1,
+    }),
   },
   gameTwo: {
     roundTime: (round: number) => {

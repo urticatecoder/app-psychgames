@@ -8,8 +8,12 @@ export abstract class GameFactory {
     endGame: () => void,
     constants: GameConstants,
     databaseStoreCallback: (
-      selections: Map<string, {selectedPlayers: Set<PlayerModel.Id>, decisionTime: number} | (GameTwoModel.TokenDistribution & {decisionTime: number})>, 
-      teamResults?: GameTwoModel.TeamResults, 
+      selections: Map<
+        string,
+        | { selectedPlayers: Set<PlayerModel.Id>; decisionTime: number }
+        | (GameTwoModel.TokenDistribution & { decisionTime: number })
+      >,
+      teamResults?: GameTwoModel.TeamResults,
       receiptTurnNumber?: number
     ) => void,
     handleBotsCallback: (inactivePlayersList: PlayerModel.Id[]) => void

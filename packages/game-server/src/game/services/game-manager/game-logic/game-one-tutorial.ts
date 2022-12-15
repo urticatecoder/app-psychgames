@@ -6,7 +6,9 @@ export class GameOneTutorial implements GameInstance {
   public state: GameOneTutorialModel.State;
 
   constructor(private game: AGame) {
-    const tutorialEndTime = new Date(Date.now() + game.constants.gameOneTutorialTime);
+    const tutorialEndTime = new Date(
+      Date.now() + game.constants.gameOneTutorialTime
+    );
 
     this.state = {
       type: "game-one-tutorial",

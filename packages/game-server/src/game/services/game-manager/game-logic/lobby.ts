@@ -16,19 +16,16 @@ export class Lobby implements GameInstance {
       lobbyEndTime: lobbyEndTime,
     };
 
-    setTimeout(
-      () => {
-        // Randomize avatars not explicitly set
-        this.game.players.forEach((player) => {
-          if (!this.submittedAvatar.has(player)) {
-            this.setAvatar(player, Math.floor(Math.random() * AVAILABLE_AVATARS))
-          }
-        });
+    setTimeout(() => {
+      // Randomize avatars not explicitly set
+      this.game.players.forEach((player) => {
+        if (!this.submittedAvatar.has(player)) {
+          this.setAvatar(player, Math.floor(Math.random() * AVAILABLE_AVATARS));
+        }
+      });
 
-        this.game.goToGame(new GameOneTutorial(this.game));
-      },
-      game.constants.lobbyTime
-    );
+      this.game.goToGame(new GameOneTutorial(this.game));
+    }, game.constants.lobbyTime);
   }
 
   getState(player: PlayerModel.Id): GameModel.GameState {

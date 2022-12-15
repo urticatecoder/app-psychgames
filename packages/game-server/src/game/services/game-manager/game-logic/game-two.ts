@@ -3,7 +3,10 @@ import { getRandomItem } from "@dpg/utils";
 import { FinalResults } from "./final-results.js";
 import { AGame, GameInstance, GameException } from "./game.js";
 
-type Selections = Map<PlayerModel.Id, GameTwoModel.TokenDistribution & { decisionTime: number }>;
+type Selections = Map<
+  PlayerModel.Id,
+  GameTwoModel.TokenDistribution & { decisionTime: number }
+>;
 type PlayerResults = Map<PlayerModel.Id, GameTwoModel.PlayerResults>;
 
 export class GameTwo implements GameInstance {
@@ -20,7 +23,9 @@ export class GameTwo implements GameInstance {
     winners: PlayerModel.Id[]
   ) {
     this.selections = new Map();
-    this.receiptRoundNumber = Math.floor(Math.random() * (this.game.constants.gameTwo.maxRounds - 1)) + 1;
+    this.receiptRoundNumber =
+      Math.floor(Math.random() * (this.game.constants.gameTwo.maxRounds - 1)) +
+      1;
     this.state = this.createInitialState(losers, winners);
   }
 
@@ -50,7 +55,7 @@ export class GameTwo implements GameInstance {
       invest: action.tokenDistribution.invest,
       compete: action.tokenDistribution.compete,
       decisionTime: action.decisionTime,
-    }
+    };
     this.selections.set(playerId, actionWithTime);
   }
 
@@ -147,7 +152,11 @@ export class GameTwo implements GameInstance {
     // coefficients are reset to new random values. Since they need to be stored, I push to the database
     // before the state update, and I also have to pass teamResults since it hasn't been added to state
     // yet.
-    this.game.pushToDatabase(this.selections, teamResults, this.receiptRoundNumber);
+    this.game.pushToDatabase(
+      this.selections,
+      teamResults,
+      this.receiptRoundNumber
+    );
 
     if (this.state.round == this.receiptRoundNumber) {
       this.finalPlayerResults = playerResults;
@@ -161,8 +170,6 @@ export class GameTwo implements GameInstance {
       competeCoefficient: this.createCompeteCoefficient(),
     };
     this.playerResults = playerResults;
-
-
 
     if (this.isGameOver()) {
       this.endGame();
@@ -188,7 +195,10 @@ export class GameTwo implements GameInstance {
         : teamResults.winnerTeam;
 
       const playerTokens =
-        selection.keep + teamResult.investBonus + otherTeamResult.competePenalty - teamResult.competePenalty;
+        selection.keep +
+        teamResult.investBonus +
+        otherTeamResult.competePenalty -
+        teamResult.competePenalty;
       const playerResult = {
         netTokens: playerTokens,
         netMoney: playerTokens * this.constants.tokenDollarValue,
@@ -252,7 +262,14 @@ export class GameTwo implements GameInstance {
   }
 
   private endGame() {
-    this.game.goToGame(new FinalResults(this.game, this.finalPlayerResults!, this.state.winners, this.state.losers));
+    this.game.goToGame(
+      new FinalResults(
+        this.game,
+        this.finalPlayerResults!,
+        this.state.winners,
+        this.state.losers
+      )
+    );
   }
 }
 
@@ -287,7 +304,8 @@ function calculateTeamResults(
     loserTeam: {
       totalTokenDistribution: loserTokenDistribution,
       investBonus: loserTokenDistribution.invest * state.investCoefficient,
-      competePenalty: winnerTokenDistribution.compete * state.competeCoefficient,
+      competePenalty:
+        winnerTokenDistribution.compete * state.competeCoefficient,
     },
   };
 }
@@ -316,5 +334,3 @@ function calculateTeamTokenDistribution(
     keep: totalKeepTokens,
   };
 }
-
-
