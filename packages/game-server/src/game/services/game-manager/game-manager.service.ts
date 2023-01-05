@@ -263,15 +263,15 @@ export class GameManagerService {
   }
 
   // XXX: Remove this mock once database is set up
+  // private pushToDatabase(
+  //   gameID: string,
+  //   selections: Map<string, GameOneSelection | GameTwoSelection>,
+  //   teamResults?: GameTwoModel.TeamResults,
+  //   receiptTurnNumber?: number
+  // ) {
+  //   return;
+  // }
   private pushToDatabase(
-    gameID: string,
-    selections: Map<string, GameOneSelection | GameTwoSelection>,
-    teamResults?: GameTwoModel.TeamResults,
-    receiptTurnNumber?: number
-  ) {
-    return;
-  }
-  private pushToDatabase2(
     gameID: string,
     selections: Map<string, GameOneSelection | GameTwoSelection>,
     teamResults?: GameTwoModel.TeamResults,
