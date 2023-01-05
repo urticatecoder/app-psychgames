@@ -47,8 +47,9 @@ function ConfirmButton(props) {
       color={PRIMARY_COLOR}
       disabled = {props.disabled}
       onClick={() => {
+        console.log("click");
+        // props.setSubmit(true);
         handleSubmission(props, props.disableButton, props.showWaitingDiv, props.setNoteTime);
-        props.setSubmit(true);
       }}
     >
       {CONFIRM_CHOICES_TEXT}
@@ -73,9 +74,11 @@ function handleSubmission(props, disableButton, showWaitingDiv, setNoteTime) {
     return;
   }
 
-  if (props.submit) {
+  console.log("submit? ", props.submit);
+  props.setSubmit(true);
+  // if (props.submit) {
     sendDecisions(props);
-  }
+  // }
   disableButton();
   showWaitingDiv();
   setNoteTime(NOTE_TIME);
