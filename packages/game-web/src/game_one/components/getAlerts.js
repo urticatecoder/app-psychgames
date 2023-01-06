@@ -28,7 +28,7 @@ function getAlerts(selectRemaining, notEnoughSelects, setNotEnoughSelects, selec
     } else if (tooManySelections) {
       return getAlertComponent(TOO_MANY_SELETIONS_MESSAGE, setTooManySelections, true);
     } else if (notEnoughSelects) {
-      return getAlertComponent(`You only selected ${2-selectRemaining} players. You still need to select ${selectRemaining} more players and click CONFIRM! before time's up!`, setNotEnoughSelects, true);
+      return getAlertComponent(`You only selected ${2-selectRemaining} players. You still need to select ${selectRemaining} more players and click CONFIRM before time's up!`, setNotEnoughSelects, true);
     }
   }
   

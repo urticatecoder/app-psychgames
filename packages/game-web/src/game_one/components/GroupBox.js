@@ -41,7 +41,7 @@ function GroupBox(props) {
     >
       <div className={classes.innerDiv}>
         <Typography className={classes.innerDiv} variant={"h4"}>
-          {GROUP} {getGroupLabel(props.groupNumber)}
+          {getGroupLabel(props.groupNumber)}
         </Typography>
       </div>
     </div>
@@ -50,9 +50,9 @@ function GroupBox(props) {
 
 function getGroupLabel(groupNumber) {
   if (groupNumber == 'One') {
-    return 'One Winners'
+    return 'Winners'
   } else {
-    return 'Two Losers'
+    return 'Losers'
   }
 }
 
