@@ -555,7 +555,6 @@ function markTripleDelayed(bonusGroupIndices, setTriples, delay) {
 
 function handleDoubleBonuses(setCurrentHeights, doubleArray, doubleHeightArray, doubleIncrease, allLoginCodes, setOldHeights, setNewHeights, originalHeights, setDoubles, animationOffset, setBonusType, setOpenBonusShower) {
     let oldHeights = originalHeights.slice(0);
-    // console.log("old heights: ", oldHeights);
     let newHeights = [];
     for (let i = 0; i < originalHeights.length; i++) {
         newHeights.push(originalHeights[i]);
@@ -565,7 +564,6 @@ function handleDoubleBonuses(setCurrentHeights, doubleArray, doubleHeightArray, 
         newHeights = oldHeights.slice(0);
         console.log("old heights slice: ", newHeights);
         let bonusGroupIndices = [];
-        // console.log("ids in double bonus group: ", loginCodes)
         for (let j = 0; j < loginCodes.length; j++) {
             const playerIndex = getPlayerIndex(loginCodes[j], allLoginCodes);
             console.log("player index: ", playerIndex);
@@ -582,7 +580,6 @@ function handleDoubleBonuses(setCurrentHeights, doubleArray, doubleHeightArray, 
 }
 
 function markDoubleDelayed(bonusGroupIndices, setDoubles, delay) {
-    // console.log("mark double delayed on group: ", bonusGroupIndices)
     updateBonusArray(bonusGroupIndices, setDoubles, delay);
 }
 

@@ -5,8 +5,8 @@ import DelayedConfetti from "./DelayedConfetti";
 import ContinueButton from "../../util/components/ContinueButton";
 
 const FULL_DIV = "fullDiv";
-const WINNING_HEADER = "Winning Players";
-const LOSING_HEADER = "Losing Players";
+const WINNING_HEADER = "Winning Team";
+const LOSING_HEADER = "Losing Team";
 const WINNER_ID = "winnerText";
 const LOSER_ID = "loserText";
 const BUTTON_MESSAGE = "Continue to Game Two";
