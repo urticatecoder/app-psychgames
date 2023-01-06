@@ -24,7 +24,7 @@ export class GameTwoTutorial implements GameInstance {
     // this.submitAction();
 
     setTimeout(
-      () => this.game.goToGame(new GameTwo(this.game, winners, losers)),
+      () => this.game.goToGame(new GameTwo(this.game, losers, winners)),
       game.constants.gameTwoTutorialTime
     );
   }
