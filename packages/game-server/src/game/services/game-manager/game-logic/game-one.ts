@@ -171,7 +171,7 @@ export class GameOne implements GameInstance {
       bonusGroups,
     };
 
-    this.game.pushToDatabase(this.selections);
+    //this.game.pushToDatabase(this.selections);
 
     if (this.isGameOver()) {
       this.endGame();

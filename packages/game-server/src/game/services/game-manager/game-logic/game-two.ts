@@ -153,11 +153,11 @@ export class GameTwo implements GameInstance {
     // coefficients are reset to new random values. Since they need to be stored, I push to the database
     // before the state update, and I also have to pass teamResults since it hasn't been added to state
     // yet.
-    this.game.pushToDatabase(
+    /*this.game.pushToDatabase(
       this.selections,
       teamResults,
       this.receiptRoundNumber
-    );
+    );*/
 
     if (this.state.round == this.receiptRoundNumber) {
       this.finalPlayerResults = playerResults;
@@ -172,7 +172,7 @@ export class GameTwo implements GameInstance {
     };
     this.playerResults = playerResults;
 
-    if (this.isGameOver()) {
+    if (this.isGameOver()) { 
       this.endGame();
     } else {
       this.selections.clear();
@@ -213,10 +213,6 @@ export class GameTwo implements GameInstance {
   /**
    * For any players that did not submit an action, we will perform a bot move.
    *
-   * TODO: Integrate this with GameManager passivity. The GameManager should
-   * recieve all the inactive players and decide if they are actual bots, or if
-   * they are players that need to be kicked.
-   *
    * TODO: Factor out this common functionality
    */
   private handleInactivePlayers() {
@@ -233,26 +229,19 @@ export class GameTwo implements GameInstance {
   }
 
   private performBotMove(player: PlayerModel.Id) {
-    // Generate random values for each set of tokens
-    const randomVals = [0, 0, 0].map(() => Math.random());
+    // Generate random token distribution that uses all 10 coins
+    const competeTokens = Math.floor(Math.random()*11);
+    const remainingTokens = 10 - competeTokens;
+    const investTokens = Math.floor(Math.random()*(remainingTokens+1));
+    const keepTokens = remainingTokens - investTokens;
 
-    // Normalize sum of values to 1
-    const sumOfVals = randomVals.reduce((acc, val) => acc + val);
-    const normalizedVals = randomVals.map((val) => val / sumOfVals);
-
-    // Map normalized values to respective numbers of tokens
-    const tokens = normalizedVals.map((val) =>
-      Math.floor(val * this.constants.tokensPerRound)
-    );
-
-    // The above will produce a total token distribution <= the max tokens per round
     this.submitAction(player, {
       type: "game-two_turn",
       round: this.state.round,
       tokenDistribution: {
-        compete: tokens[0],
-        invest: tokens[1],
-        keep: tokens[2],
+        compete: competeTokens,
+        invest: investTokens,
+        keep: keepTokens,
       },
       decisionTime: -1,
     });
