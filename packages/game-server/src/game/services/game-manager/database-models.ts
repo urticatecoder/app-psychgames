@@ -44,6 +44,10 @@ const gameTwoSchema = new mongoose.Schema({
   teamCompetePenalty: Number,
 });
 
+const constantsSchema = new mongoose.Schema({
+  
+})
+
 const GameOneDataModel = mongoose.model("GameOneDataModel", gameOneSchema);
 const GameTwoDataModel = mongoose.model("GameTwoDataModel", gameTwoSchema);
 

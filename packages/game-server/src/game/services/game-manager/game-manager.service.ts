@@ -81,7 +81,10 @@ export class GameManagerService {
     }
   }
 
+
+
   private createGame(): ManagedGame {
+    //const contants = get constants from database;
     const gameID = uuidv4();
     const newGame = new ManagedGame(
       this.gameFactory.create(
@@ -89,6 +92,7 @@ export class GameManagerService {
           this.emitPlayerStateTo(gameID, player, state),
         () => this.endGame(gameID),
         // Here is where we can change game parameters per game
+        // Replace `DefaultGameConstants` with `constants`
         DefaultGameConstants,
         (
           selections: Map<string, GameOneSelection | GameTwoSelection>,
